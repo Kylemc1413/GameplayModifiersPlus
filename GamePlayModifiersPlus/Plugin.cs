@@ -41,7 +41,7 @@ namespace GamePlayModifiersPlus
         public static float prevSpeedL;
         public static float prevSpeedR;
         public static float prevRotHead;
-
+        public static bool startSuperHot;
 
 
         public static bool bulletTime = false;
@@ -61,6 +61,7 @@ namespace GamePlayModifiersPlus
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
+            Time.timeScale = 1;
             if (soundIsPlaying == true)
                 simpleSound.Stop();
             soundIsPlaying = false;
@@ -153,6 +154,7 @@ namespace GamePlayModifiersPlus
                 }
                 if(superHot == true)
                 {
+                    startSuperHot = false;
                     player = Resources.FindObjectsOfTypeAll<PlayerController>().FirstOrDefault();
                     if(player != null)
                     {
@@ -165,7 +167,7 @@ namespace GamePlayModifiersPlus
                         playerInfo = false;
                         Log("Player is null");
                     }
-                           
+                    SharedCoroutineStarter.instance.StartCoroutine(Wait(1f));
 
                 }
 
@@ -197,21 +199,26 @@ namespace GamePlayModifiersPlus
             if (soundIsPlaying == true && _songAudio != null && isValidScene == true)
             {
                 ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 0f);
+                Time.timeScale = 0f;
+                return;
             }
 
             if (bulletTime == true && isValidScene == true && soundIsPlaying == false)
             {
                 speedPitch = 1 - (leftController.triggerValue + rightController.triggerValue) / 2;
                 ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", speedPitch);
+                Time.timeScale = speedPitch;
+                return;
             }
         
 
-            if (superHot == true && playerInfo == true && soundIsPlaying == false && isValidScene == true)
+            if (superHot == true && playerInfo == true && soundIsPlaying == false && isValidScene == true && startSuperHot == true)
             {
                 speedPitch = (leftSaber.bladeSpeed / 15 + rightSaber.bladeSpeed / 15) / 1.5f;
                 if (speedPitch > 1)
                     speedPitch = 1;
                 ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", speedPitch);
+                Time.timeScale = speedPitch;
        /*     if (calculating == false)
                 {
                 prevLeftPos = leftSaber.handlePos.magnitude;
@@ -221,13 +228,16 @@ namespace GamePlayModifiersPlus
                 prevSpeedL = leftSaber.bladeSpeed;
                 prevSpeedR = rightSaber.bladeSpeed;
                 SharedCoroutineStarter.instance.StartCoroutine(Delta());
-                    ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", speedPitch);
-                }
-*/
-                
-
-
+                    ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", speedPitch);                }
+*/      
             }
+            else
+            {
+                Time.timeScale = 1f;
+            }
+            if (playerInfo == true)
+                if(player.disableSabers == true)
+                    Time.timeScale = 1;
         }
     
         public void OnFixedUpdate()
@@ -241,6 +251,7 @@ namespace GamePlayModifiersPlus
             yield return new WaitForSecondsRealtime(0.1f);
             songIsPaused = true;
             ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 0f);
+            Time.timeScale = 0f;
             simpleSound.Load();
             simpleSound.Play();
             soundIsPlaying = true;
@@ -250,6 +261,7 @@ namespace GamePlayModifiersPlus
             {
             soundIsPlaying = false;
                 ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 1f);
+                Time.timeScale = 1f;
                 songIsPaused = false;
             Log("Unpaused");
             gnomeActive = false;
@@ -299,7 +311,11 @@ namespace GamePlayModifiersPlus
             calculating = false;
             
         }
-
+        private static IEnumerator Wait(float waitTime)
+        {
+            yield return new WaitForSeconds(waitTime);
+            startSuperHot = true;
+        }
 
         public static void Log(string message)
         {
