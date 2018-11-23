@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -13,7 +14,26 @@ using UnityEngine.UI;
  * 
  * IMPORTANT!!! => You *MUST* use this in "ActiveSceneChanged".
  * This class registers a callback with "SceneLoaded" for its own purposes.
- * If you use this in "SceneLoaded", it WILL break.
+ * If you use this in "SceneLoaded", the internal callback will never be called.
+ * 
+ * Notes:
+ * This can be used in multiple plugins at the same time.
+ * 
+ * Yes, I know my use of reflection is a big, big, avoidable mess. I know.
+ * I see it too and it makes me cringe because this could all be so much
+ * simpler without dealing with multiple plugins. But you know what?
+ * This is how I did it. ~~I had fun~~. It works.
+ * Let's just agree to not ask questions, eh?
+ * 
+ * The plugin with the latest version of the helper will be used to display
+ * the menu. For example, right now, the custom options pages look exactly
+ * like the default options page. They have the divider and the Defaults
+ * button. We'll call this "Version 1". I'm thinking of making the custom
+ * options pages cover the whole panel, so that option names can be longer
+ * without wrapping. We'll call that "Update 2". If one plugin is using
+ * "Update 1" and another is using "Update 2", the one using "Update 2"
+ * will be the one that Build()s the menu, and the plugin using
+ * "Update 1" will have its options displayed covering the whole panel.
  */
 
 namespace GamePlayModifiersPlus
@@ -122,6 +142,15 @@ namespace GamePlayModifiersPlus
 
     class GameOptionsUI : MonoBehaviour
     {
+        //The version of this helper.
+        //The plugin using the latest version
+        //will be used to Build() the options menu
+        public const int versionConst = 001;
+        public int versionCode = versionConst; //Non-static so it resets on each creation
+
+        //The function to call to build the UI
+        private static Action _buildFunc = Build;
+
         //Handle instances (each instance dies on new scene load, new ones are created on access)
         private static GameOptionsUI _instance;
         private static GameOptionsUI Instance
@@ -135,8 +164,24 @@ namespace GamePlayModifiersPlus
                     {
                         var existingComponent = existingObject.GetComponent("GameOptionsUI");
 
-                        _instance = new GameOptionsUI();
-                        _instance.customOptions = existingObject.GetComponent("GameOptionsUI").GetField<IList<object>>("customOptions");
+                        //The following `if` is necessary because Unity overrides == to return null
+                        //when a MonoBehavior isn't active. It's annoying, and getting in my way.
+                        //Hence this workaround.
+                        if (IsReallyNull(_instance))
+                        {
+                            _instance = new GameOptionsUI();
+                        }
+
+                        //Keep the override's options list up to date with the global one
+                        var existingOptions = existingComponent.GetField<IList<object>>("customOptions");
+                        _instance.customOptions = existingOptions;
+
+                        //If this version is newer, we will override the build
+                        if (existingComponent.GetField<int>("versionCode") < versionConst)
+                        {
+                            existingComponent.SetField("versionCode", _instance.versionCode);
+                            existingComponent.InvokeMethod("SetBuild", (Action)Build);
+                        }
                     }
                     else
                     {
@@ -145,7 +190,11 @@ namespace GamePlayModifiersPlus
                         //If we're here, this is the class that will handle the ".Build()"
                         //when necessary. Only the first instance created will make it here.
                         UnityAction<Scene, LoadSceneMode> buildWhenLoaded = (Scene arg0, LoadSceneMode _) => {
-                            if (arg0.name == "Menu") Build();
+                            if (arg0.name == "Menu")
+                            {
+                                //Whatever instance which is currently the most recent will be called
+                                _buildFunc.Invoke();
+                            }
                         };
                         SceneManager.sceneLoaded -= buildWhenLoaded;
                         SceneManager.sceneLoaded += buildWhenLoaded;
@@ -154,6 +203,26 @@ namespace GamePlayModifiersPlus
 
                 return _instance;
             }
+        }
+
+        //Helper. Checks to see if we can access the custom options.
+        //If so, the instance exists.
+        //Hacky. Shut up.
+        public static bool IsReallyNull(GameOptionsUI toTest)
+        {
+            IList<object> sample = null;
+            try
+            {
+                sample = toTest.GetField<IList<object>>("customOptions");
+            }
+            catch { }
+            return sample == null;
+        }
+
+        //Set the build method to call
+        public static void SetBuild(Action buildFunc)
+        {
+            _buildFunc = buildFunc;
         }
 
         //Index of current list
@@ -286,6 +355,10 @@ namespace GamePlayModifiersPlus
                 if (((Instance.customOptions.Count + 4 - 1) / 4) - Instance._listIndex <= 0) _pageDownButton.interactable = false;
             });
             _pageDownButton.interactable = Instance.customOptions.Count > 0;
+
+            //Unfortunately, due to weird object creation for versioning, this doesn't always
+            //happen when the scene changes
+            Instance._listIndex = 0;
         }
     }
 
