@@ -238,30 +238,7 @@ namespace GamePlayModifiersPlus
                 }
                 Log("Left:" + leftController.ToString());
                 Log("Right: " + rightController.ToString());
-
-                var gnomeOption = GameOptionsUI.CreateToggleOption("Gnome on miss");
-                gnomeOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "gnomeOnMiss", false, true);
-                gnomeOption.OnToggle += (gnomeOnMiss) => { ModPrefs.SetBool("GameplayModifiersPlus", "gnomeOnMiss", gnomeOnMiss); Log("Changed Modprefs value"); };
-
-                var superHotOption = GameOptionsUI.CreateToggleOption("SuperHot");
-                superHotOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "superHot", false, true);
-                superHotOption.OnToggle += (superHot) => { ModPrefs.SetBool("GameplayModifiersPlus", "superHot", superHot); Log("Changed Modprefs value"); };
-
-                var bulletTimeOption = GameOptionsUI.CreateToggleOption("Bullet Time");
-                bulletTimeOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "bulletTime", false, true);
-                bulletTimeOption.OnToggle += (bulletTime) => { ModPrefs.SetBool("GameplayModifiersPlus", "bulletTime", bulletTime); Log("Changed Modprefs value"); };
-
-                var twitchStuffOption = GameOptionsUI.CreateToggleOption("Twitch Chat");
-                twitchStuffOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "twitchStuff", false, true);
-                twitchStuffOption.OnToggle += (twitchStuff) => { ModPrefs.SetBool("GameplayModifiersPlus", "twitchStuff", twitchStuff); Log("Changed Modprefs value"); };
-
-                var swapSabersOption = GameOptionsUI.CreateToggleOption("Swap Sabers");
-                swapSabersOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
-                swapSabersOption.OnToggle += (swapSabers) => { ModPrefs.SetBool("GameplayModifiersPlus", "swapSabers", swapSabers) ; Log("Changed Modprefs value"); };
-
-                var chatDeltaOption = GameOptionsUI.CreateToggleOption("Chat Delta");
-                chatDeltaOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
-                chatDeltaOption.OnToggle += (chatDelta) => { ModPrefs.SetBool("GameplayModifiersPlus", "chatDelta", chatDelta); Log("Changed Modprefs value"); };
+   
             }
         }
 
