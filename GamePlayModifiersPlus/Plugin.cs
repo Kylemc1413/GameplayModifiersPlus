@@ -61,10 +61,10 @@ namespace GamePlayModifiersPlus
         {
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
-            gnomeOnMiss = ModPrefs.GetBool("GameplayModifiersPlus", "gnomeOnMiss", false, true);
-            superHot = ModPrefs.GetBool("GameplayModifiersPlus", "superHot", false, true);
-            bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "bulletTime", false, true);
-            twitchStuff = ModPrefs.GetBool("GameplayModifiersPlus", "twitchStuff", false, true);
+        //    gnomeOnMiss = ModPrefs.GetBool("GameplayModifiersPlus", "gnomeOnMiss", false, true);
+        //    superHot = ModPrefs.GetBool("GameplayModifiersPlus", "superHot", false, true);
+        //    bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "bulletTime", false, true);
+        //    twitchStuff = ModPrefs.GetBool("GameplayModifiersPlus", "twitchStuff", false, true);
             swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
             chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
             _cooldowns = new Cooldowns();
