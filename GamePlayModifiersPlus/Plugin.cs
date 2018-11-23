@@ -82,7 +82,7 @@ namespace GamePlayModifiersPlus
             if(message.Content.ToLower().Contains("!gm help"))
             {
                 TwitchConnection.Instance.SendChatMessage("Include !gm followed by a command in your message while the streamer has twitch mode on to mess with their game." +
-                    " Currently supported commands: status - check the plugin is still working, faster, slower. !gm pp to show the streamer's current global rank");
+                    " Currently supported commands: status - check the plugin is still working, pp - Show streamer current rank and pp");
             }
 
             if (message.Content.ToLower().Contains("!gm pp"))
@@ -99,7 +99,7 @@ namespace GamePlayModifiersPlus
                     if (!message.Author.DisplayName.Contains("Nightbot"))
                     {
                         if (!_cooldowns.GetCooldown("Global"))
-                        {
+                        {/*
                             //Speed commands
                             if (!_cooldowns.GetCooldown("Speed"))
                             {
@@ -152,7 +152,7 @@ namespace GamePlayModifiersPlus
                                 speedPitch = 1;
                                 Time.timeScale = 1;
                             }
-
+                            
                         }
                         else
                         {
@@ -198,7 +198,7 @@ namespace GamePlayModifiersPlus
                                 TwitchConnection.Instance.SendChatMessage("Cooldowns Reset.");
                                 _cooldowns.ResetCooldowns();
                             }
-                      
+                      */
                     }
                 }
                 else
@@ -244,10 +244,10 @@ namespace GamePlayModifiersPlus
 
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode arg1)
         {
-            gnomeOnMiss = ModPrefs.GetBool("GameplayModifiersPlus", "gnomeOnMiss", false, true);
-            superHot = ModPrefs.GetBool("GameplayModifiersPlus", "superHot", false, true);
-            bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "bulletTime", false, true);
-            twitchStuff = ModPrefs.GetBool("GameplayModifiersPlus", "twitchStuff", false, true);
+         //   gnomeOnMiss = ModPrefs.GetBool("GameplayModifiersPlus", "gnomeOnMiss", false, true);
+        //    superHot = ModPrefs.GetBool("GameplayModifiersPlus", "superHot", false, true);
+        //    bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "bulletTime", false, true);
+        //    twitchStuff = ModPrefs.GetBool("GameplayModifiersPlus", "twitchStuff", false, true);
             swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
             chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
             if (scene.name == "Menu")
@@ -281,7 +281,7 @@ namespace GamePlayModifiersPlus
 
             if (scene.name == "GameCore")
             {
-                ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 1f);
+             //   ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 1f);
                 isValidScene = true;
                 AudioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
                 if (AudioTimeSync != null)
@@ -307,7 +307,7 @@ namespace GamePlayModifiersPlus
                
                 if(swapSabers)
                 SharedCoroutineStarter.instance.StartCoroutine(SwapSabers(leftSaber, rightSaber));
-
+                /*
                 if (gnomeOnMiss == true)
                 {
 
@@ -345,6 +345,8 @@ namespace GamePlayModifiersPlus
 
                     }
                 }
+                */
+                /*
                 if(superHot == true)
                 {
                     startSuperHot = false;
@@ -352,7 +354,7 @@ namespace GamePlayModifiersPlus
 
                 }
 
-
+            */
 
 
 
@@ -378,7 +380,7 @@ namespace GamePlayModifiersPlus
         
         public void OnUpdate()
         {
-       
+       /*
             if (soundIsPlaying == true && _songAudio != null && isValidScene == true)
             {
                 ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 0f);
@@ -402,17 +404,8 @@ namespace GamePlayModifiersPlus
                     speedPitch = 1;
                 ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", speedPitch);
                 Time.timeScale = speedPitch;
-       /*     if (calculating == false)
-                {
-                prevLeftPos = leftSaber.handlePos.magnitude;
-                prevRightPos = rightSaber.handlePos.magnitude;
-                prevHeadPos = player.headPos.magnitude;
-                prevRotHead = player.GetField<Transform>("_headTransform").rotation.eulerAngles.magnitude;
-                prevSpeedL = leftSaber.bladeSpeed;
-                prevSpeedR = rightSaber.bladeSpeed;
-                SharedCoroutineStarter.instance.StartCoroutine(Delta());
-                    ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", speedPitch);                }
-*/      
+                
+     
             }
             else
             {
@@ -421,13 +414,14 @@ namespace GamePlayModifiersPlus
             if (playerInfo == true)
                 if(player.disableSabers == true)
                     Time.timeScale = 1;
+                    */
         }
     
         public void OnFixedUpdate()
         {
         }
 
-
+        /*
         private IEnumerator SpecialEvent()
         {
             gnomeActive = true;
@@ -448,7 +442,7 @@ namespace GamePlayModifiersPlus
             gnomeActive = false;
             }        
         }
-      
+      */
         private static IEnumerator Wait(float waitTime)
         {
             yield return new WaitForSeconds(waitTime);
@@ -463,7 +457,7 @@ namespace GamePlayModifiersPlus
             _cooldowns.SetCooldown(false, cooldown);
       //      TwitchConnection.Instance.SendChatMessage(cooldown + " Cooldown Deactivated, have fun!");
         }
-
+        /*
         private IEnumerator Pause(float waitTime)
         {
             paused = true;
@@ -479,7 +473,7 @@ namespace GamePlayModifiersPlus
                 paused = false;
             }
         }
-
+        */
         public static bool IsModInstalled(string modName)
         {
             foreach (IPlugin p in PluginManager.Plugins)
