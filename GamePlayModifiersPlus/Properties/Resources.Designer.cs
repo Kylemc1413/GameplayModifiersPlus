@@ -63,6 +63,15 @@ namespace GamePlayModifiersPlus.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
         /// </summary>
+        internal static System.IO.UnmanagedMemoryStream Beep {
+            get {
+                return ResourceManager.GetStream("Beep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
         internal static System.IO.UnmanagedMemoryStream gnome {
             get {
                 return ResourceManager.GetStream("gnome", resourceCulture);

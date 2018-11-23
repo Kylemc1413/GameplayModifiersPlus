@@ -6,8 +6,8 @@ using System.Collections;
 using System.Media;
 using System.Linq;
 using AsyncTwitch;
-using TMPro;
 using IllusionInjector;
+using TMPro;
 namespace GamePlayModifiersPlus
 {
     public class Plugin : IPlugin
@@ -16,7 +16,8 @@ namespace GamePlayModifiersPlus
         public string Version => "0.0.1";
 
         public static bool gnomeOnMiss = false;
-        SoundPlayer simpleSound = new SoundPlayer(Properties.Resources.gnome);
+        SoundPlayer gnomeSound = new SoundPlayer(Properties.Resources.gnome);
+        SoundPlayer beepSound = new SoundPlayer(Properties.Resources.Beep);
         bool soundIsPlaying = false;
         public static AudioTimeSyncController AudioTimeSync { get; private set; }
         private static AudioSource _songAudio;
@@ -33,24 +34,29 @@ namespace GamePlayModifiersPlus
         public static float prevHeadPos;
         public static float speedPitch = 1;
         public static bool calculating = false;
-        public static float deltaLeft;
-        public static float deltaRight;
-        public static float deltaHead;
-        public static float deltaSpeedL;
-        public static float deltaSpeedR;
-        public static float deltaRotHead;
-        public static float prevSpeedL;
-        public static float prevSpeedR;
-        public static float prevRotHead;
         public static bool startSuperHot;
-        public static bool menu = false;
-
+        public static bool swapSabers;
         public static bool bulletTime = false;
-
+        public static bool paused = false;
+        private static Cooldowns _cooldowns;
+        public static TMP_Text ppText;
+        public static string rank;
+        public static string pp;
+        public static float currentpp;
+        public static float oldpp = 0;
+        public static int currentRank;
+        public static int oldRank;
+        public static float deltaPP;
+        public static int deltaRank;
+        public static bool chatDelta;
+        public static bool firstLoad = true;
         VRController leftController;
         VRController rightController;
 
-        bool _hasRegistered = false;
+
+
+        private static bool _hasRegistered = false;
+
         public void OnApplicationStart()
         {
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
@@ -59,50 +65,102 @@ namespace GamePlayModifiersPlus
             superHot = ModPrefs.GetBool("GameplayModifiersPlus", "superHot", false, true);
             bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "bulletTime", false, true);
             twitchStuff = ModPrefs.GetBool("GameplayModifiersPlus", "twitchStuff", false, true);
-
+            swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
+            chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
+            _cooldowns = new Cooldowns();
         }
 
         private void TwitchConnection_OnMessageReceived(TwitchConnection arg1, TwitchMessage message)
         {
             Log("Message Recieved, AsyncTwitch currently working");
-            
-            if (twitchStuff == true && isValidScene == true)
+            //Status check message
+            if (message.Content.ToLower().Contains("!gm status"))
             {
-                if (!message.Author.DisplayName.Contains("Nightbot"))
-                {
-                    //Speed up
-                    if (message.BitAmount >= 0 || message.Author.IsMod)
-                        if (message.Content.Contains("faster"))
-                        {
-                            speedPitch += 0.1f;
-                            if (speedPitch >= 2f) speedPitch = 2f;
-                            ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", speedPitch);
-                            Time.timeScale = speedPitch;
-                            Log("Valid Message");
-                        } 
+                beepSound.Play();
+                TwitchConnection.Instance.SendChatMessage("Currently Not Borked");
+            }
+            if(message.Content.ToLower().Contains("!gm help"))
+            {
+                TwitchConnection.Instance.SendChatMessage("Include !gm followed by a command in your message while the streamer has twitch mode on to mess with their game." +
+                    " Currently supported commands: status - check the plugin is still working, faster, slower. !gm pp to show the streamer's current global rank");
+            }
 
-                    //Speed Down
-                    if (message.BitAmount >= 0 || message.Author.IsMod)
-                        if (message.Content.ToLower().Contains("slower"))
+            if (message.Content.ToLower().Contains("!gm pp"))
+            {
+                if(currentpp != 0)
+                TwitchConnection.Instance.SendChatMessage("Streamer Rank: #" + currentRank + ". Streamer pp: " + currentpp + "pp");
+                else
+                    TwitchConnection.Instance.SendChatMessage("Currently do not have streamer info");
+            }
+            if (twitchStuff == true && isValidScene == true && message.Content.StartsWith("!gm"))
+            {
+                if (message.Author != null)
+
+                    if (!message.Author.DisplayName.Contains("Nightbot"))
+                    {
+                        if (!_cooldowns.GetCooldown("Global"))
                         {
-                            speedPitch -= 0.1f;
-                            if (speedPitch <= .25f) speedPitch = .2f;
-                            ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", speedPitch);
-                            Time.timeScale = speedPitch;
-                            Log("Valid Message");
+                            //Speed commands
+                            if (!_cooldowns.GetCooldown("Speed"))
+                            {
+                                //Speed up
+                                if (message.BitAmount >= 0 || message.Author.IsMod)
+                                    if (message.Content.Contains("!gm faster"))
+                                    {
+                                        beepSound.Play();
+                                        speedPitch += 0.1f;
+                                        if (speedPitch >= 2f) speedPitch = 2f;
+                                        ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", speedPitch);
+                                        Time.timeScale = speedPitch;
+                                        Log("Valid Message");
+                                        SharedCoroutineStarter.instance.StartCoroutine(CoolDown(5f, "Global", "Speeding Up."));
+                                    }
+
+                                //Speed Down
+                                if (message.BitAmount >= 0 || message.Author.IsMod)
+                                    if (message.Content.ToLower().Contains("!gm slower"))
+                                    {
+                                        beepSound.Play();
+                                        speedPitch -= 0.1f;
+                                        if (speedPitch <= .25f) speedPitch = .1f;
+                                        ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", speedPitch);
+                                        Time.timeScale = speedPitch;
+                                        Log("Valid Message");
+                                        SharedCoroutineStarter.instance.StartCoroutine(CoolDown(5f, "Global", "Slowing Down."));
+                                    }
+                            }
+                            else
+                            {
+                                TwitchConnection.Instance.SendChatMessage("Speed Command Cooldown Active, please wait.");
+                            }
+                            //Gnome message
+                            if (message.BitAmount >= 1000)
+                                if (message.Content.ToLower().Contains("!gm saberwave") || message.Content.ToLower().Contains("!gm s a b e r w a v e"))
+                                {
+
+                                    SharedCoroutineStarter.instance.StopAllCoroutines();
+                                    SharedCoroutineStarter.instance.StartCoroutine(SpecialEvent());
+                                    Log("Gnoming");
+                                    SharedCoroutineStarter.instance.StartCoroutine(CoolDown(45f, "Global", "Gnoming."));
+                                }
+                            //Saber Swap message
+                            if (message.BitAmount >= 10000 && message.Content.ToLower().Contains("!gm swap"))
+                            {
+                                SharedCoroutineStarter.instance.StartCoroutine(CoolDown(60f, "Global", "Swapping Sabers."));
+                                SharedCoroutineStarter.instance.StartCoroutine(SwapSabers(leftSaber, rightSaber));
+                                SharedCoroutineStarter.instance.StartCoroutine(Pause(5f));
+                                speedPitch = 1;
+                                Time.timeScale = 1;
+                            }
+
                         }
-                    //Gnome message
-                    if (message.BitAmount >= 100)
-                        if (message.Content.ToLower().Contains("saberwave") || message.Content.ToLower().Contains("s a b e r w a v e"))
+                        else
                         {
-
-                            SharedCoroutineStarter.instance.StopAllCoroutines();
-                            SharedCoroutineStarter.instance.StartCoroutine(SpecialEvent());
-                            Log("Gnoming");
+                          
+                            TwitchConnection.Instance.SendChatMessage("Global Cooldown Active, please wait.");
                         }
-
-                    //Kyle Messages
-                    if (message.Author.DisplayName.Contains("Kyle1413K"))
+                        //Kyle Messages
+                        if (message.Author.DisplayName.Contains("Kyle1413K"))
                     {
                         if (message.Content.Contains("gnome"))
                         {
@@ -116,13 +174,30 @@ namespace GamePlayModifiersPlus
                             Log("Kyle Message");
                             ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 0.4f);
                             Time.timeScale = 0.4f;
-                        }
+                                speedPitch = 1;
+                            }
                         if (message.Content.ToLower().Contains("faster!"))
                         {
                             Log("Kyle Message");
                             ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 1.5f);
                             Time.timeScale = 1.5f;
+                                speedPitch = 1;
                         }
+                        if(message.Content.ToLower().Contains("swap!"))
+                            {
+                                Log("Kyle Message");
+                                SharedCoroutineStarter.instance.StartCoroutine(CoolDown(60f, "Global", ""));
+                                SharedCoroutineStarter.instance.StartCoroutine(SwapSabers(leftSaber, rightSaber));
+                                SharedCoroutineStarter.instance.StartCoroutine(Pause(5f));
+                                speedPitch = 1;
+                                Time.timeScale = 1;
+                                
+                            }
+                        if(message.Content.ToLower().Contains("!resetcooldowns"))
+                            {
+                                TwitchConnection.Instance.SendChatMessage("Cooldowns Reset.");
+                                _cooldowns.ResetCooldowns();
+                            }
                       
                     }
                 }
@@ -130,41 +205,29 @@ namespace GamePlayModifiersPlus
                     Log("Bot message");
 
             }
-
-            
-        
-    
         }
-        
+
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
+            _cooldowns.ResetCooldowns();
             Time.timeScale = 1;
             speedPitch = 1;
             if (soundIsPlaying == true)
-                simpleSound.Stop();
+                gnomeSound.Stop();
             soundIsPlaying = false;
             SharedCoroutineStarter.instance.StopAllCoroutines();
             isValidScene = false;
             playerInfo = false;
             if (scene.name == "Menu")
             {
-                    if (!_hasRegistered)
-                    {
-                        if (IsModInstalled("Asynchronous Twitch Library"))
-                        {
-                            if (TwitchConnection.Instance != null)
-                            {
-                                TwitchConnection.Instance.RegisterOnMessageReceived("GameplayModifiersPlusIdent", TwitchConnection_OnMessageReceived);
-                                Log("AsyncTwitch is installed!");
-                                _hasRegistered = true;
-                            }
-                        }
-                        else
-                        {
-                            Log("AsyncTwitch is not installed!");
-                        }
-                    }
-                    var controllers = Resources.FindObjectsOfTypeAll<VRController>();
+                if(_hasRegistered == false)
+                {
+                TwitchConnection.Instance.StartConnection();
+                TwitchConnection.Instance.RegisterOnMessageReceived(TwitchConnection_OnMessageReceived);
+                _hasRegistered = true;
+                }
+
+                var controllers = Resources.FindObjectsOfTypeAll<VRController>();
                 foreach (VRController controller in controllers)
                 {
                     //        Log(controller.ToString());
@@ -191,6 +254,14 @@ namespace GamePlayModifiersPlus
                 var twitchStuffOption = GameOptionsUI.CreateToggleOption("Twitch Chat");
                 twitchStuffOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "twitchStuff", false, true);
                 twitchStuffOption.OnToggle += (twitchStuff) => { ModPrefs.SetBool("GameplayModifiersPlus", "twitchStuff", twitchStuff); Log("Changed Modprefs value"); };
+
+                var swapSabersOption = GameOptionsUI.CreateToggleOption("Swap Sabers");
+                swapSabersOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
+                swapSabersOption.OnToggle += (swapSabers) => { ModPrefs.SetBool("GameplayModifiersPlus", "swapSabers", swapSabers) ; Log("Changed Modprefs value"); };
+
+                var chatDeltaOption = GameOptionsUI.CreateToggleOption("Chat Delta");
+                chatDeltaOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
+                chatDeltaOption.OnToggle += (chatDelta) => { ModPrefs.SetBool("GameplayModifiersPlus", "chatDelta", chatDelta); Log("Changed Modprefs value"); };
             }
         }
 
@@ -200,6 +271,27 @@ namespace GamePlayModifiersPlus
             superHot = ModPrefs.GetBool("GameplayModifiersPlus", "superHot", false, true);
             bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "bulletTime", false, true);
             twitchStuff = ModPrefs.GetBool("GameplayModifiersPlus", "twitchStuff", false, true);
+            swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
+            chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
+            if (scene.name == "Menu")
+            {
+
+
+                var texts = Resources.FindObjectsOfTypeAll<TMP_Text>();
+                foreach (TMP_Text text in texts)
+                {
+                    if (text.ToString() == "PP (TMPro.TextMeshPro)")
+                    {
+                        ppText = text;
+                        SharedCoroutineStarter.instance.StartCoroutine(GrabPP());
+                        break;
+
+                    }
+
+                }
+
+
+            }
             if (bulletTime == true)
                 superHot = false;
             if (twitchStuff == true)
@@ -208,10 +300,8 @@ namespace GamePlayModifiersPlus
                 bulletTime = false;
                 gnomeOnMiss = false;
             }
-            if (scene.name == "Menu")
-                menu = true;
-            else
-            menu = false;
+
+
             if (scene.name == "GameCore")
             {
                 ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 1f);
@@ -224,6 +314,23 @@ namespace GamePlayModifiersPlus
                         Log("Audio not null");
                     Log("Object Found");
                 }
+                //Get Sabers
+                player = Resources.FindObjectsOfTypeAll<PlayerController>().FirstOrDefault();
+                if (player != null)
+                {
+                    leftSaber = player.leftSaber;
+                    rightSaber = player.rightSaber;
+                    playerInfo = true;
+                }
+                else
+                {
+                    playerInfo = false;
+                    Log("Player is null");
+                }
+               
+                if(swapSabers)
+                SharedCoroutineStarter.instance.StartCoroutine(SwapSabers(leftSaber, rightSaber));
+
                 if (gnomeOnMiss == true)
                 {
 
@@ -264,18 +371,6 @@ namespace GamePlayModifiersPlus
                 if(superHot == true)
                 {
                     startSuperHot = false;
-                    player = Resources.FindObjectsOfTypeAll<PlayerController>().FirstOrDefault();
-                    if(player != null)
-                    {
-                    leftSaber = player.leftSaber;
-                    rightSaber = player.rightSaber;
-                    playerInfo = true;
-                    }
-                    else
-                    {
-                        playerInfo = false;
-                        Log("Player is null");
-                    }
                     SharedCoroutineStarter.instance.StartCoroutine(Wait(1f));
 
                 }
@@ -292,7 +387,6 @@ namespace GamePlayModifiersPlus
         {
             SceneManager.activeSceneChanged -= SceneManagerOnActiveSceneChanged;
             SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
-      //      TwitchConnection.OnMessageReceived -= TwitchConnection_OnMessageReceived;
         }
 
         public void OnLevelWasLoaded(int level)
@@ -302,20 +396,12 @@ namespace GamePlayModifiersPlus
 
         public void OnLevelWasInitialized(int level)
         {
-      
-           TwitchConnection.Instance?.StartConnection();
+            //test
         }
         
         public void OnUpdate()
         {
-            /*           
-            UnityEngine.Object[] TextStuffs = Resources.FindObjectsOfTypeAll<TMP_Text>();
-            foreach(TMP_Text text in TextStuffs)
-            {
-                if(text.ToString().Contains("PP"))
-                Log(text.ToString() + text.text);
-            }
-            */
+       
             if (soundIsPlaying == true && _songAudio != null && isValidScene == true)
             {
                 ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 0f);
@@ -371,8 +457,8 @@ namespace GamePlayModifiersPlus
             yield return new WaitForSecondsRealtime(0.1f);
             ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 0f);
             Time.timeScale = 0f;
-            simpleSound.Load();
-            simpleSound.Play();
+            gnomeSound.Load();
+            gnomeSound.Play();
             soundIsPlaying = true;
             Log("Waiting");
             yield return new WaitForSecondsRealtime(16f);
@@ -385,61 +471,37 @@ namespace GamePlayModifiersPlus
             gnomeActive = false;
             }        
         }
-        private static IEnumerator Delta()
-        {
-            calculating = true;
-       //     Log("Previous Left: " + prevLeftPos);
-       //     Log("Previous Right: " + prevRightPos);
-       //     Log("Previous Head: " + prevRightPos);
-            yield return new WaitForSecondsRealtime(0.1f);
-       //         Log("Current Left: " + leftSaber.handlePos.magnitude);
-       //         Log("Current Right: " + rightSaber.handlePos.magnitude);
-       //         Log("Current Head: " + player.headPos.magnitude);
-
-            deltaLeft = leftSaber.handlePos.magnitude - prevLeftPos;
-            deltaRight = rightSaber.handlePos.magnitude - prevLeftPos;
-            deltaHead = player.headPos.magnitude - prevHeadPos;
-            deltaSpeedL = leftSaber.bladeSpeed - prevSpeedL;
-            deltaSpeedR = rightSaber.bladeSpeed - prevSpeedR;
-            deltaRotHead = player.GetField<Transform>("_headTransform").rotation.eulerAngles.magnitude - prevRotHead;
-         //   Log("Left: " + Mathf.Abs(deltaLeft));
-         //   Log("Right: " + Mathf.Abs(deltaRight));
-         //   Log("Head: " + Mathf.Abs(deltaHead));
-         //   Log("Speed Left: " + Mathf.Abs(deltaSpeedL));
-          //  Log("Speed Left: " + Mathf.Abs(deltaSpeedR));
-          //  Log("Head Rotation: " + Mathf.Abs(Mathf.Cos(deltaRotHead)));
-            //Correct Values as per logs
-            deltaLeft = Mathf.Abs(deltaLeft);
-            deltaRight = Mathf.Abs(deltaRight);
-            deltaHead = Mathf.Abs(deltaHead);
-            deltaSpeedL = Mathf.Abs(deltaSpeedL);
-            deltaSpeedR = Mathf.Abs(deltaSpeedR);
-            deltaRotHead = Mathf.Abs(Mathf.Cos(deltaRotHead));
-
-
-            float avgBladeSpeedDelta = (deltaSpeedL /15 + deltaSpeedR /15) / 2;
-            float avgHandPositionDelta = (deltaLeft + deltaRight) / 2;
-            speedPitch = (avgBladeSpeedDelta / 1.5f)  + (avgHandPositionDelta * 2f) + (deltaHead * 10f);
-          //  Log("Head Rotation Delta: " + (deltaRotHead / 3));
-            Log("Blade Delta: " + avgBladeSpeedDelta / 1.5f);
-            Log("Hand Delta: " + avgHandPositionDelta * 2f);
-            Log("Head Delta: " + deltaHead * 10f);
-            Log("Speed Pitch: " + speedPitch);
-
-            calculating = false;
-            
-        }
+      
         private static IEnumerator Wait(float waitTime)
         {
             yield return new WaitForSeconds(waitTime);
             startSuperHot = true;
         }
 
-        public static void Log(string message)
+        private static IEnumerator CoolDown(float waitTime, string cooldown, string message)
         {
-            Console.WriteLine("[{0}] {1}", "GameplayModifiersPlus", message);
+            _cooldowns.SetCooldown(true, cooldown);
+            TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + "seconds");
+            yield return new WaitForSeconds(waitTime);
+            _cooldowns.SetCooldown(false, cooldown);
+      //      TwitchConnection.Instance.SendChatMessage(cooldown + " Cooldown Deactivated, have fun!");
         }
 
+        private IEnumerator Pause(float waitTime)
+        {
+            paused = true;
+            ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 0f);
+            Time.timeScale = 0f;
+            Log("Pausing");
+            yield return new WaitForSecondsRealtime(waitTime);
+            if (isValidScene == true)
+            {
+                ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 1f);
+                Time.timeScale = 1f;
+                Log("Unpaused");
+                paused = false;
+            }
+        }
 
         public static bool IsModInstalled(string modName)
         {
@@ -451,6 +513,116 @@ namespace GamePlayModifiersPlus
                 }
             }
             return false;
+        }
+
+        public static void Log(string message)
+        {
+            Console.WriteLine("[{0}] {1}", "GameplayModifiersPlus", message);
+        }
+        public IEnumerator SwapSabers(Saber saber1, Saber saber2)
+        {
+            yield return new WaitForSecondsRealtime(0f);
+            beepSound.Play();
+            Transform transform1 = saber1.transform.parent.transform;
+
+            Transform transform2 = saber2.transform.parent.transform;
+
+            saber2.transform.parent = transform1;
+            saber1.transform.parent = transform2;
+            saber2.transform.SetPositionAndRotation(transform1.transform.position, player.rightSaber.transform.parent.rotation);
+            saber1.transform.SetPositionAndRotation(transform2.transform.position, player.leftSaber.transform.parent.rotation);
+        }
+        public IEnumerator GrabPP()
+        {
+            if(firstLoad == true)
+            {
+                yield return new WaitForSecondsRealtime(20);
+            }
+            else
+                yield return new WaitForSecondsRealtime(10);
+            if (!ppText.text.Contains("html"))
+            Log(ppText.text);
+            if (!(ppText.text.Contains("Refresh") || ppText.text.Contains("html")))
+            {
+                rank = ppText.text.Split('#', '<')[1];
+                pp = ppText.text.Split('(', 'p')[1];
+                currentpp = float.Parse(pp, System.Globalization.CultureInfo.InvariantCulture);
+                currentRank = int.Parse(rank, System.Globalization.CultureInfo.InvariantCulture);
+                Log("Rank: " + currentRank);
+                Log("PP: " + currentpp);
+                if (firstLoad == true)
+                    if (chatDelta)
+                        TwitchConnection.Instance.SendChatMessage("Loaded. PP: " + currentpp + " pp. Rank: " + currentRank);
+
+                if (oldpp != 0)
+                {
+                    deltaPP = 0;
+                    deltaRank = 0;
+                    deltaPP = currentpp - oldpp;
+                    deltaRank = currentRank - oldRank;
+                    
+                    if (deltaPP != 0 || deltaRank != 0)
+                    {
+                        ppText.enableWordWrapping = false;
+                        if (deltaRank < 0)
+                        {
+                            if (deltaRank == -1)
+                            {
+                                if (chatDelta)
+                                    TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Gained 1 Rank.");
+                                ppText.text += " Change: Gained " + deltaPP + " pp. " + "Gained 1 Rank";
+                            }
+
+                            else
+                            {
+                                if (chatDelta)
+                                    TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Gained " + Math.Abs(deltaRank) + " Ranks.");
+                                ppText.text += " Change: Gained " + deltaPP + " pp. " + "Gained " + Math.Abs(deltaRank) + " Ranks";
+                            }
+
+                        }
+                        else if (deltaRank == 0)
+                        {
+                            if (chatDelta)
+                                TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. No change in Rank.");
+                            ppText.text += " Change: Gained " + deltaPP + " pp. " + "No change in Rank";
+                        }
+
+                        else if (deltaRank > 0)
+                        {
+                            if (deltaRank == 1)
+                            {
+                                if (chatDelta)
+                                    TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Lost 1 Rank.");
+                                ppText.text += " Change: Gained " + deltaPP + " pp. " + "Lost 1 Rank";
+                            }
+
+                            else
+                            {
+                                if (chatDelta)
+                                    TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Lost " + Math.Abs(deltaRank) + " Ranks.");
+                                ppText.text += " Change: Gained " + deltaPP + " pp. " + "Lost " + Math.Abs(deltaRank) + " Ranks";
+                            }
+
+                        }
+
+                        oldRank = currentRank;
+                        oldpp = currentpp;
+                    }
+                }
+                else
+                {
+                    oldRank = currentRank;
+                    oldpp = currentpp;
+                    deltaPP = 0;
+                    deltaRank = 0;
+                }
+
+            }
+            firstLoad = false;
+
+
+
         }
     }
 }

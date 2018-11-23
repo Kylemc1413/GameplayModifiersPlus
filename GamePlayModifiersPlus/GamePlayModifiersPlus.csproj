@@ -36,12 +36,10 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="AsyncTwitch, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="AsyncTwitch">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\AsyncTwitch.dll</HintPath>
     </Reference>
-    <Reference Include="IllusionInjector, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="IllusionInjector">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\IllusionInjector.dll</HintPath>
     </Reference>
     <Reference Include="IllusionPlugin">
@@ -82,6 +80,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cooldowns.cs" />
     <Compile Include="GameOptionsUI.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -93,6 +92,7 @@
     <Compile Include="ReflectionUtil.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Beep.wav" />
     <Content Include="gnome.wav" />
   </ItemGroup>
   <ItemGroup>
