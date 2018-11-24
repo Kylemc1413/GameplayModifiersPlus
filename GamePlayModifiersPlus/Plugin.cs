@@ -552,7 +552,7 @@ namespace GamePlayModifiersPlus
                 Log("PP: " + currentpp);
                 if (firstLoad == true)
                     if (chatDelta)
-                        TwitchConnection.Instance.SendChatMessage("Loaded. PP: " + currentpp + " pp. Rank: " + currentRank);
+                        TwitchConnection.Instance.SendChatMessage("Loaded. PP: " + currentpp.ToString("F3") + " pp. Rank: " + currentRank);
 
                 if (oldpp != 0)
                 {
@@ -569,23 +569,23 @@ namespace GamePlayModifiersPlus
                             if (deltaRank == -1)
                             {
                                 if (chatDelta)
-                                    TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Gained 1 Rank.");
-                                ppText.text += " Change: Gained " + deltaPP + " pp. " + "Gained 1 Rank";
+                                    TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP.ToString("F3") + " pp. Gained 1 Rank.");
+                                ppText.text += " Change: Gained " + deltaPP.ToString("F3") + " pp. " + "Gained 1 Rank";
                             }
 
                             else
                             {
                                 if (chatDelta)
-                                    TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Gained " + Math.Abs(deltaRank) + " Ranks.");
-                                ppText.text += " Change: Gained " + deltaPP + " pp. " + "Gained " + Math.Abs(deltaRank) + " Ranks";
+                                    TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP.ToString("F3") + " pp. Gained " + Math.Abs(deltaRank) + " Ranks.");
+                                ppText.text += " Change: Gained " + deltaPP.ToString("F3") + " pp. " + "Gained " + Math.Abs(deltaRank) + " Ranks";
                             }
 
                         }
                         else if (deltaRank == 0)
                         {
                             if (chatDelta)
-                                TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. No change in Rank.");
-                            ppText.text += " Change: Gained " + deltaPP + " pp. " + "No change in Rank";
+                                TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP.ToString("F3") + " pp. No change in Rank.");
+                            ppText.text += " Change: Gained " + deltaPP.ToString("F3") + " pp. " + "No change in Rank";
                         }
 
                         else if (deltaRank > 0)
@@ -593,15 +593,15 @@ namespace GamePlayModifiersPlus
                             if (deltaRank == 1)
                             {
                                 if (chatDelta)
-                                    TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Lost 1 Rank.");
-                                ppText.text += " Change: Gained " + deltaPP + " pp. " + "Lost 1 Rank";
+                                    TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP.ToString("F3") + " pp. Lost 1 Rank.");
+                                ppText.text += " Change: Gained " + deltaPP.ToString("F3") + " pp. " + "Lost 1 Rank";
                             }
 
                             else
                             {
                                 if (chatDelta)
-                                    TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Lost " + Math.Abs(deltaRank) + " Ranks.");
-                                ppText.text += " Change: Gained " + deltaPP + " pp. " + "Lost " + Math.Abs(deltaRank) + " Ranks";
+                                    TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP.ToString("F3") + " pp. Lost " + Math.Abs(deltaRank) + " Ranks.");
+                                ppText.text += " Change: Gained " + deltaPP.ToString("F3") + " pp. " + "Lost " + Math.Abs(deltaRank) + " Ranks";
                             }
 
                         }
