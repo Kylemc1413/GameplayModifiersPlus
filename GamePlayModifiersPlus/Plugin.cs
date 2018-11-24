@@ -60,7 +60,6 @@ namespace GamePlayModifiersPlus
         public void OnApplicationStart()
         {
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
-            SceneManager.sceneLoaded += SceneManager_sceneLoaded;
         //    gnomeOnMiss = ModPrefs.GetBool("GameplayModifiersPlus", "gnomeOnMiss", false, true);
         //    superHot = ModPrefs.GetBool("GameplayModifiersPlus", "superHot", false, true);
         //    bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "bulletTime", false, true);
@@ -240,19 +239,15 @@ namespace GamePlayModifiersPlus
                 Log("Right: " + rightController.ToString());
    
             }
-        }
 
-        private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode arg1)
-        {
-         //   gnomeOnMiss = ModPrefs.GetBool("GameplayModifiersPlus", "gnomeOnMiss", false, true);
-        //    superHot = ModPrefs.GetBool("GameplayModifiersPlus", "superHot", false, true);
-        //    bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "bulletTime", false, true);
-        //    twitchStuff = ModPrefs.GetBool("GameplayModifiersPlus", "twitchStuff", false, true);
+            gnomeOnMiss = ModPrefs.GetBool("GameplayModifiersPlus", "gnomeOnMiss", false, true);
+            superHot = ModPrefs.GetBool("GameplayModifiersPlus", "superHot", false, true);
+            bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "bulletTime", false, true);
+            twitchStuff = ModPrefs.GetBool("GameplayModifiersPlus", "twitchStuff", false, true);
             swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
             chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
             if (scene.name == "Menu")
             {
-
 
                 var texts = Resources.FindObjectsOfTypeAll<TMP_Text>();
                 foreach (TMP_Text text in texts)
@@ -365,7 +360,7 @@ namespace GamePlayModifiersPlus
         public void OnApplicationQuit()
         {
             SceneManager.activeSceneChanged -= SceneManagerOnActiveSceneChanged;
-            SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
+
         }
 
         public void OnLevelWasLoaded(int level)
