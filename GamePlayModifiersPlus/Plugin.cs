@@ -210,6 +210,15 @@ namespace GamePlayModifiersPlus
             {
                 ReadPrefs();
 
+                var swapSabersOption = GameOptionsUI.CreateToggleOption("Swap Sabers");
+                swapSabersOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
+                swapSabersOption.OnToggle += (swapSabers) => { ModPrefs.SetBool("GameplayModifiersPlus", "swapSabers", swapSabers); Log("Changed Modprefs value"); };
+
+                var chatDeltaOption = GameOptionsUI.CreateToggleOption("Chat Delta");
+                chatDeltaOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
+                chatDeltaOption.OnToggle += (chatDelta) => { ModPrefs.SetBool("GameplayModifiersPlus", "chatDelta", chatDelta); Log("Changed Modprefs value"); };
+
+
             }
         }
 
