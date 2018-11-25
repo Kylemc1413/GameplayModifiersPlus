@@ -13,20 +13,20 @@ using static UnityEngine.UI.Toggle;
 /*
  * Created by Moon on 10/14/2018
  * Helper class to assist in adding items to the Game Option list
- *
+ * 
  * IMPORTANT!!! => You *MUST* use this in "ActiveSceneChanged".
  * This class registers a callback with "SceneLoaded" for its own purposes.
  * If you use this in "SceneLoaded", the internal callback will never be called.
- *
+ * 
  * Notes:
  * This can be used in multiple plugins at the same time.
- *
+ * 
  * Yes, I know my use of reflection is a big, big, avoidable mess. I know.
  * I see it too and it makes me cringe because this could all be so much
  * simpler without dealing with multiple plugins. But you know what?
  * This is how I did it. ~~I had fun~~. It works.
  * Let's just agree to not ask questions, eh?
- *
+ * 
  * The plugin with the latest version of the helper will be used to display
  * the menu. For example, right now, the custom options pages look exactly
  * like the default options page. They have the divider and the Defaults
@@ -375,6 +375,14 @@ namespace GamePlayModifiersPlus
                     if (Instance._listIndex >= 0) _pageUpButton.interactable = true;
                     if (((Instance.customOptions.Count + 4 - 1) / 4) - Instance._listIndex <= 0) _pageDownButton.interactable = false;
                 });
+
+                _pageUpButton.interactable = false;
+                _pageDownButton.interactable = Instance.customOptions.Count > 0;
+
+                //Unfortunately, due to weird object creation for versioning, this doesn't always
+                //happen when the scene changes
+                Instance._listIndex = 0;
+
                 initialized = true;
             }
 
@@ -384,13 +392,6 @@ namespace GamePlayModifiersPlus
                 //Due to possible "different" types (due to cross-plugin support), we need to do this through reflection
                 option.InvokeMethod("Instantiate");
             }
-
-            _pageUpButton.interactable = false;
-            _pageDownButton.interactable = Instance.customOptions.Count > 0;
-
-            //Unfortunately, due to weird object creation for versioning, this doesn't always
-            //happen when the scene changes
-            Instance._listIndex = 0;
         }
     }
 
