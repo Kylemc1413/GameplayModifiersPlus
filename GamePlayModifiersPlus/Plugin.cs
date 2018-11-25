@@ -60,14 +60,11 @@ namespace GamePlayModifiersPlus
         public void OnApplicationStart()
         {
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
-        //    gnomeOnMiss = ModPrefs.GetBool("GameplayModifiersPlus", "gnomeOnMiss", false, true);
-        //    superHot = ModPrefs.GetBool("GameplayModifiersPlus", "superHot", false, true);
-        //    bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "bulletTime", false, true);
-        //    twitchStuff = ModPrefs.GetBool("GameplayModifiersPlus", "twitchStuff", false, true);
-            swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
-            chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
+            SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+            ReadPrefs();
             _cooldowns = new Cooldowns();
         }
+
 
         private void TwitchConnection_OnMessageReceived(TwitchConnection arg1, TwitchMessage message)
         {
@@ -206,6 +203,16 @@ namespace GamePlayModifiersPlus
             }
         }
 
+        private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode arg1)
+        {
+
+            if (scene.name == "Menu")
+            {
+                ReadPrefs();
+
+            }
+        }
+
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
             _cooldowns.ResetCooldowns();
@@ -240,12 +247,7 @@ namespace GamePlayModifiersPlus
    
             }
 
-            gnomeOnMiss = ModPrefs.GetBool("GameplayModifiersPlus", "gnomeOnMiss", false, true);
-            superHot = ModPrefs.GetBool("GameplayModifiersPlus", "superHot", false, true);
-            bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "bulletTime", false, true);
-            twitchStuff = ModPrefs.GetBool("GameplayModifiersPlus", "twitchStuff", false, true);
-            swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
-            chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
+            ReadPrefs();
             if (scene.name == "Menu")
             {
 
@@ -359,6 +361,7 @@ namespace GamePlayModifiersPlus
 
         public void OnApplicationQuit()
         {
+            SceneManager.sceneLoaded += SceneManager_sceneLoaded;
             SceneManager.activeSceneChanged -= SceneManagerOnActiveSceneChanged;
 
         }
@@ -497,6 +500,16 @@ namespace GamePlayModifiersPlus
             saber1.transform.parent = transform2;
             saber2.transform.SetPositionAndRotation(transform1.transform.position, player.rightSaber.transform.parent.rotation);
             saber1.transform.SetPositionAndRotation(transform2.transform.position, player.leftSaber.transform.parent.rotation);
+        }
+
+        public void ReadPrefs()
+        {
+         //   gnomeOnMiss = ModPrefs.GetBool("GameplayModifiersPlus", "gnomeOnMiss", false, true);
+         //   superHot = ModPrefs.GetBool("GameplayModifiersPlus", "superHot", false, true);
+         //   bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "bulletTime", false, true);
+         //   twitchStuff = ModPrefs.GetBool("GameplayModifiersPlus", "twitchStuff", false, true);
+            swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
+            chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
         }
         public IEnumerator GrabPP()
         {

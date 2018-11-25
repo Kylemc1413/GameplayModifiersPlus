@@ -11,6 +11,15 @@ namespace GamePlayModifiersPlus
     {
         private const BindingFlags _allBindingFlags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
 
+        public static void SetPrivateField(this object obj, string fieldName, object value)
+        {
+            obj.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).SetValue(obj, value);
+        }
+
+        public static T GetPrivateField<T>(this object obj, string fieldName)
+        {
+            return (T)((object)obj.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic).GetValue(obj));
+        }
         //Sets the value of a (static?) field in object "obj" with name "fieldName"
         public static void SetField(this object obj, string fieldName, object value)
         {
