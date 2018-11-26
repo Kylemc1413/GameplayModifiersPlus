@@ -8,6 +8,7 @@ using System.Linq;
 using AsyncTwitch;
 using IllusionInjector;
 using TMPro;
+using BeatSaberCustomUI;
 namespace GamePlayModifiersPlus
 {
     public class Plugin : IPlugin
@@ -210,11 +211,11 @@ namespace GamePlayModifiersPlus
             {
                 ReadPrefs();
 
-                var swapSabersOption = GameOptionsUI.CreateToggleOption("Swap Sabers");
+                var swapSabersOption = GameplaySettingsUI.CreateToggleOption("Swap Sabers");
                 swapSabersOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
                 swapSabersOption.OnToggle += (swapSabers) => { ModPrefs.SetBool("GameplayModifiersPlus", "swapSabers", swapSabers); Log("Changed Modprefs value"); };
 
-                var chatDeltaOption = GameOptionsUI.CreateToggleOption("Chat Delta");
+                var chatDeltaOption = GameplaySettingsUI.CreateToggleOption("Chat Delta");
                 chatDeltaOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
                 chatDeltaOption.OnToggle += (chatDelta) => { ModPrefs.SetBool("GameplayModifiersPlus", "chatDelta", chatDelta); Log("Changed Modprefs value"); };
 
@@ -224,6 +225,8 @@ namespace GamePlayModifiersPlus
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
+
+
             _cooldowns.ResetCooldowns();
             Time.timeScale = 1;
             speedPitch = 1;
