@@ -70,11 +70,31 @@ namespace GamePlayModifiersPlus.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ChatDelta {
+            get {
+                object obj = ResourceManager.GetObject("ChatDelta", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
         /// </summary>
         internal static System.IO.UnmanagedMemoryStream gnome {
             get {
                 return ResourceManager.GetStream("gnome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SwapSabers {
+            get {
+                object obj = ResourceManager.GetObject("SwapSabers", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

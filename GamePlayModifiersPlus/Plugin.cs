@@ -53,7 +53,8 @@ namespace GamePlayModifiersPlus
         public static bool firstLoad = true;
         VRController leftController;
         VRController rightController;
-
+        private Sprite _ChatDeltaIcon;
+        private Sprite _SwapSabersIcon;
 
 
         private static bool _hasRegistered = false;
@@ -210,12 +211,17 @@ namespace GamePlayModifiersPlus
             if (scene.name == "Menu")
             {
                 ReadPrefs();
+                if(_ChatDeltaIcon == null)
+                    _ChatDeltaIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.ChatDelta.png");
+                if (_SwapSabersIcon == null)
+                    _SwapSabersIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.SwapSabers.png");
 
-                var swapSabersOption = GameplaySettingsUI.CreateToggleOption("Swap Sabers", "Swaps your sabers. Warning: Haptics are not swapped");
+
+                var swapSabersOption = GameplaySettingsUI.CreateToggleOption("Swap Sabers", "Swaps your sabers. Warning: Haptics are not swapped", _SwapSabersIcon);
                 swapSabersOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
                 swapSabersOption.OnToggle += (swapSabers) => { ModPrefs.SetBool("GameplayModifiersPlus", "swapSabers", swapSabers); Log("Changed Modprefs value"); };
 
-                var chatDeltaOption = GameplaySettingsUI.CreateToggleOption("Chat Delta", "Display Change in Performance Points / Rank in Twitch Chat if Connected");
+                var chatDeltaOption = GameplaySettingsUI.CreateToggleOption("Chat Delta", "Display Change in Performance Points / Rank in Twitch Chat if Connected", _ChatDeltaIcon);
                 chatDeltaOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
                 chatDeltaOption.OnToggle += (chatDelta) => { ModPrefs.SetBool("GameplayModifiersPlus", "chatDelta", chatDelta); Log("Changed Modprefs value"); };
 
