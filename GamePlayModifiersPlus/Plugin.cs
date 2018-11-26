@@ -8,7 +8,7 @@ using System.Linq;
 using AsyncTwitch;
 using IllusionInjector;
 using TMPro;
-using BeatSaberCustomUI;
+using CustomUI.GameplaySettings;
 namespace GamePlayModifiersPlus
 {
     public class Plugin : IPlugin
@@ -211,11 +211,11 @@ namespace GamePlayModifiersPlus
             {
                 ReadPrefs();
 
-                var swapSabersOption = GameplaySettingsUI.CreateToggleOption("Swap Sabers");
+                var swapSabersOption = GameplaySettingsUI.CreateToggleOption("Swap Sabers", "Swaps your sabers. Warning: Haptics are not swapped");
                 swapSabersOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
                 swapSabersOption.OnToggle += (swapSabers) => { ModPrefs.SetBool("GameplayModifiersPlus", "swapSabers", swapSabers); Log("Changed Modprefs value"); };
 
-                var chatDeltaOption = GameplaySettingsUI.CreateToggleOption("Chat Delta");
+                var chatDeltaOption = GameplaySettingsUI.CreateToggleOption("Chat Delta", "Display Change in Performance Points / Rank in Twitch Chat if Connected");
                 chatDeltaOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
                 chatDeltaOption.OnToggle += (chatDelta) => { ModPrefs.SetBool("GameplayModifiersPlus", "chatDelta", chatDelta); Log("Changed Modprefs value"); };
 
