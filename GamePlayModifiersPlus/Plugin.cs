@@ -327,7 +327,8 @@ namespace GamePlayModifiersPlus
                     playerInfo = false;
                     Log("Player is null");
                 }
-               
+                Log(leftSaber.saberBladeBottomPos.ToString());
+                Log(leftSaber.saberBladeTopPos.ToString());
                 if(swapSabers)
                 SharedCoroutineStarter.instance.StartCoroutine(SwapSabers(leftSaber, rightSaber));
 
