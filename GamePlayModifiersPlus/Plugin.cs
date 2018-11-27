@@ -217,7 +217,7 @@ namespace GamePlayModifiersPlus
                     _SwapSabersIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.SwapSabers.png");
 
 
-                var swapSabersOption = GameplaySettingsUI.CreateToggleOption("Swap Sabers", "Swaps your sabers. Warning: Haptics are not swapped", _SwapSabersIcon);
+                var swapSabersOption = GameplaySettingsUI.CreateToggleOption("Swap Sabers", "Swaps your sabers. Warning: Haptics are not swapped (CURRENTLY NOT WORKING)", _SwapSabersIcon);
                 swapSabersOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
                 swapSabersOption.OnToggle += (swapSabers) => { ModPrefs.SetBool("GameplayModifiersPlus", "swapSabers", swapSabers); Log("Changed Modprefs value"); };
 
@@ -268,19 +268,8 @@ namespace GamePlayModifiersPlus
             ReadPrefs();
             if (scene.name == "Menu")
             {
-
-                var texts = Resources.FindObjectsOfTypeAll<TMP_Text>();
-                foreach (TMP_Text text in texts)
-                {
-                    if (text.ToString() == "PP (TMPro.TextMeshPro)")
-                    {
-                        ppText = text;
-                        SharedCoroutineStarter.instance.StartCoroutine(GrabPP());
-                        break;
-
-                    }
-
-                }
+                SharedCoroutineStarter.instance.StartCoroutine(GrabPP());
+              
 
 
             }
@@ -296,6 +285,8 @@ namespace GamePlayModifiersPlus
 
             if (scene.name == "GameCore")
             {
+                ReadPrefs();
+
              //   ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 1f);
                 isValidScene = true;
                 AudioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
@@ -312,6 +303,7 @@ namespace GamePlayModifiersPlus
                 {
                     leftSaber = player.leftSaber;
                     rightSaber = player.rightSaber;
+                   
                     playerInfo = true;
                 }
                 else
@@ -319,8 +311,9 @@ namespace GamePlayModifiersPlus
                     playerInfo = false;
                     Log("Player is null");
                 }
-               
-                if(swapSabers)
+                Log(leftSaber.handlePos.ToString());
+                Log(rightSaber.handlePos.ToString());
+                if (swapSabers)
                 SharedCoroutineStarter.instance.StartCoroutine(SwapSabers(leftSaber, rightSaber));
                 /*
                 if (gnomeOnMiss == true)
@@ -396,42 +389,42 @@ namespace GamePlayModifiersPlus
         
         public void OnUpdate()
         {
-       /*
-            if (soundIsPlaying == true && _songAudio != null && isValidScene == true)
-            {
-                ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 0f);
-                Time.timeScale = 0f;
-                return;
-            }
+                /*
+                     if (soundIsPlaying == true && _songAudio != null && isValidScene == true)
+                     {
+                         ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 0f);
+                         Time.timeScale = 0f;
+                         return;
+                     }
 
-            if (bulletTime == true && isValidScene == true && soundIsPlaying == false)
-            {
-                speedPitch = 1 - (leftController.triggerValue + rightController.triggerValue) / 2;
-                ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", speedPitch);
-                Time.timeScale = speedPitch;
-                return;
-            }
-        
+                     if (bulletTime == true && isValidScene == true && soundIsPlaying == false)
+                     {
+                         speedPitch = 1 - (leftController.triggerValue + rightController.triggerValue) / 2;
+                         ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", speedPitch);
+                         Time.timeScale = speedPitch;
+                         return;
+                     }
 
-            if (superHot == true && playerInfo == true && soundIsPlaying == false && isValidScene == true && startSuperHot == true)
-            {
-                speedPitch = (leftSaber.bladeSpeed / 15 + rightSaber.bladeSpeed / 15) / 1.5f;
-                if (speedPitch > 1)
-                    speedPitch = 1;
-                ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", speedPitch);
-                Time.timeScale = speedPitch;
-                
-     
+
+                     if (superHot == true && playerInfo == true && soundIsPlaying == false && isValidScene == true && startSuperHot == true)
+                     {
+                         speedPitch = (leftSaber.bladeSpeed / 15 + rightSaber.bladeSpeed / 15) / 1.5f;
+                         if (speedPitch > 1)
+                             speedPitch = 1;
+                         ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", speedPitch);
+                         Time.timeScale = speedPitch;
+
+
+                     }
+                     else
+                     {
+                         Time.timeScale = 1f;
+                     }
+                     if (playerInfo == true)
+                         if(player.disableSabers == true)
+                             Time.timeScale = 1;
+                             */
             }
-            else
-            {
-                Time.timeScale = 1f;
-            }
-            if (playerInfo == true)
-                if(player.disableSabers == true)
-                    Time.timeScale = 1;
-                    */
-        }
     
         public void OnFixedUpdate()
         {
@@ -508,8 +501,9 @@ namespace GamePlayModifiersPlus
         }
         public IEnumerator SwapSabers(Saber saber1, Saber saber2)
         {
-            yield return new WaitForSecondsRealtime(0f);
+            yield return new WaitForSecondsRealtime(0.5f);
             beepSound.Play();
+            Log("Swapping sabers");
             Transform transform1 = saber1.transform.parent.transform;
 
             Transform transform2 = saber2.transform.parent.transform;
@@ -531,11 +525,18 @@ namespace GamePlayModifiersPlus
         }
         public IEnumerator GrabPP()
         {
-            if(firstLoad == true)
+            yield return new WaitForSecondsRealtime(0.5f);
+            var texts = Resources.FindObjectsOfTypeAll<TMP_Text>();
+            foreach (TMP_Text text in texts)
             {
-                yield return new WaitForSecondsRealtime(20);
+                if (text.ToString() == "PP (TMPro.TextMeshPro)")
+                {
+                    ppText = text;
+                    break;
+
+                }
+
             }
-            else
                 yield return new WaitForSecondsRealtime(10);
             if (!ppText.text.Contains("html"))
             Log(ppText.text);
