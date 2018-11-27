@@ -312,7 +312,7 @@ namespace GamePlayModifiersPlus
                     Log("Player is null");
                 }
                 Log(leftSaber.handlePos.ToString());
-                Log(rightSaber.handlePos.ToString());
+                Log(leftSaber.saberBladeTopPos.ToString());
                 if (swapSabers)
                 SharedCoroutineStarter.instance.StartCoroutine(SwapSabers(leftSaber, rightSaber));
                 /*
