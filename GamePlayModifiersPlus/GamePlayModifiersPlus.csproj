@@ -92,6 +92,7 @@
     <Compile Include="ReflectionUtil.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\RepeatIcon.png" />
     <EmbeddedResource Include="Resources\SwapSabers.png" />
     <EmbeddedResource Include="Resources\ChatDelta.png" />
     <None Include="Beep.wav" />

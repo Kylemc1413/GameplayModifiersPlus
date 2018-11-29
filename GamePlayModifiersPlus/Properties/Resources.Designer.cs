@@ -91,6 +91,16 @@ namespace GamePlayModifiersPlus.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap RepeatIcon {
+            get {
+                object obj = ResourceManager.GetObject("RepeatIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SwapSabers {
             get {
                 object obj = ResourceManager.GetObject("SwapSabers", resourceCulture);
