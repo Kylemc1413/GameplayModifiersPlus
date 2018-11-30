@@ -61,12 +61,14 @@ namespace GamePlayModifiersPlus
         private Sprite _RepeatIcon;
         private Sprite _GnomeIcon;
         private Sprite _BulletTimeIcon;
+        private Sprite _TwitchIcon;
         StandardLevelSceneSetupDataSO levelData;
         bool invalidForScoring = false;
         bool repeatSong;
         private static bool _hasRegistered = false;
         BeatmapObjectSpawnController spawnController;
         GameEnergyCounter energyCounter;
+        GameEnergyUIPanel energyPanel;
         public void OnApplicationStart()
         {
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
@@ -88,7 +90,11 @@ namespace GamePlayModifiersPlus
             if (message.Content.ToLower().Contains("!gm help"))
             {
                 TwitchConnection.Instance.SendChatMessage("Include !gm followed by a command in your message while the streamer has twitch mode on to mess with their game." +
-                    " Currently supported commands: status - check the plugin is still working, pp - Show streamer current rank and pp");
+                    " Currently supported commands: status - check the plugin is still working, pp - Show streamer current rank and pp, game: Details about game commands");
+            }
+            if (message.Content.ToLower().Contains("!gm game"))
+            {
+                TwitchConnection.Instance.SendChatMessage("Commands: DA-Temporary Disappearing Arrows mode, Instafail- Temporary instant fail mode, Invincible- Temporary invincibility");
             }
 
             if (message.Content.ToLower().Contains("!gm pp"))
@@ -101,12 +107,29 @@ namespace GamePlayModifiersPlus
 
             if (twitchStuff && isValidScene && !_cooldowns.GetCooldown("Global"))
             {
-                if (message.Content.ToLower().Contains("!gm da") && message.BitAmount >= 0)
+                if (message.Content.ToLower().Contains("!gm da") && message.BitAmount >= 0 && !_cooldowns.GetCooldown("Note"))
                 {
                     beepSound.Play();
-                    TwitchConnection.Instance.SendChatMessage("DA Active.");
+                    SharedCoroutineStarter.instance.StartCoroutine(TempDA(15f));
+                    SharedCoroutineStarter.instance.StartCoroutine(CoolDown(20f, "Note", "DA Active."));
                 }
 
+                if (!_cooldowns.GetCooldown("Health"))
+                {
+                    if (message.Content.ToLower().Contains("!gm instafail") && message.BitAmount >= 0)
+                    {
+                        beepSound.Play();
+                        SharedCoroutineStarter.instance.StartCoroutine(TempInstaFail(15f));
+                        SharedCoroutineStarter.instance.StartCoroutine(CoolDown(20f, "Health", "Insta Fail Active."));
+                    }
+
+                    if (message.Content.ToLower().Contains("!gm invincible") && message.BitAmount >= 0)
+                    {
+                        beepSound.Play();
+                        SharedCoroutineStarter.instance.StartCoroutine(TempInvincibility(15f));
+                        SharedCoroutineStarter.instance.StartCoroutine(CoolDown(20f, "Health", "Insta Fail Active."));
+                    }
+                }
             }
 
 
@@ -122,17 +145,7 @@ namespace GamePlayModifiersPlus
             {
 
                 ReadPrefs();
-                if (_ChatDeltaIcon == null)
-                    _ChatDeltaIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.ChatDelta.png");
-                if (_SwapSabersIcon == null)
-                    _SwapSabersIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.SwapSabers.png");
-                if (_RepeatIcon == null)
-                    _RepeatIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.RepeatIcon.png");
-                if (_GnomeIcon == null)
-                    _GnomeIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.gnomeIcon.png");
-                if (_BulletTimeIcon == null)
-                    _BulletTimeIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.BulletIcon.png");
-
+                GetIcons();
                 var swapSabersOption = GameplaySettingsUI.CreateToggleOption("Swap Sabers", "Swaps your sabers. Warning: Haptics are not swapped (CURRENTLY NOT WORKING)", _SwapSabersIcon);
                 swapSabersOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
                 swapSabersOption.OnToggle += (swapSabers) => { ModPrefs.SetBool("GameplayModifiersPlus", "swapSabers", swapSabers); Log("Changed Modprefs value"); };
@@ -158,7 +171,7 @@ namespace GamePlayModifiersPlus
                 bulletTimeOption.AddConflict("Faster Song");
                 bulletTimeOption.AddConflict("Slower Song");
 
-                var twitchStuffOption = GameplaySettingsUI.CreateToggleOption("Twitch Chat");
+                var twitchStuffOption = GameplaySettingsUI.CreateToggleOption("Chat Integration", "Allows Chat to mess with your game if connected. !gm help (Disables Score Submission)", _TwitchIcon);
                 twitchStuffOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "twitchStuff", false, true);
                 twitchStuffOption.OnToggle += (twitchStuff) => { ModPrefs.SetBool("GameplayModifiersPlus", "twitchStuff", twitchStuff); Log("Changed Modprefs value"); };
                 twitchStuffOption.AddConflict("Faster Song");
@@ -224,6 +237,7 @@ namespace GamePlayModifiersPlus
                 levelData = Resources.FindObjectsOfTypeAll<StandardLevelSceneSetupDataSO>().First();
                 spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().First();
                 energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().First();
+                energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().First();
                 levelData.didFinishEvent += LevelData_didFinishEvent;
                 //   ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 1f);
                 isValidScene = true;
@@ -253,8 +267,6 @@ namespace GamePlayModifiersPlus
                 Log(leftSaber.saberBladeTopPos.ToString());
                 if (swapSabers)
                 {
-
-
                 }
                 //  SharedCoroutineStarter.instance.StartCoroutine(SwapSabers(leftSaber, rightSaber));
 
@@ -383,41 +395,26 @@ namespace GamePlayModifiersPlus
         {
         }
 
-        /*
-        private IEnumerator SpecialEvent()
+        void GetIcons()
         {
-            gnomeActive = true;
-            yield return new WaitForSecondsRealtime(0.1f);
-            ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 0f);
-            Time.timeScale = 0f;
-            gnomeSound.Load();
-            gnomeSound.Play();
-            soundIsPlaying = true;
-            Log("Waiting");
-            yield return new WaitForSecondsRealtime(16f);
-            if(isValidScene == true)
-            {
-            soundIsPlaying = false;
-                ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 1f);
-                Time.timeScale = 1f;
-            Log("Unpaused");
-            gnomeActive = false;
-            }        
+            if (_ChatDeltaIcon == null)
+                _ChatDeltaIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.ChatDelta.png");
+            if (_SwapSabersIcon == null)
+                _SwapSabersIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.SwapSabers.png");
+            if (_RepeatIcon == null)
+                _RepeatIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.RepeatIcon.png");
+            if (_GnomeIcon == null)
+                _GnomeIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.gnomeIcon.png");
+            if (_BulletTimeIcon == null)
+                _BulletTimeIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.BulletIcon.png");
+            if (_TwitchIcon == null)
+                _TwitchIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.TwitchIcon.png");
+
         }
-      */
         private static IEnumerator Wait(float waitTime)
         {
             yield return new WaitForSeconds(waitTime);
             startSuperHot = true;
-        }
-
-        private static IEnumerator CoolDown(float waitTime, string cooldown, string message)
-        {
-            _cooldowns.SetCooldown(true, cooldown);
-            TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + "seconds");
-            yield return new WaitForSeconds(waitTime);
-            _cooldowns.SetCooldown(false, cooldown);
-      //      TwitchConnection.Instance.SendChatMessage(cooldown + " Cooldown Deactivated, have fun!");
         }
         
         private IEnumerator Pause(float waitTime)
@@ -579,22 +576,43 @@ namespace GamePlayModifiersPlus
 
         public IEnumerator TempDA(float length)
         {
-            yield return new WaitForSeconds(length);
             spawnController.SetField("_disappearingArrows", true);
             yield return new WaitForSeconds(length);
             spawnController.SetField("_disappearingArrows", false);
         }
 
+
+
         public IEnumerator TempInstaFail(float length)
         {
+            Image energyBar = energyPanel.GetField<Image>("_energyBar");
+            energyBar.color = Color.red;
+            energyCounter.SetField("_badNoteEnergyDrain", 1f);
+            energyCounter.SetField("_missNoteEnergyDrain", 1f);
+            energyCounter.SetField("_hitBombEnergyDrain", 1f);
+            energyCounter.SetField("_obstacleEnergyDrainPerSecond", 1f);
             yield return new WaitForSeconds(length);
-            energyCounter.Init(GameplayModifiers.EnergyType.Battery, false, true, false);
+            energyBar.color = Color.white;
+            energyCounter.SetField("_badNoteEnergyDrain", 0.1f);
+            energyCounter.SetField("_missNoteEnergyDrain", 0.1f);
+            energyCounter.SetField("_hitBombEnergyDrain", 0.15f);
+            energyCounter.SetField("_obstacleEnergyDrainPerSecond", 0.1f);
+        }
 
+        public IEnumerator TempInvincibility(float length)
+        {
+            Image energyBar = energyPanel.GetField<Image>("_energyBar");
+            energyBar.color = Color.yellow;
+            energyCounter.SetField("_badNoteEnergyDrain", 0f);
+            energyCounter.SetField("_missNoteEnergyDrain", 0f);
+            energyCounter.SetField("_hitBombEnergyDrain", 0f);
+            energyCounter.SetField("_obstacleEnergyDrainPerSecond", 0f);
             yield return new WaitForSeconds(length);
-
-            energyCounter.Init(GameplayModifiers.EnergyType.Bar, false, false, false);
-
-
+            energyBar.color = Color.white;
+            energyCounter.SetField("_badNoteEnergyDrain", 0.1f);
+            energyCounter.SetField("_missNoteEnergyDrain", 0.1f);
+            energyCounter.SetField("_hitBombEnergyDrain", 0.15f);
+            energyCounter.SetField("_obstacleEnergyDrainPerSecond", 0.1f);
         }
 
         private IEnumerator SpecialEvent()
@@ -619,29 +637,37 @@ namespace GamePlayModifiersPlus
         }
 
         void SetTimeScale(float value)
+        {
+            timeScale = value;
+            if ((timeScale != 1))
             {
-                timeScale = value;
-                if ((timeScale != 1))
-                {
 
-                    if (AudioTimeSync != null)
-                    {
-                        AudioTimeSync.forcedAudioSync = true;
-                    }
-}
-                else
+                if (AudioTimeSync != null)
                 {
-                    if (AudioTimeSync != null)
-                    {
-                        AudioTimeSync.forcedAudioSync = false;
-                    }
-                }
-
-                if (_songAudio != null)
-                {
-                    _songAudio.pitch = timeScale;
+                    AudioTimeSync.forcedAudioSync = true;
                 }
             }
+            else
+            {
+                if (AudioTimeSync != null)
+                {
+                    AudioTimeSync.forcedAudioSync = false;
+                }
+            }
+
+            if (_songAudio != null)
+            {
+                _songAudio.pitch = timeScale;
+            }
+        }
+        private static IEnumerator CoolDown(float waitTime, string cooldown, string message)
+        {
+            _cooldowns.SetCooldown(true, cooldown);
+            TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + "seconds");
+            yield return new WaitForSeconds(waitTime);
+            _cooldowns.SetCooldown(false, cooldown);
+            //      TwitchConnection.Instance.SendChatMessage(cooldown + " Cooldown Deactivated, have fun!");
+        }
 
     }
 }
