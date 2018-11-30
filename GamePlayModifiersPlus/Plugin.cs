@@ -221,15 +221,15 @@ namespace GamePlayModifiersPlus
 
                 }
               //  SharedCoroutineStarter.instance.StartCoroutine(SwapSabers(leftSaber, rightSaber));
-                /*
+                
                 if (gnomeOnMiss == true)
                 {
 
-                    BeatmapObjectSpawnController[] beatmapObjectSpawnControllers = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>();
-                    BeatmapObjectSpawnController beatmapObjectSpawnController = beatmapObjectSpawnControllers.Length > 0 ? beatmapObjectSpawnControllers?[0] : null;
-                    if (beatmapObjectSpawnController != null)
+
+
+                    if (spawnController != null)
                     {
-                        beatmapObjectSpawnController.noteWasMissedEvent += delegate (BeatmapObjectSpawnController beatmapObjectSpawnController2, NoteController noteController)
+                        spawnController.noteWasMissedEvent += delegate (BeatmapObjectSpawnController beatmapObjectSpawnController2, NoteController noteController)
                         {
                             if (noteController.noteData.noteType != NoteType.Bomb)
                             {
