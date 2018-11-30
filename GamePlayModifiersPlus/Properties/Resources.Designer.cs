@@ -72,6 +72,16 @@ namespace GamePlayModifiersPlus.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap BulletIcon {
+            get {
+                object obj = ResourceManager.GetObject("BulletIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ChatDelta {
             get {
                 object obj = ResourceManager.GetObject("ChatDelta", resourceCulture);
@@ -91,6 +101,16 @@ namespace GamePlayModifiersPlus.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap gnomeIcon {
+            get {
+                object obj = ResourceManager.GetObject("gnomeIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap RepeatIcon {
             get {
                 object obj = ResourceManager.GetObject("RepeatIcon", resourceCulture);
@@ -104,6 +124,16 @@ namespace GamePlayModifiersPlus.Properties {
         internal static System.Drawing.Bitmap SwapSabers {
             get {
                 object obj = ResourceManager.GetObject("SwapSabers", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TwitchIcon {
+            get {
+                object obj = ResourceManager.GetObject("TwitchIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -92,6 +92,9 @@
     <Compile Include="ReflectionUtil.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\TwitchIcon.png" />
+    <EmbeddedResource Include="Resources\BulletIcon.png" />
+    <EmbeddedResource Include="Resources\gnomeIcon.png" />
     <EmbeddedResource Include="Resources\RepeatIcon.png" />
     <EmbeddedResource Include="Resources\SwapSabers.png" />
     <EmbeddedResource Include="Resources\ChatDelta.png" />
