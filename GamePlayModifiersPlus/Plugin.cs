@@ -1,8 +1,10 @@
 ﻿using IllusionPlugin;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Media;
 using System.Linq;
 using AsyncTwitch;
@@ -60,7 +62,8 @@ namespace GamePlayModifiersPlus
         bool invalidForScoring = false;
         bool repeatSong;
         private static bool _hasRegistered = false;
-
+        BeatmapObjectSpawnController spawnController;
+        GameEnergyCounter energyCounter;
         public void OnApplicationStart()
         {
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
@@ -183,6 +186,8 @@ namespace GamePlayModifiersPlus
             {
                 ReadPrefs();
                 levelData = Resources.FindObjectsOfTypeAll<StandardLevelSceneSetupDataSO>().First();
+                spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().First();
+                energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().First();
                 levelData.didFinishEvent += LevelData_didFinishEvent;
                 //   ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 1f);
                 isValidScene = true;
@@ -212,7 +217,7 @@ namespace GamePlayModifiersPlus
                 Log(leftSaber.saberBladeTopPos.ToString());
                 if (swapSabers)
                 {
-
+                    
 
                 }
               //  SharedCoroutineStarter.instance.StartCoroutine(SwapSabers(leftSaber, rightSaber));
@@ -536,5 +541,24 @@ namespace GamePlayModifiersPlus
 
         }
 
+        public IEnumerator TempDA(float length)
+        {
+            yield return new WaitForSeconds(length);
+            spawnController.SetField("_disappearingArrows", true);
+            yield return new WaitForSeconds(length);
+            spawnController.SetField("_disappearingArrows", false);
         }
+
+        public IEnumerator TempInstaFail(float length)
+        {
+            yield return new WaitForSeconds(length);
+            energyCounter.Init(GameplayModifiers.EnergyType.Battery, false, true, false);
+
+            yield return new WaitForSeconds(length);
+
+            energyCounter.Init(GameplayModifiers.EnergyType.Bar, false, false, false);
+
+
+        }
+    }
 }
