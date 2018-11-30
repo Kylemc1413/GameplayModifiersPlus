@@ -69,6 +69,9 @@ namespace GamePlayModifiersPlus
         BeatmapObjectSpawnController spawnController;
         GameEnergyCounter energyCounter;
         GameEnergyUIPanel energyPanel;
+
+        private static int _charges = 0;
+        private static int _bitsPerCharge = 10;
         public void OnApplicationStart()
         {
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
@@ -82,6 +85,13 @@ namespace GamePlayModifiersPlus
         {
             Log("Message Recieved, AsyncTwitch currently working");
             //Status check message
+            if(message.BitAmount >= _bitsPerCharge)
+            {
+                _charges += (message.BitAmount / _bitsPerCharge);
+                TwitchConnection.Instance.SendChatMessage("Current Charges: " + _charges);
+            }
+
+
             if (message.Content.ToLower().Contains("!gm status"))
             {
                 beepSound.Play();
@@ -97,6 +107,10 @@ namespace GamePlayModifiersPlus
                 TwitchConnection.Instance.SendChatMessage("Commands: DA-Temporary Disappearing Arrows mode, Instafail- Temporary instant fail mode, Invincible- Temporary invincibility");
             }
 
+            if (message.Content.ToLower().Contains("!gm charges"))
+            {
+                TwitchConnection.Instance.SendChatMessage("Every 10 bits sent with a message adds a charge, which are used to activate commands! Currently all commands do not require any charges");
+            }
             if (message.Content.ToLower().Contains("!gm pp"))
             {
                 if (currentpp != 0)
@@ -107,7 +121,7 @@ namespace GamePlayModifiersPlus
 
             if (twitchStuff && isValidScene && !_cooldowns.GetCooldown("Global"))
             {
-                if (message.Content.ToLower().Contains("!gm da") && message.BitAmount >= 0 && !_cooldowns.GetCooldown("Note"))
+                if (message.Content.ToLower().Contains("!gm da") && _charges >= 0 && !_cooldowns.GetCooldown("Note"))
                 {
                     beepSound.Play();
                     SharedCoroutineStarter.instance.StartCoroutine(TempDA(15f));
@@ -116,14 +130,14 @@ namespace GamePlayModifiersPlus
 
                 if (!_cooldowns.GetCooldown("Health"))
                 {
-                    if (message.Content.ToLower().Contains("!gm instafail") && message.BitAmount >= 0)
+                    if (message.Content.ToLower().Contains("!gm instafail") && _charges >= 0)
                     {
                         beepSound.Play();
                         SharedCoroutineStarter.instance.StartCoroutine(TempInstaFail(15f));
                         SharedCoroutineStarter.instance.StartCoroutine(CoolDown(20f, "Health", "Insta Fail Active."));
                     }
 
-                    if (message.Content.ToLower().Contains("!gm invincible") && message.BitAmount >= 0)
+                    if (message.Content.ToLower().Contains("!gm invincible") && _charges >= 0)
                     {
                         beepSound.Play();
                         SharedCoroutineStarter.instance.StartCoroutine(TempInvincibility(15f));
@@ -234,6 +248,9 @@ namespace GamePlayModifiersPlus
 
             if (scene.name == "GameCore")
             {
+                if (_charges <= 6)
+                    _charges += 3;
+
                 levelData = Resources.FindObjectsOfTypeAll<StandardLevelSceneSetupDataSO>().First();
                 spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().First();
                 energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().First();
@@ -663,7 +680,7 @@ namespace GamePlayModifiersPlus
         private static IEnumerator CoolDown(float waitTime, string cooldown, string message)
         {
             _cooldowns.SetCooldown(true, cooldown);
-            TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + "seconds");
+            TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
             yield return new WaitForSeconds(waitTime);
             _cooldowns.SetCooldown(false, cooldown);
             //      TwitchConnection.Instance.SendChatMessage(cooldown + " Cooldown Deactivated, have fun!");
