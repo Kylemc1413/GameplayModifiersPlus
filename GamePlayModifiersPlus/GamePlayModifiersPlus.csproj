@@ -39,17 +39,19 @@
     <Reference Include="AsyncTwitch">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\AsyncTwitch.dll</HintPath>
     </Reference>
+    <Reference Include="BeatSaberCustomUI">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\BeatSaberCustomUI.dll</HintPath>
+    </Reference>
     <Reference Include="IllusionInjector">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\IllusionInjector.dll</HintPath>
     </Reference>
     <Reference Include="IllusionPlugin">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\IllusionPlugin.dll</HintPath>
     </Reference>
-    <Reference Include="PracticePlugin">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\PracticePlugin.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -80,8 +82,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config.cs" />
     <Compile Include="Cooldowns.cs" />
-    <Compile Include="GameOptionsUI.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -90,8 +92,17 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ReflectionUtil.cs" />
+    <Compile Include="TwitchStuff\FloatBehavior.cs" />
+    <Compile Include="TwitchStuff\TwitchCommands.cs" />
+    <Compile Include="TwitchStuff\TwitchPowers.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\TwitchIcon.png" />
+    <EmbeddedResource Include="Resources\BulletIcon.png" />
+    <EmbeddedResource Include="Resources\gnomeIcon.png" />
+    <EmbeddedResource Include="Resources\RepeatIcon.png" />
+    <EmbeddedResource Include="Resources\SwapSabers.png" />
+    <EmbeddedResource Include="Resources\ChatDelta.png" />
     <None Include="Beep.wav" />
     <Content Include="gnome.wav" />
   </ItemGroup>
