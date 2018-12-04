@@ -51,6 +51,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -81,6 +82,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Config.cs" />
     <Compile Include="Cooldowns.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -90,6 +92,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ReflectionUtil.cs" />
+    <Compile Include="TwitchStuff\FloatBehavior.cs" />
+    <Compile Include="TwitchStuff\TwitchCommands.cs" />
+    <Compile Include="TwitchStuff\TwitchPowers.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\TwitchIcon.png" />

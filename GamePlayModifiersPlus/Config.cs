@@ -1,0 +1,319 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+using UnityEngine;
+
+namespace GamePlayModifiersPlus
+{
+    public class Config
+    {
+        public string FilePath { get; }
+        public bool allowSubs = true;
+        public bool allowEveryone = true;
+        public int chargesForSuperCharge = 10;
+        public int chargesPerLevel = 4;
+        public int maxCharges = 12;
+        public int bitsPerCharge = 10;
+
+
+        public int daChargeCost = 0;
+        public int smallerNoteChargeCost = 0;
+        public int largerNotesChargeCost = 0;
+        public int randomNotesChargeCost = 0;
+        public int instaFailChargeCost = 0;
+        public int invincibleChargeCost = 0;
+        public int randomnjsChargeCost = 0;
+        public int noArrowsChargeCost = 0;
+        public int funkyChargeCost = 0;
+        public int rainbowChargeCost = 0;
+        //     public int nMirrorChargeCost = 0;
+
+        public float daDuration = 15f;
+        public float smallerNoteDuration = 15f;
+        public float largerNotesDuration = 15f;
+        public float randomNotesDuration = 15f;
+        public float instaFailDuration = 15f;
+        public float invincibleDuration = 15f;
+        public float randomnjsDuration = 10f;
+        public float noArrowsDuration = 15f;
+        public float funkyDuration = 10f;
+        public float rainbowDuration = 10f;
+        //   public float nMirrorDuration = 15f;
+
+        public float daCooldown = 20f;
+        public float smallerNotesCooldown = 15f;
+        public float largerNotesCooldown = 15f;
+        public float randomNotesCooldown = 15f;
+        public float instaFailCooldown = 20f;
+        public float invincibleCooldown = 20f;
+        public float randomnjsCooldown = 20f;
+        public float noArrowsCooldown = 20f;
+        public float funkyCooldown = 10f;
+        public float rainbowCooldown = 20f;
+        //   public float nMirrorCooldown= 20f;
+        public float randomnjsMin = 8f;
+        public float randomnjsMax = 16f;
+        public float randomMin = 0.6f;
+        public float randomMax = 1.5f;
+        private readonly FileSystemWatcher _configWatcher;
+        public event Action<Config> ConfigChangedEvent;
+        private bool _saving;
+        private string chargeCostString;
+
+
+        public Config(String filePath)
+        {
+            FilePath = filePath;
+
+            if (File.Exists(FilePath))
+            {
+                Load();
+            }
+            else
+            {
+                Save();
+            }
+
+
+
+                _configWatcher = new FileSystemWatcher($"{Environment.CurrentDirectory}\\UserData")
+            {
+                NotifyFilter = NotifyFilters.LastWrite,
+                Filter = "EnhancedTwitchChat.ini",
+                EnableRaisingEvents = true
+            };
+            _configWatcher.Changed += ConfigWatcherOnChanged;
+        }
+
+
+
+
+        ~Config()
+        {
+            _configWatcher.Changed -= ConfigWatcherOnChanged;
+        }
+        public void Save()
+        {
+            _saving = true;
+            ConfigSerializer.SaveConfig(this, FilePath);
+        }
+
+        public void Load()
+        {
+            ConfigSerializer.LoadConfig(this, FilePath);
+            CompileChargeCostString();
+        }
+
+        private void ConfigWatcherOnChanged(object sender, FileSystemEventArgs fileSystemEventArgs)
+        {
+            if (_saving)
+            {
+                _saving = false;
+                return;
+            }
+
+            Load();
+
+            if (ConfigChangedEvent != null)
+            {
+                ConfigChangedEvent(this);
+            }
+
+        }
+
+        void CompileChargeCostString()
+        {
+            chargeCostString = "Current Costs: ";
+            if (daChargeCost > 0) chargeCostString += "DA: " + daChargeCost;
+            if (smallerNoteChargeCost > 0) chargeCostString += " | Smaller: " + smallerNoteChargeCost;
+            if (largerNotesChargeCost > 0) chargeCostString += " | Larger: " + largerNotesChargeCost;
+            if (randomNotesChargeCost > 0) chargeCostString += " | Random: " + randomNotesChargeCost;
+            if (instaFailChargeCost > 0) chargeCostString += " | Instafail: " + instaFailChargeCost;
+            if (invincibleChargeCost > 0) chargeCostString += " | Invincible: " + invincibleChargeCost;
+            if (randomnjsChargeCost > 0) chargeCostString += " | NjsRandom: " + randomnjsChargeCost;
+            if (noArrowsChargeCost > 0) chargeCostString += " | NoArrows: " + noArrowsChargeCost;
+            if (funkyChargeCost > 0) chargeCostString += " | Funky: " + funkyChargeCost;
+            if (rainbowChargeCost > 0) chargeCostString += " | Rainbow: " + funkyChargeCost;
+            if (chargeCostString == "Current Costs: ")
+                chargeCostString = "Current Costs: None!";
+        }
+
+        public string GetChargeCostString()
+        {
+            CompileChargeCostString();
+            return chargeCostString;
+        }
+
+        public void ChangeConfigValue(string property, string value)
+        {
+            bool success = true;
+            Plugin.Log("Config Change Attempt: " + property + " " + value);
+            if (property == "bitspercharge")
+                bitsPerCharge = int.Parse(value);
+            else if (property == "chargesforsupercharge")
+                chargesForSuperCharge = int.Parse(value);
+            else if (property == "maxcharges")
+                maxCharges = int.Parse(value);
+            else if (property == "chargesperlevel")
+                chargesPerLevel = int.Parse(value);
+            else if (property == "allowsubs")
+            {
+                if (value.ToLower().Contains("false"))
+                    allowSubs = false;
+                else
+                    allowSubs = true;
+            }
+
+            else if (property == "alloweveryone")
+            {
+                if (value.ToLower().Contains("false"))
+                    allowEveryone = false;
+                else
+                    allowEveryone = true;
+            }
+            else
+                success = false;
+            if (success)
+            {
+                Save();
+                AsyncTwitch.TwitchConnection.Instance.SendChatMessage("Changed Value");
+            }
+        }
+        public void ChangeConfigValue(string command, string property, string value)
+        {
+            Plugin.Log("Config Change Attempt: " + command + " " + property + " " + value);
+            bool success = true;
+            switch(command)
+            {
+
+                case "da":
+                    if (property == "chargecost")
+                        daChargeCost = int.Parse(value);
+                    else if (property == "cooldown")
+                        daCooldown = float.Parse(value);
+                    else if (property == "duration")
+                        daDuration = float.Parse(value);
+                    else
+                        success = false;
+                    break;
+                case "smaller":
+                    if (property == "chargecost")
+                        smallerNoteChargeCost = int.Parse(value);
+                    else if (property == "cooldown")
+                        smallerNotesCooldown = float.Parse(value);
+                    else if (property == "duration")
+                        smallerNoteDuration = float.Parse(value);
+                    else
+                        success = false;
+                    break;
+                case "larger":
+                    if (property == "chargecost")
+                        largerNotesChargeCost = int.Parse(value);
+                    else if (property == "cooldown")
+                        largerNotesCooldown = float.Parse(value);
+                    else if (property == "duration")
+                        largerNotesDuration = float.Parse(value);
+                    else
+                        success = false;
+                    break;
+                case "random":
+                    if (property == "chargecost")
+                        randomNotesChargeCost = int.Parse(value);
+                    else if (property == "cooldown")
+                        randomNotesCooldown = float.Parse(value);
+                    else if (property == "duration")
+                        randomNotesDuration = float.Parse(value);
+                    else if (property == "min")
+                        randomMin = float.Parse(value);
+                    else if (property == "max")
+                        randomMax = float.Parse(value);
+                    else
+                        success = false;
+                    break;
+                case "instafail":
+                    if (property == "chargecost")
+                        instaFailChargeCost = int.Parse(value);
+                    else if (property == "cooldown")
+                        instaFailCooldown = float.Parse(value);
+                    else if (property == "duration")
+                        instaFailDuration = float.Parse(value);
+                    else
+                        success = false;
+                    break;
+                case "invincible":
+                    if (property == "chargecost")
+                        invincibleChargeCost = int.Parse(value);
+                    else if (property == "cooldown")
+                        invincibleCooldown = float.Parse(value);
+                    else if (property == "duration")
+                        invincibleDuration = float.Parse(value);
+                    else
+                        success = false;
+                    break;
+                case "njsrandom":
+                    if (property == "chargecost")
+                        randomnjsChargeCost = int.Parse(value);
+                    else if (property == "cooldown")
+                        randomnjsCooldown = float.Parse(value);
+                    else if (property == "duration")
+                        randomnjsDuration = float.Parse(value);
+                    else if (property == "min")
+                        randomnjsMin = float.Parse(value);
+                    else if (property == "max")
+                        randomnjsMax = float.Parse(value);
+                    else
+                        success = false;
+                    break;
+                case "noarrows":
+                    if (property == "chargecost")
+                        noArrowsChargeCost = int.Parse(value);
+                    else if (property == "cooldown")
+                        noArrowsCooldown = float.Parse(value);
+                    else if (property == "duration")
+                        noArrowsDuration = float.Parse(value);
+                    else
+                        success = false;
+                    break;
+                case "funky":
+                    if (property == "chargecost")
+                        funkyChargeCost = int.Parse(value);
+                    else if (property == "cooldown")
+                        funkyCooldown = float.Parse(value);
+                    else if (property == "duration")
+                        funkyDuration = float.Parse(value);
+                    else
+                        success = false;
+                    break;
+                case "rainbow":
+                    if (property == "chargecost")
+                        rainbowChargeCost = int.Parse(value);
+                    else if (property == "cooldown")
+                        rainbowCooldown = float.Parse(value);
+                    else if (property == "duration")
+                        rainbowDuration = float.Parse(value);
+                    else
+                        success = false;
+                    break;
+                default:
+                    return;
+
+            
+        }
+              
+        //    Plugin.Log(allowEveryone.ToString());
+            if (success)
+            {
+                Save();
+                AsyncTwitch.TwitchConnection.Instance.SendChatMessage("Changed Value");
+            }
+
+        }
+
+
+
+
+    }
+}

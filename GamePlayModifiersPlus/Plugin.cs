@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections;
+using System.IO;
 using System.Collections.Generic;
 using System.Media;
 using System.Linq;
@@ -15,17 +16,20 @@ namespace GamePlayModifiersPlus
 {
     public class Plugin : IPlugin
     {
+        public static readonly Config Config = new Config(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
+
+
         public string Name => "GameplayModifiersPlus";
-        public string Version => "0.0.1";
-
+        public string Version => "0.9.26";
+      
         public static float timeScale = 1;
-
+        public static TwitchPowers twitchPowers = new TwitchPowers();
         public static bool gnomeOnMiss = false;
-        SoundPlayer gnomeSound = new SoundPlayer(Properties.Resources.gnome);
-        SoundPlayer beepSound = new SoundPlayer(Properties.Resources.Beep);
-        bool soundIsPlaying = false;
+        public static SoundPlayer gnomeSound = new SoundPlayer(Properties.Resources.gnome);
+        public static SoundPlayer beepSound = new SoundPlayer(Properties.Resources.Beep);
+        public static bool soundIsPlaying = false;
         public static AudioTimeSyncController AudioTimeSync { get; private set; }
-        private static AudioSource _songAudio;
+        public static AudioSource songAudio;
         public static bool isValidScene = false;
         public static bool gnomeActive = false;
         public static bool twitchStuff = false;
@@ -42,7 +46,7 @@ namespace GamePlayModifiersPlus
         public static bool swapSabers;
         public static bool bulletTime = false;
         public static bool paused = false;
-        private static Cooldowns _cooldowns;
+        public static Cooldowns cooldowns;
         public static TMP_Text ppText;
         public static string rank;
         public static string pp;
@@ -62,22 +66,42 @@ namespace GamePlayModifiersPlus
         private Sprite _GnomeIcon;
         private Sprite _BulletTimeIcon;
         private Sprite _TwitchIcon;
-        StandardLevelSceneSetupDataSO levelData;
+        public static StandardLevelSceneSetupDataSO levelData;
         bool invalidForScoring = false;
         bool repeatSong;
         private static bool _hasRegistered = false;
-        BeatmapObjectSpawnController spawnController;
-        GameEnergyCounter energyCounter;
-        GameEnergyUIPanel energyPanel;
-
-        private static int _charges = 0;
-        private static int _bitsPerCharge = 10;
+        public static BeatmapObjectSpawnController spawnController;
+        public static GameEnergyCounter energyCounter;
+        public static GameEnergyUIPanel energyPanel;
+        public static NoteController.Pool poolA;
+        public static NoteController.Pool poolB;
+        public static int charges = 0;
+        public static float altereddNoteScale = 1;
+        public static float fixedNoteScale = 1f;
+        public static bool randomSize = false;
+        public static bool nextIsSuper = false;
+        public static bool tempNoArrow;
+        public static bool superRandom;
+        public static bool healthActivated;
+        public static bool sizeActivated;
+        public static NoteData[] modifiedNotes;
+        public static bool noArrow;
+        public static bool randomNJS;
+        public static float songNJS;
+        public static bool haveSongNJS;
+        public static bool funky;
+        public static bool rainbow;
+        public static SimpleColorSO colorA;
+        public static SimpleColorSO colorB;
+        public static SimpleColorSO oldColorA = new SimpleColorSO();
+        public static SimpleColorSO oldColorB = new SimpleColorSO();
         public void OnApplicationStart()
         {
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+
             ReadPrefs();
-                   _cooldowns = new Cooldowns();
+           cooldowns = new Cooldowns();
         }
 
 
@@ -85,68 +109,24 @@ namespace GamePlayModifiersPlus
         {
             Log("Message Recieved, AsyncTwitch currently working");
             //Status check message
-            if(message.BitAmount >= _bitsPerCharge)
+
+            TwitchCommands.CheckChargeMessage(message);
+            TwitchCommands.CheckConfigMessage(message);
+            TwitchCommands.CheckStatusCommands(message);
+            TwitchCommands.CheckInfoCommands(message);
+
+            if (Config.allowEveryone || (Config.allowSubs && message.Author.IsSubscriber) || message.Author.IsMod)
             {
-                _charges += (message.BitAmount / _bitsPerCharge);
-                TwitchConnection.Instance.SendChatMessage("Current Charges: " + _charges);
+                if (twitchStuff && isValidScene && !cooldowns.GetCooldown("Global"))
+            {
+                TwitchCommands.CheckGameplayCommands(message);
+                TwitchCommands.CheckHealthCommands(message);
+                TwitchCommands.CheckSizeCommands(message);
+            }
             }
 
-
-            if (message.Content.ToLower().Contains("!gm status"))
-            {
-                beepSound.Play();
-                TwitchConnection.Instance.SendChatMessage("Currently Not Borked");
-            }
-            if (message.Content.ToLower().Contains("!gm help"))
-            {
-                TwitchConnection.Instance.SendChatMessage("Include !gm followed by a command in your message while the streamer has twitch mode on to mess with their game." +
-                    " Currently supported commands: status - check the plugin is still working, pp - Show streamer current rank and pp, game: Details about game commands");
-            }
-            if (message.Content.ToLower().Contains("!gm game"))
-            {
-                TwitchConnection.Instance.SendChatMessage("Commands: DA-Temporary Disappearing Arrows mode, Instafail- Temporary instant fail mode, Invincible- Temporary invincibility");
-            }
-
-            if (message.Content.ToLower().Contains("!gm charges"))
-            {
-                TwitchConnection.Instance.SendChatMessage("Every 10 bits sent with a message adds a charge, which are used to activate commands! Currently all commands do not require any charges");
-            }
-            if (message.Content.ToLower().Contains("!gm pp"))
-            {
-                if (currentpp != 0)
-                    TwitchConnection.Instance.SendChatMessage("Streamer Rank: #" + currentRank + ". Streamer pp: " + currentpp + "pp");
-                else
-                    TwitchConnection.Instance.SendChatMessage("Currently do not have streamer info");
-            }
-
-            if (twitchStuff && isValidScene && !_cooldowns.GetCooldown("Global"))
-            {
-                if (message.Content.ToLower().Contains("!gm da") && _charges >= 0 && !_cooldowns.GetCooldown("Note"))
-                {
-                    beepSound.Play();
-                    SharedCoroutineStarter.instance.StartCoroutine(TempDA(15f));
-                    SharedCoroutineStarter.instance.StartCoroutine(CoolDown(20f, "Note", "DA Active."));
-                }
-
-                if (!_cooldowns.GetCooldown("Health"))
-                {
-                    if (message.Content.ToLower().Contains("!gm instafail") && _charges >= 0)
-                    {
-                        beepSound.Play();
-                        SharedCoroutineStarter.instance.StartCoroutine(TempInstaFail(15f));
-                        SharedCoroutineStarter.instance.StartCoroutine(CoolDown(20f, "Health", "Insta Fail Active."));
-                    }
-
-                    if (message.Content.ToLower().Contains("!gm invincible") && _charges >= 0)
-                    {
-                        beepSound.Play();
-                        SharedCoroutineStarter.instance.StartCoroutine(TempInvincibility(15f));
-                        SharedCoroutineStarter.instance.StartCoroutine(CoolDown(20f, "Health", "Insta Fail Active."));
-                    }
-                }
-            }
-
-
+            sizeActivated = false;
+            healthActivated = false;
 
         }
 
@@ -157,10 +137,10 @@ namespace GamePlayModifiersPlus
 
             if (scene.name == "Menu")
             {
-
+                
                 ReadPrefs();
                 GetIcons();
-                var swapSabersOption = GameplaySettingsUI.CreateToggleOption("Swap Sabers", "Swaps your sabers. Warning: Haptics are not swapped (CURRENTLY NOT WORKING)", _SwapSabersIcon);
+                var swapSabersOption = GameplaySettingsUI.CreateToggleOption("Testing Ground", "Currently Used To test Random stuff", _SwapSabersIcon);
                 swapSabersOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
                 swapSabersOption.OnToggle += (swapSabers) => { ModPrefs.SetBool("GameplayModifiersPlus", "swapSabers", swapSabers); Log("Changed Modprefs value"); };
 
@@ -188,15 +168,36 @@ namespace GamePlayModifiersPlus
                 var twitchStuffOption = GameplaySettingsUI.CreateToggleOption("Chat Integration", "Allows Chat to mess with your game if connected. !gm help (Disables Score Submission)", _TwitchIcon);
                 twitchStuffOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "twitchStuff", false, true);
                 twitchStuffOption.OnToggle += (twitchStuff) => { ModPrefs.SetBool("GameplayModifiersPlus", "twitchStuff", twitchStuff); Log("Changed Modprefs value"); };
-                twitchStuffOption.AddConflict("Faster Song");
-                twitchStuffOption.AddConflict("Slower Song");
                 twitchStuffOption.AddConflict("Bullet Time");
 
+
+
+                var noteSizeOption = GameplaySettingsUI.CreateListOption("Note Size", "Change the size of the notes (Disables Score Submission");
+                for (float i = 10; i <= 200; i += 10)
+                    noteSizeOption.AddOption(i / 100);
+                noteSizeOption.GetValue = (() =>
+                {
+                    float num = ModPrefs.GetFloat("GameplayModifiersPlus", "noteScale", 1f, true);
+                    if (num % 0.1f != 0)
+                        num = (float)Math.Round(num, 1);
+
+                    num = Mathf.Clamp(num, 0.1f, 2f);
+                    return num;
+                });
+                noteSizeOption.OnChange += (fixedNoteScale) => { ModPrefs.SetFloat("GameplayModifiersPlus", "noteScale", fixedNoteScale); };
+                
+
             }
+            
         }
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
+            altereddNoteScale = 1;
+            funky = false;
+            rainbow = false;
+            haveSongNJS = false;
+            cooldowns.ResetCooldowns();
             ReadPrefs();
             invalidForScoring = false;
             Time.timeScale = 1;
@@ -206,6 +207,8 @@ namespace GamePlayModifiersPlus
             soundIsPlaying = false;
             isValidScene = false;
             playerInfo = false;
+            superRandom = false;
+            randomNJS = false;
             if (scene.name == "Menu")
             {
                 if (_hasRegistered == false)
@@ -231,6 +234,7 @@ namespace GamePlayModifiersPlus
 
             if (scene.name == "Menu")
             {
+                Log(Config.daCooldown.ToString());
                 SharedCoroutineStarter.instance.StartCoroutine(GrabPP());
 
 
@@ -243,26 +247,59 @@ namespace GamePlayModifiersPlus
                 superHot = false;
                 bulletTime = false;
                 gnomeOnMiss = false;
+                fixedNoteScale = 1f;
             }
 
 
             if (scene.name == "GameCore")
             {
-                if (_charges <= 6)
-                    _charges += 3;
+                var colors = Resources.FindObjectsOfTypeAll<SimpleColorSO>();
+                foreach(SimpleColorSO color in colors)
+                {
+                    Log(color.name);
+                    if (color.name == "Color0")
+                        colorA = color;
+                    if (color.name == "Color1")
+                        colorB = color;
+                }
+                    oldColorA.SetColor(colorA);
+                    oldColorB.SetColor(colorB);
+
+
+                Log(colorA.color.ToString());
+                if (twitchStuff &&  charges <= Config.maxCharges)
+                {
+                    charges += Config.chargesPerLevel;
+                    TwitchConnection.Instance.SendChatMessage("Current Charges: " + charges);
+                }
+
 
                 levelData = Resources.FindObjectsOfTypeAll<StandardLevelSceneSetupDataSO>().First();
                 spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().First();
                 energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().First();
                 energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().First();
+                poolA = spawnController.GetField<NoteController.Pool>("_noteAPool");
+                poolB = spawnController.GetField<NoteController.Pool>("_noteBPool");
+                if(twitchStuff || fixedNoteScale != 1f || swapSabers)
+                {
+
+
+
+                spawnController.noteDidStartJumpEvent += SpawnController_ModifiedJump;
+                spawnController.noteWasCutEvent += SpawnController_ScaleRemoveCut;
+                spawnController.noteWasMissedEvent += SpawnController_ScaleRemoveMiss;
+                }
+
+
+
                 levelData.didFinishEvent += LevelData_didFinishEvent;
                 //   ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 1f);
                 isValidScene = true;
                 AudioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
                 if (AudioTimeSync != null)
                 {
-                    _songAudio = AudioTimeSync.GetField<AudioSource>("_audioSource");
-                    if (_songAudio != null)
+                    songAudio = AudioTimeSync.GetField<AudioSource>("_audioSource");
+                    if (songAudio != null)
                         Log("Audio not null");
                     Log("Object Found");
                 }
@@ -282,8 +319,11 @@ namespace GamePlayModifiersPlus
                 }
                 Log(leftSaber.handlePos.ToString());
                 Log(leftSaber.saberBladeTopPos.ToString());
+
                 if (swapSabers)
                 {
+                    funky = true;
+                    rainbow = true;
                 }
                 //  SharedCoroutineStarter.instance.StartCoroutine(SwapSabers(leftSaber, rightSaber));
 
@@ -300,7 +340,7 @@ namespace GamePlayModifiersPlus
                                 try
                                 {
                                     SharedCoroutineStarter.instance.StopAllCoroutines();
-                                    SharedCoroutineStarter.instance.StartCoroutine(SpecialEvent());
+                                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.SpecialEvent());
                                     Log("Gnoming");
                                 }
                                 catch (Exception ex)
@@ -315,7 +355,7 @@ namespace GamePlayModifiersPlus
                             if (!noteCutInfo.allIsOK)
                             {
                                 SharedCoroutineStarter.instance.StopAllCoroutines();
-                                SharedCoroutineStarter.instance.StartCoroutine(SpecialEvent());
+                                SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.SpecialEvent());
                                 Log("Gnoming");
                             }
 
@@ -323,7 +363,7 @@ namespace GamePlayModifiersPlus
 
                     }
                 }
-                if (bulletTime || twitchStuff)
+                if (bulletTime || twitchStuff || fixedNoteScale != 1f)
                     invalidForScoring = true;
 
                 /*
@@ -341,10 +381,116 @@ namespace GamePlayModifiersPlus
 
             }
         }
+
+        private void SpawnController_ScaleRemoveMiss(BeatmapObjectSpawnController arg1, NoteController controller)
+        {
+   //         Log(songAudio.time.ToString());
+            NoteData note = controller.noteData;
+            Transform noteTransform = controller.GetField<Transform>("_noteTransform");
+      //      Log("DESPAWN" + noteTransform.localScale.ToString());
+            if (noteTransform.localScale.x != 1)
+                noteTransform.localScale = new Vector3(1f, 1f, 1f);
+            //      Log("DESPAWN" + noteTransform.localScale.ToString());
+            //        if (modifiedNotes[note.id] != null)
+            //           note = modifiedNotes[note.id];
+            FloatBehavior behavior = noteTransform.gameObject.GetComponent<FloatBehavior>();
+            if (behavior != null)
+            {
+                noteTransform.localPosition = new Vector3(behavior.originalX, behavior.originalY, noteTransform.localPosition.z);
+                GameObject.Destroy(behavior);
+            }
+        }
+
+        private void SpawnController_ScaleRemoveCut(BeatmapObjectSpawnController arg1, NoteController controller, NoteCutInfo arg3)
+        {
+            NoteData note = controller.noteData;
+            Transform noteTransform = controller.GetField<Transform>("_noteTransform");
+      //      Log("DESPAWN" + noteTransform.localScale.ToString());
+            if (noteTransform.localScale.x != 1)
+                noteTransform.localScale = new Vector3(1f, 1f, 1f);
+            //          Log("DESPAWN" + noteTransform.localScale.ToString());
+
+
+
+            //     if (modifiedNotes[note.id] != null)
+            //          note = modifiedNotes[note.id];
+
+            FloatBehavior behavior = noteTransform.gameObject.GetComponent<FloatBehavior>();
+            if (behavior != null)
+            {
+                noteTransform.localPosition = new Vector3(behavior.originalX, behavior.originalY, noteTransform.localPosition.z);
+                GameObject.Destroy(behavior);
+            }
+        }
+
+        private void SpawnController_ModifiedJump(BeatmapObjectSpawnController arg1, NoteController controller)
+        {
+            if(rainbow)
+            {
+                   colorA.SetColor(new Color(UnityEngine.Random.Range(0.2f, 1.7f) , UnityEngine.Random.Range(0.2f, 1.7f), UnityEngine.Random.Range(0.2f, 1.7f)));
+                   colorB.SetColor(new Color(UnityEngine.Random.Range(0.2f, 1.7f), UnityEngine.Random.Range(0.2f, 1.7f), UnityEngine.Random.Range(0.2f, 1.7f)));
+
+            }
+
+
+
+
+
+            Transform noteTransform = controller.GetField<Transform>("_noteTransform");
+            //       noteTransform.Translate(0f, 4f, 0f);
+            if(funky)
+            noteTransform.gameObject.AddComponent<FloatBehavior>();
+
+            if (randomNJS)
+            {
+
+                TwitchPowers.AdjustNJS(UnityEngine.Random.Range(Config.randomnjsMin, Config.randomnjsMax));
+            }
+            if (!haveSongNJS)
+            {
+            songNJS = spawnController.GetField<float>("_noteJumpMovementSpeed");
+                haveSongNJS = true;
+            }
+
+            if (twitchStuff)
+            {
+                if (altereddNoteScale == 1 && !randomSize) return;
+                invalidForScoring = true;
+                //          Transform noteTransform = controller.GetField<Transform>("_noteTransform");
+                //       Log("SPAWN" + noteTransform.localScale.ToString());
+                if(superRandom)
+                {
+                    noteTransform.localScale *= UnityEngine.Random.Range(Config.randomMin, Config.randomMax);
+                }
+                else
+                {
+                    if (!randomSize)
+                        noteTransform.localScale *= altereddNoteScale;
+                    if (randomSize)
+                        noteTransform.localScale *= UnityEngine.Random.Range(Config.randomMin, Config.randomMax);
+                }
+
+                //     Log("SPAWN" + noteTransform.localScale.ToString());
+            }
+            if (fixedNoteScale != 1f)
+            {
+                invalidForScoring = true;
+       //         Transform noteTransform = controller.GetField<Transform>("_noteTransform");
+                //       Log("SPAWN" + noteTransform.localScale.ToString());
+                noteTransform.localScale *= fixedNoteScale;
+                //     Log("SPAWN" + noteTransform.localScale.ToString());
+            }
+            NoteData note = controller.noteData;
+
+
+
+
+        }
+
         private void LevelData_didFinishEvent(StandardLevelSceneSetupDataSO arg1, LevelCompletionResults arg2)
         {
             if (arg2.levelEndStateType == LevelCompletionResults.LevelEndStateType.Quit) return;
-
+            if (arg2.levelEndStateType == LevelCompletionResults.LevelEndStateType.Restart) return;
             if (invalidForScoring)
                 ReflectionUtil.SetProperty(arg2, "levelEndStateType", LevelCompletionResults.LevelEndStateType.None);
             if (repeatSong)
@@ -372,8 +518,10 @@ namespace GamePlayModifiersPlus
 
         public void OnUpdate()
         {
+            
 
-            if (soundIsPlaying == true && _songAudio != null && isValidScene == true)
+
+            if (soundIsPlaying == true && songAudio != null && isValidScene == true)
             {
                 SetTimeScale(0f);;
                 Time.timeScale = 0f;
@@ -428,27 +576,7 @@ namespace GamePlayModifiersPlus
                 _TwitchIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.TwitchIcon.png");
 
         }
-        private static IEnumerator Wait(float waitTime)
-        {
-            yield return new WaitForSeconds(waitTime);
-            startSuperHot = true;
-        }
-        
-        private IEnumerator Pause(float waitTime)
-        {
-            paused = true;
-            SetTimeScale(0f);;
-            Time.timeScale = 0f;
-            Log("Pausing");
-            yield return new WaitForSecondsRealtime(waitTime);
-            if (isValidScene == true)
-            {
-                SetTimeScale(1f);;
-                Time.timeScale = 1f;
-                Log("Unpaused");
-                paused = false;
-            }
-        }
+
         
         public static bool IsModInstalled(string modName)
         {
@@ -483,6 +611,7 @@ namespace GamePlayModifiersPlus
 
         public void ReadPrefs()
         {
+            Config.Load();
             gnomeOnMiss = ModPrefs.GetBool("GameplayModifiersPlus", "gnomeOnMiss", false, true);
          //   superHot = ModPrefs.GetBool("GameplayModifiersPlus", "superHot", false, true);
             bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "bulletTime", false, true);
@@ -490,6 +619,8 @@ namespace GamePlayModifiersPlus
             swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
             chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
             repeatSong = ModPrefs.GetBool("GameplayModifiersPlus", "repeatSong", false, true);
+            fixedNoteScale = ModPrefs.GetFloat("GameplayModifiersPlus", "noteScale", 1f, true);
+            Config.Save();
         }
         public IEnumerator GrabPP()
         {
@@ -516,9 +647,9 @@ namespace GamePlayModifiersPlus
                 currentRank = int.Parse(rank, System.Globalization.CultureInfo.InvariantCulture);
                 Log("Rank: " + currentRank);
                 Log("PP: " + currentpp);
-                if (firstLoad == true)
-                    if (chatDelta)
-                        TwitchConnection.Instance.SendChatMessage("Loaded. PP: " + currentpp + " pp. Rank: " + currentRank);
+        //        if (firstLoad == true)
+         //           if (chatDelta)
+       //                 TwitchConnection.Instance.SendChatMessage("Loaded. PP: " + currentpp + " pp. Rank: " + currentRank);
 
                 if (oldpp != 0)
                 {
@@ -591,69 +722,9 @@ namespace GamePlayModifiersPlus
 
         }
 
-        public IEnumerator TempDA(float length)
-        {
-            spawnController.SetField("_disappearingArrows", true);
-            yield return new WaitForSeconds(length);
-            spawnController.SetField("_disappearingArrows", false);
-        }
+        
 
-
-
-        public IEnumerator TempInstaFail(float length)
-        {
-            Image energyBar = energyPanel.GetField<Image>("_energyBar");
-            energyBar.color = Color.red;
-            energyCounter.SetField("_badNoteEnergyDrain", 1f);
-            energyCounter.SetField("_missNoteEnergyDrain", 1f);
-            energyCounter.SetField("_hitBombEnergyDrain", 1f);
-            energyCounter.SetField("_obstacleEnergyDrainPerSecond", 1f);
-            yield return new WaitForSeconds(length);
-            energyBar.color = Color.white;
-            energyCounter.SetField("_badNoteEnergyDrain", 0.1f);
-            energyCounter.SetField("_missNoteEnergyDrain", 0.1f);
-            energyCounter.SetField("_hitBombEnergyDrain", 0.15f);
-            energyCounter.SetField("_obstacleEnergyDrainPerSecond", 0.1f);
-        }
-
-        public IEnumerator TempInvincibility(float length)
-        {
-            Image energyBar = energyPanel.GetField<Image>("_energyBar");
-            energyBar.color = Color.yellow;
-            energyCounter.SetField("_badNoteEnergyDrain", 0f);
-            energyCounter.SetField("_missNoteEnergyDrain", 0f);
-            energyCounter.SetField("_hitBombEnergyDrain", 0f);
-            energyCounter.SetField("_obstacleEnergyDrainPerSecond", 0f);
-            yield return new WaitForSeconds(length);
-            energyBar.color = Color.white;
-            energyCounter.SetField("_badNoteEnergyDrain", 0.1f);
-            energyCounter.SetField("_missNoteEnergyDrain", 0.1f);
-            energyCounter.SetField("_hitBombEnergyDrain", 0.15f);
-            energyCounter.SetField("_obstacleEnergyDrainPerSecond", 0.1f);
-        }
-
-        private IEnumerator SpecialEvent()
-        {
-            gnomeActive = true;
-            yield return new WaitForSecondsRealtime(0.1f);
-            SetTimeScale(0f);;
-            Time.timeScale = 0f;
-            gnomeSound.Load();
-            gnomeSound.Play();
-            soundIsPlaying = true;
-            Log("Waiting");
-            yield return new WaitForSecondsRealtime(16f);
-            if (isValidScene == true)
-            {
-                soundIsPlaying = false;
-                SetTimeScale(0f);;
-                Time.timeScale = 1f;
-                Log("Unpaused");
-                gnomeActive = false;
-            }
-        }
-
-        void SetTimeScale(float value)
+        public static void SetTimeScale(float value)
         {
             timeScale = value;
             if ((timeScale != 1))
@@ -672,18 +743,20 @@ namespace GamePlayModifiersPlus
                 }
             }
 
-            if (_songAudio != null)
+            if (songAudio != null)
             {
-                _songAudio.pitch = timeScale;
+                songAudio.pitch = timeScale;
             }
         }
-        private static IEnumerator CoolDown(float waitTime, string cooldown, string message)
+
+
+        static double RoundToSignificantDigits(double d, int digits)
         {
-            _cooldowns.SetCooldown(true, cooldown);
-            TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
-            yield return new WaitForSeconds(waitTime);
-            _cooldowns.SetCooldown(false, cooldown);
-            //      TwitchConnection.Instance.SendChatMessage(cooldown + " Cooldown Deactivated, have fun!");
+            if (d == 0)
+                return 0;
+
+            double scale = Math.Pow(10, Math.Floor(Math.Log10(Math.Abs(d))) + 1);
+            return scale * Math.Round(d / scale, digits);
         }
 
     }
