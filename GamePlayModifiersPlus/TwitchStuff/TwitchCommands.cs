@@ -14,12 +14,14 @@ using TMPro;
 using CustomUI.GameplaySettings;
 namespace GamePlayModifiersPlus
 {
-    class TwitchCommands
+    class TwitchCommands : MonoBehaviour
     {
         public static void CheckChargeMessage(TwitchMessage message)
         {
+   
             if (message.BitAmount >= Plugin.Config.bitsPerCharge && Plugin.Config.bitsPerCharge > 0)
             {
+                
                 Plugin.charges += (message.BitAmount / Plugin.Config.bitsPerCharge);
                 TwitchConnection.Instance.SendChatMessage("Current Charges: " + Plugin.charges);
             }
@@ -246,6 +248,7 @@ namespace GamePlayModifiersPlus
                     if (Plugin.nextIsSuper && Plugin.charges >= Plugin.Config.instaFailChargeCost)
                     {
                         Plugin.beepSound.Play();
+                         
                         SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.TempInstaFail(Plugin.songAudio.clip.length));
                         SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.CoolDown(Plugin.songAudio.clip.length, "Health", "Super Insta Fail Active."));
                         Plugin.nextIsSuper = false;

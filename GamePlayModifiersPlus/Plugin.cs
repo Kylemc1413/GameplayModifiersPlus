@@ -205,14 +205,15 @@ namespace GamePlayModifiersPlus
             soundIsPlaying = false;
             isValidScene = false;
             playerInfo = false;
-            if (scene.name == "Menu")
+            if (scene.name == ("Menu"))
             {
-                Log(Config.daCooldown.ToString());
+                Log("Switched to Menu");
                 SharedCoroutineStarter.instance.StartCoroutine(GrabPP());
-                SharedCoroutineStarter.instance.StopAllCoroutines();
+                
 
                 if (_hasRegistered == false)
                 {
+                    
                     TwitchConnection.Instance.StartConnection();
                     TwitchConnection.Instance.RegisterOnMessageReceived(TwitchConnection_OnMessageReceived);
                     _hasRegistered = true;

@@ -12,6 +12,7 @@ using AsyncTwitch;
 using IllusionInjector;
 using TMPro;
 using CustomUI.GameplaySettings;
+
 namespace GamePlayModifiersPlus
 {
     public class TwitchPowers
@@ -25,6 +26,7 @@ namespace GamePlayModifiersPlus
 
         public static IEnumerator CoolDown(float waitTime, string cooldown, string message)
         {
+            
             Plugin.cooldowns.SetCooldown(true, cooldown);
             if (Plugin.Config.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
             {
@@ -42,6 +44,7 @@ namespace GamePlayModifiersPlus
 
         public static IEnumerator GlobalCoolDown()
         {
+            
             Plugin.cooldowns.SetCooldown(true, "Global");
             yield return new WaitForSeconds(Plugin.Config.globalCommandCooldown);
             Plugin.cooldowns.SetCooldown(false, "Global");
@@ -185,7 +188,7 @@ namespace GamePlayModifiersPlus
             Plugin.randomSize = true;
             yield return new WaitForSeconds(length);
             Plugin.randomSize = false;
-
+            
 
         }
 
