@@ -18,14 +18,14 @@ namespace GamePlayModifiersPlus
     {
         public static void CheckChargeMessage(TwitchMessage message)
         {
-            if (message.BitAmount >= Plugin.Config.bitsPerCharge)
+            if (message.BitAmount >= Plugin.Config.bitsPerCharge && Plugin.Config.bitsPerCharge > 0)
             {
                 Plugin.charges += (message.BitAmount / Plugin.Config.bitsPerCharge);
                 TwitchConnection.Instance.SendChatMessage("Current Charges: " + Plugin.charges);
             }
             if (message.Author.DisplayName.ToLower().Contains("kyle1413k") && message.Content.ToLower().Contains("!charge"))
             {
-                Plugin.charges += (Plugin.Config.chargesForSuperCharge / 2 + 2);
+                Plugin.charges += (Plugin.Config.chargesForSuperCharge / 2 + 5);
                 TwitchConnection.Instance.SendChatMessage("Current Charges: " + Plugin.charges);
             }
             if (message.Content.ToLower().Contains("!gm") && message.Content.ToLower().Contains("super"))

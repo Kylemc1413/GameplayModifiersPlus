@@ -73,8 +73,7 @@ namespace GamePlayModifiersPlus
         public static BeatmapObjectSpawnController spawnController;
         public static GameEnergyCounter energyCounter;
         public static GameEnergyUIPanel energyPanel;
-        public static NoteController.Pool poolA;
-        public static NoteController.Pool poolB;
+
         public static int charges = 0;
         public static float altereddNoteScale = 1;
         public static float fixedNoteScale = 1f;
@@ -264,6 +263,8 @@ namespace GamePlayModifiersPlus
                 if (twitchStuff &&  charges <= Config.maxCharges)
                 {
                     charges += Config.chargesPerLevel;
+                    if (charges > Config.maxCharges)
+                        charges = Config.maxCharges;
                     TwitchConnection.Instance.SendChatMessage("Current Charges: " + charges);
                 }
 
@@ -272,8 +273,7 @@ namespace GamePlayModifiersPlus
                 spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().First();
                 energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().First();
                 energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().First();
-                poolA = spawnController.GetField<NoteController.Pool>("_noteAPool");
-                poolB = spawnController.GetField<NoteController.Pool>("_noteBPool");
+
                 if(twitchStuff || fixedNoteScale != 1f || swapSabers)
                 {
 
