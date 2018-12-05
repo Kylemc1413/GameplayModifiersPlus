@@ -25,7 +25,7 @@ namespace GamePlayModifiersPlus
         public int randomNotesChargeCost = 0;
         public int instaFailChargeCost = 0;
         public int invincibleChargeCost = 0;
-        public int randomnjsChargeCost = 0;
+        public int njsRandomChargeCost = 0;
         public int noArrowsChargeCost = 0;
         public int funkyChargeCost = 0;
         public int rainbowChargeCost = 0;
@@ -37,7 +37,7 @@ namespace GamePlayModifiersPlus
         public float randomNotesDuration = 15f;
         public float instaFailDuration = 15f;
         public float invincibleDuration = 15f;
-        public float randomnjsDuration = 10f;
+        public float njsRandomDuration = 10f;
         public float noArrowsDuration = 15f;
         public float funkyDuration = 10f;
         public float rainbowDuration = 10f;
@@ -49,13 +49,13 @@ namespace GamePlayModifiersPlus
         public float randomNotesCooldown = 15f;
         public float instaFailCooldown = 20f;
         public float invincibleCooldown = 20f;
-        public float randomnjsCooldown = 20f;
+        public float njsRandomCooldown = 20f;
         public float noArrowsCooldown = 20f;
         public float funkyCooldown = 10f;
         public float rainbowCooldown = 20f;
         //   public float nMirrorCooldown= 20f;
-        public float randomnjsMin = 8f;
-        public float randomnjsMax = 16f;
+        public float njsRandomMin = 8f;
+        public float njsRandomMax = 16f;
         public float randomMin = 0.6f;
         public float randomMax = 1.5f;
         private readonly FileSystemWatcher _configWatcher;
@@ -82,7 +82,7 @@ namespace GamePlayModifiersPlus
                 _configWatcher = new FileSystemWatcher($"{Environment.CurrentDirectory}\\UserData")
             {
                 NotifyFilter = NotifyFilters.LastWrite,
-                Filter = "EnhancedTwitchChat.ini",
+                Filter = "GameplayModifiersPlusChatSettings.ini",
                 EnableRaisingEvents = true
             };
             _configWatcher.Changed += ConfigWatcherOnChanged;
@@ -133,7 +133,7 @@ namespace GamePlayModifiersPlus
             if (randomNotesChargeCost > 0) chargeCostString += " | Random: " + randomNotesChargeCost;
             if (instaFailChargeCost > 0) chargeCostString += " | Instafail: " + instaFailChargeCost;
             if (invincibleChargeCost > 0) chargeCostString += " | Invincible: " + invincibleChargeCost;
-            if (randomnjsChargeCost > 0) chargeCostString += " | NjsRandom: " + randomnjsChargeCost;
+            if (njsRandomChargeCost > 0) chargeCostString += " | NjsRandom: " + njsRandomChargeCost;
             if (noArrowsChargeCost > 0) chargeCostString += " | NoArrows: " + noArrowsChargeCost;
             if (funkyChargeCost > 0) chargeCostString += " | Funky: " + funkyChargeCost;
             if (rainbowChargeCost > 0) chargeCostString += " | Rainbow: " + funkyChargeCost;
@@ -255,15 +255,15 @@ namespace GamePlayModifiersPlus
                     break;
                 case "njsrandom":
                     if (property == "chargecost")
-                        randomnjsChargeCost = int.Parse(value);
+                        njsRandomChargeCost = int.Parse(value);
                     else if (property == "cooldown")
-                        randomnjsCooldown = float.Parse(value);
+                        njsRandomCooldown = float.Parse(value);
                     else if (property == "duration")
-                        randomnjsDuration = float.Parse(value);
+                        njsRandomDuration = float.Parse(value);
                     else if (property == "min")
-                        randomnjsMin = float.Parse(value);
+                        njsRandomMin = float.Parse(value);
                     else if (property == "max")
-                        randomnjsMax = float.Parse(value);
+                        njsRandomMax = float.Parse(value);
                     else
                         success = false;
                     break;

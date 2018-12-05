@@ -444,7 +444,7 @@ namespace GamePlayModifiersPlus
             if (randomNJS)
             {
 
-                TwitchPowers.AdjustNJS(UnityEngine.Random.Range(Config.randomnjsMin, Config.randomnjsMax));
+                TwitchPowers.AdjustNJS(UnityEngine.Random.Range(Config.njsRandomMin, Config.njsRandomMax));
             }
             if (!haveSongNJS)
             {
@@ -532,6 +532,7 @@ namespace GamePlayModifiersPlus
             {
                 SetTimeScale(1 - (leftController.triggerValue + rightController.triggerValue) / 2);
                 Time.timeScale = timeScale;
+            //    Time.fixedDeltaTime = timeScale;
                 return;
             }
 

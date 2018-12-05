@@ -173,7 +173,7 @@ namespace GamePlayModifiersPlus
 
         }
 
-        public static IEnumerator RandomNJS(float length)
+        public static IEnumerator njsRandom(float length)
         {
             Plugin.randomNJS = true;
             yield return new WaitForSeconds(length);
