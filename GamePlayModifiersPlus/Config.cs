@@ -11,6 +11,8 @@ namespace GamePlayModifiersPlus
     public class Config
     {
         public string FilePath { get; }
+        public int commandsPerMessage = 2;
+        public float globalCommandCooldown = 5f;
         public bool allowSubs = true;
         public bool allowEveryone = true;
         public int chargesForSuperCharge = 10;
@@ -151,31 +153,43 @@ namespace GamePlayModifiersPlus
         {
             bool success = true;
             Plugin.Log("Config Change Attempt: " + property + " " + value);
-            if (property == "bitspercharge")
-                bitsPerCharge = int.Parse(value);
-            else if (property == "chargesforsupercharge")
-                chargesForSuperCharge = int.Parse(value);
-            else if (property == "maxcharges")
-                maxCharges = int.Parse(value);
-            else if (property == "chargesperlevel")
-                chargesPerLevel = int.Parse(value);
-            else if (property == "allowsubs")
+            switch(property)
             {
-                if (value.ToLower().Contains("false"))
-                    allowSubs = false;
-                else
-                    allowSubs = true;
+                case "bitspercharge":
+                    bitsPerCharge = int.Parse(value);
+                    break;
+                case "chargesforsupercharge":
+                    chargesForSuperCharge = int.Parse(value);
+                    break;
+                case "maxcharges":
+                    maxCharges = int.Parse(value);
+                    break;
+                case "chargesperlevel":
+                    chargesPerLevel = int.Parse(value);
+                    break;
+                case "allowsubs":
+                    if (value.ToLower().Contains("false"))
+                        allowSubs = false;
+                    else
+                        allowSubs = true;
+                    break;
+                case "alloweveryone":
+                    if (value.ToLower().Contains("false"))
+                        allowEveryone = false;
+                    else
+                        allowEveryone = true;
+                    break;
+                case "commandspermessage":
+                    commandsPerMessage = int.Parse(value);
+                    break;
+                case "globalcommandcooldown":
+                    globalCommandCooldown = float.Parse(value);
+                    break;
+                default:
+                    success = false;
+                    break;
             }
 
-            else if (property == "alloweveryone")
-            {
-                if (value.ToLower().Contains("false"))
-                    allowEveryone = false;
-                else
-                    allowEveryone = true;
-            }
-            else
-                success = false;
             if (success)
             {
                 Save();

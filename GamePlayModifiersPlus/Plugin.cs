@@ -95,6 +95,7 @@ namespace GamePlayModifiersPlus
         public static SimpleColorSO colorB;
         public static SimpleColorSO oldColorA = new SimpleColorSO();
         public static SimpleColorSO oldColorB = new SimpleColorSO();
+        public static int commandsLeftForMessage;
         public void OnApplicationStart()
         {
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
@@ -119,6 +120,7 @@ namespace GamePlayModifiersPlus
             {
                 if (twitchStuff && isValidScene && !cooldowns.GetCooldown("Global"))
             {
+                    commandsLeftForMessage = Config.commandsPerMessage;
                 TwitchCommands.CheckGameplayCommands(message);
                 TwitchCommands.CheckHealthCommands(message);
                 TwitchCommands.CheckSizeCommands(message);

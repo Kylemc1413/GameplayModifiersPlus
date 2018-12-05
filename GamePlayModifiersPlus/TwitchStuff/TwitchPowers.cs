@@ -26,10 +26,26 @@ namespace GamePlayModifiersPlus
         public static IEnumerator CoolDown(float waitTime, string cooldown, string message)
         {
             Plugin.cooldowns.SetCooldown(true, cooldown);
+            if (Plugin.Config.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
+            {
+                SharedCoroutineStarter.instance.StartCoroutine(GlobalCoolDown());
+                TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for" + Plugin.Config.globalCommandCooldown + "seconds.");
+            }
+            else
             TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
+
+
             yield return new WaitForSeconds(waitTime);
             Plugin.cooldowns.SetCooldown(false, cooldown);
             //      TwitchConnection.Instance.SendChatMessage(cooldown + " Cooldown Deactivated, have fun!");
+        }
+
+        public static IEnumerator GlobalCoolDown()
+        {
+            Plugin.cooldowns.SetCooldown(true, "Global");
+            yield return new WaitForSeconds(Plugin.Config.globalCommandCooldown);
+            Plugin.cooldowns.SetCooldown(false, "Global");
+
         }
 
         public static IEnumerator TempInstaFail(float length)
