@@ -20,7 +20,7 @@ namespace GamePlayModifiersPlus
 
 
         public string Name => "GameplayModifiersPlus";
-        public string Version => "0.9.26";
+        public string Version => "0.9.5";
       
         public static float timeScale = 1;
         public static TwitchPowers twitchPowers = new TwitchPowers();
@@ -195,24 +195,23 @@ namespace GamePlayModifiersPlus
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            altereddNoteScale = 1;
-            funky = false;
-            rainbow = false;
-            haveSongNJS = false;
             cooldowns.ResetCooldowns();
             ReadPrefs();
+            TwitchPowers.ResetPowers();
+            haveSongNJS = false;
+            
             invalidForScoring = false;
-            Time.timeScale = 1;
-            timeScale = 1;
             if (soundIsPlaying == true)
                 gnomeSound.Stop();
             soundIsPlaying = false;
             isValidScene = false;
             playerInfo = false;
-            superRandom = false;
-            randomNJS = false;
             if (scene.name == "Menu")
             {
+                Log(Config.daCooldown.ToString());
+                SharedCoroutineStarter.instance.StartCoroutine(GrabPP());
+                SharedCoroutineStarter.instance.StopAllCoroutines();
+
                 if (_hasRegistered == false)
                 {
                     TwitchConnection.Instance.StartConnection();
@@ -234,14 +233,7 @@ namespace GamePlayModifiersPlus
 
             }
 
-            if (scene.name == "Menu")
-            {
-                Log(Config.daCooldown.ToString());
-                SharedCoroutineStarter.instance.StartCoroutine(GrabPP());
 
-
-
-            }
             if (bulletTime == true)
                 superHot = false;
             if (twitchStuff == true)

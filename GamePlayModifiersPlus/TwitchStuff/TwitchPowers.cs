@@ -277,7 +277,17 @@ namespace GamePlayModifiersPlus
         }
 
 
+        public static void ResetPowers()
+        {
+            Plugin.rainbow = false;
+            Plugin.funky = false;
+            Plugin.randomNJS = false;
+            Plugin.altereddNoteScale = 1f;
+            Time.timeScale = 1;
+            Plugin.timeScale = 1;
+            Plugin.superRandom = false;
 
+        }
 
         /*
         public void TempBombs(float length)

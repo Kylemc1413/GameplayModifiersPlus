@@ -168,16 +168,10 @@ namespace GamePlayModifiersPlus
                     chargesPerLevel = int.Parse(value);
                     break;
                 case "allowsubs":
-                    if (value.ToLower().Contains("false"))
-                        allowSubs = false;
-                    else
-                        allowSubs = true;
+                    allowSubs = Convert.ToBoolean(value);
                     break;
                 case "alloweveryone":
-                    if (value.ToLower().Contains("false"))
-                        allowEveryone = false;
-                    else
-                        allowEveryone = true;
+                    allowSubs = Convert.ToBoolean(value);
                     break;
                 case "commandspermessage":
                     commandsPerMessage = int.Parse(value);
