@@ -23,7 +23,8 @@ namespace GamePlayModifiersPlus
         public string Version => "0.9.5";
       
         public static float timeScale = 1;
-        public static TwitchPowers twitchPowers = new TwitchPowers();
+        public TwitchCommands twitchCommands = new TwitchCommands();
+        public static TwitchPowers twitchPowers;
         public static bool gnomeOnMiss = false;
         public static SoundPlayer gnomeSound = new SoundPlayer(Properties.Resources.gnome);
         public static SoundPlayer beepSound = new SoundPlayer(Properties.Resources.Beep);
@@ -73,7 +74,7 @@ namespace GamePlayModifiersPlus
         public static BeatmapObjectSpawnController spawnController;
         public static GameEnergyCounter energyCounter;
         public static GameEnergyUIPanel energyPanel;
-
+        public static GameObject chatIntegrationObj;
         public static int charges = 0;
         public static float altereddNoteScale = 1;
         public static float fixedNoteScale = 1f;
@@ -109,21 +110,21 @@ namespace GamePlayModifiersPlus
         {
             Log("Message Recieved, AsyncTwitch currently working");
             //Status check message
-
-            TwitchCommands.CheckChargeMessage(message);
-            TwitchCommands.CheckConfigMessage(message);
-            TwitchCommands.CheckStatusCommands(message);
-            TwitchCommands.CheckInfoCommands(message);
+            if (charges < 0) charges = 0;
+            twitchCommands.CheckChargeMessage(message);
+            twitchCommands.CheckConfigMessage(message);
+            twitchCommands.CheckStatusCommands(message);
+            twitchCommands.CheckInfoCommands(message);
 
             if (Config.allowEveryone || (Config.allowSubs && message.Author.IsSubscriber) || message.Author.IsMod)
             {
                 if (twitchStuff && isValidScene && !cooldowns.GetCooldown("Global"))
-            {
+                {
                     commandsLeftForMessage = Config.commandsPerMessage;
-                TwitchCommands.CheckGameplayCommands(message);
-                TwitchCommands.CheckHealthCommands(message);
-                TwitchCommands.CheckSizeCommands(message);
-            }
+                    twitchCommands.CheckGameplayCommands(message);
+                    twitchCommands.CheckHealthCommands(message);
+                    twitchCommands.CheckSizeCommands(message);
+                }
             }
 
             sizeActivated = false;
@@ -186,8 +187,10 @@ namespace GamePlayModifiersPlus
                     return num;
                 });
                 noteSizeOption.OnChange += (fixedNoteScale) => { ModPrefs.SetFloat("GameplayModifiersPlus", "noteScale", fixedNoteScale); };
-                
-
+                GameObject chatPowers = new GameObject("Chat Powers");
+                twitchPowers = chatPowers.AddComponent<TwitchPowers>();
+                GameObject.DontDestroyOnLoad(chatPowers);
+               
             }
             
         }
@@ -197,6 +200,8 @@ namespace GamePlayModifiersPlus
             cooldowns.ResetCooldowns();
             ReadPrefs();
             TwitchPowers.ResetPowers();
+            twitchPowers.StopAllCoroutines();
+        //    twitchCommands.StopAllCoroutines();
             haveSongNJS = false;
             
             invalidForScoring = false;
@@ -205,6 +210,9 @@ namespace GamePlayModifiersPlus
             soundIsPlaying = false;
             isValidScene = false;
             playerInfo = false;
+            if (arg0.name == "EmpyTransition")
+                GameObject.Destroy(GameObject.Find("Chat Powers"));
+
             if (scene.name == ("Menu"))
             {
                 Log("Switched to Menu");

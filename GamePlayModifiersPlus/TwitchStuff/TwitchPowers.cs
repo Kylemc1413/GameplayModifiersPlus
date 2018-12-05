@@ -15,10 +15,12 @@ using CustomUI.GameplaySettings;
 
 namespace GamePlayModifiersPlus
 {
-    public class TwitchPowers
+    public class TwitchPowers : MonoBehaviour
     {
+       
         public static IEnumerator TempDA(float length)
         {
+            Plugin.Log("Starting");
             Plugin.spawnController.SetField("_disappearingArrows", true);
             yield return new WaitForSeconds(length);
             Plugin.spawnController.SetField("_disappearingArrows", false);
@@ -31,7 +33,7 @@ namespace GamePlayModifiersPlus
             if (Plugin.Config.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
             {
                 SharedCoroutineStarter.instance.StartCoroutine(GlobalCoolDown());
-                TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for" + Plugin.Config.globalCommandCooldown + "seconds.");
+                TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for" + Plugin.Config.globalCommandCooldown + " seconds.");
             }
             else
             TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
