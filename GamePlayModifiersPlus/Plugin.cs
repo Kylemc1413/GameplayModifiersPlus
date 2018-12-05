@@ -20,7 +20,7 @@ namespace GamePlayModifiersPlus
 
 
         public string Name => "GameplayModifiersPlus";
-        public string Version => "0.9.5";
+        public string Version => "0.9.64";
       
         public static float timeScale = 1;
         public TwitchCommands twitchCommands = new TwitchCommands();
