@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using UnityEngine;
-
-namespace GamePlayModifiersPlus
+﻿namespace GamePlayModifiersPlus
 {
+    using System;
+    using System.IO;
+
     public class Config
     {
         public string FilePath { get; }
@@ -81,7 +76,7 @@ namespace GamePlayModifiersPlus
 
 
 
-                _configWatcher = new FileSystemWatcher($"{Environment.CurrentDirectory}\\UserData")
+            _configWatcher = new FileSystemWatcher($"{Environment.CurrentDirectory}\\UserData")
             {
                 NotifyFilter = NotifyFilters.LastWrite,
                 Filter = "GameplayModifiersPlusChatSettings.ini",
@@ -153,7 +148,7 @@ namespace GamePlayModifiersPlus
         {
             bool success = true;
             Plugin.Log("Config Change Attempt: " + property + " " + value);
-            switch(property)
+            switch (property)
             {
                 case "bitspercharge":
                     bitsPerCharge = int.Parse(value);
@@ -194,7 +189,7 @@ namespace GamePlayModifiersPlus
         {
             Plugin.Log("Config Change Attempt: " + command + " " + property + " " + value);
             bool success = true;
-            switch(command)
+            switch (command)
             {
 
                 case "da":
@@ -308,10 +303,10 @@ namespace GamePlayModifiersPlus
                 default:
                     return;
 
-            
-        }
-              
-        //    Plugin.Log(allowEveryone.ToString());
+
+            }
+
+            //    Plugin.Log(allowEveryone.ToString());
             if (success)
             {
                 Save();

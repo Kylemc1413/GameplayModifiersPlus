@@ -1,27 +1,25 @@
-﻿using IllusionPlugin;
-using UnityEngine.SceneManagement;
-using UnityEngine;
-using UnityEngine.UI;
-using System;
-using System.Collections;
-using System.IO;
-using System.Collections.Generic;
-using System.Media;
-using System.Linq;
-using AsyncTwitch;
-using IllusionInjector;
-using TMPro;
-using CustomUI.GameplaySettings;
-namespace GamePlayModifiersPlus
+﻿namespace GamePlayModifiersPlus
 {
+    using AsyncTwitch;
+    using CustomUI.GameplaySettings;
+    using IllusionInjector;
+    using IllusionPlugin;
+    using System;
+    using System.Collections;
+    using System.IO;
+    using System.Linq;
+    using System.Media;
+    using TMPro;
+    using UnityEngine;
+    using UnityEngine.SceneManagement;
+
     public class Plugin : IPlugin
     {
         public static readonly Config Config = new Config(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
 
-
         public string Name => "GameplayModifiersPlus";
         public string Version => "0.9.64";
-      
+
         public static float timeScale = 1;
         public TwitchCommands twitchCommands = new TwitchCommands();
         public static TwitchPowers twitchPowers;
@@ -59,8 +57,8 @@ namespace GamePlayModifiersPlus
         public static int deltaRank;
         public static bool chatDelta;
         public static bool firstLoad = true;
-        VRController leftController;
-        VRController rightController;
+        internal VRController leftController;
+        internal VRController rightController;
         private Sprite _ChatDeltaIcon;
         private Sprite _SwapSabersIcon;
         private Sprite _RepeatIcon;
@@ -68,8 +66,8 @@ namespace GamePlayModifiersPlus
         private Sprite _BulletTimeIcon;
         private Sprite _TwitchIcon;
         public static StandardLevelSceneSetupDataSO levelData;
-        bool invalidForScoring = false;
-        bool repeatSong;
+        internal bool invalidForScoring = false;
+        internal bool repeatSong;
         private static bool _hasRegistered = false;
         public static BeatmapObjectSpawnController spawnController;
         public static GameEnergyCounter energyCounter;
@@ -96,15 +94,15 @@ namespace GamePlayModifiersPlus
         public static SimpleColorSO oldColorA = new SimpleColorSO();
         public static SimpleColorSO oldColorB = new SimpleColorSO();
         public static int commandsLeftForMessage;
+
         public void OnApplicationStart()
         {
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
 
             ReadPrefs();
-           cooldowns = new Cooldowns();
+            cooldowns = new Cooldowns();
         }
-
 
         private void TwitchConnection_OnMessageReceived(TwitchConnection arg1, TwitchMessage message)
         {
@@ -129,17 +127,14 @@ namespace GamePlayModifiersPlus
 
             sizeActivated = false;
             healthActivated = false;
-
         }
-
-
 
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode arg1)
         {
 
             if (scene.name == "Menu")
             {
-                
+
                 ReadPrefs();
                 GetIcons();
                 var swapSabersOption = GameplaySettingsUI.CreateToggleOption("Testing Ground", "Currently Used To test Random stuff", _SwapSabersIcon);
@@ -190,9 +185,8 @@ namespace GamePlayModifiersPlus
                 GameObject chatPowers = new GameObject("Chat Powers");
                 twitchPowers = chatPowers.AddComponent<TwitchPowers>();
                 GameObject.DontDestroyOnLoad(chatPowers);
-               
+
             }
-            
         }
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
@@ -201,9 +195,9 @@ namespace GamePlayModifiersPlus
             ReadPrefs();
             TwitchPowers.ResetPowers();
             twitchPowers.StopAllCoroutines();
-        //    twitchCommands.StopAllCoroutines();
+            //    twitchCommands.StopAllCoroutines();
             haveSongNJS = false;
-            
+
             invalidForScoring = false;
             if (soundIsPlaying == true)
                 gnomeSound.Stop();
@@ -217,11 +211,11 @@ namespace GamePlayModifiersPlus
             {
                 Log("Switched to Menu");
                 SharedCoroutineStarter.instance.StartCoroutine(GrabPP());
-                
+
 
                 if (_hasRegistered == false)
                 {
-                    
+
                     TwitchConnection.Instance.StartConnection();
                     TwitchConnection.Instance.RegisterOnMessageReceived(TwitchConnection_OnMessageReceived);
                     _hasRegistered = true;
@@ -256,7 +250,7 @@ namespace GamePlayModifiersPlus
             if (scene.name == "GameCore")
             {
                 var colors = Resources.FindObjectsOfTypeAll<SimpleColorSO>();
-                foreach(SimpleColorSO color in colors)
+                foreach (SimpleColorSO color in colors)
                 {
                     Log(color.name);
                     if (color.name == "Color0")
@@ -264,12 +258,12 @@ namespace GamePlayModifiersPlus
                     if (color.name == "Color1")
                         colorB = color;
                 }
-                    oldColorA.SetColor(colorA);
-                    oldColorB.SetColor(colorB);
+                oldColorA.SetColor(colorA);
+                oldColorB.SetColor(colorB);
 
 
                 Log(colorA.color.ToString());
-                if (twitchStuff &&  charges <= Config.maxCharges)
+                if (twitchStuff && charges <= Config.maxCharges)
                 {
                     charges += Config.chargesPerLevel;
                     if (charges > Config.maxCharges)
@@ -283,14 +277,14 @@ namespace GamePlayModifiersPlus
                 energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().First();
                 energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().First();
 
-                if(twitchStuff || fixedNoteScale != 1f || swapSabers)
+                if (twitchStuff || fixedNoteScale != 1f || swapSabers)
                 {
 
 
 
-                spawnController.noteDidStartJumpEvent += SpawnController_ModifiedJump;
-                spawnController.noteWasCutEvent += SpawnController_ScaleRemoveCut;
-                spawnController.noteWasMissedEvent += SpawnController_ScaleRemoveMiss;
+                    spawnController.noteDidStartJumpEvent += SpawnController_ModifiedJump;
+                    spawnController.noteWasCutEvent += SpawnController_ScaleRemoveCut;
+                    spawnController.noteWasMissedEvent += SpawnController_ScaleRemoveMiss;
                 }
 
 
@@ -387,10 +381,10 @@ namespace GamePlayModifiersPlus
 
         private void SpawnController_ScaleRemoveMiss(BeatmapObjectSpawnController arg1, NoteController controller)
         {
-   //         Log(songAudio.time.ToString());
+            //         Log(songAudio.time.ToString());
             NoteData note = controller.noteData;
             Transform noteTransform = controller.GetField<Transform>("_noteTransform");
-      //      Log("DESPAWN" + noteTransform.localScale.ToString());
+            //      Log("DESPAWN" + noteTransform.localScale.ToString());
             if (noteTransform.localScale.x != 1)
                 noteTransform.localScale = new Vector3(1f, 1f, 1f);
             //      Log("DESPAWN" + noteTransform.localScale.ToString());
@@ -408,7 +402,7 @@ namespace GamePlayModifiersPlus
         {
             NoteData note = controller.noteData;
             Transform noteTransform = controller.GetField<Transform>("_noteTransform");
-      //      Log("DESPAWN" + noteTransform.localScale.ToString());
+            //      Log("DESPAWN" + noteTransform.localScale.ToString());
             if (noteTransform.localScale.x != 1)
                 noteTransform.localScale = new Vector3(1f, 1f, 1f);
             //          Log("DESPAWN" + noteTransform.localScale.ToString());
@@ -428,10 +422,10 @@ namespace GamePlayModifiersPlus
 
         private void SpawnController_ModifiedJump(BeatmapObjectSpawnController arg1, NoteController controller)
         {
-            if(rainbow)
+            if (rainbow)
             {
-                   colorA.SetColor(new Color(UnityEngine.Random.Range(0.2f, 1.7f) , UnityEngine.Random.Range(0.2f, 1.7f), UnityEngine.Random.Range(0.2f, 1.7f)));
-                   colorB.SetColor(new Color(UnityEngine.Random.Range(0.2f, 1.7f), UnityEngine.Random.Range(0.2f, 1.7f), UnityEngine.Random.Range(0.2f, 1.7f)));
+                colorA.SetColor(new Color(UnityEngine.Random.Range(0.2f, 1.7f), UnityEngine.Random.Range(0.2f, 1.7f), UnityEngine.Random.Range(0.2f, 1.7f)));
+                colorB.SetColor(new Color(UnityEngine.Random.Range(0.2f, 1.7f), UnityEngine.Random.Range(0.2f, 1.7f), UnityEngine.Random.Range(0.2f, 1.7f)));
 
             }
 
@@ -441,8 +435,8 @@ namespace GamePlayModifiersPlus
 
             Transform noteTransform = controller.GetField<Transform>("_noteTransform");
             //       noteTransform.Translate(0f, 4f, 0f);
-            if(funky)
-            noteTransform.gameObject.AddComponent<FloatBehavior>();
+            if (funky)
+                noteTransform.gameObject.AddComponent<FloatBehavior>();
 
             if (randomNJS)
             {
@@ -451,7 +445,7 @@ namespace GamePlayModifiersPlus
             }
             if (!haveSongNJS)
             {
-            songNJS = spawnController.GetField<float>("_noteJumpMovementSpeed");
+                songNJS = spawnController.GetField<float>("_noteJumpMovementSpeed");
                 haveSongNJS = true;
             }
 
@@ -461,7 +455,7 @@ namespace GamePlayModifiersPlus
                 invalidForScoring = true;
                 //          Transform noteTransform = controller.GetField<Transform>("_noteTransform");
                 //       Log("SPAWN" + noteTransform.localScale.ToString());
-                if(superRandom)
+                if (superRandom)
                 {
                     noteTransform.localScale *= UnityEngine.Random.Range(Config.randomMin, Config.randomMax);
                 }
@@ -478,16 +472,12 @@ namespace GamePlayModifiersPlus
             if (fixedNoteScale != 1f)
             {
                 invalidForScoring = true;
-       //         Transform noteTransform = controller.GetField<Transform>("_noteTransform");
+                //         Transform noteTransform = controller.GetField<Transform>("_noteTransform");
                 //       Log("SPAWN" + noteTransform.localScale.ToString());
                 noteTransform.localScale *= fixedNoteScale;
                 //     Log("SPAWN" + noteTransform.localScale.ToString());
             }
             NoteData note = controller.noteData;
-
-
-
-
         }
 
         private void LevelData_didFinishEvent(StandardLevelSceneSetupDataSO arg1, LevelCompletionResults arg2)
@@ -498,35 +488,30 @@ namespace GamePlayModifiersPlus
                 ReflectionUtil.SetProperty(arg2, "levelEndStateType", LevelCompletionResults.LevelEndStateType.None);
             if (repeatSong)
                 ReflectionUtil.SetProperty(arg2, "levelEndStateType", LevelCompletionResults.LevelEndStateType.Restart);
-
         }
-
 
         public void OnApplicationQuit()
         {
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
             SceneManager.activeSceneChanged -= SceneManagerOnActiveSceneChanged;
-
         }
 
         public void OnLevelWasLoaded(int level)
         {
-
         }
 
         public void OnLevelWasInitialized(int level)
         {
-            //test
         }
 
         public void OnUpdate()
         {
-            
+
 
 
             if (soundIsPlaying == true && songAudio != null && isValidScene == true)
             {
-                SetTimeScale(0f);;
+                SetTimeScale(0f); ;
                 Time.timeScale = 0f;
                 return;
             }
@@ -535,7 +520,7 @@ namespace GamePlayModifiersPlus
             {
                 SetTimeScale(1 - (leftController.triggerValue + rightController.triggerValue) / 2);
                 Time.timeScale = timeScale;
-            //    Time.fixedDeltaTime = timeScale;
+                //    Time.fixedDeltaTime = timeScale;
                 return;
             }
 
@@ -549,7 +534,7 @@ namespace GamePlayModifiersPlus
                             Time.timeScale = speedPitch;
             */
 
-        
+
             else
             {
                 Time.timeScale = 1f;
@@ -557,14 +542,13 @@ namespace GamePlayModifiersPlus
             if (playerInfo == true)
                 if (player.disableSabers == true)
                     Time.timeScale = 1;
-            
-            }
+        }
 
         public void OnFixedUpdate()
         {
         }
 
-        void GetIcons()
+        internal void GetIcons()
         {
             if (_ChatDeltaIcon == null)
                 _ChatDeltaIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.ChatDelta.png");
@@ -578,10 +562,8 @@ namespace GamePlayModifiersPlus
                 _BulletTimeIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.BulletIcon.png");
             if (_TwitchIcon == null)
                 _TwitchIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.TwitchIcon.png");
-
         }
 
-        
         public static bool IsModInstalled(string modName)
         {
             foreach (IPlugin p in PluginManager.Plugins)
@@ -598,6 +580,7 @@ namespace GamePlayModifiersPlus
         {
             Console.WriteLine("[{0}] {1}", "GameplayModifiersPlus", message);
         }
+
         public IEnumerator SwapSabers(Saber saber1, Saber saber2)
         {
             yield return new WaitForSecondsRealtime(0.5f);
@@ -617,7 +600,7 @@ namespace GamePlayModifiersPlus
         {
             Config.Load();
             gnomeOnMiss = ModPrefs.GetBool("GameplayModifiersPlus", "gnomeOnMiss", false, true);
-         //   superHot = ModPrefs.GetBool("GameplayModifiersPlus", "superHot", false, true);
+            //   superHot = ModPrefs.GetBool("GameplayModifiersPlus", "superHot", false, true);
             bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "bulletTime", false, true);
             twitchStuff = ModPrefs.GetBool("GameplayModifiersPlus", "twitchStuff", false, true);
             swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
@@ -626,6 +609,7 @@ namespace GamePlayModifiersPlus
             fixedNoteScale = ModPrefs.GetFloat("GameplayModifiersPlus", "noteScale", 1f, true);
             Config.Save();
         }
+
         public IEnumerator GrabPP()
         {
             yield return new WaitForSecondsRealtime(0.5f);
@@ -640,9 +624,9 @@ namespace GamePlayModifiersPlus
                 }
 
             }
-                yield return new WaitForSecondsRealtime(10);
+            yield return new WaitForSecondsRealtime(10);
             if (!ppText.text.Contains("html"))
-            Log(ppText.text);
+                Log(ppText.text);
             if (!(ppText.text.Contains("Refresh") || ppText.text.Contains("html")))
             {
                 rank = ppText.text.Split('#', '<')[1];
@@ -651,9 +635,9 @@ namespace GamePlayModifiersPlus
                 currentRank = int.Parse(rank, System.Globalization.CultureInfo.InvariantCulture);
                 Log("Rank: " + currentRank);
                 Log("PP: " + currentpp);
-        //        if (firstLoad == true)
-         //           if (chatDelta)
-       //                 TwitchConnection.Instance.SendChatMessage("Loaded. PP: " + currentpp + " pp. Rank: " + currentRank);
+                //        if (firstLoad == true)
+                //           if (chatDelta)
+                //                 TwitchConnection.Instance.SendChatMessage("Loaded. PP: " + currentpp + " pp. Rank: " + currentRank);
 
                 if (oldpp != 0)
                 {
@@ -661,7 +645,7 @@ namespace GamePlayModifiersPlus
                     deltaRank = 0;
                     deltaPP = currentpp - oldpp;
                     deltaRank = currentRank - oldRank;
-                    
+
                     if (deltaPP != 0 || deltaRank != 0)
                     {
                         ppText.enableWordWrapping = false;
@@ -721,12 +705,7 @@ namespace GamePlayModifiersPlus
 
             }
             firstLoad = false;
-
-
-
         }
-
-        
 
         public static void SetTimeScale(float value)
         {
@@ -753,8 +732,7 @@ namespace GamePlayModifiersPlus
             }
         }
 
-
-        static double RoundToSignificantDigits(double d, int digits)
+        internal static double RoundToSignificantDigits(double d, int digits)
         {
             if (d == 0)
                 return 0;
@@ -762,6 +740,5 @@ namespace GamePlayModifiersPlus
             double scale = Math.Pow(10, Math.Floor(Math.Log10(Math.Abs(d))) + 1);
             return scale * Math.Round(d / scale, digits);
         }
-
     }
 }

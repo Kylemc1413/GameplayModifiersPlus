@@ -1,11 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using UnityEngine;
 namespace GamePlayModifiersPlus
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using UnityEngine;
 
     public static class ReflectionUtil
     {
@@ -20,6 +19,7 @@ namespace GamePlayModifiersPlus
         {
             return (T)((object)obj.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic).GetValue(obj));
         }
+
         //Sets the value of a (static?) field in object "obj" with name "fieldName"
         public static void SetField(this object obj, string fieldName, object value)
         {
@@ -120,24 +120,6 @@ namespace GamePlayModifiersPlus
                 }
             }
             return null;
-
-            //Code to list reflectable classes
-            /*
-            ReflectionUtil.ListLoadedAssemblies().ToList().ForEach(x => {
-                if (x.GetName().Name == "BeatSaberMultiplayer")
-                {
-                    Logger.Success($"ASSEMBLY: {x.GetName().Name}");
-                    ReflectionUtil.ListNamespacesInAssembly(x).ToList().ForEach(y =>
-                    {
-                        Logger.Warning($"NAMESPACE: {y}");
-                        ReflectionUtil.ListClassesInNamespace(y).ToList().ForEach(z =>
-                        {
-                            Logger.Warning($"CLASS: {z} : {((ReflectionUtil.GetStaticType(y + "." + z + "," + x) != null) ? "REFLECTABLE" : "NOT")}");
-                        });
-                    });
-                }
-            });
-            */
         }
 
         //(Created by taz?) Copies a component to a destination object, keeping all its field values?
@@ -180,5 +162,3 @@ namespace GamePlayModifiersPlus
         }
     }
 }
-
-

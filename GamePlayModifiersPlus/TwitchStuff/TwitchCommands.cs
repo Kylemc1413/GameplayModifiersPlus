@@ -1,19 +1,7 @@
-﻿using IllusionPlugin;
-using UnityEngine.SceneManagement;
-using UnityEngine;
-using UnityEngine.UI;
-using System;
-using System.Collections;
-using System.IO;
-using System.Collections.Generic;
-using System.Media;
-using System.Linq;
-using AsyncTwitch;
-using IllusionInjector;
-using TMPro;
-using CustomUI.GameplaySettings;
-namespace GamePlayModifiersPlus
+﻿namespace GamePlayModifiersPlus
 {
+    using AsyncTwitch;
+
     public class TwitchCommands
     {
         public void CheckChargeMessage(TwitchMessage message)
@@ -21,7 +9,7 @@ namespace GamePlayModifiersPlus
 
             if (message.BitAmount >= Plugin.Config.bitsPerCharge && Plugin.Config.bitsPerCharge > 0)
             {
-                
+
                 Plugin.charges += (message.BitAmount / Plugin.Config.bitsPerCharge);
                 TwitchConnection.Instance.SendChatMessage("Current Charges: " + Plugin.charges);
             }
@@ -43,12 +31,12 @@ namespace GamePlayModifiersPlus
         public void CheckConfigMessage(TwitchMessage message)
         {
             string messageString = message.Content.ToLower();
-            if (!messageString.Contains("!configchange"))  return;
+            if (!messageString.Contains("!configchange")) return;
             if (!message.Author.IsMod && !message.Author.IsBroadcaster) return;
-                string command = "";
+            string command = "";
             string property = "";
             bool isPropertyOnly = false;
-            string value = value = messageString.Split('=')[1]; 
+            string value = value = messageString.Split('=')[1];
             string arg1 = messageString.Split(' ', ' ')[1];
             string arg2 = messageString.Split(' ', ' ', '=')[2];
             Plugin.Log(arg1 + " " + arg2 + " " + value);
@@ -90,27 +78,27 @@ namespace GamePlayModifiersPlus
 
             }
             if (isPropertyOnly)
+            {
+                switch (arg1.Split('=')[0])
                 {
-                    switch (arg1.Split('=')[0])
-                    {
-                        case "bitspercharge":
-                            property = "bitspercharge";
-                            break;
-                        case "chargesforsupercharge":
-                            property = "chargesforsupercharge";
-                            break;
-                        case "maxcharges":
-                            property = "maxcharges";
-                            break;
-                        case "chargesperlevel":
-                            property = "chargesperlevel";
-                            break;
-                        case "allowsubs":
-                            property = "allowsubs";
-                            break;
-                        case "alloweveryone":
-                            property = "alloweveryone";
-                            break;
+                    case "bitspercharge":
+                        property = "bitspercharge";
+                        break;
+                    case "chargesforsupercharge":
+                        property = "chargesforsupercharge";
+                        break;
+                    case "maxcharges":
+                        property = "maxcharges";
+                        break;
+                    case "chargesperlevel":
+                        property = "chargesperlevel";
+                        break;
+                    case "allowsubs":
+                        property = "allowsubs";
+                        break;
+                    case "alloweveryone":
+                        property = "alloweveryone";
+                        break;
                     case "commandspermessage":
                         property = "commandspermessage";
                         break;
@@ -118,57 +106,53 @@ namespace GamePlayModifiersPlus
                         property = "globalcommandcooldown";
                         break;
                     default:
-                            return;
-                    }
-                    Plugin.Config.ChangeConfigValue(property, value);
+                        return;
                 }
-                else
-                {
-                    switch(arg2)
-                    {
-                        case "chargecost":
-                            property = "chargecost";
-                            break;
-                        case "cooldown":
-                            property = "cooldown";
-                            break;
-                        case "duration":
-                            property = "duration";
-                            break;
-                        case "bitspercharge":
-                            property = "bitspercharge";
-                            break;
-                        case "chargesforsupercharge":
-                            property = "chargesforsupercharge";
-                            break;
-                        case "maxcharges":
-                            property = "maxcharges";
-                            break;
-                        case "chargesperlevel":
-                            property = "chargesperlevel";
-                            break;
-                        case "min":
-                            property = "min";
-                            break;
-                        case "max":
-                            property = "max";
-                            break;
-                        case "allowsubs":
-                            property = "allowsubs";
-                            break;
-                        case "alloweveryone":
-                            property = "alloweveryone";
-                            break;
-                        default:
-                            return;
-                    }
-
-                    Plugin.Config.ChangeConfigValue(command, property, value);
+                Plugin.Config.ChangeConfigValue(property, value);
             }
+            else
+            {
+                switch (arg2)
+                {
+                    case "chargecost":
+                        property = "chargecost";
+                        break;
+                    case "cooldown":
+                        property = "cooldown";
+                        break;
+                    case "duration":
+                        property = "duration";
+                        break;
+                    case "bitspercharge":
+                        property = "bitspercharge";
+                        break;
+                    case "chargesforsupercharge":
+                        property = "chargesforsupercharge";
+                        break;
+                    case "maxcharges":
+                        property = "maxcharges";
+                        break;
+                    case "chargesperlevel":
+                        property = "chargesperlevel";
+                        break;
+                    case "min":
+                        property = "min";
+                        break;
+                    case "max":
+                        property = "max";
+                        break;
+                    case "allowsubs":
+                        property = "allowsubs";
+                        break;
+                    case "alloweveryone":
+                        property = "alloweveryone";
+                        break;
+                    default:
+                        return;
+                }
 
-
-            
-
+                Plugin.Config.ChangeConfigValue(command, property, value);
+            }
         }
 
         public void CheckInfoCommands(TwitchMessage message)
@@ -216,7 +200,7 @@ namespace GamePlayModifiersPlus
             {
                 string scopeMessage = "";
                 int scope = CheckCommandScope();
-                switch(scope)
+                switch (scope)
                 {
                     case 0:
                         scopeMessage = "Everyone has access to commands";
@@ -248,7 +232,7 @@ namespace GamePlayModifiersPlus
                     if (Plugin.nextIsSuper && Plugin.charges >= Plugin.Config.instaFailChargeCost)
                     {
                         Plugin.beepSound.Play();
-                         
+
                         Plugin.twitchPowers.StartCoroutine(TwitchPowers.TempInstaFail(Plugin.songAudio.clip.length));
                         Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.songAudio.clip.length, "Health", "Super Insta Fail Active."));
                         Plugin.nextIsSuper = false;
@@ -294,7 +278,7 @@ namespace GamePlayModifiersPlus
 
         public void CheckSizeCommands(TwitchMessage message)
         {
-            if (message.Content.ToLower().Contains("!gm smaller")&& !Plugin.cooldowns.GetCooldown("NormalSize") && Plugin.commandsLeftForMessage > 0)
+            if (message.Content.ToLower().Contains("!gm smaller") && !Plugin.cooldowns.GetCooldown("NormalSize") && Plugin.commandsLeftForMessage > 0)
             {
                 if (Plugin.nextIsSuper && Plugin.charges >= Plugin.Config.smallerNoteChargeCost)
                 {
@@ -362,7 +346,6 @@ namespace GamePlayModifiersPlus
                 }
 
             }
-
         }
 
         public void CheckGameplayCommands(TwitchMessage message)
@@ -474,10 +457,7 @@ namespace GamePlayModifiersPlus
                     Plugin.commandsLeftForMessage -= 1;
                 }
             }
-
-            }
-
-
+        }
 
         public int CheckCommandScope()
         {
@@ -485,11 +465,6 @@ namespace GamePlayModifiersPlus
             if (Plugin.Config.allowEveryone) return 0;
             else if (Plugin.Config.allowSubs) return 1;
             else return 2;
-
         }
     }
-
-
-
-
 }

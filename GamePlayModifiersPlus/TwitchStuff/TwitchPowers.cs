@@ -1,23 +1,13 @@
-﻿using IllusionPlugin;
-using UnityEngine.SceneManagement;
-using UnityEngine;
-using UnityEngine.UI;
-using System;
-using System.Collections;
-using System.IO;
-using System.Collections.Generic;
-using System.Media;
-using System.Linq;
-using AsyncTwitch;
-using IllusionInjector;
-using TMPro;
-using CustomUI.GameplaySettings;
-
-namespace GamePlayModifiersPlus
+﻿namespace GamePlayModifiersPlus
 {
+    using AsyncTwitch;
+    using System.Collections;
+    using System.Linq;
+    using UnityEngine;
+    using UnityEngine.UI;
+
     public class TwitchPowers : MonoBehaviour
     {
-       
         public static IEnumerator TempDA(float length)
         {
             Plugin.Log("Starting");
@@ -28,7 +18,7 @@ namespace GamePlayModifiersPlus
 
         public static IEnumerator CoolDown(float waitTime, string cooldown, string message)
         {
-            
+
             Plugin.cooldowns.SetCooldown(true, cooldown);
             if (Plugin.Config.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
             {
@@ -36,21 +26,19 @@ namespace GamePlayModifiersPlus
                 TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for" + Plugin.Config.globalCommandCooldown + " seconds.");
             }
             else
-            TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
+                TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
 
 
             yield return new WaitForSeconds(waitTime);
             Plugin.cooldowns.SetCooldown(false, cooldown);
-            //      TwitchConnection.Instance.SendChatMessage(cooldown + " Cooldown Deactivated, have fun!");
         }
 
         public static IEnumerator GlobalCoolDown()
         {
-            
+
             Plugin.cooldowns.SetCooldown(true, "Global");
             yield return new WaitForSeconds(Plugin.Config.globalCommandCooldown);
             Plugin.cooldowns.SetCooldown(false, "Global");
-
         }
 
         public static IEnumerator TempInstaFail(float length)
@@ -150,38 +138,18 @@ namespace GamePlayModifiersPlus
             Plugin.spawnController.SetField("_jumpDistance", jumpDis);
             Plugin.spawnController.SetField("_noteJumpMovementSpeed", njs);
             Plugin.spawnController.SetField("_moveDistance", moveDis);
-
-
-
-            /*
-            Log("_halfJumpDurationInBeats " + spawnController.GetField<float>("_halfJumpDurationInBeats").ToString());
-            Log("_spawnAheadTime " + spawnController.GetField<float>("_spawnAheadTime").ToString());
-            Log("_jumpDistance " + spawnController.GetField<float>("_jumpDistance").ToString());
-            Log("_noteJumpMovementSpeed " + spawnController.GetField<float>("_noteJumpMovementSpeed").ToString());
-            Log("_moveDistance " + spawnController.GetField<float>("_moveDistance").ToString());
-            Log("_moveSpeed " + spawnController.GetField<float>("_moveSpeed").ToString());
-            Log("_moveDurationInBeats " + spawnController.GetField<float>("_moveDurationInBeats").ToString());
-            Log("_beatsPerMinut e" + spawnController.GetField<float>("_beatsPerMinute").ToString());
-            Log("_moveDurationInBeats " + spawnController.GetField<float>("_moveDurationInBeats").ToString());
-            */
-
         }
-
 
         public static IEnumerator Wait(float waitTime)
         {
             yield return new WaitForSeconds(waitTime);
-
         }
-
 
         public static IEnumerator ScaleNotes(float scale, float length)
         {
             Plugin.altereddNoteScale = scale;
             yield return new WaitForSeconds(length);
             Plugin.altereddNoteScale = 1f;
-
-
         }
 
         public static IEnumerator RandomNotes(float length)
@@ -190,8 +158,6 @@ namespace GamePlayModifiersPlus
             Plugin.randomSize = true;
             yield return new WaitForSeconds(length);
             Plugin.randomSize = false;
-            
-
         }
 
         public static IEnumerator njsRandom(float length)
@@ -201,8 +167,6 @@ namespace GamePlayModifiersPlus
             Plugin.randomNJS = false;
             AdjustNJS(Plugin.songNJS);
         }
-
-
 
         public static IEnumerator Pause(float waitTime)
         {
@@ -219,12 +183,6 @@ namespace GamePlayModifiersPlus
                 Plugin.paused = false;
             }
         }
-
-
-        
-
-
-
 
         public static IEnumerator TempNoArrows(float length)
         {
@@ -258,8 +216,6 @@ namespace GamePlayModifiersPlus
                 }
             }
             dataModel.beatmapData = beatmapData;
-
-
         }
 
         public static IEnumerator Funky(float length)
@@ -267,20 +223,18 @@ namespace GamePlayModifiersPlus
             Plugin.funky = true;
             yield return new WaitForSeconds(length);
             Plugin.funky = false;
-
         }
+
         public static IEnumerator Rainbow(float length)
         {
-  
+
             Plugin.rainbow = true;
             yield return new WaitForSeconds(length);
             Plugin.rainbow = false;
             Plugin.colorA.SetColor(Plugin.oldColorA);
             Plugin.colorB.SetColor(Plugin.oldColorB);
             Plugin.Log("Done");
-
         }
-
 
         public static void ResetPowers()
         {
@@ -291,65 +245,6 @@ namespace GamePlayModifiersPlus
             Time.timeScale = 1;
             Plugin.timeScale = 1;
             Plugin.superRandom = false;
-
         }
-
-        /*
-        public void TempBombs(float length)
-        {
-            float start = _songAudio.time;
-            float end = start + length;
-            BeatmapData mapData = levelData.difficultyBeatmap.beatmapData;
-            BeatmapObjectData[] objects;
-            NoteData note;
-            foreach (BeatmapLineData line in mapData.beatmapLinesData)
-            {
-                objects = line.beatmapObjectsData;
-                foreach (BeatmapObjectData beatmapObject in objects)
-                {
-                    if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
-                        if (beatmapObject.time > start && beatmapObject.time < end)
-                        {
-                            note = beatmapObject as NoteData;
-                            note.SetProperty("noteType", NoteType.Bomb);
-                            //   note = new NoteData(note.id, note.time + .5f, note.lineIndex, note.noteLineLayer, note.startNoteLineLayer, NoteType.Bomb, NoteCutDirection.Up, note.timeToNextBasicNote, note.timeToPrevBasicNote);
-
-                        }
-
-                }
-            }
-
-
-        }
-        */
-        /*
-        public void TempMirror(float length)
-        {
-            float start = _songAudio.time;
-            float end = start + length;
-            BeatmapData mapData = levelData.difficultyBeatmap.beatmapData;
-            BeatmapObjectData[] objects;
-            NoteData note;
-            foreach (BeatmapLineData line in mapData.beatmapLinesData)
-            {
-                objects = line.beatmapObjectsData;
-                foreach (BeatmapObjectData beatmapObject in objects)
-                {
-                    if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
-                        if (beatmapObject.time > start && beatmapObject.time < end)
-                        {
-                            note = beatmapObject as NoteData;
-                            note.MirrorLineIndex(2);
-                            note.SwitchNoteType();
-                        }
-
-                }
-            }
-
-
-        }
-
-    */
-
     }
 }

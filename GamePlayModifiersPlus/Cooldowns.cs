@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GamePlayModifiersPlus
+﻿namespace GamePlayModifiersPlus
 {
     public class Cooldowns
     {
@@ -18,55 +12,75 @@ namespace GamePlayModifiersPlus
         public static bool randomnjsCoolDown;
         public static bool funkyCoolDown;
         public static bool rainbowCoolDown;
+
         public void SetCooldown(bool state, string cooldown)
         {
-            if (cooldown.ToLower() == "global")
-                globalCoolDown = state;
-            if (cooldown.ToLower() == "speed")
-                speedCoolDown = state;
-            if (cooldown.ToLower() == "health")
-                healthCoolDown = state;
-            if (cooldown.ToLower() == "da")
-                daCoolDown = state;
-            if (cooldown.ToLower() == "normalsize")
-                normalSizeCoolDown = state;
-            if (cooldown.ToLower() == "random")
-                randomCoolDown = state;
-            if (cooldown.ToLower() == "noarrows")
-                noArrowsCooldown = state;
-            if (cooldown.ToLower() == "randomnjs")
-                randomnjsCoolDown = state;
-            if (cooldown.ToLower() == "funky")
-                funkyCoolDown = state;
-            if (cooldown.ToLower() == "rainbow")
-                rainbowCoolDown = state;
-
+            cooldown = cooldown.ToLower();
+            switch (cooldown)
+            {
+                case "global":
+                    globalCoolDown = state;
+                    break;
+                case "speed":
+                    speedCoolDown = state;
+                    break;
+                case "health":
+                    healthCoolDown = state;
+                    break;
+                case "da":
+                    daCoolDown = state;
+                    break;
+                case "normalsize":
+                    normalSizeCoolDown = state;
+                    break;
+                case "random":
+                    randomCoolDown = state;
+                    break;
+                case "noarrows":
+                    noArrowsCooldown = state;
+                    break;
+                case "randomnjs":
+                    randomnjsCoolDown = state;
+                    break;
+                case "funky":
+                    funkyCoolDown = state;
+                    break;
+                case "rainbow":
+                    rainbowCoolDown = state;
+                    break;
+                default:
+                    break;
+            }
         }
 
         public bool GetCooldown(string cooldown)
         {
-            if (cooldown.ToLower() == "global")
-                return globalCoolDown;
-            else if (cooldown.ToLower() == "speed")
-                return globalCoolDown;
-            else if (cooldown.ToLower() == "health")
-                return healthCoolDown;
-            else if (cooldown.ToLower() == "da")
-                return daCoolDown;
-            else if (cooldown.ToLower() == "normalsize")
-                return normalSizeCoolDown;
-            else if (cooldown.ToLower() == "random")
-                return randomCoolDown;
-            else if (cooldown.ToLower() == "noarrows")
-                return noArrowsCooldown;
-            else if (cooldown.ToLower() == "randomnjs")
-                return randomnjsCoolDown;
-            else if (cooldown.ToLower() == "funky")
-                return funkyCoolDown;
-            else if (cooldown.ToLower() == "rainbow")
-                return rainbowCoolDown;
-            else
-                return false;
+            cooldown = cooldown.ToLower();
+            switch (cooldown)
+            {
+                case "global":
+                    return globalCoolDown;
+                case "speed":
+                    return speedCoolDown;
+                case "health":
+                    return healthCoolDown;
+                case "da":
+                    return daCoolDown;
+                case "normalsize":
+                    return normalSizeCoolDown;
+                case "random":
+                    return randomCoolDown;
+                case "noarrows":
+                    return noArrowsCooldown;
+                case "randomnjs":
+                    return randomnjsCoolDown;
+                case "funky":
+                    return funkyCoolDown;
+                case "rainbow":
+                    return rainbowCoolDown;
+                default:
+                    return false;
+            }
         }
 
         public void ResetCooldowns()
