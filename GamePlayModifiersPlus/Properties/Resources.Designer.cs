@@ -22,7 +22,7 @@ namespace GamePlayModifiersPlus.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace GamePlayModifiersPlus.Properties {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("GamePlayModifiersPlus.Properties.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace GamePlayModifiersPlus.Properties {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,9 +61,19 @@ namespace GamePlayModifiersPlus.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Back_Button {
+            get {
+                object obj = ResourceManager.GetObject("Back_Button", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
         /// </summary>
-        internal static System.IO.UnmanagedMemoryStream Beep {
+        public static System.IO.UnmanagedMemoryStream Beep {
             get {
                 return ResourceManager.GetStream("Beep", resourceCulture);
             }
@@ -72,7 +82,7 @@ namespace GamePlayModifiersPlus.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap BulletIcon {
+        public static System.Drawing.Bitmap BulletIcon {
             get {
                 object obj = ResourceManager.GetObject("BulletIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -82,7 +92,7 @@ namespace GamePlayModifiersPlus.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ChatDelta {
+        public static System.Drawing.Bitmap ChatDelta {
             get {
                 object obj = ResourceManager.GetObject("ChatDelta", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -90,9 +100,29 @@ namespace GamePlayModifiersPlus.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap FunkyIcon {
+            get {
+                object obj = ResourceManager.GetObject("FunkyIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap GMPIcon {
+            get {
+                object obj = ResourceManager.GetObject("GMPIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
         /// </summary>
-        internal static System.IO.UnmanagedMemoryStream gnome {
+        public static System.IO.UnmanagedMemoryStream gnome {
             get {
                 return ResourceManager.GetStream("gnome", resourceCulture);
             }
@@ -101,7 +131,7 @@ namespace GamePlayModifiersPlus.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap gnomeIcon {
+        public static System.Drawing.Bitmap gnomeIcon {
             get {
                 object obj = ResourceManager.GetObject("gnomeIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -111,7 +141,37 @@ namespace GamePlayModifiersPlus.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap RepeatIcon {
+        public static System.Drawing.Bitmap NoArrowsIcon {
+            get {
+                object obj = ResourceManager.GetObject("NoArrowsIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap RainbowIcon {
+            get {
+                object obj = ResourceManager.GetObject("RainbowIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap RandomIcon {
+            get {
+                object obj = ResourceManager.GetObject("RandomIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap RepeatIcon {
             get {
                 object obj = ResourceManager.GetObject("RepeatIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -121,7 +181,7 @@ namespace GamePlayModifiersPlus.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap SwapSabers {
+        public static System.Drawing.Bitmap SwapSabers {
             get {
                 object obj = ResourceManager.GetObject("SwapSabers", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
@@ -131,7 +191,7 @@ namespace GamePlayModifiersPlus.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap TwitchIcon {
+        public static System.Drawing.Bitmap TwitchIcon {
             get {
                 object obj = ResourceManager.GetObject("TwitchIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));

@@ -82,7 +82,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config.cs" />
+    <Compile Include="TwitchStuff\ChatConfig.cs" />
     <Compile Include="Cooldowns.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -91,12 +91,19 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ReflectionUtil.cs" />
-    <Compile Include="TwitchStuff\FloatBehavior.cs" />
+    <Compile Include="Utilities\ReflectionUtil.cs" />
+    <Compile Include="Utilities\FloatBehavior.cs" />
     <Compile Include="TwitchStuff\TwitchCommands.cs" />
     <Compile Include="TwitchStuff\TwitchPowers.cs" />
+    <Compile Include="Utilities\GMPUI.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\RandomIcon.png" />
+    <EmbeddedResource Include="Resources\FunkyIcon.png" />
+    <EmbeddedResource Include="Resources\NoArrowsIcon.png" />
+    <EmbeddedResource Include="Resources\RainbowIcon.png" />
+    <EmbeddedResource Include="Resources\GMPIcon.png" />
+    <EmbeddedResource Include="Resources\Back_Button.png" />
     <EmbeddedResource Include="Resources\TwitchIcon.png" />
     <EmbeddedResource Include="Resources\BulletIcon.png" />
     <EmbeddedResource Include="Resources\gnomeIcon.png" />
@@ -108,7 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>

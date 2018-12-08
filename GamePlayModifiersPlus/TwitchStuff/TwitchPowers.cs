@@ -23,7 +23,7 @@
             if (Plugin.Config.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
             {
                 SharedCoroutineStarter.instance.StartCoroutine(GlobalCoolDown());
-                TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for" + Plugin.Config.globalCommandCooldown + " seconds.");
+                TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + Plugin.Config.globalCommandCooldown + " seconds.");
             }
             else
                 TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
@@ -77,7 +77,7 @@
         {
             Plugin.gnomeActive = true;
             yield return new WaitForSecondsRealtime(0.1f);
-            Plugin.SetTimeScale(0f); ;
+            Plugin.SetTimeScale(0f); 
             Time.timeScale = 0f;
             Plugin.gnomeSound.Load();
             Plugin.gnomeSound.Play();
@@ -155,16 +155,16 @@
         public static IEnumerator RandomNotes(float length)
         {
 
-            Plugin.randomSize = true;
+            GMPUI.randomSize = true;
             yield return new WaitForSeconds(length);
-            Plugin.randomSize = false;
+            GMPUI.randomSize = false;
         }
 
         public static IEnumerator njsRandom(float length)
         {
-            Plugin.randomNJS = true;
+            GMPUI.randomNJS = true;
             yield return new WaitForSeconds(length);
-            Plugin.randomNJS = false;
+            GMPUI.randomNJS = false;
             AdjustNJS(Plugin.songNJS);
         }
 
@@ -196,8 +196,8 @@
             BeatmapData beatmapData = dataModel.beatmapData;
             BeatmapObjectData[] objects;
             NoteData note;
-            float start = Plugin.songAudio.time;
-            float end = start + length;
+            float start = Plugin.songAudio.time + 2;
+            float end = start + length + 2f;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
                 objects = line.beatmapObjectsData;
@@ -215,22 +215,54 @@
 
                 }
             }
-            dataModel.beatmapData = beatmapData;
+        //    dataModel.beatmapData = beatmapData;
         }
+
+        public static IEnumerator NoArrows()
+        {
+            Plugin.Log("Starting");
+
+            yield return new WaitForSeconds(0f);
+            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
+            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
+            Plugin.Log(dataModel.beatmapData.bombsCount.ToString());
+            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectData[] objects;
+            NoteData note;
+            foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
+            {
+                objects = line.beatmapObjectsData;
+                foreach (BeatmapObjectData beatmapObject in objects)
+                {
+                    if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
+                    {
+                            note = beatmapObject as NoteData;
+
+                            note.SetNoteToAnyCutDirection();
+                    }
+
+
+  
+
+                }
+            }
+            //    dataModel.beatmapData = beatmapData;
+        }
+
 
         public static IEnumerator Funky(float length)
         {
-            Plugin.funky = true;
+            GMPUI.funky = true;
             yield return new WaitForSeconds(length);
-            Plugin.funky = false;
+            GMPUI.funky = false;
         }
 
         public static IEnumerator Rainbow(float length)
         {
 
-            Plugin.rainbow = true;
+            GMPUI.rainbow = true;
             yield return new WaitForSeconds(length);
-            Plugin.rainbow = false;
+            GMPUI.rainbow = false;
             Plugin.colorA.SetColor(Plugin.oldColorA);
             Plugin.colorB.SetColor(Plugin.oldColorB);
             Plugin.Log("Done");
@@ -238,9 +270,10 @@
 
         public static void ResetPowers()
         {
-            Plugin.rainbow = false;
-            Plugin.funky = false;
-            Plugin.randomNJS = false;
+            GMPUI.rainbow = false;
+            GMPUI.funky = false;
+            GMPUI.randomNJS = false;
+            GMPUI.randomSize = false;
             Plugin.altereddNoteScale = 1f;
             Time.timeScale = 1;
             Plugin.timeScale = 1;

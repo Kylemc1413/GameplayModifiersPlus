@@ -92,6 +92,9 @@
             daCoolDown = false;
             randomnjsCoolDown = false;
             rainbowCoolDown = false;
+            randomCoolDown = false;
+            noArrowsCooldown = false;
+            funkyCoolDown = false;
         }
     }
 }

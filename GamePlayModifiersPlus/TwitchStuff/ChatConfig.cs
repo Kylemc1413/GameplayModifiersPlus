@@ -3,7 +3,7 @@
     using System;
     using System.IO;
 
-    public class Config
+    public class ChatConfig
     {
         public string FilePath { get; }
         public int commandsPerMessage = 2;
@@ -56,12 +56,12 @@
         public float randomMin = 0.6f;
         public float randomMax = 1.5f;
         private readonly FileSystemWatcher _configWatcher;
-        public event Action<Config> ConfigChangedEvent;
+        public event Action<ChatConfig> ConfigChangedEvent;
         private bool _saving;
         private string chargeCostString;
 
 
-        public Config(String filePath)
+        public ChatConfig(String filePath)
         {
             FilePath = filePath;
 
@@ -88,7 +88,7 @@
 
 
 
-        ~Config()
+        ~ChatConfig()
         {
             _configWatcher.Changed -= ConfigWatcherOnChanged;
         }

@@ -215,7 +215,7 @@
                 }
 
                 Plugin.beepSound.Play();
-                if (Plugin.twitchStuff)
+                if (GMPUI.chatIntegration)
                     TwitchConnection.Instance.SendChatMessage("Chat Integration Enabled. " + scopeMessage);
                 else
                     TwitchConnection.Instance.SendChatMessage("Chat Integration Not Enabled. " + scopeMessage);
