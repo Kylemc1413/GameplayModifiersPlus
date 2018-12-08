@@ -45,3 +45,12 @@ Max: For random commands, the max value of the random range
 - NoArrows: Turns the map into no arrows mode for the duration
 - Funky: For the duration, notes are funky
 - Rainbow: Randomizes note colors for the duration, currently left colors will be random warm colors, right will be random cool colors
+
+### Changing the Config
+- The config can be changed from the file, and will update itself once the game scene changes, without having to restart
+- The config can also be changed from chat by the broadcaster or moderators using the !configchange command, the usage of which is below
+#### !configchange command property=value
+- Example Usage: '!configchange da cooldown=5' would change the cooldown for da to 5 seconds
+### !configchange property=value
+- To be used for Basic properties not attached to commands
+- Example usage: '!configchange commandsPerMessage=2' Would change the commands per message to be 2
