@@ -51,6 +51,6 @@ Max: For random commands, the max value of the random range
 - The config can also be changed from chat by the broadcaster or moderators using the !configchange command, the usage of which is below
 #### !configchange command property=value
 - Example Usage: '!configchange da cooldown=5' would change the cooldown for da to 5 seconds
-### !configchange property=value
+#### !configchange property=value
 - To be used for Basic properties not attached to commands
 - Example usage: '!configchange commandsPerMessage=2' Would change the commands per message to be 2
