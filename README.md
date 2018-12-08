@@ -5,6 +5,7 @@
 
 ### Requires AsyncTwitch and BeatSaberCustomUI 
 
+### Additional modifiers can be accessed through the GameplayModfiersPlus option in the modifers panel
 #### For Usage of the modifiers, refer to their tooltips that explain what they do
 
 ### To Use Chat Integration, ensure you have set up Async Twitch to connect to your channel, then turn on the modifier, type !gm help into your chat for details on how to use it, the config for chat settings is located in UserData/GameplayModifiersPlusChatSettings.ini
