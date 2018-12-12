@@ -18,7 +18,7 @@
         public static readonly ChatConfig Config = new ChatConfig(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
 
         public string Name => "GameplayModifiersPlus";
-        public string Version => "0.9.8";
+        public string Version => "1.0.5";
 
         public static float timeScale = 1;
         public TwitchCommands twitchCommands = new TwitchCommands();
@@ -38,7 +38,6 @@
         public static float prevRightPos;
         public static float prevHeadPos;
         public static bool calculating = false;
-        public static bool swapSabers;
         public static bool paused = false;
         public static Cooldowns cooldowns;
         public static TMP_Text ppText;
@@ -120,9 +119,9 @@
                 ReadPrefs();
                 try
                 {
-                GMPUI.CreateUI();
+                    GMPUI.CreateUI();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Log(ex.ToString());
                 }
@@ -138,11 +137,11 @@
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
             ReadPrefs();
-            if(GMPUI.chatIntegration)
+            if (GMPUI.chatIntegration)
             {
-            cooldowns.ResetCooldowns();
-            TwitchPowers.ResetPowers();
-            twitchPowers.StopAllCoroutines();
+                cooldowns.ResetCooldowns();
+                TwitchPowers.ResetPowers();
+                twitchPowers.StopAllCoroutines();
             }
 
             //    twitchCommands.StopAllCoroutines();
@@ -222,9 +221,9 @@
                 energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().First();
                 energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().First();
 
-                    spawnController.noteDidStartJumpEvent += SpawnController_ModifiedJump;
-                    spawnController.noteWasCutEvent += SpawnController_ScaleRemoveCut;
-                    spawnController.noteWasMissedEvent += SpawnController_ScaleRemoveMiss;
+                spawnController.noteDidStartJumpEvent += SpawnController_ModifiedJump;
+                spawnController.noteWasCutEvent += SpawnController_ScaleRemoveCut;
+                spawnController.noteWasMissedEvent += SpawnController_ScaleRemoveMiss;
 
 
 
@@ -257,10 +256,9 @@
                 Log(leftSaber.handlePos.ToString());
                 Log(leftSaber.saberBladeTopPos.ToString());
 
-                if (swapSabers)
+                if (GMPUI.swapSabers)
                 {
-                    GMPUI.funky = true;
-                    GMPUI.rainbow = true;
+                    twitchPowers.StartCoroutine(Pause());
                 }
                 //  SharedCoroutineStarter.instance.StartCoroutine(SwapSabers(leftSaber, rightSaber));
 
@@ -390,8 +388,10 @@
                 haveSongNJS = true;
             }
 
-                //          Transform noteTransform = controller.GetField<Transform>("_noteTransform");
-                //       Log("SPAWN" + noteTransform.localScale.ToString());
+            //          Transform noteTransform = controller.GetField<Transform>("_noteTransform");
+            //       Log("SPAWN" + noteTransform.localScale.ToString());
+            if (GMPUI.chatIntegration || GMPUI.randomSize)
+            {
                 if (superRandom)
                 {
                     noteTransform.localScale *= UnityEngine.Random.Range(Config.randomMin, Config.randomMax);
@@ -400,29 +400,32 @@
                 else
                 {
                     if (!GMPUI.randomSize)
-                {
+                    {
                         noteTransform.localScale *= altereddNoteScale;
-                    invalidForScoring = true;
-                }
+                        invalidForScoring = true;
+                    }
 
                     if (GMPUI.randomSize)
-                {
+                    {
                         noteTransform.localScale *= UnityEngine.Random.Range(Config.randomMin, Config.randomMax);
-                    invalidForScoring = true;
+                        invalidForScoring = true;
+                    }
                 }
 
-                }
 
-                //     Log("SPAWN" + noteTransform.localScale.ToString());
+            }
+
+            //     Log("SPAWN" + noteTransform.localScale.ToString());
             
             if (GMPUI.fixedNoteScale != 1f)
             {
                 invalidForScoring = true;
-                //         Transform noteTransform = controller.GetField<Transform>("_noteTransform");
+                     //    Transform noteTransform = controller.GetField<Transform>("_noteTransform");
                 //       Log("SPAWN" + noteTransform.localScale.ToString());
                 noteTransform.localScale *= GMPUI.fixedNoteScale;
                 //     Log("SPAWN" + noteTransform.localScale.ToString());
             }
+            
             NoteData note = controller.noteData;
         }
 
@@ -494,6 +497,15 @@
         {
         }
 
+        public IEnumerator Pause()
+        {
+            Log("Preparing to Pause");
+            var Level = Resources.FindObjectsOfTypeAll<StandardLevelGameplayManager>().First();
+            yield return new WaitForSeconds(5f);
+            Level.Pause();
+
+        }
+
 
         public static bool IsModInstalled(string modName)
         {
@@ -530,11 +542,11 @@
         public void ReadPrefs()
         {
             Config.Load();
-          //  GMPUI.gnomeOnMiss = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.gnomeOnMiss", false, true);
+            //  GMPUI.gnomeOnMiss = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.gnomeOnMiss", false, true);
             //   GMPUI.superHot = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.superHot", false, true);
-         //   GMPUI.bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.bulletTime", false, true);
-          //  GMPUI.chatIntegration = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.chatIntegration", false, true);
-        //    GMPUI.swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
+            //   GMPUI.bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.bulletTime", false, true);
+            //  GMPUI.chatIntegration = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.chatIntegration", false, true);
+            //    GMPUI.swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
             GMPUI.chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
 
             Config.Save();

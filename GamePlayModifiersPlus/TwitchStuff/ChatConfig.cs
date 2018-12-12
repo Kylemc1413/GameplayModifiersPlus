@@ -7,35 +7,35 @@
     {
         public string FilePath { get; }
         public int commandsPerMessage = 2;
-        public float globalCommandCooldown = 5f;
+        public float globalCommandCooldown = 10f;
         public bool allowSubs = true;
         public bool allowEveryone = true;
         public int chargesForSuperCharge = 10;
-        public int chargesPerLevel = 4;
-        public int maxCharges = 12;
+        public int chargesPerLevel = 10;
+        public int maxCharges = 30;
         public int bitsPerCharge = 10;
 
 
         public int daChargeCost = 0;
-        public int smallerNoteChargeCost = 0;
-        public int largerNotesChargeCost = 0;
-        public int randomNotesChargeCost = 0;
-        public int instaFailChargeCost = 0;
+        public int smallerNoteChargeCost = 1;
+        public int largerNotesChargeCost = 1;
+        public int randomNotesChargeCost = 4;
+        public int instaFailChargeCost = 20;
         public int invincibleChargeCost = 0;
-        public int njsRandomChargeCost = 0;
+        public int njsRandomChargeCost = 5;
         public int noArrowsChargeCost = 0;
-        public int funkyChargeCost = 0;
-        public int rainbowChargeCost = 0;
+        public int funkyChargeCost = 5;
+        public int rainbowChargeCost = 3;
         //     public int nMirrorChargeCost = 0;
 
         public float daDuration = 15f;
-        public float smallerNoteDuration = 15f;
-        public float largerNotesDuration = 15f;
-        public float randomNotesDuration = 15f;
-        public float instaFailDuration = 15f;
+        public float smallerNoteDuration = 10f;
+        public float largerNotesDuration = 10f;
+        public float randomNotesDuration = 10f;
+        public float instaFailDuration = 10f;
         public float invincibleDuration = 15f;
         public float njsRandomDuration = 10f;
-        public float noArrowsDuration = 15f;
+        public float noArrowsDuration = 10f;
         public float funkyDuration = 10f;
         public float rainbowDuration = 10f;
         //   public float nMirrorDuration = 15f;
@@ -44,11 +44,11 @@
         public float smallerNotesCooldown = 15f;
         public float largerNotesCooldown = 15f;
         public float randomNotesCooldown = 15f;
-        public float instaFailCooldown = 20f;
+        public float instaFailCooldown = 45f;
         public float invincibleCooldown = 20f;
-        public float njsRandomCooldown = 20f;
+        public float njsRandomCooldown = 30f;
         public float noArrowsCooldown = 20f;
-        public float funkyCooldown = 10f;
+        public float funkyCooldown = 30f;
         public float rainbowCooldown = 20f;
         //   public float nMirrorCooldown= 20f;
         public float njsRandomMin = 8f;
@@ -124,17 +124,17 @@
         void CompileChargeCostString()
         {
             chargeCostString = "Current Costs: ";
-            if (daChargeCost > 0) chargeCostString += "DA: " + daChargeCost;
-            if (smallerNoteChargeCost > 0) chargeCostString += " | Smaller: " + smallerNoteChargeCost;
-            if (largerNotesChargeCost > 0) chargeCostString += " | Larger: " + largerNotesChargeCost;
-            if (randomNotesChargeCost > 0) chargeCostString += " | Random: " + randomNotesChargeCost;
-            if (instaFailChargeCost > 0) chargeCostString += " | Instafail: " + instaFailChargeCost;
-            if (invincibleChargeCost > 0) chargeCostString += " | Invincible: " + invincibleChargeCost;
-            if (njsRandomChargeCost > 0) chargeCostString += " | NjsRandom: " + njsRandomChargeCost;
-            if (noArrowsChargeCost > 0) chargeCostString += " | NoArrows: " + noArrowsChargeCost;
-            if (funkyChargeCost > 0) chargeCostString += " | Funky: " + funkyChargeCost;
-            if (rainbowChargeCost > 0) chargeCostString += " | Rainbow: " + funkyChargeCost;
-            if (chargeCostString == "Current Costs: ")
+            chargeCostString += "DA: " + daChargeCost;
+            chargeCostString += " | Smaller: " + smallerNoteChargeCost;
+            chargeCostString += " | Larger: " + largerNotesChargeCost;
+            chargeCostString += " | Random: " + randomNotesChargeCost;
+            chargeCostString += " | Instafail: " + instaFailChargeCost;
+            chargeCostString += " | Invincible: " + invincibleChargeCost;
+            chargeCostString += " | NjsRandom: " + njsRandomChargeCost;
+            chargeCostString += " | NoArrows: " + noArrowsChargeCost;
+            chargeCostString += " | Funky: " + funkyChargeCost;
+            chargeCostString += " | Rainbow: " + rainbowChargeCost;
+            if (chargeCostString == "Current Costs: DA: 0 | Smaller: 0 | Larger: 0 | Random: 0 | Instafail: 0 | Invincible: 0 | NjsRandom: 0 | NoArrows: 0 | Funky: 0 | Rainbow: 0")
                 chargeCostString = "Current Costs: None!";
         }
 

@@ -87,8 +87,9 @@
             if (Plugin.isValidScene == true)
             {
                 Plugin.soundIsPlaying = false;
-                Plugin.SetTimeScale(0f); ;
+                Plugin.SetTimeScale(1f); ;
                 Time.timeScale = 1f;
+                Plugin.songAudio.pitch = 1f;
                 Plugin.Log("Unpaused");
                 Plugin.gnomeActive = false;
             }

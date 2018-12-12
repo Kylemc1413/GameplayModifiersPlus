@@ -160,7 +160,7 @@
             if (message.Content.ToLower().Contains("!gm help"))
             {
                 TwitchConnection.Instance.SendChatMessage("Include !gm followed by a command in your message while the streamer has twitch mode on to mess with their game:" +
-                    " !gm commands to view available commands");
+                    " !gm commands to view info commands. Information about how to use the plugin, game commands, and moderator powers can be found in the mod readme: https://github.com/Kylemc1413/GameplayModifiersPlus/blob/master/README.md");
             }
             if (message.Content.ToLower().Contains("!gm chargehelp"))
             {
@@ -168,22 +168,13 @@
             }
             if (message.Content.ToLower().Contains("!gm commands"))
             {
-                TwitchConnection.Instance.SendChatMessage("Currently supported commands | status: whether chat integration is on, who is allowed to use it | game: Details about game commands | charges: view current charges and costs | chargehelp: Explain charge system | mod: view moderator commands");
-            }
-
-            if (message.Content.ToLower().Contains("!gm mod"))
-            {
-                TwitchConnection.Instance.SendChatMessage("Current mod commands: ConfigChange: change config values. Sample config : https://imgur.com/76OtpSx Syntax: !configchange command property=value. Example: '!configchange da chargecost=5' or '!configchange bitsPerCharge=50' ");
-            }
-            if (message.Content.ToLower().Contains("!gm game"))
-            {
-                TwitchConnection.Instance.SendChatMessage("Commands | DA: Disappearing Arrows mode | Instafail: instant fail mode | Invincible: invincibility | Smaller/Larger/Random: Change note sizes | njsRandom: Randomly change NoteJumpSpeed | noArrows: No Arrows mode | Funky: Death | Rainbow: RAINBOWW");
+                TwitchConnection.Instance.SendChatMessage("Currently supported commands | status: Currrent Status of chat integration | charges: view current charges and costs | chargehelp: Explain charge system");
             }
 
 
             if (message.Content.ToLower().Contains("!gm charges"))
             {
-                TwitchConnection.Instance.SendChatMessage("Charges: " + Plugin.charges + " | " + Plugin.Config.GetChargeCostString());
+                TwitchConnection.Instance.SendChatMessage("Charges: " + Plugin.charges + " | Commands Per Message: " + Plugin.Config.commandsPerMessage + " | " + Plugin.Config.GetChargeCostString());
             }
         }
 
@@ -401,7 +392,7 @@
                 {
                     Plugin.beepSound.Play();
                     Plugin.twitchPowers.StartCoroutine(TwitchPowers.TempNoArrows(Plugin.songAudio.clip.length));
-                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.songAudio.clip.length, "RandomNJS", "Super Random Note Jump Speed Active."));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.songAudio.clip.length, "NoArrows", "Super No Arrows Mode Activated."));
                     Plugin.nextIsSuper = false;
                     Plugin.charges -= Plugin.Config.noArrowsChargeCost;
                     Plugin.commandsLeftForMessage -= 1;
@@ -418,7 +409,7 @@
             if (message.Content.ToLower().Contains("!gm funky") && !Plugin.cooldowns.GetCooldown("Funky") && Plugin.commandsLeftForMessage > 0)
             {
 
-                if (Plugin.nextIsSuper && Plugin.charges >= Plugin.Config.instaFailChargeCost)
+                if (Plugin.nextIsSuper && Plugin.charges >= Plugin.Config.funkyChargeCost)
                 {
                     Plugin.beepSound.Play();
                     Plugin.twitchPowers.StartCoroutine(TwitchPowers.Funky(Plugin.songAudio.clip.length));

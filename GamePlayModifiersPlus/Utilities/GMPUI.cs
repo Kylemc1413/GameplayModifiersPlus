@@ -43,7 +43,7 @@
             var gmp1Menu = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "GamePlayModifiersPlus", "MainMenu", "GMP1", "GameplayModifiersPlus Options", _GMPIcon);
 
             //GMP1 Options
-            var backOption = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "Back", "GMP1", "MainMenu", "Return from GamePlayModifiersOptions", _BackButton);
+      //      var backOption = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "Back", "GMP1", "MainMenu", "Return from GamePlayModifiersOptions", _BackButton);
 
             var twitchStuffOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Chat Integration", "GMP1", disableScoreString + "Allows Chat to mess with your game if connected. !gm help", _TwitchIcon);
             twitchStuffOption.GetValue = chatIntegration;
@@ -55,20 +55,20 @@
 
             //GMP2 Options
             var gmp2Menu = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "Additional Modifiers", "GMP1", "GMP2", "Additional Modifiers", _GMPIcon);
-            var backOption2 = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "Back", "GMP2", "GMP1", "Return from Additional Modifiers", _BackButton);
+      //      var backOption2 = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "Back", "GMP2", "GMP1", "Return from Additional Modifiers", _BackButton);
 
             var repeatOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Repeat", "GMP2", disableScoreString + "Restarts song on song end", _RepeatIcon);
             repeatOption.GetValue = repeatSong;
             repeatOption.OnToggle += (value) => { repeatSong = value; Plugin.Log("Changed value"); };
-/*
+
             var gnomeOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Gnome on miss", "GMP2", "Probably try not to miss.", _GnomeIcon);
             gnomeOption.GetValue = gnomeOnMiss;
-            gnomeOption.OnToggle += (value) => { chatIntegration = value; Plugin.Log("Changed value"); };
+            gnomeOption.OnToggle += (value) => { gnomeOnMiss = value; Plugin.Log("Changed value"); };
             gnomeOption.AddConflict("Chat Integration");
             gnomeOption.AddConflict("Faster Song");
             gnomeOption.AddConflict("Slower Song");
 
-            */
+            
             var bulletTimeOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Bullet Time", "GMP2", disableScoreString + "Slow down time by pressing the triggers on your controllers.", _BulletTimeIcon);
             bulletTimeOption.GetValue = bulletTime;
             bulletTimeOption.OnToggle += (value) => { bulletTime = value; Plugin.Log("Changed value"); };
@@ -76,7 +76,7 @@
             bulletTimeOption.AddConflict("Slower Song");
             bulletTimeOption.AddConflict("Chat Integration");
             
-
+            
             var noteSizeOption = GameplaySettingsUI.CreateListOption(GameplaySettingsPanels.ModifiersRight, "Note Size", "GMP2", disableScoreString + "Change the size of the notes. Overwritten by Chat Integration and any other size changing options");
             for (float i = 10; i <= 200; i += 10)
                 noteSizeOption.AddOption(i / 100);
@@ -89,8 +89,8 @@
                 num = Mathf.Clamp(num, 0.1f, 2f);
                 return num;
             });
-            noteSizeOption.OnChange += (fixedNoteScale) => { Plugin.Log("Changed Value"); };
-
+            noteSizeOption.OnChange += (value) => { fixedNoteScale = value;  Plugin.Log("Changed Value"); };
+            
             var swapSabersOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Testing Ground", "GMP2", disableScoreString + "Currently Used To test Random stuff", _SwapSabersIcon);
             swapSabersOption.GetValue = swapSabers;
             swapSabersOption.OnToggle += (value) => { swapSabers = value; Plugin.Log("Changed value"); };
