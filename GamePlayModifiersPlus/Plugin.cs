@@ -106,7 +106,7 @@
                     twitchCommands.CheckHealthCommands(message);
                     twitchCommands.CheckSizeCommands(message);
                     twitchCommands.CheckGlobalCoolDown();
-                    
+
                 }
             }
 
@@ -152,9 +152,13 @@
             ReadPrefs();
             if (GMPUI.chatIntegration)
             {
-                cooldowns.ResetCooldowns();
-                TwitchPowers.ResetPowers();
-                twitchPowers.StopAllCoroutines();
+                if (twitchPowers != null)
+                {
+                    cooldowns.ResetCooldowns();
+                    TwitchPowers.ResetPowers();
+                    twitchPowers.StopAllCoroutines();
+                }
+
             }
 
             //    twitchCommands.StopAllCoroutines();
@@ -166,8 +170,8 @@
             soundIsPlaying = false;
             isValidScene = false;
             playerInfo = false;
-            if (arg0.name == "EmpyTransition")
-                GameObject.Destroy(GameObject.Find("Chat Powers"));
+            if (arg0.name == "EmpyTransition" && chatPowers != null)
+                GameObject.Destroy(chatPowers);
 
             if (scene.name == ("Menu"))
             {
@@ -184,16 +188,25 @@
                 }
 
                 var controllers = Resources.FindObjectsOfTypeAll<VRController>();
-                foreach (VRController controller in controllers)
+                if (controllers != null)
                 {
-                    //        Log(controller.ToString());
-                    if (controller.ToString() == "ControllerLeft (VRController)")
-                        leftController = controller;
-                    if (controller.ToString() == "ControllerRight (VRController)")
-                        rightController = controller;
+                    foreach (VRController controller in controllers)
+                    {
+                        if (controller != null)
+                        {
+                            if (controller.ToString() == "ControllerLeft (VRController)")
+                                leftController = controller;
+                            if (controller.ToString() == "ControllerRight (VRController)")
+                                rightController = controller;
+                        }
+                        //        Log(controller.ToString());
+
+                    }
+                    Log("Left:" + leftController.ToString());
+                    Log("Right: " + rightController.ToString());
+
                 }
-                Log("Left:" + leftController.ToString());
-                Log("Right: " + rightController.ToString());
+
 
             }
 
@@ -230,7 +243,7 @@
                     charges += Config.chargesPerLevel;
                     if (charges > Config.maxCharges)
                         charges = Config.maxCharges;
-                    TwitchConnection.Instance.SendChatMessage("Current Charges: " + charges);
+                    //          TwitchConnection.Instance.SendChatMessage("Current Charges: " + charges);
                 }
 
 
@@ -434,16 +447,16 @@
             }
 
             //     Log("SPAWN" + noteTransform.localScale.ToString());
-            
+
             if (GMPUI.fixedNoteScale != 1f)
             {
                 invalidForScoring = true;
-                     //    Transform noteTransform = controller.GetField<Transform>("_noteTransform");
+                //    Transform noteTransform = controller.GetField<Transform>("_noteTransform");
                 //       Log("SPAWN" + noteTransform.localScale.ToString());
                 noteTransform.localScale *= GMPUI.fixedNoteScale;
                 //     Log("SPAWN" + noteTransform.localScale.ToString());
             }
-            
+
             NoteData note = controller.noteData;
         }
 
@@ -574,8 +587,10 @@
         {
             yield return new WaitForSecondsRealtime(1f);
             var texts = Resources.FindObjectsOfTypeAll<TMP_Text>();
+            if(texts != null)
             foreach (TMP_Text text in texts)
             {
+                    if(text != null)
                 if (text.ToString() == "PP (TMPro.TextMeshPro)")
                 {
                     ppText = text;

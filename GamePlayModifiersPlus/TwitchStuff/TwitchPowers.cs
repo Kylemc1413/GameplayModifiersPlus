@@ -29,15 +29,22 @@
 
         public static IEnumerator CoolDown(float waitTime, string cooldown, string message)
         {
+
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
             text.text += " " + cooldown + " | ";
             Plugin.cooldowns.SetCooldown(true, cooldown);
-            if (Plugin.Config.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
+            if (Plugin.Config.showCooldownOnMessage)
             {
-                TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + Plugin.Config.globalCommandCooldown + " seconds.");
+                if (Plugin.Config.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
+                {
+                    TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + Plugin.Config.globalCommandCooldown + " seconds.");
+                }
+                else
+                    TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
             }
             else
-                TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
+                TwitchConnection.Instance.SendChatMessage(message);
+
 
             yield return new WaitForSeconds(waitTime);
             Plugin.cooldowns.SetCooldown(false, cooldown);

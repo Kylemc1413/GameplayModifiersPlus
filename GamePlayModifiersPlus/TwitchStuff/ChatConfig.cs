@@ -6,6 +6,7 @@
     public class ChatConfig
     {
         public string FilePath { get; }
+        public bool showCooldownOnMessage = false;
         public int commandsPerMessage = 2;
         public float globalCommandCooldown = 10f;
         public bool allowSubs = true;
