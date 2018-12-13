@@ -15,6 +15,8 @@
         public int maxCharges = 30;
         public int bitsPerCharge = 10;
 
+        public int chargesOverTime = 1;
+        public float timeForCharges = 20f;
 
         public int daChargeCost = 0;
         public int smallerNoteChargeCost = 1;
@@ -174,6 +176,12 @@
                 case "globalcommandcooldown":
                     globalCommandCooldown = float.Parse(value);
                     break;
+                case "timeforcharges":
+                    timeForCharges = float.Parse(value);
+                    break;
+                case "chargesovertime":
+                    chargesOverTime = int.Parse(value);
+                    break;
                 default:
                     success = false;
                     break;
@@ -315,6 +323,7 @@
 
         }
 
+         
 
 
 

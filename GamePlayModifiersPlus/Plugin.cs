@@ -12,13 +12,13 @@
     using TMPro;
     using UnityEngine;
     using UnityEngine.SceneManagement;
-
+    using GamePlayModifiersPlus.TwitchStuff;
     public class Plugin : IPlugin
     {
         public static readonly ChatConfig Config = new ChatConfig(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
 
         public string Name => "GameplayModifiersPlus";
-        public string Version => "1.0.5";
+        public string Version => "1.1.0";
 
         public static float timeScale = 1;
         public TwitchCommands twitchCommands = new TwitchCommands();
@@ -76,6 +76,8 @@
         public static SimpleColorSO oldColorB = new SimpleColorSO();
         public static int commandsLeftForMessage;
         public static bool test;
+        GameObject chatPowers;
+
         public void OnApplicationStart()
         {
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
@@ -103,6 +105,8 @@
                     twitchCommands.CheckGameplayCommands(message);
                     twitchCommands.CheckHealthCommands(message);
                     twitchCommands.CheckSizeCommands(message);
+                    twitchCommands.CheckGlobalCoolDown();
+                    
                 }
             }
 
@@ -127,7 +131,7 @@
                 }
 
 
-                GameObject chatPowers = new GameObject("Chat Powers");
+                chatPowers = new GameObject("Chat Powers");
                 twitchPowers = chatPowers.AddComponent<TwitchPowers>();
                 GameObject.DontDestroyOnLoad(chatPowers);
 
@@ -136,6 +140,15 @@
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
+            GMPDisplay display = chatPowers.GetComponent<GMPDisplay>();
+            if (display != null)
+            {
+                display.Destroy();
+                GameObject.Destroy(display);
+            }
+
+
+
             ReadPrefs();
             if (GMPUI.chatIntegration)
             {
@@ -188,8 +201,13 @@
 
             if (scene.name == "GameCore")
             {
+
                 if (GMPUI.noArrows)
                     twitchPowers.StartCoroutine(TwitchPowers.NoArrows());
+                if (GMPUI.chatIntegration && Config.maxCharges > 0)
+                    chatPowers.AddComponent<GMPDisplay>();
+                if (Config.timeForCharges > 0)
+                    twitchPowers.StartCoroutine(TwitchPowers.ChargeOverTime());
 
 
 
@@ -376,7 +394,7 @@
             }
 
 
-            if (GMPUI.randomNJS)
+            if (GMPUI.njsRandom)
             {
 
                 TwitchPowers.AdjustNJS(UnityEngine.Random.Range(Config.njsRandomMin, Config.njsRandomMax));
@@ -554,7 +572,7 @@
 
         public IEnumerator GrabPP()
         {
-            yield return new WaitForSecondsRealtime(0.5f);
+            yield return new WaitForSecondsRealtime(1f);
             var texts = Resources.FindObjectsOfTypeAll<TMP_Text>();
             foreach (TMP_Text text in texts)
             {
@@ -566,85 +584,90 @@
                 }
 
             }
-            yield return new WaitForSecondsRealtime(10);
-            if (!ppText.text.Contains("html"))
-                Log(ppText.text);
-            if (!(ppText.text.Contains("Refresh") || ppText.text.Contains("html")))
+            yield return new WaitForSecondsRealtime(9f);
+            if (ppText != null)
             {
-                rank = ppText.text.Split('#', '<')[1];
-                pp = ppText.text.Split('(', 'p')[1];
-                currentpp = float.Parse(pp, System.Globalization.CultureInfo.InvariantCulture);
-                currentRank = int.Parse(rank, System.Globalization.CultureInfo.InvariantCulture);
-                Log("Rank: " + currentRank);
-                Log("PP: " + currentpp);
-                //        if (firstLoad == true)
-                //           if (GMPUI.chatDelta)
-                //                 TwitchConnection.Instance.SendChatMessage("Loaded. PP: " + currentpp + " pp. Rank: " + currentRank);
 
-                if (oldpp != 0)
+
+                if (!ppText.text.Contains("html"))
+                    Log(ppText.text);
+                if (!(ppText.text.Contains("Refresh") || ppText.text.Contains("html")))
                 {
-                    deltaPP = 0;
-                    deltaRank = 0;
-                    deltaPP = currentpp - oldpp;
-                    deltaRank = currentRank - oldRank;
+                    rank = ppText.text.Split('#', '<')[1];
+                    pp = ppText.text.Split('(', 'p')[1];
+                    currentpp = float.Parse(pp, System.Globalization.CultureInfo.InvariantCulture);
+                    currentRank = int.Parse(rank, System.Globalization.CultureInfo.InvariantCulture);
+                    Log("Rank: " + currentRank);
+                    Log("PP: " + currentpp);
+                    //        if (firstLoad == true)
+                    //           if (GMPUI.chatDelta)
+                    //                 TwitchConnection.Instance.SendChatMessage("Loaded. PP: " + currentpp + " pp. Rank: " + currentRank);
 
-                    if (deltaPP != 0 || deltaRank != 0)
+                    if (oldpp != 0)
                     {
-                        ppText.enableWordWrapping = false;
-                        if (deltaRank < 0)
+                        deltaPP = 0;
+                        deltaRank = 0;
+                        deltaPP = currentpp - oldpp;
+                        deltaRank = currentRank - oldRank;
+
+                        if (deltaPP != 0 || deltaRank != 0)
                         {
-                            if (deltaRank == -1)
+                            ppText.enableWordWrapping = false;
+                            if (deltaRank < 0)
+                            {
+                                if (deltaRank == -1)
+                                {
+                                    if (GMPUI.chatDelta)
+                                        TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Gained 1 Rank.");
+                                    ppText.text += " Change: Gained " + deltaPP + " pp. " + "Gained 1 Rank";
+                                }
+
+                                else
+                                {
+                                    if (GMPUI.chatDelta)
+                                        TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Gained " + Math.Abs(deltaRank) + " Ranks.");
+                                    ppText.text += " Change: Gained " + deltaPP + " pp. " + "Gained " + Math.Abs(deltaRank) + " Ranks";
+                                }
+
+                            }
+                            else if (deltaRank == 0)
                             {
                                 if (GMPUI.chatDelta)
-                                    TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Gained 1 Rank.");
-                                ppText.text += " Change: Gained " + deltaPP + " pp. " + "Gained 1 Rank";
+                                    TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. No change in Rank.");
+                                ppText.text += " Change: Gained " + deltaPP + " pp. " + "No change in Rank";
                             }
 
-                            else
+                            else if (deltaRank > 0)
                             {
-                                if (GMPUI.chatDelta)
-                                    TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Gained " + Math.Abs(deltaRank) + " Ranks.");
-                                ppText.text += " Change: Gained " + deltaPP + " pp. " + "Gained " + Math.Abs(deltaRank) + " Ranks";
+                                if (deltaRank == 1)
+                                {
+                                    if (GMPUI.chatDelta)
+                                        TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Lost 1 Rank.");
+                                    ppText.text += " Change: Gained " + deltaPP + " pp. " + "Lost 1 Rank";
+                                }
+
+                                else
+                                {
+                                    if (GMPUI.chatDelta)
+                                        TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Lost " + Math.Abs(deltaRank) + " Ranks.");
+                                    ppText.text += " Change: Gained " + deltaPP + " pp. " + "Lost " + Math.Abs(deltaRank) + " Ranks";
+                                }
+
                             }
 
+                            oldRank = currentRank;
+                            oldpp = currentpp;
                         }
-                        else if (deltaRank == 0)
-                        {
-                            if (GMPUI.chatDelta)
-                                TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. No change in Rank.");
-                            ppText.text += " Change: Gained " + deltaPP + " pp. " + "No change in Rank";
-                        }
-
-                        else if (deltaRank > 0)
-                        {
-                            if (deltaRank == 1)
-                            {
-                                if (GMPUI.chatDelta)
-                                    TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Lost 1 Rank.");
-                                ppText.text += " Change: Gained " + deltaPP + " pp. " + "Lost 1 Rank";
-                            }
-
-                            else
-                            {
-                                if (GMPUI.chatDelta)
-                                    TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Lost " + Math.Abs(deltaRank) + " Ranks.");
-                                ppText.text += " Change: Gained " + deltaPP + " pp. " + "Lost " + Math.Abs(deltaRank) + " Ranks";
-                            }
-
-                        }
-
+                    }
+                    else
+                    {
                         oldRank = currentRank;
                         oldpp = currentpp;
+                        deltaPP = 0;
+                        deltaRank = 0;
                     }
-                }
-                else
-                {
-                    oldRank = currentRank;
-                    oldpp = currentpp;
-                    deltaPP = 0;
-                    deltaRank = 0;
-                }
 
+                }
             }
             firstLoad = false;
         }

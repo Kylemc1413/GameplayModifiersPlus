@@ -9,7 +9,7 @@
         public static bool normalSizeCoolDown;
         public static bool randomCoolDown;
         public static bool noArrowsCooldown;
-        public static bool randomnjsCoolDown;
+        public static bool njsRandomCoolDown;
         public static bool funkyCoolDown;
         public static bool rainbowCoolDown;
 
@@ -39,8 +39,8 @@
                 case "noarrows":
                     noArrowsCooldown = state;
                     break;
-                case "randomnjs":
-                    randomnjsCoolDown = state;
+                case "njsrandom":
+                    njsRandomCoolDown = state;
                     break;
                 case "funky":
                     funkyCoolDown = state;
@@ -72,8 +72,8 @@
                     return randomCoolDown;
                 case "noarrows":
                     return noArrowsCooldown;
-                case "randomnjs":
-                    return randomnjsCoolDown;
+                case "njsrandom":
+                    return njsRandomCoolDown;
                 case "funky":
                     return funkyCoolDown;
                 case "rainbow":
@@ -90,7 +90,7 @@
             healthCoolDown = false;
             normalSizeCoolDown = false;
             daCoolDown = false;
-            randomnjsCoolDown = false;
+            njsRandomCoolDown = false;
             rainbowCoolDown = false;
             randomCoolDown = false;
             noArrowsCooldown = false;

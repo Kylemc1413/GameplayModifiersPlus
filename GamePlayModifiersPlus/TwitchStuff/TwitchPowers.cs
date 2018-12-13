@@ -8,41 +8,56 @@
 
     public class TwitchPowers : MonoBehaviour
     {
+        public static IEnumerator ChargeOverTime()
+        {
+            yield return new WaitForSeconds(Plugin.Config.timeForCharges);
+            Plugin.charges += Plugin.Config.chargesOverTime;
+            if (Plugin.charges > Plugin.Config.maxCharges) Plugin.charges = Plugin.Config.maxCharges;
+            Plugin.twitchPowers.StartCoroutine(ChargeOverTime());
+        }
+
+
         public static IEnumerator TempDA(float length)
         {
-            Plugin.Log("Starting");
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            text.text += " DA | ";
             Plugin.spawnController.SetField("_disappearingArrows", true);
             yield return new WaitForSeconds(length);
             Plugin.spawnController.SetField("_disappearingArrows", false);
+            text.text = text.text.Replace(" DA | ", "");
         }
 
         public static IEnumerator CoolDown(float waitTime, string cooldown, string message)
         {
-
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
+            text.text += " " + cooldown + " | ";
             Plugin.cooldowns.SetCooldown(true, cooldown);
             if (Plugin.Config.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
             {
-                SharedCoroutineStarter.instance.StartCoroutine(GlobalCoolDown());
                 TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + Plugin.Config.globalCommandCooldown + " seconds.");
             }
             else
                 TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
 
-
             yield return new WaitForSeconds(waitTime);
             Plugin.cooldowns.SetCooldown(false, cooldown);
+            text.text = text.text.Replace(" " + cooldown + " | ", "");
         }
 
         public static IEnumerator GlobalCoolDown()
         {
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
 
             Plugin.cooldowns.SetCooldown(true, "Global");
             yield return new WaitForSeconds(Plugin.Config.globalCommandCooldown);
             Plugin.cooldowns.SetCooldown(false, "Global");
+            text.text = text.text.Replace(" " + "Global" + " | ", "");
         }
 
         public static IEnumerator TempInstaFail(float length)
         {
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            text.text += " InstaFail | ";
             Image energyBar = Plugin.energyPanel.GetField<Image>("_energyBar");
             energyBar.color = Color.red;
             Plugin.energyCounter.SetField("_badNoteEnergyDrain", 1f);
@@ -52,13 +67,16 @@
             yield return new WaitForSeconds(length);
             energyBar.color = Color.white;
             Plugin.energyCounter.SetField("_badNoteEnergyDrain", 0.1f);
-            Plugin.energyCounter.SetField("_missNoteEnergyDrain", 0.1f);
+            Plugin.energyCounter.SetField("_missNoteEnergyDrain", 0.15f);
             Plugin.energyCounter.SetField("_hitBombEnergyDrain", 0.15f);
             Plugin.energyCounter.SetField("_obstacleEnergyDrainPerSecond", 0.1f);
+            text.text = text.text.Replace(" InstaFail | ", "");
         }
 
         public static IEnumerator TempInvincibility(float length)
         {
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            text.text += " Invincible | ";
             Image energyBar = Plugin.energyPanel.GetField<Image>("_energyBar");
             energyBar.color = Color.yellow;
             Plugin.energyCounter.SetField("_badNoteEnergyDrain", 0f);
@@ -68,9 +86,10 @@
             yield return new WaitForSeconds(length);
             energyBar.color = Color.white;
             Plugin.energyCounter.SetField("_badNoteEnergyDrain", 0.1f);
-            Plugin.energyCounter.SetField("_missNoteEnergyDrain", 0.1f);
+            Plugin.energyCounter.SetField("_missNoteEnergyDrain", 0.15f);
             Plugin.energyCounter.SetField("_hitBombEnergyDrain", 0.15f);
             Plugin.energyCounter.SetField("_obstacleEnergyDrainPerSecond", 0.1f);
+            text.text = text.text.Replace(" Invincible | ", "");
         }
 
         public static IEnumerator SpecialEvent()
@@ -148,25 +167,33 @@
 
         public static IEnumerator ScaleNotes(float scale, float length)
         {
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            text.text += " Smaller/Larger | ";
             Plugin.altereddNoteScale = scale;
             yield return new WaitForSeconds(length);
             Plugin.altereddNoteScale = 1f;
+            text.text = text.text.Replace(" Smaller/Larger | ", "");
         }
 
         public static IEnumerator RandomNotes(float length)
         {
-
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            text.text += " Random | ";
             GMPUI.randomSize = true;
             yield return new WaitForSeconds(length);
             GMPUI.randomSize = false;
+            text.text = text.text.Replace(" Random | ", "");
         }
 
         public static IEnumerator njsRandom(float length)
         {
-            GMPUI.randomNJS = true;
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            text.text += " NJSRandom | ";
+            GMPUI.njsRandom = true;
             yield return new WaitForSeconds(length);
-            GMPUI.randomNJS = false;
+            GMPUI.njsRandom = false;
             AdjustNJS(Plugin.songNJS);
+            text.text = text.text.Replace(" NJSRandom | ", "");
         }
 
         public static IEnumerator Pause(float waitTime)
@@ -187,8 +214,8 @@
 
         public static IEnumerator TempNoArrows(float length)
         {
-            Plugin.Log("Starting");
-
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            text.text += " NoArrows | ";
             yield return new WaitForSeconds(0f);
             GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
             BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
@@ -216,7 +243,9 @@
 
                 }
             }
-        //    dataModel.beatmapData = beatmapData;
+            yield return new WaitForSeconds(length + 2f);
+            text.text = text.text.Replace(" NoArrows | ", "");
+            //    dataModel.beatmapData = beatmapData;
         }
 
         public static IEnumerator NoArrows()
@@ -253,27 +282,31 @@
 
         public static IEnumerator Funky(float length)
         {
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            text.text += " Funky | ";
             GMPUI.funky = true;
             yield return new WaitForSeconds(length);
             GMPUI.funky = false;
+            text.text = text.text.Replace(" Funky | ", "");
         }
 
         public static IEnumerator Rainbow(float length)
         {
-
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            text.text += " Rainbow | ";
             GMPUI.rainbow = true;
             yield return new WaitForSeconds(length);
             GMPUI.rainbow = false;
             Plugin.colorA.SetColor(Plugin.oldColorA);
             Plugin.colorB.SetColor(Plugin.oldColorB);
-            Plugin.Log("Done");
+            text.text = text.text.Replace(" Rainbow | ", "");
         }
 
         public static void ResetPowers()
         {
             GMPUI.rainbow = false;
             GMPUI.funky = false;
-            GMPUI.randomNJS = false;
+            GMPUI.njsRandom = false;
             GMPUI.randomSize = false;
             Plugin.altereddNoteScale = 1f;
             Time.timeScale = 1;

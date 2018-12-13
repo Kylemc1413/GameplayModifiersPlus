@@ -30,7 +30,7 @@
         public static bool swapSabers;
         public static bool funky;
         public static bool rainbow;
-        public static bool randomNJS;
+        public static bool njsRandom;
         public static bool randomSize = false;
         public static bool noArrows = false;
 
@@ -97,12 +97,12 @@
             swapSabersOption.AddConflict("Chat Integration");
 
             var njsRandomOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Random NJS", "GMP2", disableScoreString + "Randomizes Note Jump Speed", _RandomIcon);
-            njsRandomOption.GetValue = randomNJS;
-            njsRandomOption.OnToggle += (value) => { randomNJS = value; Plugin.Log("Changed value"); };
+            njsRandomOption.GetValue = njsRandom;
+            njsRandomOption.OnToggle += (value) => { njsRandom = value; Plugin.Log("Changed value"); };
             njsRandomOption.AddConflict("Chat Integration");
 
             var randomSizeOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Random Note Size", "GMP2", disableScoreString + "Randomizes Note Size", _RandomIcon);
-            randomSizeOption.GetValue = randomNJS;
+            randomSizeOption.GetValue = njsRandom;
             randomSizeOption.OnToggle += (value) => { randomSize = value; Plugin.Log("Changed value"); };
             randomSizeOption.AddConflict("Chat Integration");
 
