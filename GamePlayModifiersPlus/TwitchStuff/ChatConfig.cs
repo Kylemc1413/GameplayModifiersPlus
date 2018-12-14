@@ -6,6 +6,7 @@
     public class ChatConfig
     {
         public string FilePath { get; }
+        public bool uiOnTop = false;
         public bool showCooldownOnMessage = false;
         public int commandsPerMessage = 2;
         public float globalCommandCooldown = 10f;
@@ -182,6 +183,12 @@
                     break;
                 case "chargesovertime":
                     chargesOverTime = int.Parse(value);
+                    break;
+                case "showcooldownonmessage":
+                    showCooldownOnMessage = Convert.ToBoolean(value);
+                    break;
+                case "uiontop":
+                    uiOnTop = Convert.ToBoolean(value);
                     break;
                 default:
                     success = false;

@@ -112,6 +112,12 @@
                     case "chargesovertime":
                         property = "chargesovertime";
                         break;
+                    case "showcooldownonmessage":
+                        property = "showcooldownonmessage";
+                        break;
+                    case "uiontop":
+                        property = "uiontop";
+                        break;
                     default:
                         return;
                 }

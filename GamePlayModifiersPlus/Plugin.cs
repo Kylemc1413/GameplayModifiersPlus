@@ -360,8 +360,10 @@
             FloatBehavior behavior = noteTransform.gameObject.GetComponent<FloatBehavior>();
             if (behavior != null)
             {
+         
                 noteTransform.localPosition = new Vector3(behavior.originalX, behavior.originalY, noteTransform.localPosition.z);
                 GameObject.Destroy(behavior);
+  
             }
         }
 

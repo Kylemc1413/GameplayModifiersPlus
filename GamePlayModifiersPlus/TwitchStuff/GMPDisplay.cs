@@ -36,7 +36,14 @@ namespace GamePlayModifiersPlus.TwitchStuff
             chargeText.font = Resources.Load<TMP_FontAsset>("Teko-Medium SDF No Glow");
             chargeText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1f);
             chargeText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
-            chargeText.rectTransform.position = new Vector3(0.1f, 3.5f, 4.25f);
+            if (Plugin.Config.uiOnTop)
+                chargeText.rectTransform.position = new Vector3(0.1f, 3.5f, 5f);
+            else
+            {
+                chargeText.rectTransform.position = new Vector3(0.2f, -1f, 7f);
+                textObj.transform.localScale *= 2.0f;
+            }
+
 
             var counterImage = ReflectionUtil.GetPrivateField<Image>(
     Resources.FindObjectsOfTypeAll<ScoreMultiplierUIController>().First(), "_multiplierProgressImage");
