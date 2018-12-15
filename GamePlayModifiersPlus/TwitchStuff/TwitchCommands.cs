@@ -153,6 +153,9 @@
                     case "cooldown":
                         property = "cooldown";
                         break;
+                    case "pauseglobalcooldown":
+                        property = "cooldown";
+                        break;
                     case "duration":
                         property = "duration";
                         break;
@@ -197,7 +200,11 @@
             }
             if (message.Content.ToLower().Contains("!gm chargehelp"))
             {
-                TwitchConnection.Instance.SendChatMessage("Every " + Plugin.Config.bitsPerCharge + " bits sent with a message adds a charge, which are used to activate commands! If you add super at the end of a command, it will cost " + Plugin.Config.chargesForSuperCharge + " Charges but will make the effect last much longer! " + Plugin.Config.chargesPerLevel + " Charges are generated every song with chat mode on");
+                if (Plugin.Config.timeForCharges == 0 || Plugin.Config.chargesOverTime == 0)
+                    TwitchConnection.Instance.SendChatMessage("Every " + Plugin.Config.bitsPerCharge + " bits sent with a message adds a charge, which are used to activate commands! If you add super at the end of a command, it will cost " + Plugin.Config.chargesForSuperCharge + " Charges but will make the effect last much longer! " + Plugin.Config.chargesPerLevel + " Charges are generated every song with chat mode on.");
+                else
+                    TwitchConnection.Instance.SendChatMessage("Every " + Plugin.Config.bitsPerCharge + " bits sent with a message adds a charge, which are used to activate commands! If you add super at the end of a command, it will cost " + Plugin.Config.chargesForSuperCharge + " Charges but will make the effect last much longer! " + Plugin.Config.chargesPerLevel + " Charges are generated every song with chat mode on. Every " + Plugin.Config.timeForCharges + " seconds, " + Plugin.Config.chargesOverTime + " are added.");
+
             }
             if (message.Content.ToLower().Contains("!gm commands"))
             {
