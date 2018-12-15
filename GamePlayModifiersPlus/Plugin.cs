@@ -61,7 +61,7 @@
         public static GameObject chatIntegrationObj;
         public static int charges = 0;
         public static float altereddNoteScale = 1;
-        public static bool nextIsSuper = false;
+        public static bool trySuper = false;
         public static bool tempNoArrow;
         public static bool superRandom;
         public static bool healthActivated;
@@ -74,6 +74,8 @@
         public static SimpleColorSO colorB;
         public static SimpleColorSO oldColorA = new SimpleColorSO();
         public static SimpleColorSO oldColorB = new SimpleColorSO();
+        public static SimpleColorSO defColorA = new SimpleColorSO();
+        public static SimpleColorSO defColorB = new SimpleColorSO();
         public static int commandsLeftForMessage;
         public static bool test;
         GameObject chatPowers;
@@ -85,6 +87,8 @@
 
             ReadPrefs();
             cooldowns = new Cooldowns();
+            defColorA.SetColor(new Color(1f, 0, 0));
+            defColorB.SetColor(new Color(0, .706f, 1));
         }
 
         private void TwitchConnection_OnMessageReceived(TwitchConnection arg1, TwitchMessage message)
@@ -102,6 +106,7 @@
                 if (GMPUI.chatIntegration && isValidScene && !cooldowns.GetCooldown("Global"))
                 {
                     commandsLeftForMessage = Config.commandsPerMessage;
+                    twitchCommands.CheckPauseMessage(message);
                     twitchCommands.CheckGameplayCommands(message);
                     twitchCommands.CheckHealthCommands(message);
                     twitchCommands.CheckSizeCommands(message);
@@ -109,7 +114,7 @@
 
                 }
             }
-
+            trySuper = false;
             sizeActivated = false;
             healthActivated = false;
         }
@@ -140,13 +145,28 @@
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            GMPDisplay display = chatPowers.GetComponent<GMPDisplay>();
+            if (!PluginManager.Plugins.Any(x => x.Name == "CustomColorsEdit"))
+            {
+                if (colorA != null)
+                    colorA.SetColor(defColorA);
+                if (colorB != null)
+                    colorB.SetColor(defColorB);
+            }
+
+
+                GMPDisplay display = chatPowers.GetComponent<GMPDisplay>();
             if (display != null)
             {
                 display.Destroy();
                 GameObject.Destroy(display);
             }
 
+            if(scene.name == "EmptyTransition" && GameObject.Find("Chat Powers") == null) 
+            {
+                Log("Null Creation of Chat Integration Object");
+                chatPowers = new GameObject("Chat Powers");
+                twitchPowers = chatPowers.AddComponent<TwitchPowers>();
+            }
 
 
             ReadPrefs();
@@ -155,9 +175,12 @@
                 if (twitchPowers != null)
                 {
                     cooldowns.ResetCooldowns();
-                    TwitchPowers.ResetPowers();
+                    TwitchPowers.ResetPowers(false);
                     twitchPowers.StopAllCoroutines();
                 }
+                if (Config.resetChargesperLevel)
+                    charges = 0;
+
 
             }
 

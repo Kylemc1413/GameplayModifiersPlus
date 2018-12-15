@@ -6,7 +6,7 @@
     public class ChatConfig
     {
         public string FilePath { get; }
-        public bool uiOnTop = false;
+        public bool uiOnTop = true;
         public bool showCooldownOnMessage = false;
         public int commandsPerMessage = 2;
         public float globalCommandCooldown = 10f;
@@ -16,6 +16,7 @@
         public int chargesPerLevel = 10;
         public int maxCharges = 30;
         public int bitsPerCharge = 10;
+        public bool resetChargesperLevel = true;
 
         public int chargesOverTime = 1;
         public float timeForCharges = 20f;
@@ -30,6 +31,7 @@
         public int noArrowsChargeCost = 0;
         public int funkyChargeCost = 5;
         public int rainbowChargeCost = 3;
+        public int pauseChargeCost = 20;
         //     public int nMirrorChargeCost = 0;
 
         public float daDuration = 15f;
@@ -54,6 +56,7 @@
         public float noArrowsCooldown = 20f;
         public float funkyCooldown = 30f;
         public float rainbowCooldown = 20f;
+        public float pauseGlobalCooldown = 60f;
         //   public float nMirrorCooldown= 20f;
         public float njsRandomMin = 8f;
         public float njsRandomMax = 16f;
@@ -138,7 +141,8 @@
             chargeCostString += " | NoArrows: " + noArrowsChargeCost;
             chargeCostString += " | Funky: " + funkyChargeCost;
             chargeCostString += " | Rainbow: " + rainbowChargeCost;
-            if (chargeCostString == "Current Costs: DA: 0 | Smaller: 0 | Larger: 0 | Random: 0 | Instafail: 0 | Invincible: 0 | NjsRandom: 0 | NoArrows: 0 | Funky: 0 | Rainbow: 0")
+            chargeCostString += " | Pause: " + pauseChargeCost;
+            if (chargeCostString == "Current Costs: DA: 0 | Smaller: 0 | Larger: 0 | Random: 0 | Instafail: 0 | Invincible: 0 | NjsRandom: 0 | NoArrows: 0 | Funky: 0 | Rainbow: 0 | Pause: 0")
                 chargeCostString = "Current Costs: None!";
         }
 
@@ -189,6 +193,9 @@
                     break;
                 case "uiontop":
                     uiOnTop = Convert.ToBoolean(value);
+                    break;
+                case "resetchargesperlevel":
+                    resetChargesperLevel = Convert.ToBoolean(value);
                     break;
                 default:
                     success = false;
@@ -313,6 +320,14 @@
                         rainbowCooldown = float.Parse(value);
                     else if (property == "duration")
                         rainbowDuration = float.Parse(value);
+                    else
+                        success = false;
+                    break;
+                case "pause":
+                    if (property == "chargecost")
+                        pauseChargeCost = int.Parse(value);
+                    else if (property == "cooldown")
+                        pauseGlobalCooldown = float.Parse(value);
                     else
                         success = false;
                     break;

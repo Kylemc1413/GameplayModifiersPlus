@@ -103,7 +103,7 @@
         {
             Plugin.gnomeActive = true;
             yield return new WaitForSecondsRealtime(0.1f);
-            Plugin.SetTimeScale(0f); 
+            Plugin.SetTimeScale(0f);
             Time.timeScale = 0f;
             Plugin.gnomeSound.Load();
             Plugin.gnomeSound.Play();
@@ -203,20 +203,11 @@
             text.text = text.text.Replace(" NJSRandom | ", "");
         }
 
-        public static IEnumerator Pause(float waitTime)
+        public static IEnumerator Pause()
         {
-            Plugin.paused = true;
-            Plugin.SetTimeScale(0f); ;
-            Time.timeScale = 0f;
-            Plugin.Log("Pausing");
-            yield return new WaitForSecondsRealtime(waitTime);
-            if (Plugin.isValidScene == true)
-            {
-                Plugin.SetTimeScale(1f); ;
-                Time.timeScale = 1f;
-                Plugin.Log("Unpaused");
-                Plugin.paused = false;
-            }
+            yield return new WaitForSeconds(0f);
+            GamePauseManager pauseManager = Resources.FindObjectsOfTypeAll<GamePauseManager>().First();
+            pauseManager.PauseGame();
         }
 
         public static IEnumerator TempNoArrows(float length)
@@ -273,13 +264,13 @@
                 {
                     if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
                     {
-                            note = beatmapObject as NoteData;
+                        note = beatmapObject as NoteData;
 
-                            note.SetNoteToAnyCutDirection();
+                        note.SetNoteToAnyCutDirection();
                     }
 
 
-  
+
 
                 }
             }
@@ -309,7 +300,7 @@
             text.text = text.text.Replace(" Rainbow | ", "");
         }
 
-        public static void ResetPowers()
+        public static void ResetPowers(bool resetMessage)
         {
             GMPUI.rainbow = false;
             GMPUI.funky = false;
@@ -319,6 +310,23 @@
             Time.timeScale = 1;
             Plugin.timeScale = 1;
             Plugin.superRandom = false;
+            if (resetMessage)
+            {
+                Plugin.spawnController.SetField("_disappearingArrows", false);
+                Plugin.colorA.SetColor(Plugin.oldColorA);
+                Plugin.colorB.SetColor(Plugin.oldColorB);
+                var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
+                text.text = " ";
+                var text2 = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+                if (text2.text.Contains("NoArrows"))
+                {
+                text2.text = " ";
+                    text2.text += " NoArrows | ";
+                }
+
+                resetMessage = false;
+            }
+
         }
     }
 }
