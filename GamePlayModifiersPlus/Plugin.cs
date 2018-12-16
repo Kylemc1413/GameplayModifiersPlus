@@ -326,7 +326,7 @@
                     Log("Testing Ground Active");
                     try
                     {
-                        twitchPowers.StartCoroutine(TwitchPowers.SpeedChange(10f, 1.5f));
+             
                     }
                     catch(Exception ex)
                     {
