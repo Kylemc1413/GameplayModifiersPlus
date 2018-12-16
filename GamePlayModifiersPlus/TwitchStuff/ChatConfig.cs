@@ -33,6 +33,8 @@
         public int rainbowChargeCost = 3;
         public int pauseChargeCost = 20;
         public int bombChargeCost = 7;
+        public int fasterChargeCost = 4;
+        public int slowerChargeCost = 4;
         //     public int nMirrorChargeCost = 0;
 
         public float daDuration = 15f;
@@ -46,6 +48,8 @@
         public float funkyDuration = 10f;
         public float rainbowDuration = 10f;
         public float bombDuration = 15f;
+        public float fasterDuration = 15f;
+        public float slowerDuration = 15f;
         //   public float nMirrorDuration = 15f;
 
         public float daCooldown = 20f;
@@ -60,12 +64,16 @@
         public float rainbowCooldown = 20f;
         public float pauseGlobalCooldown = 60f;
         public float bombCooldown = 45f;
+        public float fasterCooldown = 30f;
+        public float slowerCooldown = 30f;
         //   public float nMirrorCooldown= 20f;
         public float njsRandomMin = 8f;
         public float njsRandomMax = 16f;
         public float randomMin = 0.6f;
         public float randomMax = 1.5f;
-        public float bombChance = 0.1f;
+        public float bombChance = 0.33f;
+        public float fasterMultiplier = 1.2f;
+        public float slowerMultiplier = .85f;
         private readonly FileSystemWatcher _configWatcher;
         public event Action<ChatConfig> ConfigChangedEvent;
         private bool _saving;
@@ -147,7 +155,9 @@
             chargeCostString += " | Rainbow: " + rainbowChargeCost;
             chargeCostString += " | Pause: " + pauseChargeCost;
             chargeCostString += " | Bombs: " + bombChargeCost;
-            if (chargeCostString == "Current Costs: DA: 0 | Smaller: 0 | Larger: 0 | Random: 0 | Instafail: 0 | Invincible: 0 | NjsRandom: 0 | NoArrows: 0 | Funky: 0 | Rainbow: 0 | Pause: 0 | Bombs: 0")
+            chargeCostString += " | Faster: " + fasterChargeCost;
+            chargeCostString += " | Slower: " + slowerChargeCost;
+            if (chargeCostString == "Current Costs: DA: 0 | Smaller: 0 | Larger: 0 | Random: 0 | Instafail: 0 | Invincible: 0 | NjsRandom: 0 | NoArrows: 0 | Funky: 0 | Rainbow: 0 | Pause: 0 | Bombs: 0 | Faster: 0 | Slower: 0")
                 chargeCostString = "Current Costs: None!";
         }
 
@@ -345,6 +355,30 @@
                         bombDuration = float.Parse(value);
                     else if (property == "chance")
                         bombChance = float.Parse(value);
+                    else
+                        success = false;
+                    break;
+                case "faster":
+                    if (property == "chargecost")
+                        fasterChargeCost = int.Parse(value);
+                    else if (property == "cooldown")
+                        fasterCooldown = float.Parse(value);
+                    else if (property == "duration")
+                        fasterDuration = float.Parse(value);
+                    else if (property == "multiplier")
+                        fasterMultiplier = float.Parse(value);
+                    else
+                        success = false;
+                    break;
+                case "slower":
+                    if (property == "chargecost")
+                        slowerChargeCost = int.Parse(value);
+                    else if (property == "cooldown")
+                        slowerCooldown = float.Parse(value);
+                    else if (property == "duration")
+                        slowerDuration = float.Parse(value);
+                    else if (property == "multiplier")
+                        slowerMultiplier = float.Parse(value);
                     else
                         success = false;
                     break;

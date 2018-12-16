@@ -93,6 +93,12 @@
                 case "bombs":
                     command = "bombs";
                     break;
+                case "faster":
+                    command = "faster";
+                    break;
+                case "slower":
+                    command = "slower";
+                    break;
                 default:
                     isPropertyOnly = true;
                     break;
@@ -188,6 +194,9 @@
                         break;
                     case "chance":
                         property = "chance";
+                        break;
+                    case "multiplier":
+                        property = "multiplier";
                         break;
                     default:
                         return;
@@ -556,6 +565,55 @@
 
         }
 
+        public void CheckSpeedCommands(TwitchMessage message)
+        {
+            if (message.Content.ToLower().Contains("!gm faster") && !Plugin.cooldowns.GetCooldown("Speed") && Plugin.commandsLeftForMessage > 0)
+            {
+
+                if (Plugin.trySuper && Plugin.charges >= Plugin.Config.chargesForSuperCharge + Plugin.Config.fasterChargeCost)
+                {
+                    //               Plugin.beepSound.Play();
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.SpeedChange(Plugin.songAudio.clip.length, Plugin.Config.fasterMultiplier));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.songAudio.clip.length, "Speed", "Fast Time!"));
+                    Plugin.trySuper = false;
+                    Plugin.charges -= Plugin.Config.chargesForSuperCharge + Plugin.Config.fasterChargeCost;
+                    Plugin.commandsLeftForMessage -= 1;
+                    globalActive = true;
+                }
+                else if (Plugin.charges >= Plugin.Config.fasterChargeCost)
+                {
+                    //                Plugin.beepSound.Play();
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.SpeedChange(Plugin.Config.fasterDuration, Plugin.Config.fasterMultiplier));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.Config.fasterCooldown, "Speed", "Temporary faster song speed Active."));
+                    Plugin.charges -= Plugin.Config.fasterChargeCost;
+                    Plugin.commandsLeftForMessage -= 1;
+                    globalActive = true;
+                }
+            }
+            if (message.Content.ToLower().Contains("!gm slower") && !Plugin.cooldowns.GetCooldown("Speed") && Plugin.commandsLeftForMessage > 0)
+            {
+
+                if (Plugin.trySuper && Plugin.charges >= Plugin.Config.chargesForSuperCharge + Plugin.Config.slowerChargeCost)
+                {
+                    //               Plugin.beepSound.Play();
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.SpeedChange(Plugin.songAudio.clip.length, Plugin.Config.slowerMultiplier));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.songAudio.clip.length, "Speed", "Weakling Slower Song Time!"));
+                    Plugin.trySuper = false;
+                    Plugin.charges -= Plugin.Config.chargesForSuperCharge + Plugin.Config.slowerChargeCost;
+                    Plugin.commandsLeftForMessage -= 1;
+                    globalActive = true;
+                }
+                else if (Plugin.charges >= Plugin.Config.slowerChargeCost)
+                {
+                    //                Plugin.beepSound.Play();
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.SpeedChange(Plugin.Config.slowerDuration, Plugin.Config.slowerMultiplier));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.Config.slowerCooldown, "Speed", "Temporary slower song speed Active."));
+                    Plugin.charges -= Plugin.Config.slowerChargeCost;
+                    Plugin.commandsLeftForMessage -= 1;
+                    globalActive = true;
+                }
+            }
+        }
         public int CheckCommandScope()
         {
 

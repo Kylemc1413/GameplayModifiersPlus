@@ -279,7 +279,7 @@
 
                                 //                Plugin.Log("Min: " + randMin + " Max: " + randMax + " Number: " + random);
 
-                                if (random >= randMin || Plugin.Config.bombChance == 1)
+                                if (random <= randMin || Plugin.Config.bombChance == 1)
                                     note.SetProperty("noteType", NoteType.Bomb);
                             }
                             catch (System.Exception ex)
@@ -298,9 +298,35 @@
             dataModel.beatmapData = beatmapData;
         }
 
+        public static IEnumerator SpeedChange(float length, float pitch)
+        {
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            text.text += " Speed | ";
+            GameplayCoreSceneSetup sceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
+            Plugin.AudioTimeSync.SetProperty("didInit", false);
+            Plugin.AudioTimeSync.Init(Plugin.levelData.difficultyBeatmap.level.audioClip, Plugin.songAudio.time, Plugin.levelData.difficultyBeatmap.level.songTimeOffset, pitch);
+            AudioMixerSO mixer = sceneSetup.GetField<AudioMixerSO>("_audioMixer");
+            mixer.musicPitch = 1f / pitch;
+            Plugin.AudioTimeSync.forcedAudioSync = true;
+
+            float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
+
+            yield return new WaitForSeconds(length);
+            Plugin.AudioTimeSync.SetProperty("didInit", false);
+            Plugin.AudioTimeSync.Init(Plugin.levelData.difficultyBeatmap.level.audioClip, Plugin.songAudio.time, Plugin.levelData.difficultyBeatmap.level.songTimeOffset, songspeedmul);
+            mixer.musicPitch = 1 / songspeedmul;
+            if (songspeedmul == 1f) mixer.musicPitch = 1;
+            if(songspeedmul == 1f) Plugin.AudioTimeSync.forcedAudioSync = false;
 
 
-        public static IEnumerator NoArrows()
+            //     Plugin.AudioTimeSync.SetField("didInit", false);
+            //      Plugin.AudioTimeSync.Init(Plugin.levelData.difficultyBeatmap.level.audioClip, Plugin.songAudio.time, Plugin.levelData.difficultyBeatmap.level.songTimeOffset, pitch);
+            text.text = text.text.Replace(" Speed | ", "");
+        }
+
+
+
+            public static IEnumerator NoArrows()
         {
             Plugin.Log("Starting");
 
@@ -374,9 +400,27 @@
                 var text2 = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
                 if (text2.text.Contains("NoArrows"))
                 {
-                    text2.text = " ";
+                    text2.text = "";
                     text2.text += " NoArrows | ";
+                    if (text2.text.Contains("Bombs"))
+                    text2.text += " Bombs | ";
+
                 }
+                else if (text2.text.Contains("Bombs"))
+                {
+                    text2.text = "";
+                    text2.text += " Bombs | ";
+                }
+                else
+                    text2.text = "";
+                GameplayCoreSceneSetup sceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
+                AudioMixerSO mixer = sceneSetup.GetField<AudioMixerSO>("_audioMixer");
+                float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
+                Plugin.AudioTimeSync.SetProperty("didInit", false);
+                Plugin.AudioTimeSync.Init(Plugin.levelData.difficultyBeatmap.level.audioClip, Plugin.songAudio.time, Plugin.levelData.difficultyBeatmap.level.songTimeOffset, songspeedmul);
+                mixer.musicPitch = 1 / songspeedmul;
+                if (songspeedmul == 1f) mixer.musicPitch = 1;
+                if (songspeedmul == 1f) Plugin.AudioTimeSync.forcedAudioSync = false;
 
                 resetMessage = false;
             }

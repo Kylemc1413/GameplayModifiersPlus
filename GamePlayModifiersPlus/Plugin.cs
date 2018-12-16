@@ -18,7 +18,7 @@
         public static readonly ChatConfig Config = new ChatConfig(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
 
         public string Name => "GameplayModifiersPlus";
-        public string Version => "1.1.2";
+        public string Version => "1.1.5";
 
         public static float timeScale = 1;
         public TwitchCommands twitchCommands = new TwitchCommands();
@@ -110,8 +110,8 @@
                     twitchCommands.CheckGameplayCommands(message);
                     twitchCommands.CheckHealthCommands(message);
                     twitchCommands.CheckSizeCommands(message);
+                    twitchCommands.CheckSpeedCommands(message);
                     twitchCommands.CheckGlobalCoolDown();
-
                 }
             }
             trySuper = false;
@@ -326,7 +326,7 @@
                     Log("Testing Ground Active");
                     try
                     {
-         
+                        twitchPowers.StartCoroutine(TwitchPowers.SpeedChange(10f, 1.5f));
                     }
                     catch(Exception ex)
                     {
