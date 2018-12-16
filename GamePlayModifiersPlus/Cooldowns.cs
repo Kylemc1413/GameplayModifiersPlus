@@ -12,6 +12,7 @@
         public static bool njsRandomCoolDown;
         public static bool funkyCoolDown;
         public static bool rainbowCoolDown;
+        public static bool bombCoolDown;
 
         public void SetCooldown(bool state, string cooldown)
         {
@@ -48,6 +49,9 @@
                 case "rainbow":
                     rainbowCoolDown = state;
                     break;
+                case "bombs":
+                    bombCoolDown = state;
+                    break;
                 default:
                     break;
             }
@@ -78,6 +82,8 @@
                     return funkyCoolDown;
                 case "rainbow":
                     return rainbowCoolDown;
+                case "bombs":
+                    return bombCoolDown;
                 default:
                     return false;
             }
@@ -95,6 +101,7 @@
             randomCoolDown = false;
             noArrowsCooldown = false;
             funkyCoolDown = false;
+            bombCoolDown = false;
         }
     }
 }

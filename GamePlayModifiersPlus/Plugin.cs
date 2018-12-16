@@ -18,7 +18,7 @@
         public static readonly ChatConfig Config = new ChatConfig(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
 
         public string Name => "GameplayModifiersPlus";
-        public string Version => "1.1.1";
+        public string Version => "1.1.2";
 
         public static float timeScale = 1;
         public TwitchCommands twitchCommands = new TwitchCommands();
@@ -248,7 +248,7 @@
 
             if (scene.name == "GameCore")
             {
-
+                Log(GMPUI.swapSabers.ToString());
                 if (GMPUI.noArrows)
                     twitchPowers.StartCoroutine(TwitchPowers.NoArrows());
                 if (GMPUI.chatIntegration && Config.maxCharges > 0)
@@ -323,7 +323,15 @@
 
                 if (GMPUI.swapSabers)
                 {
-                    twitchPowers.StartCoroutine(Pause());
+                    Log("Testing Ground Active");
+                    try
+                    {
+         
+                    }
+                    catch(Exception ex)
+                    {
+                        Log(ex.ToString());
+                    }
                 }
                 //  SharedCoroutineStarter.instance.StartCoroutine(SwapSabers(leftSaber, rightSaber));
 

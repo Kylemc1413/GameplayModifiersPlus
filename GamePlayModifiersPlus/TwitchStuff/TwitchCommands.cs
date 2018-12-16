@@ -90,6 +90,9 @@
                 case "pause":
                     command = "pause";
                     break;
+                case "bombs":
+                    command = "bombs";
+                    break;
                 default:
                     isPropertyOnly = true;
                     break;
@@ -182,6 +185,9 @@
                         break;
                     case "alloweveryone":
                         property = "alloweveryone";
+                        break;
+                    case "chance":
+                        property = "chance";
                         break;
                     default:
                         return;
@@ -519,6 +525,30 @@
                     Plugin.twitchPowers.StartCoroutine(TwitchPowers.Rainbow(Plugin.Config.rainbowDuration));
                     Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.Config.rainbowCooldown, "Rainbow", "Rainbow Activated"));
                     Plugin.charges -= Plugin.Config.rainbowChargeCost;
+                    Plugin.commandsLeftForMessage -= 1;
+                    globalActive = true;
+                }
+            }
+
+            if (message.Content.ToLower().Contains("!gm bombs") && !Plugin.cooldowns.GetCooldown("Bombs") && Plugin.commandsLeftForMessage > 0 && Plugin.Config.bombChance > 0)
+            {
+
+                if (Plugin.trySuper && Plugin.charges >= Plugin.Config.chargesForSuperCharge + Plugin.Config.bombChargeCost)
+                {
+                    Plugin.beepSound.Play();
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.RandomBombs(Plugin.songAudio.clip.length));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.songAudio.clip.length, "Bombs", "Bombs Away!"));
+                    Plugin.trySuper = false;
+                    Plugin.charges -= Plugin.Config.chargesForSuperCharge + Plugin.Config.bombChargeCost;
+                    Plugin.commandsLeftForMessage -= 1;
+                    globalActive = true;
+                }
+                else if (Plugin.charges >= Plugin.Config.bombChargeCost)
+                {
+                    Plugin.beepSound.Play();
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.RandomBombs(Plugin.Config.bombDuration));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.Config.bombCooldown, "Bombs", "Sneaking Bombs into the map."));
+                    Plugin.charges -= Plugin.Config.bombChargeCost;
                     Plugin.commandsLeftForMessage -= 1;
                     globalActive = true;
                 }

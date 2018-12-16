@@ -209,7 +209,7 @@
             StandardLevelGameplayManager pauseManager = Resources.FindObjectsOfTypeAll<StandardLevelGameplayManager>().First();
             pauseManager.HandlePauseTriggered();
         }
-        
+
         public static IEnumerator TempNoArrows(float length)
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
@@ -218,7 +218,6 @@
             GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
             BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
             Plugin.Log("Grabbed dataModel");
-            Plugin.Log(dataModel.beatmapData.bombsCount.ToString());
             BeatmapData beatmapData = dataModel.beatmapData;
             BeatmapObjectData[] objects;
             NoteData note;
@@ -245,6 +244,61 @@
             text.text = text.text.Replace(" NoArrows | ", "");
             //    dataModel.beatmapData = beatmapData;
         }
+
+        public static IEnumerator RandomBombs(float length)
+        {
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            text.text += " Bombs | ";
+
+
+            yield return new WaitForSeconds(0f);
+            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
+            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
+            Plugin.Log("Grabbed dataModel");
+            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectData[] objects;
+            NoteData note;
+            float start = Plugin.songAudio.time + 2;
+            float end = start + length + 2f;
+            foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
+            {
+                objects = line.beatmapObjectsData;
+                foreach (BeatmapObjectData beatmapObject in objects)
+                {
+                    if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
+                        if (beatmapObject.time > start && beatmapObject.time < end)
+                        {
+                            try
+                            {
+                                //                        Plugin.Log("Attempting to Convert to Bomb");
+                                note = beatmapObject as NoteData;
+
+                                int randMax = (int)((1 / Plugin.Config.bombChance) * 100);
+                                int randMin = 100;
+                                int random = Random.Range(1, randMax);
+
+                                //                Plugin.Log("Min: " + randMin + " Max: " + randMax + " Number: " + random);
+
+                                if (random >= randMin || Plugin.Config.bombChance == 1)
+                                    note.SetProperty("noteType", NoteType.Bomb);
+                            }
+                            catch (System.Exception ex)
+                            {
+                                Plugin.Log(ex.ToString());
+                            }
+
+
+                        }
+
+                }
+            }
+            yield return new WaitForSeconds(length + 2f);
+
+            text.text = text.text.Replace(" Bombs | ", "");
+            dataModel.beatmapData = beatmapData;
+        }
+
+
 
         public static IEnumerator NoArrows()
         {
@@ -320,7 +374,7 @@
                 var text2 = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
                 if (text2.text.Contains("NoArrows"))
                 {
-                text2.text = " ";
+                    text2.text = " ";
                     text2.text += " NoArrows | ";
                 }
 
