@@ -1,5 +1,10 @@
 #### Github: https://github.com/Kylemc1413/GameplayModifiersPlus/
 
+
+#### Changelog 1.1.5
+- #### Chat Integration
+- 3 New Commands! '!gm bombs' will randomly replace notes with bombs for the duration of the command, the chance of a note becoming a bomb can be adjusted in the config. '!gm faster' and '!gm slower' will change the song speed, just like how faster song, slower song, and practice mode do! The multiplier for each as well as the typical command options can be adjusted, and default to the values faster song and slower song use
+- Various bugfixes
 #### Changelog 1.1.0
 - #### Chat Integration
 - New Command! '!gm pause' Will literally just pause the streamer's game when activated if the charge requirements are met, and will activate a global cooldown for all commands
@@ -85,7 +90,8 @@
 | `Cooldown` | How long in seconds before that command can be used again |
 | `Min` | For random commands, the min value of the random range |
 | `Max` | For random commands, the max value of the random range |
-
+| `Chance` | For commands based on chance, the chance (0-1) of something occuring |
+| `Multiplier` | For multiplier based commands, like faster or slower commands, the multiplier used. I.E. 1.2 = 120% |
 ### Current Commands
 | Command | Description |
 | - | - |
@@ -100,6 +106,9 @@
 | Funky | For the duration, notes are funky |
 | Rainbow | Randomizes note colors for the duration, currently left colors will be random warm colors, right will be random cool colors |
 | Pause | Literally just pauses the game. Has it's own seperate global command cooldown you can set, `pauseGlobalCooldown`, instead of a standard cooldown |
+| Bombs | For the duration, notes have a chance to be replaced with bombs |
+| Faster | For the duration, the song speed is altered by the multiplier |
+| Slower | For the duration, the song speed is altered by the multiplier |
 
 ## Moderator Commands
 ### Reset Command
