@@ -206,10 +206,10 @@
         public static IEnumerator Pause()
         {
             yield return new WaitForSeconds(0f);
-            GamePauseManager pauseManager = Resources.FindObjectsOfTypeAll<GamePauseManager>().First();
-            pauseManager.PauseGame();
+            StandardLevelGameplayManager pauseManager = Resources.FindObjectsOfTypeAll<StandardLevelGameplayManager>().First();
+            pauseManager.HandlePauseTriggered();
         }
-
+        
         public static IEnumerator TempNoArrows(float length)
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
