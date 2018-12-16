@@ -18,11 +18,11 @@
         public static readonly ChatConfig Config = new ChatConfig(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
 
         public string Name => "GameplayModifiersPlus";
-        public string Version => "1.1.0";
+        public string Version => "1.1.1";
 
         public static float timeScale = 1;
         public TwitchCommands twitchCommands = new TwitchCommands();
-        public static TwitchPowers twitchPowers;
+        public static TwitchPowers twitchPowers = null;
         public static SoundPlayer gnomeSound = new SoundPlayer(Properties.Resources.gnome);
         public static SoundPlayer beepSound = new SoundPlayer(Properties.Resources.Beep);
         public static bool soundIsPlaying = false;
@@ -78,7 +78,7 @@
         public static SimpleColorSO defColorB = new SimpleColorSO();
         public static int commandsLeftForMessage;
         public static bool test;
-        GameObject chatPowers;
+        GameObject chatPowers = null;
 
         public void OnApplicationStart()
         {
@@ -135,11 +135,6 @@
                     Log(ex.ToString());
                 }
 
-
-                chatPowers = new GameObject("Chat Powers");
-                twitchPowers = chatPowers.AddComponent<TwitchPowers>();
-                GameObject.DontDestroyOnLoad(chatPowers);
-
             }
         }
 
@@ -153,6 +148,27 @@
                     colorB.SetColor(defColorB);
             }
 
+            //        try
+            //        {
+            if (scene.name == "EmptyTransition")
+            {
+                Log("Resetting Chat Powers Object");
+                if (chatPowers != null)
+                    GameObject.Destroy(chatPowers);
+            }
+            if (chatPowers == null)
+            {
+                Log("Null Creation of Chat Powers Object");
+                chatPowers = new GameObject("Chat Powers");
+                twitchPowers = chatPowers.AddComponent<TwitchPowers>();
+                GameObject.DontDestroyOnLoad(chatPowers);
+            }
+
+    //        }
+    //        catch(Exception ex)
+    //        {
+     //           Log(ex.ToString());
+    //        }
 
                 GMPDisplay display = chatPowers.GetComponent<GMPDisplay>();
             if (display != null)
@@ -161,12 +177,7 @@
                 GameObject.Destroy(display);
             }
 
-            if(scene.name == "EmptyTransition" && GameObject.Find("Chat Powers") == null) 
-            {
-                Log("Null Creation of Chat Integration Object");
-                chatPowers = new GameObject("Chat Powers");
-                twitchPowers = chatPowers.AddComponent<TwitchPowers>();
-            }
+
 
 
             ReadPrefs();
@@ -368,6 +379,9 @@
 
             }
         }
+
+
+
 
         private void SpawnController_ScaleRemoveMiss(BeatmapObjectSpawnController arg1, NoteController controller)
         {
