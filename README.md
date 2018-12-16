@@ -34,6 +34,15 @@
 
 # Chat Integration
 - ## Make sure to edit the Async Twitch Config in the USERDATA folder, not in Config
+##### Async Twitch Setup Guide
+- Example Async Config
+![Async Config Image](https://i.imgur.com/d9abU8R.png)
+- Username: The name of the user the plugin will send chat messages through
+- ChannelName: The name of the channel the plugin will monitor the chat of to look for messages
+- OauthKey: The oauth key for the user put in the Username section which is required for the plugin to be able to send messages through that user, you can generate one for that account at https://twitchapps.com/tmi/
+- OauthKey MUST Include the 'oauth:' part of the key that is generated
+- Do NOT freely give out your oauth key to other people, (And no that is not my actual oauth key in the image, just an example)
+
 - ### To Use Chat Integration, ensure you have set up Async Twitch to connect to your channel, then turn on the modifier, type !gm help into your chat for details on how to use it, the config for chat settings is located in `UserData/GameplayModifiersPlusChatSettings.ini`
 - ### Refer to below for more information on using chat integration, if you decide not to read it and end up confused because you did not read it, go read it. But you should probably just read it in the first place and save yourself the future trouble
 
