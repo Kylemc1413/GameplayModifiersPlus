@@ -303,8 +303,9 @@
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " Speed | ";
             GameplayCoreSceneSetup sceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-            Plugin.AudioTimeSync.SetProperty("didInit", false);
-            Plugin.AudioTimeSync.Init(Plugin.levelData.difficultyBeatmap.level.audioClip, Plugin.songAudio.time, Plugin.levelData.difficultyBeatmap.level.songTimeOffset, pitch);
+            Plugin.AudioTimeSync.SetField("_timeScale", pitch);
+            Plugin.songAudio.pitch = pitch;
+      //      Plugin.AudioTimeSync.Init(Plugin.levelData.difficultyBeatmap.level.audioClip, Plugin.songAudio.time, Plugin.levelData.difficultyBeatmap.level.songTimeOffset, pitch);
             AudioMixerSO mixer = sceneSetup.GetField<AudioMixerSO>("_audioMixer");
             mixer.musicPitch = 1f / pitch;
             Plugin.AudioTimeSync.forcedAudioSync = true;
@@ -312,8 +313,10 @@
             float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
 
             yield return new WaitForSeconds(length);
-            Plugin.AudioTimeSync.SetProperty("didInit", false);
-            Plugin.AudioTimeSync.Init(Plugin.levelData.difficultyBeatmap.level.audioClip, Plugin.songAudio.time, Plugin.levelData.difficultyBeatmap.level.songTimeOffset, songspeedmul);
+
+            Plugin.AudioTimeSync.SetField("_timeScale", songspeedmul);
+            Plugin.songAudio.pitch = songspeedmul;
+            //        Plugin.AudioTimeSync.Init(Plugin.levelData.difficultyBeatmap.level.audioClip, Plugin.songAudio.time, Plugin.levelData.difficultyBeatmap.level.songTimeOffset, songspeedmul);
             mixer.musicPitch = 1 / songspeedmul;
             if (songspeedmul == 1f) mixer.musicPitch = 1;
             if(songspeedmul == 1f) Plugin.AudioTimeSync.forcedAudioSync = false;
@@ -416,8 +419,8 @@
                 GameplayCoreSceneSetup sceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
                 AudioMixerSO mixer = sceneSetup.GetField<AudioMixerSO>("_audioMixer");
                 float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
-                Plugin.AudioTimeSync.SetProperty("didInit", false);
-                Plugin.AudioTimeSync.Init(Plugin.levelData.difficultyBeatmap.level.audioClip, Plugin.songAudio.time, Plugin.levelData.difficultyBeatmap.level.songTimeOffset, songspeedmul);
+                Plugin.AudioTimeSync.SetField("_timeScale", songspeedmul);
+                Plugin.songAudio.pitch = songspeedmul;
                 mixer.musicPitch = 1 / songspeedmul;
                 if (songspeedmul == 1f) mixer.musicPitch = 1;
                 if (songspeedmul == 1f) Plugin.AudioTimeSync.forcedAudioSync = false;
