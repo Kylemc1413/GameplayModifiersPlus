@@ -18,7 +18,7 @@
         public static readonly ChatConfig Config = new ChatConfig(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
 
         public string Name => "GameplayModifiersPlus";
-        public string Version => "1.1.6";
+        public string Version => "1.1.7";
 
         public static float timeScale = 1;
         public TwitchCommands twitchCommands = new TwitchCommands();
@@ -78,6 +78,8 @@
         public static SimpleColorSO defColorB = new SimpleColorSO();
         public static int commandsLeftForMessage;
         public static bool test;
+
+        public static StandardLevelGameplayManager pauseManager;
         GameObject chatPowers = null;
 
         public void OnApplicationStart()
@@ -257,7 +259,7 @@
                     twitchPowers.StartCoroutine(TwitchPowers.ChargeOverTime());
 
 
-
+                pauseManager = Resources.FindObjectsOfTypeAll<StandardLevelGameplayManager>().First();
                 var colors = Resources.FindObjectsOfTypeAll<SimpleColorSO>();
                 foreach (SimpleColorSO color in colors)
                 {
