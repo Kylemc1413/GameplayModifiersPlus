@@ -3,14 +3,15 @@
     using System;
     using System.IO;
 
-    public class MultiConfig
+    public class MultiValues
     {
         public int maxCharges = 6;
-
+        public int charges = 0;
 
         public int chargesOverTime = 1;
         public float timeForCharges = 10f;
 
+        public float globalCommandCooldown = 10f;
         public float daDuration = 15f;
         public float smallerNoteDuration = 10f;
         public float largerNotesDuration = 10f;
@@ -49,17 +50,6 @@
         public float fasterMultiplier = 1.2f;
         public float slowerMultiplier = .85f;
 
-
-
-        public MultiConfig()
-        {
-        
-        }
-
-
-
-
-        
 
          
 

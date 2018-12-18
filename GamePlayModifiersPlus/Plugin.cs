@@ -15,7 +15,7 @@
     using GamePlayModifiersPlus.TwitchStuff;
     public class Plugin : IPlugin
     {
-        public static readonly ChatConfig Config = new ChatConfig(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
+        public static readonly ChatConfig ChatConfig = new ChatConfig(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
 
         public string Name => "GameplayModifiersPlus";
         public string Version => "1.1.7m";
@@ -103,11 +103,11 @@
             twitchCommands.CheckStatusCommands(message);
             twitchCommands.CheckInfoCommands(message);
 
-            if (Config.allowEveryone || (Config.allowSubs && message.Author.IsSubscriber) || message.Author.IsMod)
+            if (ChatConfig.allowEveryone || (ChatConfig.allowSubs && message.Author.IsSubscriber) || message.Author.IsMod)
             {
                 if (GMPUI.chatIntegration && isValidScene && !cooldowns.GetCooldown("Global"))
                 {
-                    commandsLeftForMessage = Config.commandsPerMessage;
+                    commandsLeftForMessage = ChatConfig.commandsPerMessage;
                     twitchCommands.CheckPauseMessage(message);
                     twitchCommands.CheckGameplayCommands(message);
                     twitchCommands.CheckHealthCommands(message);
@@ -191,7 +191,7 @@
                     TwitchPowers.ResetPowers(false);
                     twitchPowers.StopAllCoroutines();
                 }
-                if (Config.resetChargesperLevel)
+                if (ChatConfig.resetChargesperLevel)
                     charges = 0;
 
 
@@ -253,9 +253,9 @@
                 Log(GMPUI.swapSabers.ToString());
                 if (GMPUI.noArrows)
                     twitchPowers.StartCoroutine(TwitchPowers.NoArrows());
-                if (GMPUI.chatIntegration && Config.maxCharges > 0)
+                if (GMPUI.chatIntegration && ChatConfig.maxCharges > 0)
                     chatPowers.AddComponent<GMPDisplay>();
-                if (Config.timeForCharges > 0)
+                if (ChatConfig.timeForCharges > 0)
                     twitchPowers.StartCoroutine(TwitchPowers.ChargeOverTime());
 
 
@@ -274,11 +274,11 @@
 
 
                 Log(colorA.color.ToString());
-                if (GMPUI.chatIntegration && charges <= Config.maxCharges)
+                if (GMPUI.chatIntegration && charges <= ChatConfig.maxCharges)
                 {
-                    charges += Config.chargesPerLevel;
-                    if (charges > Config.maxCharges)
-                        charges = Config.maxCharges;
+                    charges += ChatConfig.chargesPerLevel;
+                    if (charges > ChatConfig.maxCharges)
+                        charges = ChatConfig.maxCharges;
                     //          TwitchConnection.Instance.SendChatMessage("Current Charges: " + charges);
                 }
 
@@ -459,7 +459,7 @@
             if (GMPUI.njsRandom)
             {
 
-                TwitchPowers.AdjustNJS(UnityEngine.Random.Range(Config.njsRandomMin, Config.njsRandomMax));
+                TwitchPowers.AdjustNJS(UnityEngine.Random.Range(ChatConfig.njsRandomMin, ChatConfig.njsRandomMax));
                 invalidForScoring = true;
             }
             if (!haveSongNJS)
@@ -474,7 +474,7 @@
             {
                 if (superRandom)
                 {
-                    noteTransform.localScale *= UnityEngine.Random.Range(Config.randomMin, Config.randomMax);
+                    noteTransform.localScale *= UnityEngine.Random.Range(ChatConfig.randomMin, ChatConfig.randomMax);
                     invalidForScoring = true;
                 }
                 else
@@ -487,7 +487,7 @@
 
                     if (GMPUI.randomSize)
                     {
-                        noteTransform.localScale *= UnityEngine.Random.Range(Config.randomMin, Config.randomMax);
+                        noteTransform.localScale *= UnityEngine.Random.Range(ChatConfig.randomMin, ChatConfig.randomMax);
                         invalidForScoring = true;
                     }
                 }
@@ -621,7 +621,7 @@
 
         public void ReadPrefs()
         {
-            Config.Load();
+            ChatConfig.Load();
             //  GMPUI.gnomeOnMiss = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.gnomeOnMiss", false, true);
             //   GMPUI.superHot = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.superHot", false, true);
             //   GMPUI.bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.bulletTime", false, true);
@@ -629,7 +629,7 @@
             //    GMPUI.swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
             GMPUI.chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
 
-            Config.Save();
+            ChatConfig.Save();
         }
 
         public IEnumerator GrabPP()

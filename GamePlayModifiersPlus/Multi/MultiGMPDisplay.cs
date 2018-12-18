@@ -8,9 +8,9 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Reflection;
-namespace GamePlayModifiersPlus.TwitchStuff
+namespace GamePlayModifiersPlus.Multiplayer
 {
-    public class GMPDisplay : MonoBehaviour
+    public class MultiGMPDisplay : MonoBehaviour
     {
         TextMeshPro chargeText;
         TextMeshPro chargeCountText;
@@ -74,7 +74,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
             chargeCounter.fillMethod = Image.FillMethod.Radial360;
             chargeCounter.fillOrigin = (int)Image.Origin360.Top;
             chargeCounter.fillClockwise = true;
-            chargeCounter.fillAmount = Plugin.charges / Plugin.ChatConfig.maxCharges;
+            chargeCounter.fillAmount = Plugin.charges / MultiMain.Config.maxCharges;
             chargeCounter.color = Color.green;
 
             GameObject background = new GameObject("GMPDisplayBackGround");
@@ -126,8 +126,8 @@ namespace GamePlayModifiersPlus.TwitchStuff
 
         void Update()
         {
-            chargeCounter.fillAmount = Mathf.Lerp(chargeCounter.fillAmount, (float)Plugin.charges / Plugin.ChatConfig.maxCharges, .03f);
-            chargeCountText.text = Plugin.charges.ToString();
+            chargeCounter.fillAmount = Mathf.Lerp(chargeCounter.fillAmount, (float)MultiMain.Config.charges / MultiMain.Config.maxCharges, .03f);
+            chargeCountText.text = MultiMain.Config.charges.ToString();
         }
 
         public void Destroy()

@@ -1,18 +1,18 @@
-﻿namespace GamePlayModifiersPlus
+﻿namespace GamePlayModifiersPlus.Multiplayer
 {
     using AsyncTwitch;
     using System.Collections;
     using System.Linq;
     using UnityEngine;
     using UnityEngine.UI;
-
-    public class TwitchPowers : MonoBehaviour
+    using GamePlayModifiersPlus;
+    public class MultiPowers : MonoBehaviour
     {
         public static IEnumerator ChargeOverTime()
         {
-            yield return new WaitForSeconds(Plugin.ChatConfig.timeForCharges);
-            Plugin.charges += Plugin.ChatConfig.chargesOverTime;
-            if (Plugin.charges > Plugin.ChatConfig.maxCharges) Plugin.charges = Plugin.ChatConfig.maxCharges;
+            yield return new WaitForSeconds(MultiMain.Config.timeForCharges);
+            Plugin.charges += MultiMain.Config.chargesOverTime;
+            if (Plugin.charges > MultiMain.Config.maxCharges) Plugin.charges = MultiMain.Config.maxCharges;
             Plugin.twitchPowers.StartCoroutine(ChargeOverTime());
         }
 
@@ -33,11 +33,11 @@
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
             text.text += " " + cooldown + " | ";
             Plugin.cooldowns.SetCooldown(true, cooldown);
-            if (Plugin.ChatConfig.showCooldownOnMessage)
+            if (MultiMain.Config.showCooldownOnMessage)
             {
-                if (Plugin.ChatConfig.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
+                if (MultiMain.Config.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
                 {
-                    TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + Plugin.ChatConfig.globalCommandCooldown + " seconds.");
+                    TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + MultiMain.Config.globalCommandCooldown + " seconds.");
                 }
                 else
                     TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
@@ -56,7 +56,7 @@
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
 
             Plugin.cooldowns.SetCooldown(true, "Global");
-            yield return new WaitForSeconds(Plugin.ChatConfig.globalCommandCooldown);
+            yield return new WaitForSeconds(MultiMain.Config.globalCommandCooldown);
             Plugin.cooldowns.SetCooldown(false, "Global");
             text.text = text.text.Replace(" " + "Global" + " | ", "");
         }
@@ -273,13 +273,13 @@
                                 //                        Plugin.Log("Attempting to Convert to Bomb");
                                 note = beatmapObject as NoteData;
 
-                                int randMax = (int)((1 / Plugin.ChatConfig.bombChance) * 100);
+                                int randMax = (int)((1 / MultiMain.Config.bombChance) * 100);
                                 int randMin = 100;
                                 int random = Random.Range(1, randMax);
 
                                 //                Plugin.Log("Min: " + randMin + " Max: " + randMax + " Number: " + random);
 
-                                if (random <= randMin || Plugin.ChatConfig.bombChance == 1)
+                                if (random <= randMin || MultiMain.Config.bombChance == 1)
                                     note.SetProperty("noteType", NoteType.Bomb);
                             }
                             catch (System.Exception ex)
