@@ -324,19 +324,27 @@
       //      Plugin.AudioTimeSync.Init(Plugin.levelData.difficultyBeatmap.level.audioClip, Plugin.songAudio.time, Plugin.levelData.difficultyBeatmap.level.songTimeOffset, pitch);
             AudioMixerSO mixer = sceneSetup.GetField<AudioMixerSO>("_audioMixer");
             mixer.musicPitch = 1f / pitch;
-      //      Plugin.AudioTimeSync.forcedAudioSync = true;
-
+            //      Plugin.AudioTimeSync.forcedAudioSync = true;
+            Plugin.AudioTimeSync.forcedAudioSync = true;
             float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
-
-            yield return new WaitForSeconds(length);
+            if (Plugin.pauseManager.gameState == StandardLevelGameplayManager.GameState.Paused)
+                Plugin.AudioTimeSync.Pause();
+                yield return new WaitForSeconds(length);
         //    if (Plugin.pauseManager.gameState != StandardLevelGameplayManager.GameState.Playing) yield break;
             Plugin.AudioTimeSync.SetField("_timeScale", songspeedmul);
             Plugin.songAudio.pitch = songspeedmul;
             Plugin.currentSongSpeed = songspeedmul;
             //        Plugin.AudioTimeSync.Init(Plugin.levelData.difficultyBeatmap.level.audioClip, Plugin.songAudio.time, Plugin.levelData.difficultyBeatmap.level.songTimeOffset, songspeedmul);
             mixer.musicPitch = 1 / songspeedmul;
-            if (songspeedmul == 1f) mixer.musicPitch = 1;
-  //          if(songspeedmul == 1f) Plugin.AudioTimeSync.forcedAudioSync = false;
+            if (songspeedmul == 1f)
+            {
+            mixer.musicPitch = 1;
+                Plugin.AudioTimeSync.forcedAudioSync = false;
+            }
+
+            if (Plugin.pauseManager.gameState == StandardLevelGameplayManager.GameState.Paused)
+                Plugin.AudioTimeSync.Pause();
+            //          if(songspeedmul == 1f) Plugin.AudioTimeSync.forcedAudioSync = false;
 
 
             //     Plugin.AudioTimeSync.SetField("didInit", false);
@@ -440,7 +448,13 @@
                 Plugin.songAudio.pitch = songspeedmul;
                 Plugin.currentSongSpeed = songspeedmul;
                 mixer.musicPitch = 1 / songspeedmul;
-                if (songspeedmul == 1f) mixer.musicPitch = 1;
+                if (songspeedmul == 1f)
+                {
+                    mixer.musicPitch = 1;
+                    Plugin.AudioTimeSync.forcedAudioSync = false;
+                }
+                if (Plugin.pauseManager.gameState == StandardLevelGameplayManager.GameState.Paused)
+                    Plugin.AudioTimeSync.Pause();
 
                 resetMessage = false;
             }

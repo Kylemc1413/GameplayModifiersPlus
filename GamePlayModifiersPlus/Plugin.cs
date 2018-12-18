@@ -18,7 +18,7 @@
         public static readonly ChatConfig Config = new ChatConfig(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
 
         public string Name => "GameplayModifiersPlus";
-        public string Version => "1.1.9";
+        public string Version => "1.1.10";
 
         public static float timeScale = 1;
         public TwitchCommands twitchCommands = new TwitchCommands();
@@ -142,6 +142,7 @@
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
+            paused = false;
             if (!PluginManager.Plugins.Any(x => x.Name == "CustomColorsEdit"))
             {
                 if (colorA != null)
@@ -534,19 +535,27 @@
 
         public void OnUpdate()
         {
+
             if (isValidScene && GMPUI.chatIntegration)
-                if (pauseManager.gameState != StandardLevelGameplayManager.GameState.Paused)
+            {
+                if (pauseManager.gameState == StandardLevelGameplayManager.GameState.Paused && !paused)
                 {
-        //            Log("Forcing Sync");
-                    AudioTimeSync.forcedAudioSync = true;
-         
-                }
-                else
-                {
+                    Log("Pause");
                     AudioTimeSync.forcedAudioSync = false;
                     AudioTimeSync.Pause();
-        //            Log("Forcing Pause");
+                    paused = true;
                 }
+                if (pauseManager.gameState != StandardLevelGameplayManager.GameState.Paused && paused)
+                {
+                    Log("Unpause");
+                    AudioTimeSync.forcedAudioSync = true;
+                    paused = false;
+                }
+
+            }
+
+
+                
 
 
 
@@ -587,15 +596,6 @@
 
         public void OnFixedUpdate()
         {
-        }
-
-        public IEnumerator Pause()
-        {
-            Log("Preparing to Pause");
-            var Level = Resources.FindObjectsOfTypeAll<StandardLevelGameplayManager>().First();
-            yield return new WaitForSeconds(5f);
-            Level.Pause();
-
         }
 
 
