@@ -121,23 +121,30 @@
             }
         }
 
+        public static IEnumerator TestingGround(float length)
+        {
+            yield return new WaitForSeconds(length);
+            TwitchPowers.AdjustNJS(15f);
+   
+        }
+
         public static void AdjustNJS(float njs)
         {
-            /*
-            Log("_halfJumpDurationInBeats " + spawnController.GetField<float>("_halfJumpDurationInBeats").ToString());
-            Log("_spawnAheadTime " + spawnController.GetField<float>("_spawnAheadTime").ToString());
-            Log("_jumpDistance " + spawnController.GetField<float>("_jumpDistance").ToString());
-            Log("_noteJumpMovementSpeed " + spawnController.GetField<float>("_noteJumpMovementSpeed").ToString());
-            Log("_moveDistance " + spawnController.GetField<float>("_moveDistance").ToString());
-            Log("_moveSpeed " + spawnController.GetField<float>("_moveSpeed").ToString());
-            Log("_moveDurationInBeats " + spawnController.GetField<float>("_moveDurationInBeats").ToString());
-            Log("_beatsPerMinut e" + spawnController.GetField<float>("_beatsPerMinute").ToString());
-            Log("_moveDurationInBeats " + spawnController.GetField<float>("_moveDurationInBeats").ToString());
-            */
-
-            float halfJumpDur = 1f;
-            float maxHalfJump = 18f;
-            float minHalfJump = 8f;
+            Plugin.Log("NJS " + Plugin.spawnController.GetField<float>("_noteJumpMovementSpeed"));
+            Plugin.Log("_MaxHalfJump " + Plugin.spawnController.GetField<float>("_maxHalfJumpDistance"));
+            Plugin.Log("_halfJumpDurationInBeats " + Plugin.spawnController.GetField<float>("_halfJumpDurationInBeats").ToString());
+            Plugin.Log("_spawnAheadTime " + Plugin.spawnController.GetField<float>("_spawnAheadTime").ToString());
+            Plugin.Log("_jumpDistance " + Plugin.spawnController.GetField<float>("_jumpDistance").ToString());
+            Plugin.Log("_noteJumpMovementSpeed " + Plugin.spawnController.GetField<float>("_noteJumpMovementSpeed").ToString());
+            Plugin.Log("_moveDistance " + Plugin.spawnController.GetField<float>("_moveDistance").ToString());
+            Plugin.Log("_moveSpeed " + Plugin.spawnController.GetField<float>("_moveSpeed").ToString());
+            Plugin.Log("_moveDurationInBeats " + Plugin.spawnController.GetField<float>("_moveDurationInBeats").ToString());
+            Plugin.Log("_beatsPerMinute " + Plugin.spawnController.GetField<float>("_beatsPerMinute").ToString());
+            Plugin.Log("_moveDurationInBeats " + Plugin.spawnController.GetField<float>("_moveDurationInBeats").ToString());
+            Plugin.Log("JumpOffset " + Plugin.levelData.difficultyBeatmap.noteJumpStartBeatOffset);
+            float halfJumpDur = 4f;
+            float maxHalfJump = Plugin.spawnController.GetField<float>("_maxHalfJumpDistance");
+            float noteJumpStartBeatOffset = Plugin.levelData.difficultyBeatmap.noteJumpStartBeatOffset;
             float moveSpeed = Plugin.spawnController.GetField<float>("_moveSpeed");
             float moveDir = Plugin.spawnController.GetField<float>("_moveDurationInBeats");
             float jumpDis;
@@ -146,18 +153,13 @@
             float bpm = Plugin.spawnController.GetField<float>("_beatsPerMinute");
             float num = 60f / bpm;
             moveDis = moveSpeed * num * moveDir;
-            /*
-                while (njs * num * halfJumpDur > maxHalfJump)
+            while (njs * num * halfJumpDur > maxHalfJump)
             {
-                    halfJumpDur -= 1f;
+                halfJumpDur /= 2f;
             }
-
-                while (njs * num * halfJumpDur < minHalfJump)
-            {
-                    halfJumpDur += 1f;
-            }
-         */
-            halfJumpDur = Plugin.spawnController.GetField<float>("_halfJumpDurationInBeats");
+            halfJumpDur += noteJumpStartBeatOffset;
+            if (halfJumpDur < 1f) halfJumpDur = 1f;
+    //        halfJumpDur = Plugin.spawnController.GetField<float>("_halfJumpDurationInBeats");
             jumpDis = njs * num * halfJumpDur * 2f;
             spawnAheadTime = moveDis / moveSpeed + jumpDis * 0.5f / njs;
             Plugin.spawnController.SetField("_halfJumpDurationInBeats", halfJumpDur);
@@ -165,6 +167,18 @@
             Plugin.spawnController.SetField("_jumpDistance", jumpDis);
             Plugin.spawnController.SetField("_noteJumpMovementSpeed", njs);
             Plugin.spawnController.SetField("_moveDistance", moveDis);
+
+            Plugin.Log("NJS " + Plugin.spawnController.GetField<float>("_noteJumpMovementSpeed"));
+            Plugin.Log("_MaxHalfJump " + Plugin.spawnController.GetField<float>("_maxHalfJumpDistance"));
+            Plugin.Log("_halfJumpDurationInBeats " + Plugin.spawnController.GetField<float>("_halfJumpDurationInBeats").ToString());
+            Plugin.Log("_spawnAheadTime " + Plugin.spawnController.GetField<float>("_spawnAheadTime").ToString());
+            Plugin.Log("_jumpDistance " + Plugin.spawnController.GetField<float>("_jumpDistance").ToString());
+            Plugin.Log("_noteJumpMovementSpeed " + Plugin.spawnController.GetField<float>("_noteJumpMovementSpeed").ToString());
+            Plugin.Log("_moveDistance " + Plugin.spawnController.GetField<float>("_moveDistance").ToString());
+            Plugin.Log("_moveSpeed " + Plugin.spawnController.GetField<float>("_moveSpeed").ToString());
+            Plugin.Log("_moveDurationInBeats " + Plugin.spawnController.GetField<float>("_moveDurationInBeats").ToString());
+            Plugin.Log("_beatsPerMinute " + Plugin.spawnController.GetField<float>("_beatsPerMinute").ToString());
+            Plugin.Log("_moveDurationInBeats " + Plugin.spawnController.GetField<float>("_moveDurationInBeats").ToString());
         }
 
         public static IEnumerator Wait(float waitTime)
