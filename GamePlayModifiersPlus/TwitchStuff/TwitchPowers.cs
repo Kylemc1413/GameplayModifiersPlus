@@ -306,6 +306,7 @@
       //      if (Plugin.pauseManager.gameState != StandardLevelGameplayManager.GameState.Playing) yield break;
             Plugin.AudioTimeSync.SetField("_timeScale", pitch);
             Plugin.songAudio.pitch = pitch;
+            Plugin.currentSongSpeed = pitch;
       //      Plugin.AudioTimeSync.Init(Plugin.levelData.difficultyBeatmap.level.audioClip, Plugin.songAudio.time, Plugin.levelData.difficultyBeatmap.level.songTimeOffset, pitch);
             AudioMixerSO mixer = sceneSetup.GetField<AudioMixerSO>("_audioMixer");
             mixer.musicPitch = 1f / pitch;
@@ -317,6 +318,7 @@
         //    if (Plugin.pauseManager.gameState != StandardLevelGameplayManager.GameState.Playing) yield break;
             Plugin.AudioTimeSync.SetField("_timeScale", songspeedmul);
             Plugin.songAudio.pitch = songspeedmul;
+            Plugin.currentSongSpeed = songspeedmul;
             //        Plugin.AudioTimeSync.Init(Plugin.levelData.difficultyBeatmap.level.audioClip, Plugin.songAudio.time, Plugin.levelData.difficultyBeatmap.level.songTimeOffset, songspeedmul);
             mixer.musicPitch = 1 / songspeedmul;
             if (songspeedmul == 1f) mixer.musicPitch = 1;
@@ -422,6 +424,7 @@
                 float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
                 Plugin.AudioTimeSync.SetField("_timeScale", songspeedmul);
                 Plugin.songAudio.pitch = songspeedmul;
+                Plugin.currentSongSpeed = songspeedmul;
                 mixer.musicPitch = 1 / songspeedmul;
                 if (songspeedmul == 1f) mixer.musicPitch = 1;
 
