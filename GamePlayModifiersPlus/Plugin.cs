@@ -18,11 +18,8 @@
         public static readonly ChatConfig ChatConfig = new ChatConfig(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
 
         public string Name => "GameplayModifiersPlus";
-<<<<<<< HEAD
-        public string Version => "1.1.7m";
-=======
-        public string Version => "1.1.8";
->>>>>>> master
+
+        public string Version => "1.1.8m";
 
         public static float timeScale = 1;
         public TwitchCommands twitchCommands = new TwitchCommands();
