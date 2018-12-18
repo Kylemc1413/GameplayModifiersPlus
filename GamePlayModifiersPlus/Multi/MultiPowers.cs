@@ -1,6 +1,5 @@
 ﻿namespace GamePlayModifiersPlus.Multiplayer
 {
-    using AsyncTwitch;
     using System.Collections;
     using System.Linq;
     using UnityEngine;
@@ -19,7 +18,7 @@
 
         public static IEnumerator TempDA(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " DA | ";
             Plugin.spawnController.SetField("_disappearingArrows", true);
             yield return new WaitForSeconds(length);
@@ -30,21 +29,9 @@
         public static IEnumerator CoolDown(float waitTime, string cooldown, string message)
         {
 
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
+            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().cooldownText;
             text.text += " " + cooldown + " | ";
             Plugin.cooldowns.SetCooldown(true, cooldown);
-            if (MultiMain.Config.showCooldownOnMessage)
-            {
-                if (MultiMain.Config.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
-                {
-                    TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + MultiMain.Config.globalCommandCooldown + " seconds.");
-                }
-                else
-                    TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
-            }
-            else
-                TwitchConnection.Instance.SendChatMessage(message);
-
 
             yield return new WaitForSeconds(waitTime);
             Plugin.cooldowns.SetCooldown(false, cooldown);
@@ -53,7 +40,7 @@
 
         public static IEnumerator GlobalCoolDown()
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
+            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().cooldownText;
 
             Plugin.cooldowns.SetCooldown(true, "Global");
             yield return new WaitForSeconds(MultiMain.Config.globalCommandCooldown);
@@ -63,7 +50,7 @@
 
         public static IEnumerator TempInstaFail(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " InstaFail | ";
             Image energyBar = Plugin.energyPanel.GetField<Image>("_energyBar");
             energyBar.color = Color.red;
@@ -82,7 +69,7 @@
 
         public static IEnumerator TempInvincibility(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " Invincible | ";
             Image energyBar = Plugin.energyPanel.GetField<Image>("_energyBar");
             energyBar.color = Color.yellow;
@@ -174,7 +161,7 @@
 
         public static IEnumerator ScaleNotes(float scale, float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " Smaller/Larger | ";
             Plugin.altereddNoteScale = scale;
             yield return new WaitForSeconds(length);
@@ -184,7 +171,7 @@
 
         public static IEnumerator RandomNotes(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " Random | ";
             GMPUI.randomSize = true;
             yield return new WaitForSeconds(length);
@@ -194,7 +181,7 @@
 
         public static IEnumerator njsRandom(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " NJSRandom | ";
             GMPUI.njsRandom = true;
             yield return new WaitForSeconds(length);
@@ -212,7 +199,7 @@
 
         public static IEnumerator TempNoArrows(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " NoArrows | ";
             yield return new WaitForSeconds(0f);
             GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
@@ -247,7 +234,7 @@
 
         public static IEnumerator RandomBombs(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " Bombs | ";
 
 
@@ -300,7 +287,7 @@
 
         public static IEnumerator SpeedChange(float length, float pitch)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " Speed | ";
             GameplayCoreSceneSetup sceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
       //      if (Plugin.pauseManager.gameState != StandardLevelGameplayManager.GameState.Playing) yield break;
@@ -364,7 +351,7 @@
 
         public static IEnumerator Funky(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " Funky | ";
             GMPUI.funky = true;
             yield return new WaitForSeconds(length);
@@ -374,7 +361,7 @@
 
         public static IEnumerator Rainbow(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " Rainbow | ";
             GMPUI.rainbow = true;
             yield return new WaitForSeconds(length);
@@ -399,9 +386,9 @@
                 Plugin.spawnController.SetField("_disappearingArrows", false);
                 Plugin.colorA.SetColor(Plugin.oldColorA);
                 Plugin.colorB.SetColor(Plugin.oldColorB);
-                var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
+                var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().cooldownText;
                 text.text = " ";
-                var text2 = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+                var text2 = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
                 if (text2.text.Contains("NoArrows"))
                 {
                     text2.text = "";

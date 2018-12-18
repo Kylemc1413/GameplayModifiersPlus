@@ -82,6 +82,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Multi\MultiGMPDisplay.cs" />
+    <Compile Include="Multi\MultiMain.cs" />
+    <Compile Include="Multi\MultiValues.cs" />
+    <Compile Include="Multi\MultiCommands.cs" />
+    <Compile Include="Multi\MultiPowers.cs" />
     <Compile Include="TwitchStuff\ChatConfig.cs" />
     <Compile Include="Cooldowns.cs" />
     <Compile Include="Plugin.cs" />

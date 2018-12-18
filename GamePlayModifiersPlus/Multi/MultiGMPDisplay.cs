@@ -17,6 +17,7 @@ namespace GamePlayModifiersPlus.Multiplayer
         public TextMeshPro cooldownText;
         public TextMeshPro activeCommandText;
         Image chargeCounter;
+
         private void Awake()
         {
             Init();
@@ -28,9 +29,9 @@ namespace GamePlayModifiersPlus.Multiplayer
 
         void Init()
         {
-            GameObject textObj = new GameObject("GMPDisplayText");
+            GameObject textObj = new GameObject("MultiGMPDisplayText");
             chargeText = textObj.AddComponent<TextMeshPro>();
-            chargeText.text = "Charges";
+            chargeText.text = "Charging...";
             chargeText.fontSize = 3;
             chargeText.color = Color.white;
             chargeText.font = Resources.Load<TMP_FontAsset>("Teko-Medium SDF No Glow");
@@ -38,10 +39,10 @@ namespace GamePlayModifiersPlus.Multiplayer
             chargeText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
             if (Plugin.ChatConfig.uiOnTop)
             {
-              chargeText.rectTransform.position = new Vector3(0.1f, 3f, 7f);
+                chargeText.rectTransform.position = new Vector3(0.1f, 3f, 7f);
                 textObj.transform.localScale *= 1.5f;
             }
-  
+
             else
             {
                 chargeText.rectTransform.position = new Vector3(0.2f, -1f, 7f);
@@ -52,7 +53,7 @@ namespace GamePlayModifiersPlus.Multiplayer
             var counterImage = ReflectionUtil.GetPrivateField<Image>(
     Resources.FindObjectsOfTypeAll<ScoreMultiplierUIController>().First(), "_multiplierProgressImage");
 
-            GameObject canvasobj = new GameObject("GMPDisplayCanvas");
+            GameObject canvasobj = new GameObject("MultiGMPDisplayCanvas");
             Canvas canvas = canvasobj.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.WorldSpace;
             CanvasScaler cs = canvasobj.AddComponent<CanvasScaler>();
@@ -62,7 +63,7 @@ namespace GamePlayModifiersPlus.Multiplayer
             canvasobj.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1f);
             canvasobj.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
 
-            GameObject counter = new GameObject("GMPDisplayCounter");
+            GameObject counter = new GameObject("MultiGMPDisplayCounter");
             chargeCounter = counter.AddComponent<Image>();
             counter.transform.parent = canvasobj.transform;
             counter.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 0.5f);
@@ -77,7 +78,7 @@ namespace GamePlayModifiersPlus.Multiplayer
             chargeCounter.fillAmount = Plugin.charges / MultiMain.Config.maxCharges;
             chargeCounter.color = Color.green;
 
-            GameObject background = new GameObject("GMPDisplayBackGround");
+            GameObject background = new GameObject("MultiGMPDisplayBackGround");
             var bg = background.AddComponent<Image>();
             background.transform.parent = canvasobj.transform;
             background.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 0.5f);
@@ -90,7 +91,7 @@ namespace GamePlayModifiersPlus.Multiplayer
             canvasobj.GetComponent<RectTransform>().SetParent(textObj.transform, false);
             canvasobj.transform.localPosition = new Vector3(-0.1f, -.1f, 0f);
 
-            chargeCountText = new GameObject("GMPDisplayChargeCount").AddComponent<TextMeshPro>();
+            chargeCountText = new GameObject("MultiGMPDisplayChargeCount").AddComponent<TextMeshPro>();
             chargeCountText.text = Plugin.charges.ToString();
             chargeCountText.alignment = TextAlignmentOptions.Center;
             chargeCountText.fontSize = 2.5f;
@@ -101,7 +102,7 @@ namespace GamePlayModifiersPlus.Multiplayer
             chargeCountText.GetComponent<RectTransform>().SetParent(textObj.transform, false);
             chargeCountText.transform.localPosition = new Vector3(-0.0925f, -.13f, 0f);
 
-            cooldownText = new GameObject("GMPDisplayCoolDown").AddComponent<TextMeshPro>();
+            cooldownText = new GameObject("MultiGMPDisplayCoolDown").AddComponent<TextMeshPro>();
             cooldownText.text = "";
             cooldownText.alignment = TextAlignmentOptions.MidlineRight;
             cooldownText.fontSize = 2.5f;
@@ -112,7 +113,7 @@ namespace GamePlayModifiersPlus.Multiplayer
             cooldownText.GetComponent<RectTransform>().SetParent(textObj.transform, false);
             cooldownText.transform.localPosition = new Vector3(-5.5f, -.13f, 0f);
 
-            activeCommandText = new GameObject("GMPDisplayActiveCommands").AddComponent<TextMeshPro>();
+            activeCommandText = new GameObject("MultiGMPDisplayActiveCommands").AddComponent<TextMeshPro>();
             activeCommandText.text = "";
             activeCommandText.alignment = TextAlignmentOptions.MidlineLeft;
             activeCommandText.fontSize = 2.5f;
@@ -132,12 +133,12 @@ namespace GamePlayModifiersPlus.Multiplayer
 
         public void Destroy()
         {
-            Destroy(GameObject.Find("GMPDisplayCanvas"));
-            Destroy(GameObject.Find("GMPDisplayCounter"));
-            Destroy(GameObject.Find("GMPDisplayBackGround"));
-            Destroy(GameObject.Find("GMPDisplayText"));
-            Destroy(GameObject.Find("GMPDisplayCoolDown"));
-            Destroy(GameObject.Find("GMPDisplayActiveCommands"));
+            Destroy(GameObject.Find("MultiGMPDisplayCanvas"));
+            Destroy(GameObject.Find("MultiGMPDisplayCounter"));
+            Destroy(GameObject.Find("MultiGMPDisplayBackGround"));
+            Destroy(GameObject.Find("MultiGMPDisplayText"));
+            Destroy(GameObject.Find("MultiGMPDisplayCoolDown"));
+            Destroy(GameObject.Find("MultiGMPDisplayActiveCommands"));
         }
     }
 
