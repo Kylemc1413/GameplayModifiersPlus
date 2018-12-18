@@ -18,7 +18,11 @@
         public static readonly ChatConfig ChatConfig = new ChatConfig(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
 
         public string Name => "GameplayModifiersPlus";
+<<<<<<< HEAD
         public string Version => "1.1.7m";
+=======
+        public string Version => "1.1.8";
+>>>>>>> master
 
         public static float timeScale = 1;
         public TwitchCommands twitchCommands = new TwitchCommands();
@@ -78,7 +82,7 @@
         public static SimpleColorSO defColorB = new SimpleColorSO();
         public static int commandsLeftForMessage;
         public static bool test;
-
+        public static float currentSongSpeed;
         public static StandardLevelGameplayManager pauseManager;
         GameObject chatPowers = null;
 
@@ -258,7 +262,6 @@
                 if (ChatConfig.timeForCharges > 0)
                     twitchPowers.StartCoroutine(TwitchPowers.ChargeOverTime());
 
-
                 pauseManager = Resources.FindObjectsOfTypeAll<StandardLevelGameplayManager>().First();
                 var colors = Resources.FindObjectsOfTypeAll<SimpleColorSO>();
                 foreach (SimpleColorSO color in colors)
@@ -292,7 +295,7 @@
                 spawnController.noteWasCutEvent += SpawnController_ScaleRemoveCut;
                 spawnController.noteWasMissedEvent += SpawnController_ScaleRemoveMiss;
 
-
+                currentSongSpeed = levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
 
 
                 levelData.didFinishEvent += LevelData_didFinishEvent;
@@ -535,6 +538,19 @@
 
         public void OnUpdate()
         {
+            if (isValidScene && GMPUI.chatIntegration)
+                if (pauseManager.gameState != StandardLevelGameplayManager.GameState.Paused)
+                {
+        //            Log("Forcing Sync");
+                    AudioTimeSync.forcedAudioSync = true;
+         
+                }
+                else
+                {
+                    AudioTimeSync.forcedAudioSync = false;
+                    AudioTimeSync.Pause();
+        //            Log("Forcing Pause");
+                }
 
 
 
