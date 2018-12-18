@@ -535,12 +535,6 @@
 
         public void OnUpdate()
         {
-            if (isValidScene && GMPUI.chatIntegration)
-                if (pauseManager.gameState != StandardLevelGameplayManager.GameState.Paused)
-                    AudioTimeSync.forcedAudioSync = true;
-                else
-                    AudioTimeSync.forcedAudioSync = false;
-
 
 
 
