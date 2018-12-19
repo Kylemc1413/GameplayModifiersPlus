@@ -251,6 +251,27 @@
 
             if (scene.name == "GameCore")
             {
+
+                levelData = Resources.FindObjectsOfTypeAll<StandardLevelSceneSetupDataSO>().First();
+                spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().First();
+                energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().First();
+                energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().First();
+
+                spawnController.noteDidStartJumpEvent += SpawnController_ModifiedJump;
+                spawnController.noteWasCutEvent += SpawnController_ScaleRemoveCut;
+                spawnController.noteWasMissedEvent += SpawnController_ScaleRemoveMiss;
+
+                currentSongSpeed = levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
+
+
+                levelData.didFinishEvent += LevelData_didFinishEvent;
+
+
+
+                if (GMPUI.njsRandom)
+                {
+                    twitchPowers.StartCoroutine(TwitchPowers.RandomNJS());
+                }
                 Log(GMPUI.swapSabers.ToString());
                 if (GMPUI.noArrows)
                     twitchPowers.StartCoroutine(TwitchPowers.NoArrows());
@@ -283,19 +304,7 @@
                 }
 
 
-                levelData = Resources.FindObjectsOfTypeAll<StandardLevelSceneSetupDataSO>().First();
-                spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().First();
-                energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().First();
-                energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().First();
 
-                spawnController.noteDidStartJumpEvent += SpawnController_ModifiedJump;
-                spawnController.noteWasCutEvent += SpawnController_ScaleRemoveCut;
-                spawnController.noteWasMissedEvent += SpawnController_ScaleRemoveMiss;
-
-                currentSongSpeed = levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
-
-
-                levelData.didFinishEvent += LevelData_didFinishEvent;
                 //   ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 1f);
                 isValidScene = true;
                 AudioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
@@ -455,13 +464,6 @@
 
             }
 
-
-            if (GMPUI.njsRandom)
-            {
-
-                TwitchPowers.AdjustNJS(UnityEngine.Random.Range(Config.njsRandomMin, Config.njsRandomMax));
-                invalidForScoring = true;
-            }
             if (!haveSongNJS)
             {
                 songNJS = spawnController.GetField<float>("_noteJumpMovementSpeed");
@@ -550,6 +552,8 @@
                     Log("Unpause");
                     AudioTimeSync.forcedAudioSync = true;
                     paused = false;
+                    if(currentSongSpeed == 1f)
+                        AudioTimeSync.forcedAudioSync = false;
                 }
 
             }
