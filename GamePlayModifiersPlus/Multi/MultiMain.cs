@@ -13,11 +13,12 @@
     using UnityEngine.SceneManagement;
     public class MultiMain
     {
-        public GameObject multiObject = null;
+        public static GameObject multiObject = null;
         public static MultiValues Config = new MultiValues();
         public static MultiPowers Powers;
-        public MultiCommands multiCommands = new MultiCommands();
+        public static MultiCommands multiCommands = new MultiCommands();
         public static bool multiActive = false;
+        public static bool activated = false;
         public static string currentPowerUp = "Charging...";
         public void TwitchConnectionMulti_OnMessageReceived(TwitchConnection arg1, TwitchMessage message)
         {
@@ -48,8 +49,20 @@
         private void SceneManager_activeSceneChanged(Scene oldScene, Scene newScene)
         {
             Config.charges = 0;
-        
+            activated = false;
+            MultiClientInterface.initialized = false;
+            GameObject client = GameObject.Find("MultiplayerClient");
+            if (client != null)
+            {
+                multiActive = true;
+                Log("Found MultiplayerClient game object!");
 
+            }
+            else
+            {
+                multiActive = false;
+                Log(" MultiplayerClient game object not found!");
+            }
 
             if (multiActive)
                 if (newScene.name == "EmptyTransition")
@@ -75,22 +88,16 @@
 
             if (newScene.name == "GameCore")
             {
-                GameObject client = GameObject.Find("MultiplayerClient");
-                if (client != null)
-                {
-                    multiActive = true;
-                    Log("Found MultiplayerClient game object!");
-
-                }
-                else
-                {
-                    multiActive = false;
-                    Log(" MultiplayerClient game object not found!");
-                }
                 if (multiActive)
                 {
-                    multiObject.AddComponent<MultiGMPDisplay>();
-                Powers.StartCoroutine(MultiPowers.ChargeOverTime());
+                    Log("Running Init");
+                        MultiClientInterface.Init();
+
+                }
+
+              
+                if (multiActive)
+                {
 
                     GamePlayModifiersPlus.TwitchStuff.GMPDisplay ChatDisplay = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>();
                     if (ChatDisplay != null)
@@ -112,7 +119,7 @@
 
         public void Update()
         {
-            if (!multiActive) return;
+            if (!activated) return;
 
             if(Config.charges >= Config.maxCharges)
             {
@@ -121,7 +128,8 @@
 
                 if((GamePlayModifiersPlus.Plugin.leftController.triggerValue >= 0.8 || GamePlayModifiersPlus.Plugin.rightController.triggerValue >= 0.8))
                 {
-                    TwitchConnection.Instance.SendChatMessage("!gmm " + currentPowerUp.ToLower());
+                    
+                    MultiClientInterface.SendCommand("!gmm " + currentPowerUp.ToLower());
                     Config.charges = 0;
                     currentPowerUp = "Charging...";
                     var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().chargeText;
@@ -132,6 +140,17 @@
 
 
         }
+
+
+        public static void Activate()
+        {
+            multiObject.AddComponent<MultiGMPDisplay>();
+            Powers.StartCoroutine(MultiPowers.ChargeOverTime());
+            activated = true;
+
+        }
+
+
             public static void Log(string message)
         {
             Console.WriteLine("[{0}] {1}", "GameplayModifiersPlus-Multi", message);
