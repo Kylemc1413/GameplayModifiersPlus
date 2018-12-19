@@ -80,6 +80,7 @@
         public static bool test;
         public static float currentSongSpeed;
         public static StandardLevelGameplayManager pauseManager;
+        public static NoteCutSoundEffectManager soundEffectManager;
         GameObject chatPowers = null;
 
         public void OnApplicationStart()
@@ -251,7 +252,7 @@
 
             if (scene.name == "GameCore")
             {
-
+                soundEffectManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().First();
                 levelData = Resources.FindObjectsOfTypeAll<StandardLevelSceneSetupDataSO>().First();
                 spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().First();
                 energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().First();
@@ -552,7 +553,7 @@
                     Log("Unpause");
                     AudioTimeSync.forcedAudioSync = true;
                     paused = false;
-                    if(currentSongSpeed == 1f)
+                    if(currentSongSpeed <= 1f)
                         AudioTimeSync.forcedAudioSync = false;
                 }
 
