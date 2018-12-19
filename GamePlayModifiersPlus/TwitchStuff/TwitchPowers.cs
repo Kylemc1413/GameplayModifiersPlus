@@ -144,6 +144,7 @@
             Plugin.Log("_moveDurationInBeats " + Plugin.spawnController.GetField<float>("_moveDurationInBeats").ToString());
             */
             Plugin.Log("JumpOffset " + Plugin.levelData.difficultyBeatmap.noteJumpStartBeatOffset);
+            */
             float halfJumpDur = 4f;
             float maxHalfJump = Plugin.spawnController.GetField<float>("_maxHalfJumpDistance");
             float noteJumpStartBeatOffset = Plugin.levelData.difficultyBeatmap.noteJumpStartBeatOffset;
@@ -169,7 +170,11 @@
             Plugin.spawnController.SetField("_jumpDistance", jumpDis);
             Plugin.spawnController.SetField("_noteJumpMovementSpeed", njs);
             Plugin.spawnController.SetField("_moveDistance", moveDis);
+<<<<<<< HEAD
 /*
+=======
+            /*
+>>>>>>> master
             Plugin.Log("NJS " + Plugin.spawnController.GetField<float>("_noteJumpMovementSpeed"));
             Plugin.Log("_MaxHalfJump " + Plugin.spawnController.GetField<float>("_maxHalfJumpDistance"));
             Plugin.Log("_halfJumpDurationInBeats " + Plugin.spawnController.GetField<float>("_halfJumpDurationInBeats").ToString());
@@ -214,11 +219,23 @@
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " NJSRandom | ";
             GMPUI.njsRandom = true;
+            Plugin.twitchPowers.StartCoroutine(RandomNJS());
             yield return new WaitForSeconds(length);
             GMPUI.njsRandom = false;
             AdjustNJS(Plugin.songNJS);
             text.text = text.text.Replace(" NJSRandom | ", "");
         }
+
+        public static IEnumerator RandomNJS()
+        {
+           AdjustNJS(UnityEngine.Random.Range(Plugin.Config.njsRandomMin, Plugin.Config.njsRandomMax));
+            yield return new WaitForSeconds(0.2f);
+            if (GMPUI.njsRandom)
+            Plugin.twitchPowers.StartCoroutine(RandomNJS());
+
+        }
+
+
 
         public static IEnumerator Pause()
         {
@@ -328,10 +345,16 @@
             AudioMixerSO mixer = sceneSetup.GetField<AudioMixerSO>("_audioMixer");
             mixer.musicPitch = 1f / pitch;
             //      Plugin.AudioTimeSync.forcedAudioSync = true;
+            if(pitch >= 1f)
             Plugin.AudioTimeSync.forcedAudioSync = true;
+            else
+                Plugin.AudioTimeSync.forcedAudioSync = false;
             float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
             if (Plugin.pauseManager.gameState == StandardLevelGameplayManager.GameState.Paused)
                 Plugin.AudioTimeSync.Pause();
+
+
+
                 yield return new WaitForSeconds(length);
         //    if (Plugin.pauseManager.gameState != StandardLevelGameplayManager.GameState.Playing) yield break;
             Plugin.AudioTimeSync.SetField("_timeScale", songspeedmul);
@@ -429,21 +452,7 @@
                 var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
                 text.text = " ";
                 var text2 = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-                if (text2.text.Contains("NoArrows"))
-                {
-                    text2.text = "";
-                    text2.text += " NoArrows | ";
-                    if (text2.text.Contains("Bombs"))
-                    text2.text += " Bombs | ";
-
-                }
-                else if (text2.text.Contains("Bombs"))
-                {
-                    text2.text = "";
-                    text2.text += " Bombs | ";
-                }
-                else
-                    text2.text = "";
+                text2.text = "";
                 GameplayCoreSceneSetup sceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
                 AudioMixerSO mixer = sceneSetup.GetField<AudioMixerSO>("_audioMixer");
                 float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
