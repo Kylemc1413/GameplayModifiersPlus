@@ -9,14 +9,14 @@
         public int charges = 0;
 
         public int chargesOverTime = 1;
-        public float timeForCharges = 10f;
+        public float timeForCharges = 2f;
 
         public float globalCommandCooldown = 10f;
         public float daDuration = 15f;
         public float smallerNoteDuration = 10f;
         public float largerNotesDuration = 10f;
         public float randomNotesDuration = 10f;
-        public float instaFailDuration = 10f;
+        public float instaFailDuration = 4f;
         public float invincibleDuration = 15f;
         public float njsRandomDuration = 10f;
         public float noArrowsDuration = 10f;

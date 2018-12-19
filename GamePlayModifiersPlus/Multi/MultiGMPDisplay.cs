@@ -12,7 +12,7 @@ namespace GamePlayModifiersPlus.Multiplayer
 {
     public class MultiGMPDisplay : MonoBehaviour
     {
-        TextMeshPro chargeText;
+        public TextMeshPro chargeText;
         TextMeshPro chargeCountText;
         public TextMeshPro cooldownText;
         public TextMeshPro activeCommandText;
@@ -32,20 +32,21 @@ namespace GamePlayModifiersPlus.Multiplayer
             GameObject textObj = new GameObject("MultiGMPDisplayText");
             chargeText = textObj.AddComponent<TextMeshPro>();
             chargeText.text = "Charging...";
+            chargeText.alignment = TextAlignmentOptions.Center;
             chargeText.fontSize = 3;
             chargeText.color = Color.white;
             chargeText.font = Resources.Load<TMP_FontAsset>("Teko-Medium SDF No Glow");
-            chargeText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1f);
-            chargeText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
+            chargeText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2f);
+            chargeText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 2f);
             if (Plugin.ChatConfig.uiOnTop)
             {
-                chargeText.rectTransform.position = new Vector3(0.1f, 3f, 7f);
+                chargeText.rectTransform.position = new Vector3(0f, 3f, 7f);
                 textObj.transform.localScale *= 1.5f;
             }
 
             else
             {
-                chargeText.rectTransform.position = new Vector3(0.2f, -1f, 7f);
+                chargeText.rectTransform.position = new Vector3(0f, -1f, 7f);
                 textObj.transform.localScale *= 2.0f;
             }
 
@@ -89,7 +90,7 @@ namespace GamePlayModifiersPlus.Multiplayer
             bg.CrossFadeAlpha(0.05f, 1f, false);
 
             canvasobj.GetComponent<RectTransform>().SetParent(textObj.transform, false);
-            canvasobj.transform.localPosition = new Vector3(-0.1f, -.1f, 0f);
+            canvasobj.transform.localPosition = new Vector3(0f, -.4f, 0f);
 
             chargeCountText = new GameObject("MultiGMPDisplayChargeCount").AddComponent<TextMeshPro>();
             chargeCountText.text = Plugin.charges.ToString();
@@ -100,7 +101,7 @@ namespace GamePlayModifiersPlus.Multiplayer
             chargeCountText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1f);
             chargeCountText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
             chargeCountText.GetComponent<RectTransform>().SetParent(textObj.transform, false);
-            chargeCountText.transform.localPosition = new Vector3(-0.0925f, -.13f, 0f);
+            chargeCountText.transform.localPosition = new Vector3(0f, -.43f, 0f);
 
             cooldownText = new GameObject("MultiGMPDisplayCoolDown").AddComponent<TextMeshPro>();
             cooldownText.text = "";
@@ -111,7 +112,7 @@ namespace GamePlayModifiersPlus.Multiplayer
             cooldownText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 10f);
             cooldownText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
             cooldownText.GetComponent<RectTransform>().SetParent(textObj.transform, false);
-            cooldownText.transform.localPosition = new Vector3(-5.5f, -.13f, 0f);
+            cooldownText.transform.localPosition = new Vector3(-5.4f, -.43f, 0f);
 
             activeCommandText = new GameObject("MultiGMPDisplayActiveCommands").AddComponent<TextMeshPro>();
             activeCommandText.text = "";
@@ -122,7 +123,7 @@ namespace GamePlayModifiersPlus.Multiplayer
             activeCommandText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 10f);
             activeCommandText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
             activeCommandText.GetComponent<RectTransform>().SetParent(textObj.transform, false);
-            activeCommandText.transform.localPosition = new Vector3(5.3f, -.13f, 0f);
+            activeCommandText.transform.localPosition = new Vector3(5.4f, -.43f, 0f);
         }
 
         void Update()

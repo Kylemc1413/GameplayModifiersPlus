@@ -10,15 +10,63 @@
         public static IEnumerator ChargeOverTime()
         {
             yield return new WaitForSeconds(MultiMain.Config.timeForCharges);
-            Plugin.charges += MultiMain.Config.chargesOverTime;
-            if (Plugin.charges > MultiMain.Config.maxCharges) Plugin.charges = MultiMain.Config.maxCharges;
-            Plugin.twitchPowers.StartCoroutine(ChargeOverTime());
+            MultiMain.Config.charges += MultiMain.Config.chargesOverTime;
+            if (MultiMain.Config.charges > MultiMain.Config.maxCharges) MultiMain.Config.charges = MultiMain.Config.maxCharges;
+            MultiMain.Powers.StartCoroutine(ChargeOverTime());
         }
 
+        public static string GeneratePowerUp()
+        {
+            int power = (int)UnityEngine.Random.Range(0f, 8f);
+            string powerup;
+            switch (power)
+            {
+                case 0:
+                    powerup = "DA";
+                    break;
+                case 1:
+                    powerup = "Smaller";
+                    break;
+                case 2:
+                    powerup = "Larger";
+                    break;
+                case 3:
+                    powerup = "Random";
+                    break;
+                case 4:
+                    powerup = "NjsRandom";
+                    break;
+                case 5:
+                    powerup = "Funky";
+                    break;
+                case 6:
+                    powerup = "Rainbow";
+                    break;
+                case 7:
+                    powerup = "Bombs";
+                    break;
+                case 8:
+                    powerup = "Faster";
+                    break;
+                case 9:
+                    powerup = "NoArrows";
+                    break;
+                case 10:
+                    powerup = "InstaFail";
+                    break;
+                default:
+                    powerup = "DA";
+                    break;
+            }
 
+            var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().chargeText;
+            text.text = powerup;
+            return powerup;
+        }
         public static IEnumerator TempDA(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
+           
+            var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " DA | ";
             Plugin.spawnController.SetField("_disappearingArrows", true);
             yield return new WaitForSeconds(length);
@@ -29,7 +77,7 @@
         public static IEnumerator CoolDown(float waitTime, string cooldown, string message)
         {
 
-            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().cooldownText;
+            var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().cooldownText;
             text.text += " " + cooldown + " | ";
             Plugin.cooldowns.SetCooldown(true, cooldown);
 
@@ -40,7 +88,7 @@
 
         public static IEnumerator GlobalCoolDown()
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().cooldownText;
+            var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().cooldownText;
 
             Plugin.cooldowns.SetCooldown(true, "Global");
             yield return new WaitForSeconds(MultiMain.Config.globalCommandCooldown);
@@ -50,7 +98,7 @@
 
         public static IEnumerator TempInstaFail(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " InstaFail | ";
             Image energyBar = Plugin.energyPanel.GetField<Image>("_energyBar");
             energyBar.color = Color.red;
@@ -69,7 +117,7 @@
 
         public static IEnumerator TempInvincibility(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " Invincible | ";
             Image energyBar = Plugin.energyPanel.GetField<Image>("_energyBar");
             energyBar.color = Color.yellow;
@@ -111,20 +159,22 @@
         public static void AdjustNJS(float njs)
         {
             /*
-            Log("_halfJumpDurationInBeats " + spawnController.GetField<float>("_halfJumpDurationInBeats").ToString());
-            Log("_spawnAheadTime " + spawnController.GetField<float>("_spawnAheadTime").ToString());
-            Log("_jumpDistance " + spawnController.GetField<float>("_jumpDistance").ToString());
-            Log("_noteJumpMovementSpeed " + spawnController.GetField<float>("_noteJumpMovementSpeed").ToString());
-            Log("_moveDistance " + spawnController.GetField<float>("_moveDistance").ToString());
-            Log("_moveSpeed " + spawnController.GetField<float>("_moveSpeed").ToString());
-            Log("_moveDurationInBeats " + spawnController.GetField<float>("_moveDurationInBeats").ToString());
-            Log("_beatsPerMinut e" + spawnController.GetField<float>("_beatsPerMinute").ToString());
-            Log("_moveDurationInBeats " + spawnController.GetField<float>("_moveDurationInBeats").ToString());
-            */
-
-            float halfJumpDur = 1f;
-            float maxHalfJump = 18f;
-            float minHalfJump = 8f;
+     Plugin.Log("NJS " + Plugin.spawnController.GetField<float>("_noteJumpMovementSpeed"));
+     Plugin.Log("_MaxHalfJump " + Plugin.spawnController.GetField<float>("_maxHalfJumpDistance"));
+     Plugin.Log("_halfJumpDurationInBeats " + Plugin.spawnController.GetField<float>("_halfJumpDurationInBeats").ToString());
+     Plugin.Log("_spawnAheadTime " + Plugin.spawnController.GetField<float>("_spawnAheadTime").ToString());
+     Plugin.Log("_jumpDistance " + Plugin.spawnController.GetField<float>("_jumpDistance").ToString());
+     Plugin.Log("_noteJumpMovementSpeed " + Plugin.spawnController.GetField<float>("_noteJumpMovementSpeed").ToString());
+     Plugin.Log("_moveDistance " + Plugin.spawnController.GetField<float>("_moveDistance").ToString());
+     Plugin.Log("_moveSpeed " + Plugin.spawnController.GetField<float>("_moveSpeed").ToString());
+     Plugin.Log("_moveDurationInBeats " + Plugin.spawnController.GetField<float>("_moveDurationInBeats").ToString());
+     Plugin.Log("_beatsPerMinute " + Plugin.spawnController.GetField<float>("_beatsPerMinute").ToString());
+     Plugin.Log("_moveDurationInBeats " + Plugin.spawnController.GetField<float>("_moveDurationInBeats").ToString());
+     */
+            Plugin.Log("JumpOffset " + Plugin.levelData.difficultyBeatmap.noteJumpStartBeatOffset);
+            float halfJumpDur = 4f;
+            float maxHalfJump = Plugin.spawnController.GetField<float>("_maxHalfJumpDistance");
+            float noteJumpStartBeatOffset = Plugin.levelData.difficultyBeatmap.noteJumpStartBeatOffset;
             float moveSpeed = Plugin.spawnController.GetField<float>("_moveSpeed");
             float moveDir = Plugin.spawnController.GetField<float>("_moveDurationInBeats");
             float jumpDis;
@@ -133,18 +183,13 @@
             float bpm = Plugin.spawnController.GetField<float>("_beatsPerMinute");
             float num = 60f / bpm;
             moveDis = moveSpeed * num * moveDir;
-            /*
-                while (njs * num * halfJumpDur > maxHalfJump)
+            while (njs * num * halfJumpDur > maxHalfJump)
             {
-                    halfJumpDur -= 1f;
+                halfJumpDur /= 2f;
             }
-
-                while (njs * num * halfJumpDur < minHalfJump)
-            {
-                    halfJumpDur += 1f;
-            }
-         */
-            halfJumpDur = Plugin.spawnController.GetField<float>("_halfJumpDurationInBeats");
+            halfJumpDur += noteJumpStartBeatOffset;
+            if (halfJumpDur < 1f) halfJumpDur = 1f;
+            //        halfJumpDur = Plugin.spawnController.GetField<float>("_halfJumpDurationInBeats");
             jumpDis = njs * num * halfJumpDur * 2f;
             spawnAheadTime = moveDis / moveSpeed + jumpDis * 0.5f / njs;
             Plugin.spawnController.SetField("_halfJumpDurationInBeats", halfJumpDur);
@@ -161,7 +206,7 @@
 
         public static IEnumerator ScaleNotes(float scale, float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " Smaller/Larger | ";
             Plugin.altereddNoteScale = scale;
             yield return new WaitForSeconds(length);
@@ -171,7 +216,7 @@
 
         public static IEnumerator RandomNotes(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " Random | ";
             GMPUI.randomSize = true;
             yield return new WaitForSeconds(length);
@@ -181,7 +226,7 @@
 
         public static IEnumerator njsRandom(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " NJSRandom | ";
             GMPUI.njsRandom = true;
             yield return new WaitForSeconds(length);
@@ -199,7 +244,7 @@
 
         public static IEnumerator TempNoArrows(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " NoArrows | ";
             yield return new WaitForSeconds(0f);
             GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
@@ -234,7 +279,7 @@
 
         public static IEnumerator RandomBombs(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " Bombs | ";
 
 
@@ -287,27 +332,37 @@
 
         public static IEnumerator SpeedChange(float length, float pitch)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " Speed | ";
             GameplayCoreSceneSetup sceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-      //      if (Plugin.pauseManager.gameState != StandardLevelGameplayManager.GameState.Playing) yield break;
+            //      if (Plugin.pauseManager.gameState != StandardLevelGameplayManager.GameState.Playing) yield break;
             Plugin.AudioTimeSync.SetField("_timeScale", pitch);
             Plugin.songAudio.pitch = pitch;
-      //      Plugin.AudioTimeSync.Init(Plugin.levelData.difficultyBeatmap.level.audioClip, Plugin.songAudio.time, Plugin.levelData.difficultyBeatmap.level.songTimeOffset, pitch);
+            Plugin.currentSongSpeed = pitch;
+            //      Plugin.AudioTimeSync.Init(Plugin.levelData.difficultyBeatmap.level.audioClip, Plugin.songAudio.time, Plugin.levelData.difficultyBeatmap.level.songTimeOffset, pitch);
             AudioMixerSO mixer = sceneSetup.GetField<AudioMixerSO>("_audioMixer");
             mixer.musicPitch = 1f / pitch;
-      //      Plugin.AudioTimeSync.forcedAudioSync = true;
-
+            //      Plugin.AudioTimeSync.forcedAudioSync = true;
+            Plugin.AudioTimeSync.forcedAudioSync = true;
             float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
-
+            if (Plugin.pauseManager.gameState == StandardLevelGameplayManager.GameState.Paused)
+                Plugin.AudioTimeSync.Pause();
             yield return new WaitForSeconds(length);
-        //    if (Plugin.pauseManager.gameState != StandardLevelGameplayManager.GameState.Playing) yield break;
+            //    if (Plugin.pauseManager.gameState != StandardLevelGameplayManager.GameState.Playing) yield break;
             Plugin.AudioTimeSync.SetField("_timeScale", songspeedmul);
             Plugin.songAudio.pitch = songspeedmul;
+            Plugin.currentSongSpeed = songspeedmul;
             //        Plugin.AudioTimeSync.Init(Plugin.levelData.difficultyBeatmap.level.audioClip, Plugin.songAudio.time, Plugin.levelData.difficultyBeatmap.level.songTimeOffset, songspeedmul);
             mixer.musicPitch = 1 / songspeedmul;
-            if (songspeedmul == 1f) mixer.musicPitch = 1;
-  //          if(songspeedmul == 1f) Plugin.AudioTimeSync.forcedAudioSync = false;
+            if (songspeedmul == 1f)
+            {
+                mixer.musicPitch = 1;
+                Plugin.AudioTimeSync.forcedAudioSync = false;
+            }
+
+            if (Plugin.pauseManager.gameState == StandardLevelGameplayManager.GameState.Paused)
+                Plugin.AudioTimeSync.Pause();
+            //          if(songspeedmul == 1f) Plugin.AudioTimeSync.forcedAudioSync = false;
 
 
             //     Plugin.AudioTimeSync.SetField("didInit", false);
@@ -351,7 +406,7 @@
 
         public static IEnumerator Funky(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " Funky | ";
             GMPUI.funky = true;
             yield return new WaitForSeconds(length);
@@ -361,7 +416,7 @@
 
         public static IEnumerator Rainbow(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
+            var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " Rainbow | ";
             GMPUI.rainbow = true;
             yield return new WaitForSeconds(length);
@@ -386,9 +441,9 @@
                 Plugin.spawnController.SetField("_disappearingArrows", false);
                 Plugin.colorA.SetColor(Plugin.oldColorA);
                 Plugin.colorB.SetColor(Plugin.oldColorB);
-                var text = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().cooldownText;
+                var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().cooldownText;
                 text.text = " ";
-                var text2 = GameObject.Find("Chat Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
+                var text2 = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
                 if (text2.text.Contains("NoArrows"))
                 {
                     text2.text = "";
@@ -409,8 +464,15 @@
                 float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
                 Plugin.AudioTimeSync.SetField("_timeScale", songspeedmul);
                 Plugin.songAudio.pitch = songspeedmul;
+                Plugin.currentSongSpeed = songspeedmul;
                 mixer.musicPitch = 1 / songspeedmul;
-                if (songspeedmul == 1f) mixer.musicPitch = 1;
+                if (songspeedmul == 1f)
+                {
+                    mixer.musicPitch = 1;
+                    Plugin.AudioTimeSync.forcedAudioSync = false;
+                }
+                if (Plugin.pauseManager.gameState == StandardLevelGameplayManager.GameState.Paused)
+                    Plugin.AudioTimeSync.Pause();
 
                 resetMessage = false;
             }

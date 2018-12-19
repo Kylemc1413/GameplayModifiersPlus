@@ -23,6 +23,8 @@
 
 
         public static float timeScale = 1;
+        GamePlayModifiersPlus.Multiplayer.MultiMain multi = null;
+        public static bool multiInstalled = false;
         public TwitchCommands twitchCommands = new TwitchCommands();
         public static TwitchPowers twitchPowers = null;
         public static SoundPlayer gnomeSound = new SoundPlayer(Properties.Resources.gnome);
@@ -52,8 +54,8 @@
         public static float deltaPP;
         public static int deltaRank;
         public static bool firstLoad = true;
-        internal VRController leftController;
-        internal VRController rightController;
+        public static VRController leftController;
+        public static VRController rightController;
         public static StandardLevelSceneSetupDataSO levelData;
         internal bool invalidForScoring = false;
         private static bool _hasRegistered = false;
@@ -88,8 +90,14 @@
         {
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
-
-            ReadPrefs();
+            if (PluginManager.Plugins.Any(x => x.Name == "Beat Saber Multiplayer"))
+            {
+                multi = new GamePlayModifiersPlus.Multiplayer.MultiMain();
+                multi.Initialize();
+                multiInstalled = true;
+                Log("Multiplayer Detected, enabling multiplayer functionality");
+            }
+                ReadPrefs();
             cooldowns = new Cooldowns();
             defColorA.SetColor(new Color(1f, 0, 0));
             defColorB.SetColor(new Color(0, .706f, 1));
@@ -97,6 +105,7 @@
 
         private void TwitchConnection_OnMessageReceived(TwitchConnection arg1, TwitchMessage message)
         {
+
             Log("Message Recieved, AsyncTwitch currently working");
             //Status check message
             if (charges < 0) charges = 0;
@@ -105,6 +114,8 @@
             twitchCommands.CheckStatusCommands(message);
             twitchCommands.CheckInfoCommands(message);
 
+            if (multiInstalled)
+                if (Multiplayer.MultiMain.multiActive) return;
             if (ChatConfig.allowEveryone || (ChatConfig.allowSubs && message.Author.IsSubscriber) || message.Author.IsMod)
             {
                 if (GMPUI.chatIntegration && isValidScene && !cooldowns.GetCooldown("Global"))
@@ -223,6 +234,8 @@
 
                     TwitchConnection.Instance.StartConnection();
                     TwitchConnection.Instance.RegisterOnMessageReceived(TwitchConnection_OnMessageReceived);
+                    if(multiInstalled)
+                        TwitchConnection.Instance.RegisterOnMessageReceived(multi.TwitchConnectionMulti_OnMessageReceived);
                     _hasRegistered = true;
                 }
 
@@ -256,10 +269,15 @@
                 Log(GMPUI.swapSabers.ToString());
                 if (GMPUI.noArrows)
                     twitchPowers.StartCoroutine(TwitchPowers.NoArrows());
+                if (!Multiplayer.MultiMain.multiActive)
+                {
                 if (GMPUI.chatIntegration && ChatConfig.maxCharges > 0)
                     chatPowers.AddComponent<GMPDisplay>();
-                if (ChatConfig.timeForCharges > 0)
+                if (GMPUI.chatIntegration && ChatConfig.timeForCharges > 0)
                     twitchPowers.StartCoroutine(TwitchPowers.ChargeOverTime());
+                }
+
+
 
                 pauseManager = Resources.FindObjectsOfTypeAll<StandardLevelGameplayManager>().First();
                 var colors = Resources.FindObjectsOfTypeAll<SimpleColorSO>();
@@ -472,7 +490,7 @@
 
             //          Transform noteTransform = controller.GetField<Transform>("_noteTransform");
             //       Log("SPAWN" + noteTransform.localScale.ToString());
-            if (GMPUI.chatIntegration || GMPUI.randomSize)
+            if (GMPUI.chatIntegration || GMPUI.randomSize || Multiplayer.MultiMain.multiActive)
             {
                 if (superRandom)
                 {
@@ -515,7 +533,7 @@
         {
             if (arg2.levelEndStateType == LevelCompletionResults.LevelEndStateType.Quit) return;
             if (arg2.levelEndStateType == LevelCompletionResults.LevelEndStateType.Restart) return;
-            if (invalidForScoring)
+            if (invalidForScoring && !Multiplayer.MultiMain.multiActive)
                 ReflectionUtil.SetProperty(arg2, "levelEndStateType", LevelCompletionResults.LevelEndStateType.None);
             if (GMPUI.repeatSong)
                 ReflectionUtil.SetProperty(arg2, "levelEndStateType", LevelCompletionResults.LevelEndStateType.Restart);
@@ -537,8 +555,10 @@
 
         public void OnUpdate()
         {
+            if (multiInstalled)
+                multi.Update();
 
-            if (isValidScene && GMPUI.chatIntegration)
+            if (isValidScene && GMPUI.chatIntegration || Multiplayer.MultiMain.multiActive)
             {
                 if (pauseManager.gameState == StandardLevelGameplayManager.GameState.Paused && !paused)
                 {
