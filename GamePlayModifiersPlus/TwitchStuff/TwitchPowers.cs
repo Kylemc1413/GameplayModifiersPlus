@@ -144,7 +144,7 @@
             Plugin.Log("_moveDurationInBeats " + Plugin.spawnController.GetField<float>("_moveDurationInBeats").ToString());
             */
             Plugin.Log("JumpOffset " + Plugin.levelData.difficultyBeatmap.noteJumpStartBeatOffset);
-            */
+            
             float halfJumpDur = 4f;
             float maxHalfJump = Plugin.spawnController.GetField<float>("_maxHalfJumpDistance");
             float noteJumpStartBeatOffset = Plugin.levelData.difficultyBeatmap.noteJumpStartBeatOffset;
@@ -170,11 +170,7 @@
             Plugin.spawnController.SetField("_jumpDistance", jumpDis);
             Plugin.spawnController.SetField("_noteJumpMovementSpeed", njs);
             Plugin.spawnController.SetField("_moveDistance", moveDis);
-<<<<<<< HEAD
 /*
-=======
-            /*
->>>>>>> master
             Plugin.Log("NJS " + Plugin.spawnController.GetField<float>("_noteJumpMovementSpeed"));
             Plugin.Log("_MaxHalfJump " + Plugin.spawnController.GetField<float>("_maxHalfJumpDistance"));
             Plugin.Log("_halfJumpDurationInBeats " + Plugin.spawnController.GetField<float>("_halfJumpDurationInBeats").ToString());
@@ -228,7 +224,7 @@
 
         public static IEnumerator RandomNJS()
         {
-           AdjustNJS(UnityEngine.Random.Range(Plugin.Config.njsRandomMin, Plugin.Config.njsRandomMax));
+           AdjustNJS(UnityEngine.Random.Range(Plugin.ChatConfig.njsRandomMin, Plugin.ChatConfig.njsRandomMax));
             yield return new WaitForSeconds(0.2f);
             if (GMPUI.njsRandom)
             Plugin.twitchPowers.StartCoroutine(RandomNJS());

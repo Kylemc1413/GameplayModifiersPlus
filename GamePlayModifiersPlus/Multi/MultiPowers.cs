@@ -235,6 +235,16 @@
             text.text = text.text.Replace(" NJSRandom | ", "");
         }
 
+        public static IEnumerator RandomNJS()
+        {
+            AdjustNJS(UnityEngine.Random.Range(MultiMain.Config.njsRandomMin, MultiMain.Config.njsRandomMax));
+            yield return new WaitForSeconds(0.2f);
+            if (GMPUI.njsRandom)
+                MultiMain.Powers.StartCoroutine(RandomNJS());
+
+        }
+
+
         public static IEnumerator Pause()
         {
             yield return new WaitForSeconds(0f);
@@ -343,7 +353,10 @@
             AudioMixerSO mixer = sceneSetup.GetField<AudioMixerSO>("_audioMixer");
             mixer.musicPitch = 1f / pitch;
             //      Plugin.AudioTimeSync.forcedAudioSync = true;
-            Plugin.AudioTimeSync.forcedAudioSync = true;
+            if (pitch >= 1f)
+                Plugin.AudioTimeSync.forcedAudioSync = true;
+            else
+                Plugin.AudioTimeSync.forcedAudioSync = false;
             float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
             if (Plugin.pauseManager.gameState == StandardLevelGameplayManager.GameState.Paused)
                 Plugin.AudioTimeSync.Pause();
@@ -442,22 +455,8 @@
                 Plugin.colorA.SetColor(Plugin.oldColorA);
                 Plugin.colorB.SetColor(Plugin.oldColorB);
                 var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().cooldownText;
-                text.text = " ";
+                text.text = "";
                 var text2 = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
-                if (text2.text.Contains("NoArrows"))
-                {
-                    text2.text = "";
-                    text2.text += " NoArrows | ";
-                    if (text2.text.Contains("Bombs"))
-                    text2.text += " Bombs | ";
-
-                }
-                else if (text2.text.Contains("Bombs"))
-                {
-                    text2.text = "";
-                    text2.text += " Bombs | ";
-                }
-                else
                     text2.text = "";
                 GameplayCoreSceneSetup sceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
                 AudioMixerSO mixer = sceneSetup.GetField<AudioMixerSO>("_audioMixer");

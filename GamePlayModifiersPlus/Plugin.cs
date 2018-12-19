@@ -484,16 +484,7 @@
 
             }
 
-<<<<<<< HEAD
 
-            if (GMPUI.njsRandom)
-            {
-
-                TwitchPowers.AdjustNJS(UnityEngine.Random.Range(ChatConfig.njsRandomMin, ChatConfig.njsRandomMax));
-                invalidForScoring = true;
-            }
-=======
->>>>>>> master
             if (!haveSongNJS)
             {
                 songNJS = spawnController.GetField<float>("_noteJumpMovementSpeed");
