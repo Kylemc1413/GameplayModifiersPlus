@@ -18,22 +18,17 @@
         public static Client playerClient;
         public static bool otherGmpPlayer = false;
         public static bool initialized = false;
+        public static string playerName = "";
         public static void Init()
         {
-            try
-            {
+
                 MultiMain.Log("initializing");
                 playerClient = GameObject.Find("MultiplayerClient").GetComponent<Client>();
             Client.EventMessageReceived += Client_EventMessageReceived;
             Client.ClientCreated += Client_ClientCreated;
             Client.ClientDestroyed += Client_ClientDestroyed;
             SharedCoroutineStarter.instance.StartCoroutine(DelayedSendPluginCheck());
-                MultiMain.Log("Init checkpoint 2");
-            }
-            catch(Exception ex)
-            {
-                MultiMain.Log(ex.ToString());
-            }
+
 
         //    Client_EventMessageReceived("GMP", "HasPlugin");
         }
@@ -51,14 +46,7 @@
         public static IEnumerator DelayedSendPluginCheck()
         {
             yield return new WaitForSeconds(0.1f);
-            try
-            {
                 SendCommand("HavePlugin?");
-            }
-            catch(Exception ex)
-            {
-                MultiMain.Log(ex.ToString());
-            }
 
         }
         private static void Client_EventMessageReceived(string header, string data)
@@ -68,7 +56,14 @@
 
             if (!otherGmpPlayer)
             {
-                if (data == "HasPlugin") otherGmpPlayer = true;
+                if (data == "HasPlugin")
+                {
+                    otherGmpPlayer = true;
+                    if (playerName == "")
+                        playerName = Client.instance.playerInfo.playerName;
+                    playerName += " (GMP)";
+                }
+
                 else if (data == "HavePlugin?")
                 {
                     playerClient.SendEventMessage("GMP", "HasPlugin");
@@ -96,17 +91,13 @@
 
         public static void SendCommand(string command)
         {
-
-            try
-            {
                 MultiMain.Log("Sending Command: " + command);
-                playerClient.SendEventMessage("GMP", command);
                Client.instance.SendEventMessage("GMP", command);
-            }
-            catch(Exception ex)
-            {
-                MultiMain.Log(ex.ToString());
-            }
+        }
+        public static void ResetName()
+        {
+            if (playerName != "")
+                Client.instance.playerInfo.playerName = playerName;
         }
     }
 }

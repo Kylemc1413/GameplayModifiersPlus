@@ -65,12 +65,16 @@
             }
 
             if (multiActive)
+            {
+                MultiClientInterface.ResetName();
                 if (newScene.name == "EmptyTransition")
                 {
                     Log("Resetting Multi Powers Object");
                     if (multiObject != null)
                         GameObject.Destroy(multiObject);
                 }
+            }
+
             if (multiObject == null)
             {
                 Log("Null Creation of Multi Powers Object");
@@ -90,7 +94,6 @@
             {
                 if (multiActive)
                 {
-                    Log("Running Init");
                         MultiClientInterface.Init();
 
                 }
