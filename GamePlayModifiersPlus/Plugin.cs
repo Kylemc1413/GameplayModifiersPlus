@@ -562,30 +562,6 @@
             if (multiInstalled)
                 multi.Update();
 
-            if (isValidScene && GMPUI.chatIntegration || Multiplayer.MultiMain.multiActive)
-            {
-                if (pauseManager.gameState == StandardLevelGameplayManager.GameState.Paused && !paused)
-                {
-                    Log("Pause");
-                    AudioTimeSync.forcedAudioSync = false;
-                    AudioTimeSync.Pause();
-                    paused = true;
-                }
-                if (pauseManager.gameState != StandardLevelGameplayManager.GameState.Paused && paused)
-                {
-                    Log("Unpause");
-                    AudioTimeSync.forcedAudioSync = true;
-                    paused = false;
-                    if(currentSongSpeed <= 1f)
-                        AudioTimeSync.forcedAudioSync = false;
-                }
-
-            }
-
-
-                
-
-
 
             if (soundIsPlaying == true && songAudio != null && isValidScene == true)
             {
