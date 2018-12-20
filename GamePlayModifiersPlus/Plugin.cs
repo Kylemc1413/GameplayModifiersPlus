@@ -23,7 +23,7 @@
 
 
         public static float timeScale = 1;
-        GamePlayModifiersPlus.Multiplayer.MultiMain multi = null;
+        Multiplayer.MultiMain multi = null;
         public static bool multiInstalled = false;
         public TwitchCommands twitchCommands = new TwitchCommands();
         public static TwitchPowers twitchPowers = null;
