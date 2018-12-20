@@ -19,7 +19,7 @@
 
         public static string GeneratePowerUp()
         {
-            int power = (int)UnityEngine.Random.Range(0f, 8f);
+            int power = (int)UnityEngine.Random.Range(0f, 10f);
             string powerup;
             switch (power)
             {
@@ -54,8 +54,11 @@
                     powerup = "NoArrows";
                     break;
                 case 10:
-                    powerup = "InstaFail";
+                    powerup = "Slower";
                     break;
+                //case 11:
+               //     powerup = "InstaFail";
+             //       break;
                 default:
                     powerup = "DA";
                     break;

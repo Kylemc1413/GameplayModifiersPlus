@@ -16,10 +16,10 @@
         public float smallerNoteDuration = 10f;
         public float largerNotesDuration = 10f;
         public float randomNotesDuration = 10f;
-        public float instaFailDuration = 4f;
+        public float instaFailDuration = 2f;
         public float invincibleDuration = 15f;
         public float njsRandomDuration = 10f;
-        public float noArrowsDuration = 10f;
+        public float noArrowsDuration = 5f;
         public float funkyDuration = 10f;
         public float rainbowDuration = 10f;
         public float bombDuration = 15f;
