@@ -53,37 +53,36 @@
         {
             MultiMain.Log("Message Recieved: " + header + " : " + data);
             if (header != "GMP") return;
-
-            if (!otherGmpPlayer)
+            if(otherGmpPlayer)
+            {
+                if (data.Contains("!gmm"))
+                {
+                    MultiMain.multiCommands.CheckHealthCommands(data);
+                    MultiMain.multiCommands.CheckSizeCommands(data);
+                    MultiMain.multiCommands.CheckGameplayCommands(data);
+                    MultiMain.multiCommands.CheckSpeedCommands(data);
+                }
+            }
+            else
             {
                 if (data == "HasPlugin")
                 {
                     otherGmpPlayer = true;
                     if (playerName == "")
                         playerName = Client.instance.playerInfo.playerName;
-                    playerName += " (GMP)";
+                    Client.instance.playerInfo.playerName += " (GMP)";
                 }
 
-                else if (data == "HavePlugin?")
+                else if (data.Contains("HavePlugin?"))
                 {
-                    playerClient.SendEventMessage("GMP", "HasPlugin");
                     Client.instance.SendEventMessage("GMP", "HasPlugin");
                 }
             }
 
-            if (!otherGmpPlayer) return;
             if (otherGmpPlayer && !initialized)
             {
                 MultiMain.Activate();
                 initialized = true;
-            }
-
-            if(data.StartsWith("!gmm"))
-            {
-            MultiMain.multiCommands.CheckHealthCommands(data);
-            MultiMain.multiCommands.CheckSizeCommands(data);
-            MultiMain.multiCommands.CheckGameplayCommands(data);
-            MultiMain.multiCommands.CheckSpeedCommands(data);
             }
 
         }

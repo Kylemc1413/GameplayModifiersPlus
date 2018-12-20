@@ -5,11 +5,11 @@
 
     public class MultiValues
     {
-        public int maxCharges = 6;
+        public int maxCharges = 5;
         public int charges = 0;
 
         public int chargesOverTime = 1;
-        public float timeForCharges = 2f;
+        public float timeForCharges = 5f;
 
         public float globalCommandCooldown = 10f;
         public float daDuration = 15f;

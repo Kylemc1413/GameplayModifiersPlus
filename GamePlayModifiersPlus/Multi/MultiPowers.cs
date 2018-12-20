@@ -10,6 +10,8 @@
         public static IEnumerator ChargeOverTime()
         {
             yield return new WaitForSeconds(MultiMain.Config.timeForCharges);
+            float random = UnityEngine.Random.Range(0f, 10f);
+            if(random >= 6f)
             MultiMain.Config.charges += MultiMain.Config.chargesOverTime;
             if (MultiMain.Config.charges > MultiMain.Config.maxCharges) MultiMain.Config.charges = MultiMain.Config.maxCharges;
             MultiMain.Powers.StartCoroutine(ChargeOverTime());
