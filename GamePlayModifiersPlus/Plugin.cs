@@ -19,7 +19,7 @@
 
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.1.10m";
+        public string Version => "1.1.11m";
 
 
         public static float timeScale = 1;
