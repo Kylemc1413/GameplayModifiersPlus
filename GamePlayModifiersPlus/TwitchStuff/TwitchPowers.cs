@@ -224,8 +224,13 @@
 
         public static IEnumerator RandomNJS()
         {
+<<<<<<< HEAD
            AdjustNJS(UnityEngine.Random.Range(Plugin.ChatConfig.njsRandomMin, Plugin.ChatConfig.njsRandomMax));
             yield return new WaitForSeconds(0.2f);
+=======
+           AdjustNJS(UnityEngine.Random.Range(Plugin.Config.njsRandomMin, Plugin.Config.njsRandomMax));
+            yield return new WaitForSeconds(0.33f);
+>>>>>>> master
             if (GMPUI.njsRandom)
             Plugin.twitchPowers.StartCoroutine(RandomNJS());
 
@@ -344,7 +349,11 @@
                 Plugin.AudioTimeSync.forcedAudioSync = true;
             else
                 Plugin.AudioTimeSync.forcedAudioSync = false;
+<<<<<<< HEAD
             Plugin.soundEffectManager.SetField("_beatAlignOffset", beatAlignOffset * (1.5f * pitch) );
+=======
+            Plugin.soundEffectManager.SetField("_beatAlignOffset", beatAlignOffset * (1.5f * pitch));
+>>>>>>> master
 
             yield return new WaitForSeconds(length);
 
