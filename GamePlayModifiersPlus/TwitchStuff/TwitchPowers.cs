@@ -224,7 +224,7 @@
         public static IEnumerator RandomNJS()
         {
            AdjustNJS(UnityEngine.Random.Range(Plugin.Config.njsRandomMin, Plugin.Config.njsRandomMax));
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.33f);
             if (GMPUI.njsRandom)
             Plugin.twitchPowers.StartCoroutine(RandomNJS());
 
