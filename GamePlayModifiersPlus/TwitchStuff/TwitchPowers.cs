@@ -331,42 +331,32 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " Speed | ";
+            float beatAlignOffset = Plugin.soundEffectManager.GetField<float>("_beatAlignOffset");
             GameplayCoreSceneSetup sceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-            Plugin.AudioTimeSync.SetField("_timeScale", pitch);
+            float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
             Plugin.songAudio.pitch = pitch;
             Plugin.currentSongSpeed = pitch;
             AudioMixerSO mixer = sceneSetup.GetField<AudioMixerSO>("_audioMixer");
             mixer.musicPitch = 1f / pitch;
 
-            if(pitch >= 1f)
-            Plugin.AudioTimeSync.forcedAudioSync = true;
-            else
-                Plugin.AudioTimeSync.forcedAudioSync = false;
-            float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
-            if (Plugin.pauseManager.gameState == StandardLevelGameplayManager.GameState.Paused)
-                Plugin.AudioTimeSync.Pause();
-
-            Plugin.soundEffectManager.HandleGameDidResume();
-
-                yield return new WaitForSeconds(length);
-
-            Plugin.AudioTimeSync.SetField("_timeScale", songspeedmul);
-            Plugin.songAudio.pitch = songspeedmul;
-            Plugin.currentSongSpeed = songspeedmul;
-            mixer.musicPitch = 1 / songspeedmul;
-
-            if (songspeedmul >= 1f)
+            if (pitch != 1f)
                 Plugin.AudioTimeSync.forcedAudioSync = true;
             else
                 Plugin.AudioTimeSync.forcedAudioSync = false;
+            Plugin.soundEffectManager.SetField("_beatAlignOffset", beatAlignOffset * (1.5f * pitch));
+
+            yield return new WaitForSeconds(length);
+
+            Plugin.songAudio.pitch = songspeedmul;
+            Plugin.currentSongSpeed = songspeedmul;
+            mixer.musicPitch = 1 / songspeedmul;
 
             if (songspeedmul == 1f)
             {
                 mixer.musicPitch = 1;
                 Plugin.AudioTimeSync.forcedAudioSync = false;
             }
-            if (Plugin.pauseManager.gameState == StandardLevelGameplayManager.GameState.Paused)
-                Plugin.AudioTimeSync.Pause();
+            Plugin.soundEffectManager.SetField("_beatAlignOffset", beatAlignOffset);
             text.text = text.text.Replace(" Speed | ", "");
         }
 

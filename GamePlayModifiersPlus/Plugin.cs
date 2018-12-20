@@ -539,25 +539,6 @@
         public void OnUpdate()
         {
 
-            if (isValidScene && GMPUI.chatIntegration)
-            {
-                if (pauseManager.gameState == StandardLevelGameplayManager.GameState.Paused && !paused)
-                {
-                    Log("Pause");
-                    AudioTimeSync.forcedAudioSync = false;
-                    AudioTimeSync.Pause();
-                    paused = true;
-                }
-                if (pauseManager.gameState != StandardLevelGameplayManager.GameState.Paused && paused)
-                {
-                    Log("Unpause");
-                    AudioTimeSync.forcedAudioSync = true;
-                    paused = false;
-                    if(currentSongSpeed <= 1f)
-                        AudioTimeSync.forcedAudioSync = false;
-                }
-
-            }
 
 
                 
