@@ -18,13 +18,9 @@
         public static readonly ChatConfig ChatConfig = new ChatConfig(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
 
         public string Name => "GameplayModifiersPlus";
-<<<<<<< HEAD
 
         public string Version => "1.1.11m";
 
-=======
-        public string Version => "1.1.11";
->>>>>>> master
 
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -563,16 +559,9 @@
 
         public void OnUpdate()
         {
-<<<<<<< HEAD
             if (multiInstalled)
                 multi.Update();
-=======
 
-
-
-                
-
->>>>>>> master
 
 
             if (soundIsPlaying == true && songAudio != null && isValidScene == true)

@@ -243,7 +243,7 @@
         public static IEnumerator RandomNJS()
         {
             AdjustNJS(UnityEngine.Random.Range(MultiMain.Config.njsRandomMin, MultiMain.Config.njsRandomMax));
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.33f);
             if (GMPUI.njsRandom)
                 MultiMain.Powers.StartCoroutine(RandomNJS());
 
@@ -361,7 +361,7 @@
                 Plugin.AudioTimeSync.forcedAudioSync = true;
             else
                 Plugin.AudioTimeSync.forcedAudioSync = false;
-            Plugin.soundEffectManager.SetField("_beatAlignOffset", beatAlignOffset * (1.5f * pitch));
+            Plugin.soundEffectManager.SetField("_beatAlignOffset", beatAlignOffset * (1.5f * pitch) );
 
             yield return new WaitForSeconds(length);
 
