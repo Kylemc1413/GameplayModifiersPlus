@@ -11,7 +11,7 @@
         {
             yield return new WaitForSeconds(MultiMain.Config.timeForCharges);
             float random = UnityEngine.Random.Range(0f, 10f);
-            if(random >= 6f)
+            if(random >= 4f)
             MultiMain.Config.charges += MultiMain.Config.chargesOverTime;
             if (MultiMain.Config.charges > MultiMain.Config.maxCharges) MultiMain.Config.charges = MultiMain.Config.maxCharges;
             MultiMain.Powers.StartCoroutine(ChargeOverTime());
@@ -229,7 +229,7 @@
             text.text = text.text.Replace(" Random | ", "");
         }
 
-        public static IEnumerator njsRandom(float length)
+        public static IEnumerator NjsRandom(float length)
         {
             var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " NJSRandom | ";
@@ -239,7 +239,7 @@
             AdjustNJS(Plugin.songNJS);
             text.text = text.text.Replace(" NJSRandom | ", "");
         }
-
+        
         public static IEnumerator RandomNJS()
         {
             AdjustNJS(UnityEngine.Random.Range(MultiMain.Config.njsRandomMin, MultiMain.Config.njsRandomMax));

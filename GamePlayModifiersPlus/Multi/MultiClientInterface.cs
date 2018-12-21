@@ -19,6 +19,7 @@
         public static bool otherGmpPlayer = false;
         public static bool initialized = false;
         public static string playerName = "";
+        public static string version = GamePlayModifiersPlus.Plugin.pluginVersion;
         public static void Init()
         {
 
@@ -57,15 +58,16 @@
             {
                 if (data.Contains("!gmm"))
                 {
-                    MultiMain.multiCommands.CheckHealthCommands(data);
-                    MultiMain.multiCommands.CheckSizeCommands(data);
-                    MultiMain.multiCommands.CheckGameplayCommands(data);
-                    MultiMain.multiCommands.CheckSpeedCommands(data);
+                    string command = data.ToLower();
+                    MultiMain.multiCommands.CheckHealthCommands(command);
+                    MultiMain.multiCommands.CheckSizeCommands(command);
+                    MultiMain.multiCommands.CheckGameplayCommands(command);
+                    MultiMain.multiCommands.CheckSpeedCommands(command);
                 }
             }
             else
             {
-                if (data == "HasPlugin")
+                if (data == "HasPlugin" + version)
                 {
                     otherGmpPlayer = true;
                     if (playerName == "")
@@ -75,7 +77,7 @@
 
                 else if (data.Contains("HavePlugin?"))
                 {
-                    Client.instance.SendEventMessage("GMP", "HasPlugin");
+                    Client.instance.SendEventMessage("GMP", "HasPlugin" + version);
                 }
             }
 
@@ -90,8 +92,8 @@
 
         public static void SendCommand(string command)
         {
-                MultiMain.Log("Sending Command: " + command);
-               Client.instance.SendEventMessage("GMP", command);
+                MultiMain.Log("Sending Command: " + command + version);
+               Client.instance.SendEventMessage("GMP", command + version);
         }
         public static void ResetName()
         {

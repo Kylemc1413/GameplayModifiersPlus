@@ -9,7 +9,7 @@
         public int charges = 0;
 
         public int chargesOverTime = 1;
-        public float timeForCharges = 5f;
+        public float timeForCharges = 3f;
 
         public float globalCommandCooldown = 10f;
         public float daDuration = 15f;

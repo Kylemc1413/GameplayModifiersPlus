@@ -15,7 +15,7 @@
         {
             if (!Plugin.cooldowns.GetCooldown("Health"))
             {
-                if (message.ToLower().Contains("!gmm instafail"))
+                if (message.Contains("!gmm instafail") && message.Contains(MultiClientInterface.version))
                 {
 
                     //         Plugin.beepSound.Play();
@@ -28,7 +28,7 @@
 
                 }
 
-                if (message.ToLower().Contains("!gmm invincible") && !Plugin.healthActivated && !Plugin.cooldowns.GetCooldown("Health"))
+                if (message.Contains("!gmm invincible") && message.Contains(MultiClientInterface.version) && !Plugin.healthActivated && !Plugin.cooldowns.GetCooldown("Health"))
                 {
 
                     //          Plugin.beepSound.Play();
@@ -44,7 +44,7 @@
 
         public void CheckSizeCommands(String message)
         {
-            if (message.ToLower().Contains("!gmm smaller") && !Plugin.cooldowns.GetCooldown("NormalSize"))
+            if (message.Contains("!gmm smaller") && message.Contains(MultiClientInterface.version) && !Plugin.cooldowns.GetCooldown("NormalSize"))
             {
 
                 //      Plugin.beepSound.Play();
@@ -57,7 +57,7 @@
 
             }
 
-            if (message.ToLower().Contains("!gmm larger") && !Plugin.cooldowns.GetCooldown("NormalSize") && !Plugin.sizeActivated)
+            if (message.Contains("!gmm larger") && message.Contains(MultiClientInterface.version) && !Plugin.cooldowns.GetCooldown("NormalSize") && !Plugin.sizeActivated)
             {
 
                 //      Plugin.beepSound.Play();
@@ -69,7 +69,7 @@
 
             }
 
-            if (message.ToLower().Contains("!gmm random") && !Plugin.cooldowns.GetCooldown("Random"))
+            if (message.Contains("!gmm random") && message.Contains(MultiClientInterface.version) && !Plugin.cooldowns.GetCooldown("Random"))
             {
 
                 //       Plugin.beepSound.Play();
@@ -84,7 +84,7 @@
 
         public void CheckGameplayCommands(String message)
         {
-            if (message.ToLower().Contains("!gmm da") && !Plugin.cooldowns.GetCooldown("DA"))
+            if (message.Contains("!gmm da") && message.Contains(MultiClientInterface.version) && !Plugin.cooldowns.GetCooldown("DA"))
             {
                 MultiMain.Log("Trying DA");
                 //      Plugin.beepSound.Play();
@@ -96,17 +96,17 @@
 
             }
 
-            if (message.ToLower().Contains("!gmm njsrandom") && !Plugin.cooldowns.GetCooldown("RandomNJS"))
+            if (message.Contains("!gmm njsrandom") && message.Contains(MultiClientInterface.version) && !Plugin.cooldowns.GetCooldown("RandomNJS"))
             {
 
                 //         Plugin.beepSound.Play();
-                MultiMain.Powers.StartCoroutine(MultiPowers.njsRandom(MultiMain.Config.njsRandomDuration));
+                MultiMain.Powers.StartCoroutine(MultiPowers.NjsRandom(MultiMain.Config.njsRandomDuration));
                 MultiMain.Powers.StartCoroutine(MultiPowers.CoolDown(MultiMain.Config.njsRandomCooldown, "NJSRandom", "Random Note Jump Speed Active."));
                 Plugin.commandsLeftForMessage -= 1;
                 globalActive = true;
 
             }
-            if (message.ToLower().Contains("!gmm noarrows") && !Plugin.cooldowns.GetCooldown("NoArrows"))
+            if (message.Contains("!gmm noarrows") && message.Contains(MultiClientInterface.version) && !Plugin.cooldowns.GetCooldown("NoArrows"))
             {
 
 
@@ -117,7 +117,7 @@
                 globalActive = true;
 
             }
-            if (message.ToLower().Contains("!gmm funky") && !Plugin.cooldowns.GetCooldown("Funky"))
+            if (message.Contains("!gmm funky") && message.Contains(MultiClientInterface.version) && !Plugin.cooldowns.GetCooldown("Funky"))
             {
 
 
@@ -128,7 +128,7 @@
                 globalActive = true;
 
             }
-            if (message.ToLower().Contains("!gmm rainbow") && !Plugin.cooldowns.GetCooldown("Rainbow"))
+            if (message.Contains("!gmm rainbow") && message.Contains(MultiClientInterface.version) && !Plugin.cooldowns.GetCooldown("Rainbow"))
             {
 
 
@@ -141,7 +141,7 @@
 
             }
 
-            if (message.ToLower().Contains("!gmm bombs") && !Plugin.cooldowns.GetCooldown("Bombs") && MultiMain.Config.bombChance > 0)
+            if (message.Contains("!gmm bombs") && message.Contains(MultiClientInterface.version) && !Plugin.cooldowns.GetCooldown("Bombs") && MultiMain.Config.bombChance > 0)
             {
 
 
@@ -157,7 +157,7 @@
 
         public void CheckSpeedCommands(String message)
         {
-            if (message.ToLower().Contains("!gmm faster") && !Plugin.cooldowns.GetCooldown("Speed"))
+            if (message.Contains("!gmm faster") && message.Contains(MultiClientInterface.version) && !Plugin.cooldowns.GetCooldown("Speed"))
             {
 
                 //                Plugin.beepSound.Play();
@@ -167,7 +167,7 @@
                 globalActive = true;
 
             }
-            if (message.ToLower().Contains("!gmm slower") && !Plugin.cooldowns.GetCooldown("Speed"))
+            if (message.Contains("!gmm slower") && message.Contains(MultiClientInterface.version) && !Plugin.cooldowns.GetCooldown("Speed"))
             {
                 //                Plugin.beepSound.Play();
                 MultiMain.Powers.StartCoroutine(MultiPowers.SpeedChange(MultiMain.Config.slowerDuration, MultiMain.Config.slowerMultiplier));
