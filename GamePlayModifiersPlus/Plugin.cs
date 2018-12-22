@@ -776,9 +776,9 @@
         {
             return CustomColors.Plugin.disablePlugin;
         }
-        public static bool DoesCustomColorsAllowEnviromentColors()
+        public static bool DoesCustomColorsAllowEnvironmentColors()
         {
-            return CustomColors.Plugin.allowEnviromentColors;
+            return CustomColors.Plugin.allowEnvironmentColors;
         }
     }
 }
