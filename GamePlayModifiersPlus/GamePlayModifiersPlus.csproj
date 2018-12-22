@@ -43,8 +43,13 @@
     <Reference Include="BeatSaberCustomUI">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\BeatSaberCustomUI.dll</HintPath>
     </Reference>
+<<<<<<< HEAD
     <Reference Include="BeatSaberMultiplayer">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\BeatSaberMultiplayer.dll</HintPath>
+=======
+    <Reference Include="CustomColors">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\CustomColors.dll</HintPath>
+>>>>>>> master
     </Reference>
     <Reference Include="IllusionInjector">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\IllusionInjector.dll</HintPath>
