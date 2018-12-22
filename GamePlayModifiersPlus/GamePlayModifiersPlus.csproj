@@ -102,6 +102,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="TwitchStuff\GMPDisplay.cs" />
+    <Compile Include="Utilities\Rainbow.cs" />
     <Compile Include="Utilities\ReflectionUtil.cs" />
     <Compile Include="Utilities\FloatBehavior.cs" />
     <Compile Include="TwitchStuff\TwitchCommands.cs" />
