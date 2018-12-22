@@ -413,6 +413,24 @@
             GMPUI.rainbow = false;
             Plugin.colorA.SetColor(Plugin.oldColorA);
             Plugin.colorB.SetColor(Plugin.oldColorB);
+            if (Plugin.environmentColorsSetter != null)
+            {
+                Color overrrideA = Plugin.environmentColorsSetter.GetField<Color>("_overrideColorA");
+                Color overrrideB = Plugin.environmentColorsSetter.GetField<Color>("_overrideColorB");
+                if (Plugin.customColorsInstalled)
+                {
+                    if (Plugin.IsCustomColorsDisabled() || Plugin.DoesCustomColorsAllowEnviromentColors())
+                    {
+                        Plugin.colorA.SetColor(overrrideA);
+                        Plugin.colorB.SetColor(overrrideB);
+                    }
+                }
+                else
+                {
+                    Plugin.colorA.SetColor(overrrideA);
+                    Plugin.colorB.SetColor(overrrideB);
+                }
+            }
             text.text = text.text.Replace(" Rainbow | ", "");
         }
 

@@ -81,14 +81,17 @@
         public static float currentSongSpeed;
         public static StandardLevelGameplayManager pauseManager;
         public static NoteCutSoundEffectManager soundEffectManager;
+        public static EnvironmentColorsSetter environmentColorsSetter;
+        public static bool customColorsInstalled = false;
         GameObject chatPowers = null;
 
         public void OnApplicationStart()
         {
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
-
-            ReadPrefs();
+            if (PluginManager.Plugins.Any(x => x.Name == "CustomColorsEdit"))
+                customColorsInstalled = true;
+                ReadPrefs();
             cooldowns = new Cooldowns();
             defColorA.SetColor(new Color(1f, 0, 0));
             defColorB.SetColor(new Color(0, .706f, 1));
@@ -143,14 +146,16 @@
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
+
             paused = false;
-            if (!PluginManager.Plugins.Any(x => x.Name == "CustomColorsEdit"))
+            if (!customColorsInstalled)
             {
                 if (colorA != null)
                     colorA.SetColor(defColorA);
                 if (colorB != null)
                     colorB.SetColor(defColorB);
             }
+
 
             //        try
             //        {
@@ -252,6 +257,7 @@
 
             if (scene.name == "GameCore")
             {
+                environmentColorsSetter = Resources.FindObjectsOfTypeAll<EnvironmentColorsSetter>().FirstOrDefault();
                 soundEffectManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().First();
                 levelData = Resources.FindObjectsOfTypeAll<StandardLevelSceneSetupDataSO>().First();
                 spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().First();
@@ -540,7 +546,6 @@
 
 
 
-                
 
 
 
@@ -765,6 +770,15 @@
 
             double scale = Math.Pow(10, Math.Floor(Math.Log10(Math.Abs(d))) + 1);
             return scale * Math.Round(d / scale, digits);
+        }
+
+        public static bool IsCustomColorsDisabled()
+        {
+            return CustomColors.Plugin.disablePlugin;
+        }
+        public static bool DoesCustomColorsAllowEnviromentColors()
+        {
+            return CustomColors.Plugin.allowEnviromentColors;
         }
     }
 }
