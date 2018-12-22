@@ -450,8 +450,7 @@
         {
             if (GMPUI.rainbow)
             {
-                colorA.SetColor(new Color(UnityEngine.Random.Range(1f, 1.7f), UnityEngine.Random.Range(0f, 1.7f), UnityEngine.Random.Range(0f, .5f)));
-                colorB.SetColor(new Color(UnityEngine.Random.Range(0f, 0.5f), UnityEngine.Random.Range(0, 1.7f), UnityEngine.Random.Range(1, 1.7f)));
+                Utilities.Rainbow.RandomizeColors();
                 invalidForScoring = true;
 
             }
