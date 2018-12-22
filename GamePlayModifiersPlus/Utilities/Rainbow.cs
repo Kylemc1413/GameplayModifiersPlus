@@ -60,13 +60,9 @@
                 }
             }
 
-<<<<<<< HEAD
-        //    if (color.r <= 0.75f && (color.b <= .4f || color.g <= 0.5f))
-                color *= 1.4f;
-=======
-            //    if (color.r <= 0.75f && (color.b <= .4f || color.g <= 0.5f))
+
             color *= 1.4f;
->>>>>>> master
+
             color *= UnityEngine.Random.Range(.7f, 1.5f);
 
 
@@ -84,11 +80,8 @@
             if (random1 <= 4)
             {
                 random1 = (int)UnityEngine.Random.Range(0f, 7f);
-<<<<<<< HEAD
-            color = RightColors[random1];
-=======
+
                 color = RightColors[random1];
->>>>>>> master
             }
             else
 
@@ -108,14 +101,8 @@
                 }
             }
 
-
-<<<<<<< HEAD
-   //         if (color.b <= 0.75f &&( color.g <= .4f || color.r <= 0.35f))
-                color *= 1.4f;
-=======
-            //         if (color.b <= 0.75f &&( color.g <= .4f || color.r <= 0.35f))
             color *= 1.4f;
->>>>>>> master
+
             color *= UnityEngine.Random.Range(.7f, 1.5f);
 
 

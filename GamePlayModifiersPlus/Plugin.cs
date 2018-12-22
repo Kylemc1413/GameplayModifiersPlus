@@ -93,7 +93,7 @@
         {
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
-<<<<<<< HEAD
+
             if (PluginManager.Plugins.Any(x => x.Name == "Beat Saber Multiplayer"))
             {
                 multi = new GamePlayModifiersPlus.Multiplayer.MultiMain();
@@ -101,10 +101,10 @@
                 multiInstalled = true;
                 Log("Multiplayer Detected, enabling multiplayer functionality");
             }
-=======
+
             if (PluginManager.Plugins.Any(x => x.Name == "CustomColorsEdit"))
                 customColorsInstalled = true;
->>>>>>> master
+
                 ReadPrefs();
             cooldowns = new Cooldowns();
             defColorA.SetColor(new Color(1f, 0, 0));
@@ -568,14 +568,14 @@
 
         public void OnUpdate()
         {
-<<<<<<< HEAD
+
             if (multiInstalled)
                 multi.Update();
-=======
 
 
 
->>>>>>> master
+
+
 
 
 
