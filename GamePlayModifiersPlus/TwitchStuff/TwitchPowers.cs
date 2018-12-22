@@ -423,7 +423,7 @@
                 Color overrrideB = Plugin.environmentColorsSetter.GetField<Color>("_overrideColorB");
                 if (Plugin.customColorsInstalled)
                 {
-                    if (Plugin.IsCustomColorsDisabled() || Plugin.DoesCustomColorsAllowEnviromentColors())
+                    if (Plugin.IsCustomColorsDisabled() || Plugin.DoesCustomColorsAllowEnvironmentColors())
                     {
                         Plugin.colorA.SetColor(overrrideA);
                         Plugin.colorB.SetColor(overrrideB);
