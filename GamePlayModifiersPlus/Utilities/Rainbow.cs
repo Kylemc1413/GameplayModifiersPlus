@@ -9,12 +9,12 @@
         public static List<Color> LeftColors = new List<Color>
         {
             { new Color(1f,0,0) },
-            { new Color(0.756f, 0, 0.901f) },
-            { new Color(0.901f, 0, 0.631f)},
+            { new Color(0.756f, 0, 0.401f) },
+            { new Color(0.901f, 0, 0.431f)},
             { new Color(0.901f, 0, 0.105f) },
             { new Color(0.901f, 0.498f, 0) },
             { new Color(1f, 0.992f, 0) },
-            { new Color(0.678f, 0, 0.364f) },
+            { new Color(0.678f, 0.1f, 0.364f) },
         };
         public static List<Color> RightColors = new List<Color>
         {
@@ -46,7 +46,7 @@
                 switch (random2)
                 {
                     case 7:
-                        color = new Color(UnityEngine.Random.Range(0.5f, 1f), 0f, UnityEngine.Random.Range(0.25f, 0.5f));
+                        color = new Color(UnityEngine.Random.Range(0.5f, 1f), 0f, UnityEngine.Random.Range(0.25f, 0.3f));
                         break;
                     case 8:
                         color = new Color(1f, UnityEngine.Random.Range(0f, 0.5f), 0f);
@@ -55,7 +55,7 @@
                         color = new Color(1f, UnityEngine.Random.Range(0.8f, 1f), 0f);
                         break;
                     default:
-                        color = new Color(UnityEngine.Random.Range(0.5f, 1f), 0f, UnityEngine.Random.Range(0.25f, 0.5f));
+                        color = new Color(UnityEngine.Random.Range(0.5f, 1f), 0f, UnityEngine.Random.Range(0.25f, 0.3f));
                         break;
                 }
             }

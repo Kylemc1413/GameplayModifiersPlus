@@ -17,6 +17,7 @@
         public static MultiValues Config = new MultiValues();
         public static MultiPowers Powers;
         public static MultiCommands multiCommands = new MultiCommands();
+        public static MultiGMPDisplay multiGMPDisplay;
         public static bool multiActive = false;
         public static bool activated = false;
         public static string currentPowerUp = "Charging...";
@@ -48,6 +49,13 @@
 
         private void SceneManager_activeSceneChanged(Scene oldScene, Scene newScene)
         {
+            if (multiGMPDisplay != null)
+            {
+                multiGMPDisplay.DestroyDis();
+                GameObject.Destroy(multiGMPDisplay);
+            }
+
+
             Config.charges = 0;
             activated = false;
             MultiClientInterface.initialized = false;
@@ -127,7 +135,12 @@
             if(Config.charges >= Config.maxCharges)
             {
                 if (currentPowerUp == "Charging...")
+                {
                     currentPowerUp = MultiPowers.GeneratePowerUp();
+                    var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().chargeText;
+                    text.text = currentPowerUp;
+                }
+
 
                 if((GamePlayModifiersPlus.Plugin.leftController.triggerValue >= 0.8 || GamePlayModifiersPlus.Plugin.rightController.triggerValue >= 0.8))
                 {
@@ -147,7 +160,8 @@
 
         public static void Activate()
         {
-            multiObject.AddComponent<MultiGMPDisplay>();
+
+            multiGMPDisplay = multiObject.AddComponent<MultiGMPDisplay>();
             Powers.StartCoroutine(MultiPowers.ChargeOverTime());
             activated = true;
 

@@ -132,7 +132,7 @@ namespace GamePlayModifiersPlus.Multiplayer
             chargeCountText.text = MultiMain.Config.charges.ToString();
         }
 
-        public void Destroy()
+        public void DestroyDis()
         {
             Destroy(GameObject.Find("MultiGMPDisplayCanvas"));
             Destroy(GameObject.Find("MultiGMPDisplayCounter"));

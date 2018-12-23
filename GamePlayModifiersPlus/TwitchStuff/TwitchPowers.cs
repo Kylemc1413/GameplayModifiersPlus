@@ -124,8 +124,6 @@
         public static IEnumerator TestingGround(float length)
         {
             yield return new WaitForSeconds(length);
-            TwitchPowers.AdjustNJS(15f);
-   
         }
 
         public static void AdjustNJS(float njs)
@@ -425,14 +423,14 @@
                 {
                     if (Plugin.IsCustomColorsDisabled() || Plugin.DoesCustomColorsAllowEnvironmentColors())
                     {
-                        Plugin.colorA.SetColor(overrrideA);
-                        Plugin.colorB.SetColor(overrrideB);
+                        Plugin.colorB.SetColor(overrrideA);
+                        Plugin.colorA.SetColor(overrrideB);
                     }
                 }
                 else
                 {
-                    Plugin.colorA.SetColor(overrrideA);
-                    Plugin.colorB.SetColor(overrrideB);
+                    Plugin.colorB.SetColor(overrrideA);
+                    Plugin.colorA.SetColor(overrrideB);
                 }
             }
             text.text = text.text.Replace(" Rainbow | ", "");

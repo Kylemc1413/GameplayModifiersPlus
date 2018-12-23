@@ -63,9 +63,6 @@
                     powerup = "DA";
                     break;
             }
-
-            var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().chargeText;
-            text.text = powerup;
             return powerup;
         }
         public static IEnumerator TempDA(float length)
@@ -439,14 +436,14 @@
                 {
                     if (Plugin.IsCustomColorsDisabled() || Plugin.DoesCustomColorsAllowEnvironmentColors())
                     {
-                        Plugin.colorA.SetColor(overrrideA);
-                        Plugin.colorB.SetColor(overrrideB);
+                        Plugin.colorB.SetColor(overrrideA);
+                        Plugin.colorA.SetColor(overrrideB);
                     }
                 }
                 else
                 {
-                    Plugin.colorA.SetColor(overrrideA);
-                    Plugin.colorB.SetColor(overrrideB);
+                    Plugin.colorB.SetColor(overrrideA);
+                    Plugin.colorA.SetColor(overrrideB);
                 }
             }
             text.text = text.text.Replace(" Rainbow | ", "");
