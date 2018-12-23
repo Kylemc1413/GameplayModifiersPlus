@@ -46,7 +46,7 @@
         public float njsRandomMax = 16f;
         public float randomMin = 0.6f;
         public float randomMax = 1.5f;
-        public float bombChance = 0.05f;
+        public float bombChance = 0.03f;
         public float fasterMultiplier = 1.2f;
         public float slowerMultiplier = .85f;
 
