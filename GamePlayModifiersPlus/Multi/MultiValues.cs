@@ -5,7 +5,7 @@
 
     public class MultiValues
     {
-        public int maxCharges = 5;
+        public int maxCharges = 7;
         public int charges = 0;
 
         public int chargesOverTime = 1;
@@ -46,7 +46,7 @@
         public float njsRandomMax = 16f;
         public float randomMin = 0.6f;
         public float randomMax = 1.5f;
-        public float bombChance = 0.15f;
+        public float bombChance = 0.05f;
         public float fasterMultiplier = 1.2f;
         public float slowerMultiplier = .85f;
 

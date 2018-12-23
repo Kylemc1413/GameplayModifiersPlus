@@ -134,11 +134,10 @@
 
             if(Config.charges >= Config.maxCharges)
             {
-                if (currentPowerUp == "Charging...")
+                if (multiGMPDisplay.chargeText.text.Contains("Charging"))
                 {
                     currentPowerUp = MultiPowers.GeneratePowerUp();
-                    var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().chargeText;
-                    text.text = currentPowerUp;
+                    multiGMPDisplay.chargeText.text = currentPowerUp;
                 }
 
 
@@ -148,8 +147,7 @@
                     MultiClientInterface.SendCommand("!gmm " + currentPowerUp.ToLower());
                     Config.charges = 0;
                     currentPowerUp = "Charging...";
-                    var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().chargeText;
-                    text.text = currentPowerUp;
+                    multiGMPDisplay.chargeText.text = currentPowerUp;
                 }
             }
 

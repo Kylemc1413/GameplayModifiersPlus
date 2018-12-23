@@ -31,7 +31,7 @@
             SharedCoroutineStarter.instance.StartCoroutine(DelayedSendPluginCheck());
 
 
-        //    Client_EventMessageReceived("GMP", "HasPlugin");
+            Client_EventMessageReceived("GMP", "HasPlugin" + version);
         }
 
         private static void Client_ClientDestroyed()
