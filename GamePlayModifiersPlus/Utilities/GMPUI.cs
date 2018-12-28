@@ -33,6 +33,7 @@
         public static bool njsRandom;
         public static bool randomSize = false;
         public static bool noArrows = false;
+        public static bool oneColor = false;
 
 
         public static void CreateUI()
@@ -120,6 +121,11 @@
             noArrowsOption.GetValue = noArrows;
             noArrowsOption.OnToggle += (value) => { noArrows = value; Plugin.Log("Changed value"); };
             noArrowsOption.AddConflict("Chat Integration");
+
+            var oneColorOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "One Color ", "GMP2", disableScoreString + "Changes Blocks to One Color, allows you to hit them with either saber. Haptics for saber clash and walls disabled with this modifier on", _GMPIcon);
+            oneColorOption.GetValue = oneColor;
+            oneColorOption.OnToggle += (value) => { oneColor = value; Plugin.Log("Changed value"); };
+            oneColorOption.AddConflict("Chat Integration");
         }
 
 

@@ -86,6 +86,12 @@
         public static StandardLevelGameplayManager pauseManager;
         public static NoteCutSoundEffectManager soundEffectManager;
         public static EnvironmentColorsSetter environmentColorsSetter;
+        public static bool defaultRumble = true;
+        static NoteCutEffectSpawner _noteCutEffectSpawner;
+        static NoteCutHapticEffect _noteCutHapticEffect;
+        static HapticFeedbackController _hapticFeedbackController;
+        static MainSettingsModel _mainSettingsModel;
+
         public static bool customColorsInstalled = false;
         GameObject chatPowers = null;
 
@@ -105,7 +111,7 @@
             if (PluginManager.Plugins.Any(x => x.Name == "CustomColorsEdit"))
                 customColorsInstalled = true;
 
-                ReadPrefs();
+            ReadPrefs();
             cooldowns = new Cooldowns();
             defColorA.SetColor(new Color(1f, 0, 0));
             defColorB.SetColor(new Color(0, .706f, 1));
@@ -157,13 +163,15 @@
                 {
                     Log(ex.ToString());
                 }
+                defaultRumble = Resources.FindObjectsOfTypeAll<MainSettingsModel>().First().controllersRumbleEnabled;
 
             }
         }
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-
+            if (_mainSettingsModel != null)
+                _mainSettingsModel.controllersRumbleEnabled = true;
             paused = false;
             if (!customColorsInstalled)
             {
@@ -190,13 +198,13 @@
                 GameObject.DontDestroyOnLoad(chatPowers);
             }
 
-    //        }
-    //        catch(Exception ex)
-    //        {
-     //           Log(ex.ToString());
-    //        }
+            //        }
+            //        catch(Exception ex)
+            //        {
+            //           Log(ex.ToString());
+            //        }
 
-                GMPDisplay display = chatPowers.GetComponent<GMPDisplay>();
+            GMPDisplay display = chatPowers.GetComponent<GMPDisplay>();
             if (display != null)
             {
                 display.Destroy();
@@ -244,7 +252,7 @@
 
                     TwitchConnection.Instance.StartConnection();
                     TwitchConnection.Instance.RegisterOnMessageReceived(TwitchConnection_OnMessageReceived);
-                    if(multiInstalled)
+                    if (multiInstalled)
                         TwitchConnection.Instance.RegisterOnMessageReceived(multi.TwitchConnectionMulti_OnMessageReceived);
                     _hasRegistered = true;
                 }
@@ -276,6 +284,7 @@
 
             if (scene.name == "GameCore")
             {
+                GameObject.Destroy(GameObject.Find("Color Setter"));
                 environmentColorsSetter = Resources.FindObjectsOfTypeAll<EnvironmentColorsSetter>().FirstOrDefault();
                 soundEffectManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().First();
                 levelData = Resources.FindObjectsOfTypeAll<StandardLevelSceneSetupDataSO>().First();
@@ -303,10 +312,10 @@
                     twitchPowers.StartCoroutine(TwitchPowers.NoArrows());
                 if (!Multiplayer.MultiMain.multiActive)
                 {
-                if (GMPUI.chatIntegration && ChatConfig.maxCharges > 0)
-                    chatPowers.AddComponent<GMPDisplay>();
-                if (GMPUI.chatIntegration && ChatConfig.timeForCharges > 0)
-                    twitchPowers.StartCoroutine(TwitchPowers.ChargeOverTime());
+                    if (GMPUI.chatIntegration && ChatConfig.maxCharges > 0)
+                        chatPowers.AddComponent<GMPDisplay>();
+                    if (GMPUI.chatIntegration && ChatConfig.timeForCharges > 0)
+                        twitchPowers.StartCoroutine(TwitchPowers.ChargeOverTime());
                 }
 
 
@@ -370,12 +379,17 @@
                     {
                         SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.TestingGround(5f));
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         Log(ex.ToString());
                     }
                 }
-                //  SharedCoroutineStarter.instance.StartCoroutine(SwapSabers(leftSaber, rightSaber));
+                if (GMPUI.oneColor)
+                {
+                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.OneColor());
+                    invalidForScoring = true;
+                }
+
 
                 if (GMPUI.gnomeOnMiss == true)
                 {
@@ -447,10 +461,10 @@
             FloatBehavior behavior = noteTransform.gameObject.GetComponent<FloatBehavior>();
             if (behavior != null)
             {
-         
+
                 noteTransform.localPosition = new Vector3(behavior.originalX, behavior.originalY, noteTransform.localPosition.z);
                 GameObject.Destroy(behavior);
-  
+
             }
         }
 
@@ -474,6 +488,45 @@
                 noteTransform.localPosition = new Vector3(behavior.originalX, behavior.originalY, noteTransform.localPosition.z);
                 GameObject.Destroy(behavior);
             }
+
+
+            if (GMPUI.oneColor)
+            {
+        _noteCutEffectSpawner = UnityEngine.Object.FindObjectOfType<NoteCutEffectSpawner>();
+            if (_noteCutEffectSpawner != null)
+                _noteCutHapticEffect = ReflectionUtil.GetPrivateField<NoteCutHapticEffect>(_noteCutEffectSpawner, "_noteCutHapticEffect");
+            if (_noteCutHapticEffect != null)
+                _hapticFeedbackController = ReflectionUtil.GetPrivateField<HapticFeedbackController>(_noteCutHapticEffect, "_hapticFeedbackController");
+            if (_hapticFeedbackController != null)
+                _mainSettingsModel = ReflectionUtil.GetPrivateField<MainSettingsModel>(_hapticFeedbackController, "_mainSettingsModel");
+
+
+            Vector3 notePos = controller.noteTransform.position;
+
+            Vector3 leftPos = player.leftSaber.transform.position;
+            leftPos += player.leftSaber.transform.forward * 0.5f;
+            Vector3 rightPos = player.rightSaber.transform.position;
+            rightPos += player.rightSaber.transform.forward * 0.5f;
+
+            float leftDist = Vector3.Distance(leftPos, notePos);
+            float rightDist = Vector3.Distance(rightPos, notePos);
+            Log(leftDist.ToString() + "   " + rightDist.ToString());
+            _mainSettingsModel.controllersRumbleEnabled = true;
+            Saber.SaberType targetType = (leftDist > rightDist) ? Saber.SaberType.SaberB : Saber.SaberType.SaberA;
+            if (!(Mathf.Abs(leftDist - rightDist) <= 0.2f))
+                _noteCutHapticEffect.RumbleController(targetType);
+            else
+            {
+                _noteCutHapticEffect.RumbleController(Saber.SaberType.SaberA);
+                _noteCutHapticEffect.RumbleController(Saber.SaberType.SaberB);
+            }
+            _mainSettingsModel.controllersRumbleEnabled = false;
+
+
+            }
+        
+
+
         }
 
         private void SpawnController_ModifiedJump(BeatmapObjectSpawnController arg1, NoteController controller)
@@ -481,6 +534,7 @@
             if (GMPUI.rainbow)
             {
                 Utilities.Rainbow.RandomizeColors();
+                Resources.FindObjectsOfTypeAll<ColorManager>().First().RefreshColors();
                 invalidForScoring = true;
 
             }
@@ -668,18 +722,18 @@
         {
             yield return new WaitForSecondsRealtime(1f);
             var texts = Resources.FindObjectsOfTypeAll<TMP_Text>();
-            if(texts != null)
-            foreach (TMP_Text text in texts)
-            {
-                    if(text != null)
-                if (text.ToString() == "PP (TMPro.TextMeshPro)")
+            if (texts != null)
+                foreach (TMP_Text text in texts)
                 {
-                    ppText = text;
-                    break;
+                    if (text != null)
+                        if (text.ToString() == "PP (TMPro.TextMeshPro)")
+                        {
+                            ppText = text;
+                            break;
+
+                        }
 
                 }
-
-            }
             yield return new WaitForSecondsRealtime(9f);
             if (ppText != null)
             {

@@ -124,6 +124,7 @@
         public static IEnumerator TestingGround(float length)
         {
             yield return new WaitForSeconds(length);
+            AdjustNJS(12f);
         }
 
         public static void AdjustNJS(float njs)
@@ -141,7 +142,7 @@
             Plugin.Log("_beatsPerMinute " + Plugin.spawnController.GetField<float>("_beatsPerMinute").ToString());
             Plugin.Log("_moveDurationInBeats " + Plugin.spawnController.GetField<float>("_moveDurationInBeats").ToString());
             */
-            Plugin.Log("JumpOffset " + Plugin.levelData.difficultyBeatmap.noteJumpStartBeatOffset);
+        //    Plugin.Log("JumpOffset " + Plugin.levelData.difficultyBeatmap.noteJumpStartBeatOffset);
             
             float halfJumpDur = 4f;
             float maxHalfJump = Plugin.spawnController.GetField<float>("_maxHalfJumpDistance");
@@ -395,7 +396,63 @@
             //    dataModel.beatmapData = beatmapData;
         }
 
+        public static IEnumerator OneColor()
+        {
+            Plugin.Log("Starting");
 
+            yield return new WaitForSeconds(0f);
+            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
+            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
+            Plugin.Log(dataModel.beatmapData.bombsCount.ToString());
+            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectData[] objects;
+            NoteData note;
+            foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
+            {
+                objects = line.beatmapObjectsData;
+                foreach (BeatmapObjectData beatmapObject in objects)
+                {
+                    if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
+                    {
+                        note = beatmapObject as NoteData;
+                        note.SetProperty("noteType", NoteType.NoteB);
+                    }
+                }
+            }
+            //Adjust Sabers for one color
+            var leftSaberType = Plugin.player.leftSaber.GetField<SaberTypeObject>("_saberType");
+            Plugin.Log("1 " + Plugin.player.leftSaber.saberType.ToString());
+            try
+            {
+                leftSaberType.SetField("_saberType", Saber.SaberType.SaberB);
+            }
+            catch(System.Exception ex)
+            {
+                Plugin.Log(ex.ToString());
+            }
+
+            Plugin.Log("2 " + Plugin.player.leftSaber.saberType.ToString());
+            /*
+            var playerController = Resources.FindObjectsOfTypeAll<PlayerController>().First();
+            Saber targetSaber = playerController.rightSaber;
+            Saber otherSaber = playerController.leftSaber;
+            var targetCopy = Instantiate(targetSaber.gameObject);
+            Saber newSaber = targetCopy.GetComponent<Saber>();
+            targetCopy.transform.parent = targetSaber.transform.parent;
+            targetCopy.transform.localPosition = Vector3.zero;
+            targetCopy.transform.localRotation = Quaternion.identity;
+            targetSaber.transform.parent = otherSaber.transform.parent;
+            targetSaber.transform.localPosition = Vector3.zero;
+            targetSaber.transform.localRotation = Quaternion.identity;
+            otherSaber.gameObject.SetActive(false);
+
+            ReflectionUtil.SetPrivateField(playerController, "_leftSaber", targetSaber);
+            ReflectionUtil.SetPrivateField(playerController, "_rightSaber", newSaber);
+
+            playerController.leftSaber.gameObject.SetActive(true);
+            */
+            //    dataModel.beatmapData = beatmapData;
+        }
         public static IEnumerator Funky(float length)
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
