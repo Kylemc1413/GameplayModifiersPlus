@@ -42,6 +42,7 @@
 ##### Async Twitch Setup Guide
 - Example Async Config
 ![Async Config Image](https://i.imgur.com/d9abU8R.png)
+- Make sure the game is closed before editing the config
 - Username: The name of the user the plugin will send chat messages through
 - ChannelName: The name of the channel the plugin will monitor the chat of to look for messages
 - OauthKey: The oauth key for the user put in the Username section which is required for the plugin to be able to send messages through that user, you can generate one for that account at https://twitchapps.com/tmi/
