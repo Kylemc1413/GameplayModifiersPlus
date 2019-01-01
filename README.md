@@ -51,6 +51,7 @@
 
 # Chat Integration
 - ## Make sure to edit the Async Twitch Config in the USERDATA folder, not in Config
+- ## GamePlayModifiersPlusChatSettings.ini will be genereated in the UserData folder after running the game with the plugin installed
 ##### Async Twitch Setup Guide
 - Example Async Config
 ![Async Config Image](https://i.imgur.com/d9abU8R.png)
