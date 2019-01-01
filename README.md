@@ -1,6 +1,18 @@
 #### Github: https://github.com/Kylemc1413/GameplayModifiersPlus/
 
+#### Changelog 1.3.0
+- #### Various Fixes
+- #### Chat Integration
+- Due to hitsound sync issues the speed changing commands are disabled for now until I can fix the issues
+- Adjustments to default config values
+- #### General
+- No Longer skips the results screen when score submission is disabled! Will now display Red text below the difficulty on the results screen stating that the mod disabled score submission
+- Improvements to Rainbow Modifier! Should now be much more pleasing visually with less "in between" colors that look bad
+- New Additional Modifiers Modifier: One Color changes all the blocks to one color and allows you to use either saber to hit them
+- Can now Toggle Controller Rumble from the modifiers Menu!
 
+- #### Multiplayer Compatible Mode
+- Can now turn on The plugin's BeatSaberMultiplayer Compatible mode using the toggle located below the Additional Modifiers button on the GameplayModifiersPlus menu, refer to the bottom of the readme for more information on that mode
 #### Changelog 1.1.5
 - #### Chat Integration
 - 3 New Commands! '!gm bombs' will randomly replace notes with bombs for the duration of the command, the chance of a note becoming a bomb can be adjusted in the config. '!gm faster' and '!gm slower' will change the song speed, just like how faster song, slower song, and practice mode do! The multiplier for each as well as the typical command options can be adjusted, and default to the values faster song and slower song use
@@ -122,3 +134,13 @@
 #### `!configchange property=value`
 - To be used for Basic properties not attached to commands
 - Example usage: `!configchange commandsPerMessage=2` Would change the commands per message to be 2
+
+## Multiplayer Mode
+### Setup
+- If you have the BeatSaberMultiplayer plugin installed you can enable GMP's multiplayer functionality by toggling 'Allow in Multiplayer' in the modifiers menu, located below the Additional Modifiers Button
+- When the multiplayer functionality is enabled, if you're in a multiplayer room with another person using the same version of GMP with the multiplayer functionality enabled, the mode will activate when a song starts
+- When the mode is active, players in the lobby that have GMP active will have (GMP) appended to their names
+### Basics
+- Multiplayer GMP functions similarly to Chat Integration, in that there will be a charge counter wherever you have the chat integration UI set to appear, with active commands appearing in yellow to the right of it, and commands on cooldown appearing to the left of it in red.
+- In multiplayer however, the commands you recieve are sent by other players
+- Every few seconds you have a chance of generating a charge, when your charge meter fills you recieve a random powerup, pressing either of the triggers on your controllers will send the power to other players in the lobby using your version of GMP
