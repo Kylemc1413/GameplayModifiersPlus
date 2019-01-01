@@ -93,7 +93,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Harmony Patches\SoloFreePlayFlowCoordinatorProcessScore.cs" />
+    <Compile Include="Harmony Patches\ResultsViewControllerSetDataToUI.cs" />
+    <Compile Include="Harmony Patches\SoloFreePlayCoordinatorProcessScore.cs" />
     <Compile Include="Multi\MultiGMPDisplay.cs" />
     <Compile Include="Multi\MultiClientInterface.cs" />
     <Compile Include="Multi\MultiMain.cs" />
