@@ -40,6 +40,12 @@
         {
             GetIcons();
             string disableScoreString = "<size=120%><color=#ff0000ff><b><u>Disables Score Submission</u> </b></color></size> \r\n<size=100%> ";
+            //Rumble Option
+            var rumbleOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Controller Rumble", "MainMenu", "Toggle Controller Vibration in songs", _GMPIcon);
+            rumbleOption.GetValue = ModPrefs.GetInt("GameplayModifiersPlus", "GameRumbleSetting", -1, false) != 1 ? false : true; ;
+            rumbleOption.OnToggle += (value) => { ModPrefs.SetInt("GameplayModifiersPlus", "GameRumbleSetting", value == true? 1 : 0); Plugin.Log("Changed value"); };
+
+
 
             var gmp1Menu = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "GamePlayModifiersPlus", "MainMenu", "GMP1", "GameplayModifiersPlus Options", _GMPIcon);
 

@@ -197,14 +197,16 @@
                 {
                     defaultRumble = _mainSettingsModel.controllersRumbleEnabled;
                     ModPrefs.SetInt("GameplayModifiersPlus", "GameRumbleSetting", _mainSettingsModel.controllersRumbleEnabled? 1 : 0);
+                    setDefaultRumble = true;
                     Log("Set Default Rumble Value");
                 }
             }
 
             if (_mainSettingsModel != null)
             {
-
+                defaultRumble = ModPrefs.GetInt("GameplayModifiersPlus", "GameRumbleSetting", -1, false) != 1 ? false : true;
                 _mainSettingsModel.controllersRumbleEnabled = defaultRumble;
+                _mainSettingsModel.Save();
             }
 
 
