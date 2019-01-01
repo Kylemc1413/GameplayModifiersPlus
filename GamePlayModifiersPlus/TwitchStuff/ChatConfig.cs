@@ -14,12 +14,12 @@
         public bool allowEveryone = true;
         public int chargesForSuperCharge = 10;
         public int chargesPerLevel = 10;
-        public int maxCharges = 30;
+        public int maxCharges = 50;
         public int bitsPerCharge = 10;
-        public bool resetChargesperLevel = true;
+        public bool resetChargesperLevel = false;
 
         public int chargesOverTime = 1;
-        public float timeForCharges = 20f;
+        public float timeForCharges = 15f;
 
         public int daChargeCost = 0;
         public int smallerNoteChargeCost = 1;
