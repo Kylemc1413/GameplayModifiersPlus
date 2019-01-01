@@ -155,9 +155,9 @@
             chargeCostString += " | Rainbow: " + rainbowChargeCost;
             chargeCostString += " | Pause: " + pauseChargeCost;
             chargeCostString += " | Bombs: " + bombChargeCost;
-            chargeCostString += " | Faster: " + fasterChargeCost;
-            chargeCostString += " | Slower: " + slowerChargeCost;
-            if (chargeCostString == "Current Costs: DA: 0 | Smaller: 0 | Larger: 0 | Random: 0 | Instafail: 0 | Invincible: 0 | NjsRandom: 0 | NoArrows: 0 | Funky: 0 | Rainbow: 0 | Pause: 0 | Bombs: 0 | Faster: 0 | Slower: 0")
+     //       chargeCostString += " | Faster: " + fasterChargeCost;
+     //       chargeCostString += " | Slower: " + slowerChargeCost;
+            if (chargeCostString == "Current Costs: DA: 0 | Smaller: 0 | Larger: 0 | Random: 0 | Instafail: 0 | Invincible: 0 | NjsRandom: 0 | NoArrows: 0 | Funky: 0 | Rainbow: 0 | Pause: 0 | Bombs: 0 ") //| Faster: 0 | Slower: 0")
                 chargeCostString = "Current Costs: None!";
         }
 

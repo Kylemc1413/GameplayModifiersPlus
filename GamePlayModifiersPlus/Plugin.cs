@@ -154,7 +154,7 @@
                     twitchCommands.CheckGameplayCommands(message);
                     twitchCommands.CheckHealthCommands(message);
                     twitchCommands.CheckSizeCommands(message);
-                    twitchCommands.CheckSpeedCommands(message);
+               //     twitchCommands.CheckSpeedCommands(message);
                     twitchCommands.CheckGlobalCoolDown();
                 }
             }
