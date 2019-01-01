@@ -12,15 +12,20 @@
     using TMPro;
     using UnityEngine;
     using UnityEngine.SceneManagement;
+    using Harmony;
     using GamePlayModifiersPlus.TwitchStuff;
     public class Plugin : IPlugin
     {
-        public static readonly ChatConfig Config = new ChatConfig(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
+        public static readonly ChatConfig ChatConfig = new ChatConfig(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
 
         public string Name => "GameplayModifiersPlus";
-        public string Version => "1.1.11";
+
+        public string Version => "1.3.0";
+        public static string pluginVersion = "1.3.0";
 
         public static float timeScale = 1;
+        Multiplayer.MultiMain multi = null;
+        public static bool multiInstalled = false;
         public TwitchCommands twitchCommands = new TwitchCommands();
         public static TwitchPowers twitchPowers = null;
         public static SoundPlayer gnomeSound = new SoundPlayer(Properties.Resources.gnome);
@@ -50,10 +55,10 @@
         public static float deltaPP;
         public static int deltaRank;
         public static bool firstLoad = true;
-        internal VRController leftController;
-        internal VRController rightController;
+        public static VRController leftController;
+        public static VRController rightController;
         public static StandardLevelSceneSetupDataSO levelData;
-        internal bool invalidForScoring = false;
+        private static bool invalidForScoring = false;
         private static bool _hasRegistered = false;
         public static BeatmapObjectSpawnController spawnController;
         public static GameEnergyCounter energyCounter;
@@ -82,6 +87,14 @@
         public static StandardLevelGameplayManager pauseManager;
         public static NoteCutSoundEffectManager soundEffectManager;
         public static EnvironmentColorsSetter environmentColorsSetter;
+        public static bool defaultRumble = true;
+        static NoteCutEffectSpawner _noteCutEffectSpawner;
+        static NoteCutHapticEffect _noteCutHapticEffect;
+        static HapticFeedbackController _hapticFeedbackController;
+        static MainSettingsModel _mainSettingsModel;
+
+        public static HarmonyInstance harmony;
+
         public static bool customColorsInstalled = false;
         GameObject chatPowers = null;
 
@@ -89,9 +102,23 @@
         {
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+            {
+                Log("Creating Harmony Instance");
+            harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
+            }
+
+            if (PluginManager.Plugins.Any(x => x.Name == "Beat Saber Multiplayer"))
+            {
+                multi = new GamePlayModifiersPlus.Multiplayer.MultiMain();
+                multi.Initialize();
+                multiInstalled = true;
+                Log("Multiplayer Detected, enabling multiplayer functionality");
+            }
+
             if (PluginManager.Plugins.Any(x => x.Name == "CustomColorsEdit"))
                 customColorsInstalled = true;
-                ReadPrefs();
+
+            ReadPrefs();
             cooldowns = new Cooldowns();
             defColorA.SetColor(new Color(1f, 0, 0));
             defColorB.SetColor(new Color(0, .706f, 1));
@@ -99,6 +126,7 @@
 
         private void TwitchConnection_OnMessageReceived(TwitchConnection arg1, TwitchMessage message)
         {
+
             Log("Message Recieved, AsyncTwitch currently working");
             //Status check message
             if (charges < 0) charges = 0;
@@ -107,11 +135,13 @@
             twitchCommands.CheckStatusCommands(message);
             twitchCommands.CheckInfoCommands(message);
 
-            if (Config.allowEveryone || (Config.allowSubs && message.Author.IsSubscriber) || message.Author.IsMod)
+            if (multiInstalled)
+                if (Multiplayer.MultiMain.multiActive) return;
+            if (ChatConfig.allowEveryone || (ChatConfig.allowSubs && message.Author.IsSubscriber) || message.Author.IsMod)
             {
                 if (GMPUI.chatIntegration && isValidScene && !cooldowns.GetCooldown("Global"))
                 {
-                    commandsLeftForMessage = Config.commandsPerMessage;
+                    commandsLeftForMessage = ChatConfig.commandsPerMessage;
                     twitchCommands.CheckPauseMessage(message);
                     twitchCommands.CheckGameplayCommands(message);
                     twitchCommands.CheckHealthCommands(message);
@@ -140,13 +170,17 @@
                 {
                     Log(ex.ToString());
                 }
+                defaultRumble = Resources.FindObjectsOfTypeAll<MainSettingsModel>().First().controllersRumbleEnabled;
 
             }
         }
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-
+            if(scene.name == "GameCore")
+            RemovePatches();
+            if (_mainSettingsModel != null)
+                _mainSettingsModel.controllersRumbleEnabled = true;
             paused = false;
             if (!customColorsInstalled)
             {
@@ -173,13 +207,13 @@
                 GameObject.DontDestroyOnLoad(chatPowers);
             }
 
-    //        }
-    //        catch(Exception ex)
-    //        {
-     //           Log(ex.ToString());
-    //        }
+            //        }
+            //        catch(Exception ex)
+            //        {
+            //           Log(ex.ToString());
+            //        }
 
-                GMPDisplay display = chatPowers.GetComponent<GMPDisplay>();
+            GMPDisplay display = chatPowers.GetComponent<GMPDisplay>();
             if (display != null)
             {
                 display.Destroy();
@@ -198,7 +232,7 @@
                     TwitchPowers.ResetPowers(false);
                     twitchPowers.StopAllCoroutines();
                 }
-                if (Config.resetChargesperLevel)
+                if (ChatConfig.resetChargesperLevel)
                     charges = 0;
 
 
@@ -206,8 +240,6 @@
 
             //    twitchCommands.StopAllCoroutines();
             haveSongNJS = false;
-
-            invalidForScoring = false;
             if (soundIsPlaying == true)
                 gnomeSound.Stop();
             soundIsPlaying = false;
@@ -227,6 +259,8 @@
 
                     TwitchConnection.Instance.StartConnection();
                     TwitchConnection.Instance.RegisterOnMessageReceived(TwitchConnection_OnMessageReceived);
+                    if (multiInstalled)
+                        TwitchConnection.Instance.RegisterOnMessageReceived(multi.TwitchConnectionMulti_OnMessageReceived);
                     _hasRegistered = true;
                 }
 
@@ -245,10 +279,11 @@
                         //        Log(controller.ToString());
 
                     }
-                    Log("Left:" + leftController.ToString());
-                    Log("Right: " + rightController.ToString());
+   //                 Log("Left:" + leftController.ToString());
+ //                   Log("Right: " + rightController.ToString());
 
                 }
+                CheckGMPModifiers();
 
 
             }
@@ -257,6 +292,7 @@
 
             if (scene.name == "GameCore")
             {
+                GameObject.Destroy(GameObject.Find("Color Setter"));
                 environmentColorsSetter = Resources.FindObjectsOfTypeAll<EnvironmentColorsSetter>().FirstOrDefault();
                 soundEffectManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().First();
                 levelData = Resources.FindObjectsOfTypeAll<StandardLevelSceneSetupDataSO>().First();
@@ -273,25 +309,21 @@
 
                 levelData.didFinishEvent += LevelData_didFinishEvent;
 
-
-
-                if (GMPUI.njsRandom)
+                if (!Multiplayer.MultiMain.multiActive)
                 {
-                    twitchPowers.StartCoroutine(TwitchPowers.RandomNJS());
+                    if (GMPUI.chatIntegration && ChatConfig.maxCharges > 0)
+                        chatPowers.AddComponent<GMPDisplay>();
+                    if (GMPUI.chatIntegration && ChatConfig.timeForCharges > 0)
+                        twitchPowers.StartCoroutine(TwitchPowers.ChargeOverTime());
                 }
-                Log(GMPUI.swapSabers.ToString());
-                if (GMPUI.noArrows)
-                    twitchPowers.StartCoroutine(TwitchPowers.NoArrows());
-                if (GMPUI.chatIntegration && Config.maxCharges > 0)
-                    chatPowers.AddComponent<GMPDisplay>();
-                if (Config.timeForCharges > 0)
-                    twitchPowers.StartCoroutine(TwitchPowers.ChargeOverTime());
+
+
 
                 pauseManager = Resources.FindObjectsOfTypeAll<StandardLevelGameplayManager>().First();
                 var colors = Resources.FindObjectsOfTypeAll<SimpleColorSO>();
                 foreach (SimpleColorSO color in colors)
                 {
-                    Log(color.name);
+               //     Log(color.name);
                     if (color.name == "Color0")
                         colorA = color;
                     if (color.name == "Color1")
@@ -302,11 +334,11 @@
 
 
                 Log(colorA.color.ToString());
-                if (GMPUI.chatIntegration && charges <= Config.maxCharges)
+                if (GMPUI.chatIntegration && charges <= ChatConfig.maxCharges)
                 {
-                    charges += Config.chargesPerLevel;
-                    if (charges > Config.maxCharges)
-                        charges = Config.maxCharges;
+                    charges += ChatConfig.chargesPerLevel;
+                    if (charges > ChatConfig.maxCharges)
+                        charges = ChatConfig.maxCharges;
                     //          TwitchConnection.Instance.SendChatMessage("Current Charges: " + charges);
                 }
 
@@ -336,70 +368,6 @@
                     playerInfo = false;
                     Log("Player is null");
                 }
-                Log(leftSaber.handlePos.ToString());
-                Log(leftSaber.saberBladeTopPos.ToString());
-
-                if (GMPUI.swapSabers)
-                {
-                    Log("Testing Ground Active");
-                    try
-                    {
-                        SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.TestingGround(5f));
-                    }
-                    catch(Exception ex)
-                    {
-                        Log(ex.ToString());
-                    }
-                }
-                //  SharedCoroutineStarter.instance.StartCoroutine(SwapSabers(leftSaber, rightSaber));
-
-                if (GMPUI.gnomeOnMiss == true)
-                {
-                    invalidForScoring = true;
-
-                    if (spawnController != null)
-                    {
-                        spawnController.noteWasMissedEvent += delegate (BeatmapObjectSpawnController beatmapObjectSpawnController2, NoteController noteController)
-                        {
-                            if (noteController.noteData.noteType != NoteType.Bomb)
-                            {
-                                try
-                                {
-                                    twitchPowers.StartCoroutine(TwitchPowers.SpecialEvent());
-                                    Log("Gnoming");
-                                }
-                                catch (Exception ex)
-                                {
-                                    Log(ex.ToString());
-                                }
-                            }
-                        };
-
-                        spawnController.noteWasCutEvent += delegate (BeatmapObjectSpawnController beatmapObjectSpawnController2, NoteController noteController, NoteCutInfo noteCutInfo)
-                        {
-                            if (!noteCutInfo.allIsOK)
-                            {
-                                twitchPowers.StartCoroutine(TwitchPowers.SpecialEvent());
-                                Log("Gnoming");
-                            }
-
-                        };
-
-                    }
-                }
-                if (GMPUI.bulletTime || GMPUI.chatIntegration || GMPUI.fixedNoteScale != 1f)
-                    invalidForScoring = true;
-
-                /*
-                if(GMPUI.superHot == true)
-                {
-                    startGMPUI.superHot = false;
-                    SharedCoroutineStarter.instance.StartCoroutine(Wait(1f));
-
-                }
-
-            */
-
 
 
 
@@ -423,10 +391,10 @@
             FloatBehavior behavior = noteTransform.gameObject.GetComponent<FloatBehavior>();
             if (behavior != null)
             {
-         
+
                 noteTransform.localPosition = new Vector3(behavior.originalX, behavior.originalY, noteTransform.localPosition.z);
                 GameObject.Destroy(behavior);
-  
+
             }
         }
 
@@ -450,6 +418,45 @@
                 noteTransform.localPosition = new Vector3(behavior.originalX, behavior.originalY, noteTransform.localPosition.z);
                 GameObject.Destroy(behavior);
             }
+
+
+            if (GMPUI.oneColor)
+            {
+        _noteCutEffectSpawner = UnityEngine.Object.FindObjectOfType<NoteCutEffectSpawner>();
+            if (_noteCutEffectSpawner != null)
+                _noteCutHapticEffect = ReflectionUtil.GetPrivateField<NoteCutHapticEffect>(_noteCutEffectSpawner, "_noteCutHapticEffect");
+            if (_noteCutHapticEffect != null)
+                _hapticFeedbackController = ReflectionUtil.GetPrivateField<HapticFeedbackController>(_noteCutHapticEffect, "_hapticFeedbackController");
+            if (_hapticFeedbackController != null)
+                _mainSettingsModel = ReflectionUtil.GetPrivateField<MainSettingsModel>(_hapticFeedbackController, "_mainSettingsModel");
+
+
+            Vector3 notePos = controller.noteTransform.position;
+
+            Vector3 leftPos = player.leftSaber.transform.position;
+            leftPos += player.leftSaber.transform.forward * 0.5f;
+            Vector3 rightPos = player.rightSaber.transform.position;
+            rightPos += player.rightSaber.transform.forward * 0.5f;
+
+            float leftDist = Vector3.Distance(leftPos, notePos);
+            float rightDist = Vector3.Distance(rightPos, notePos);
+            Log(leftDist.ToString() + "   " + rightDist.ToString());
+            _mainSettingsModel.controllersRumbleEnabled = true;
+            Saber.SaberType targetType = (leftDist > rightDist) ? Saber.SaberType.SaberB : Saber.SaberType.SaberA;
+            if (!(Mathf.Abs(leftDist - rightDist) <= 0.2f))
+                _noteCutHapticEffect.RumbleController(targetType);
+            else
+            {
+                _noteCutHapticEffect.RumbleController(Saber.SaberType.SaberA);
+                _noteCutHapticEffect.RumbleController(Saber.SaberType.SaberB);
+            }
+            _mainSettingsModel.controllersRumbleEnabled = false;
+
+
+            }
+        
+
+
         }
 
         private void SpawnController_ModifiedJump(BeatmapObjectSpawnController arg1, NoteController controller)
@@ -457,7 +464,8 @@
             if (GMPUI.rainbow)
             {
                 Utilities.Rainbow.RandomizeColors();
-                invalidForScoring = true;
+                Resources.FindObjectsOfTypeAll<ColorManager>().First().RefreshColors();
+                ApplyPatches();
 
             }
 
@@ -466,9 +474,10 @@
             if (GMPUI.funky)
             {
                 noteTransform.gameObject.AddComponent<FloatBehavior>();
-                invalidForScoring = true;
+                ApplyPatches();
 
             }
+
 
             if (!haveSongNJS)
             {
@@ -478,25 +487,25 @@
 
             //          Transform noteTransform = controller.GetField<Transform>("_noteTransform");
             //       Log("SPAWN" + noteTransform.localScale.ToString());
-            if (GMPUI.chatIntegration || GMPUI.randomSize)
+            if (GMPUI.chatIntegration || GMPUI.randomSize || Multiplayer.MultiMain.multiActive)
             {
                 if (superRandom)
                 {
-                    noteTransform.localScale *= UnityEngine.Random.Range(Config.randomMin, Config.randomMax);
-                    invalidForScoring = true;
+                    noteTransform.localScale *= UnityEngine.Random.Range(ChatConfig.randomMin, ChatConfig.randomMax);
+                    ApplyPatches();
                 }
                 else
                 {
                     if (!GMPUI.randomSize)
                     {
                         noteTransform.localScale *= altereddNoteScale;
-                        invalidForScoring = true;
+                        ApplyPatches();
                     }
 
                     if (GMPUI.randomSize)
                     {
-                        noteTransform.localScale *= UnityEngine.Random.Range(Config.randomMin, Config.randomMax);
-                        invalidForScoring = true;
+                        noteTransform.localScale *= UnityEngine.Random.Range(ChatConfig.randomMin, ChatConfig.randomMax);
+                        ApplyPatches();
                     }
                 }
 
@@ -507,7 +516,7 @@
 
             if (GMPUI.fixedNoteScale != 1f)
             {
-                invalidForScoring = true;
+                ApplyPatches();
                 //    Transform noteTransform = controller.GetField<Transform>("_noteTransform");
                 //       Log("SPAWN" + noteTransform.localScale.ToString());
                 noteTransform.localScale *= GMPUI.fixedNoteScale;
@@ -521,8 +530,6 @@
         {
             if (arg2.levelEndStateType == LevelCompletionResults.LevelEndStateType.Quit) return;
             if (arg2.levelEndStateType == LevelCompletionResults.LevelEndStateType.Restart) return;
-            if (invalidForScoring)
-                ReflectionUtil.SetProperty(arg2, "levelEndStateType", LevelCompletionResults.LevelEndStateType.None);
             if (GMPUI.repeatSong)
                 ReflectionUtil.SetProperty(arg2, "levelEndStateType", LevelCompletionResults.LevelEndStateType.Restart);
         }
@@ -543,6 +550,11 @@
 
         public void OnUpdate()
         {
+
+            if (multiInstalled)
+                multi.Update();
+
+
 
 
 
@@ -623,7 +635,7 @@
 
         public void ReadPrefs()
         {
-            Config.Load();
+            ChatConfig.Load();
             //  GMPUI.gnomeOnMiss = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.gnomeOnMiss", false, true);
             //   GMPUI.superHot = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.superHot", false, true);
             //   GMPUI.bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.bulletTime", false, true);
@@ -631,25 +643,25 @@
             //    GMPUI.swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
             GMPUI.chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
 
-            Config.Save();
+            ChatConfig.Save();
         }
 
         public IEnumerator GrabPP()
         {
             yield return new WaitForSecondsRealtime(1f);
             var texts = Resources.FindObjectsOfTypeAll<TMP_Text>();
-            if(texts != null)
-            foreach (TMP_Text text in texts)
-            {
-                    if(text != null)
-                if (text.ToString() == "PP (TMPro.TextMeshPro)")
+            if (texts != null)
+                foreach (TMP_Text text in texts)
                 {
-                    ppText = text;
-                    break;
+                    if (text != null)
+                        if (text.ToString() == "PP (TMPro.TextMeshPro)")
+                        {
+                            ppText = text;
+                            break;
+
+                        }
 
                 }
-
-            }
             yield return new WaitForSecondsRealtime(9f);
             if (ppText != null)
             {
@@ -777,8 +789,113 @@
             return CustomColors.Plugin.disablePlugin;
         }
         public static bool DoesCustomColorsAllowEnvironmentColors()
+<<<<<<< HEAD
+        {
+            return CustomColors.Plugin.allowEnvironmentColors;
+=======
         {
             return CustomColors.Plugin.allowEnvironmentColors;
         }
+        public static void ApplyPatches()
+        {
+            Log("Apply Patch Function: " + invalidForScoring);
+            if(!invalidForScoring)
+            {
+                try
+                {
+            harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
+                Log("Blocking Score Submission. Applying Harmony Patches");
+                invalidForScoring = true;
+                }
+                catch(Exception ex)
+                {
+                    Log(ex.ToString());
+                }
+            }
+
+
+>>>>>>> Multiplayer-Integration
+        }
+
+        public static void RemovePatches()
+        {
+            Log("Remove Patch Function: " + invalidForScoring);
+            if (invalidForScoring)
+            {
+                harmony.UnpatchAll("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
+                invalidForScoring = false;
+                Log("Unblocking Score Submission, Removing Harmony Patches");
+            }
+        }
+
+        public static void CheckGMPModifiers()
+        {
+            if (GMPUI.bulletTime || GMPUI.chatIntegration || GMPUI.funky || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.rainbow || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f)
+            {
+                ApplyPatches();
+                if (GMPUI.njsRandom)
+                {
+                    twitchPowers.StartCoroutine(TwitchPowers.RandomNJS());
+                }
+                if (GMPUI.noArrows)
+                    twitchPowers.StartCoroutine(TwitchPowers.NoArrows());
+                if (GMPUI.swapSabers)
+                {
+                    Log("Testing Ground Active");
+                    try
+                    {
+                        SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.TestingGround(5f));
+                    }
+                    catch (Exception ex)
+                    {
+                        Log(ex.ToString());
+                    }
+                }
+                if (GMPUI.oneColor)
+                {
+                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.OneColor());
+                    ApplyPatches();
+                }
+
+
+                if (GMPUI.gnomeOnMiss == true)
+                {
+
+                    if (spawnController != null)
+                    {
+                        spawnController.noteWasMissedEvent += delegate (BeatmapObjectSpawnController beatmapObjectSpawnController2, NoteController noteController)
+                        {
+                            if (noteController.noteData.noteType != NoteType.Bomb)
+                            {
+                                try
+                                {
+                                    twitchPowers.StartCoroutine(TwitchPowers.SpecialEvent());
+                                    Log("Gnoming");
+                                }
+                                catch (Exception ex)
+                                {
+                                    Log(ex.ToString());
+                                }
+                            }
+                        };
+
+                        spawnController.noteWasCutEvent += delegate (BeatmapObjectSpawnController beatmapObjectSpawnController2, NoteController noteController, NoteCutInfo noteCutInfo)
+                        {
+                            if (!noteCutInfo.allIsOK)
+                            {
+                                twitchPowers.StartCoroutine(TwitchPowers.SpecialEvent());
+                                Log("Gnoming");
+                            }
+
+                        };
+
+                    }
+                }
+
+
+            }
+        }
+
+
     }
 }

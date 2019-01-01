@@ -33,7 +33,8 @@
         public static bool njsRandom;
         public static bool randomSize = false;
         public static bool noArrows = false;
-
+        public static bool oneColor = false;
+        public static bool AllowMulti = false;
 
         public static void CreateUI()
         {
@@ -55,7 +56,13 @@
 
             //GMP2 Options
             var gmp2Menu = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "Additional Modifiers", "GMP1", "GMP2", "Additional Modifiers", _GMPIcon);
-      //      var backOption2 = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "Back", "GMP2", "GMP1", "Return from Additional Modifiers", _BackButton);
+            var backOption2 = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "Back", "GMP2", "GMP1", "Return from Additional Modifiers", _BackButton);
+
+            //Multiplayer Option toggle
+            var multiOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Allow in Multiplayer", "GMP1", "Allow the Portion of this plugin compatible with the BeatSaberMultiplayer plugin to activate in a multiplayer room with another person using the same version of the plugin. Refer to the readme for more information on the multiplayer portion. Your Version: " + Plugin.pluginVersion, _GMPIcon);
+            multiOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "allowMulti", false, true);
+            multiOption.OnToggle += (value) => { ModPrefs.SetBool("GameplayModifiersPlus", "allowMulti", value); Plugin.Log("Changed value"); };
+
 
             var repeatOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Repeat", "GMP2", disableScoreString + "Restarts song on song end", _RepeatIcon);
             repeatOption.GetValue = repeatSong;
@@ -120,6 +127,11 @@
             noArrowsOption.GetValue = noArrows;
             noArrowsOption.OnToggle += (value) => { noArrows = value; Plugin.Log("Changed value"); };
             noArrowsOption.AddConflict("Chat Integration");
+
+            var oneColorOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "One Color ", "GMP2", disableScoreString + "Changes Blocks to One Color, allows you to hit them with either saber. Haptics for saber clash and walls disabled with this modifier on", _GMPIcon);
+            oneColorOption.GetValue = oneColor;
+            oneColorOption.OnToggle += (value) => { oneColor = value; Plugin.Log("Changed value"); };
+            oneColorOption.AddConflict("Chat Integration");
         }
 
 
