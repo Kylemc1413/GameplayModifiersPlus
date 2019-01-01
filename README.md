@@ -134,3 +134,13 @@
 #### `!configchange property=value`
 - To be used for Basic properties not attached to commands
 - Example usage: `!configchange commandsPerMessage=2` Would change the commands per message to be 2
+
+## Multiplayer Mode
+### Setup
+- If you have the BeatSaberMultiplayer plugin installed you can enable GMP's multiplayer functionality by toggling 'Allow in Multiplayer' in the modifiers menu, located below the Additional Modifiers Button
+- When the multiplayer functionality is enabled, if you're in a multiplayer room with another person using the same version of GMP with the multiplayer functionality enabled, the mode will activate when a song starts
+- When the mode is active, players in the lobby that have GMP active will have (GMP) appended to their names
+### Basics
+- Multiplayer GMP functions similarly to Chat Integration, in that there will be a charge counter wherever you have the chat integration UI set to appear, with active commands appearing in yellow to the right of it, and commands on cooldown appearing to the left of it in red.
+- In multiplayer however, the commands you recieve are sent by other players
+- Every few seconds you have a chance of generating a charge, when your charge meter fills you recieve a random powerup, pressing either of the triggers on your controllers will send the power to other players in the lobby using your version of GMP
