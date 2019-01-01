@@ -88,11 +88,12 @@
         public static NoteCutSoundEffectManager soundEffectManager;
         public static EnvironmentColorsSetter environmentColorsSetter;
         public static bool defaultRumble = true;
+        static bool setDefaultRumble = false;
         static NoteCutEffectSpawner _noteCutEffectSpawner;
         static NoteCutHapticEffect _noteCutHapticEffect;
         static HapticFeedbackController _hapticFeedbackController;
         static MainSettingsModel _mainSettingsModel;
-
+        static MainSettingsModel _mainSettingsModelOneC;
         public static HarmonyInstance harmony;
 
         public static bool customColorsInstalled = false;
@@ -104,7 +105,7 @@
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
             {
                 Log("Creating Harmony Instance");
-            harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
+                harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
             }
 
             if (PluginManager.Plugins.Any(x => x.Name == "Beat Saber Multiplayer"))
@@ -122,6 +123,13 @@
             cooldowns = new Cooldowns();
             defColorA.SetColor(new Color(1f, 0, 0));
             defColorB.SetColor(new Color(0, .706f, 1));
+
+            if (ModPrefs.GetInt("GameplayModifiersPlus", "GameRumbleSetting", -1, false) != -1)
+            {
+                Log("Rumble Key Exists");
+                setDefaultRumble = true;
+            }
+
         }
 
         private void TwitchConnection_OnMessageReceived(TwitchConnection arg1, TwitchMessage message)
@@ -170,17 +178,36 @@
                 {
                     Log(ex.ToString());
                 }
-                defaultRumble = Resources.FindObjectsOfTypeAll<MainSettingsModel>().First().controllersRumbleEnabled;
 
             }
         }
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
-            if(scene.name == "GameCore")
-            RemovePatches();
+            if (scene.name == "GameCore")
+                RemovePatches();
+            if (_mainSettingsModel == null)
+            {
+                var menu = Resources.FindObjectsOfTypeAll<MainMenuViewController>().FirstOrDefault();
+                _mainSettingsModel = menu.GetField<MainSettingsModel>("_mainSettingsModel");
+                _mainSettingsModel.Load();
+                Log("RUMBLE: " + _mainSettingsModel.controllersRumbleEnabled.ToString());
+
+                if (!setDefaultRumble)
+                {
+                    defaultRumble = _mainSettingsModel.controllersRumbleEnabled;
+                    ModPrefs.SetInt("GameplayModifiersPlus", "GameRumbleSetting", _mainSettingsModel.controllersRumbleEnabled? 1 : 0);
+                    Log("Set Default Rumble Value");
+                }
+            }
+
             if (_mainSettingsModel != null)
-                _mainSettingsModel.controllersRumbleEnabled = true;
+            {
+
+                _mainSettingsModel.controllersRumbleEnabled = defaultRumble;
+            }
+
+
             paused = false;
             if (!customColorsInstalled)
             {
@@ -279,11 +306,10 @@
                         //        Log(controller.ToString());
 
                     }
-   //                 Log("Left:" + leftController.ToString());
- //                   Log("Right: " + rightController.ToString());
+                    //                 Log("Left:" + leftController.ToString());
+                    //                   Log("Right: " + rightController.ToString());
 
                 }
-                CheckGMPModifiers();
 
 
             }
@@ -323,7 +349,7 @@
                 var colors = Resources.FindObjectsOfTypeAll<SimpleColorSO>();
                 foreach (SimpleColorSO color in colors)
                 {
-               //     Log(color.name);
+                    //     Log(color.name);
                     if (color.name == "Color0")
                         colorA = color;
                     if (color.name == "Color1")
@@ -369,7 +395,7 @@
                     Log("Player is null");
                 }
 
-
+                CheckGMPModifiers();
 
             }
         }
@@ -422,39 +448,39 @@
 
             if (GMPUI.oneColor)
             {
-        _noteCutEffectSpawner = UnityEngine.Object.FindObjectOfType<NoteCutEffectSpawner>();
-            if (_noteCutEffectSpawner != null)
-                _noteCutHapticEffect = ReflectionUtil.GetPrivateField<NoteCutHapticEffect>(_noteCutEffectSpawner, "_noteCutHapticEffect");
-            if (_noteCutHapticEffect != null)
-                _hapticFeedbackController = ReflectionUtil.GetPrivateField<HapticFeedbackController>(_noteCutHapticEffect, "_hapticFeedbackController");
-            if (_hapticFeedbackController != null)
-                _mainSettingsModel = ReflectionUtil.GetPrivateField<MainSettingsModel>(_hapticFeedbackController, "_mainSettingsModel");
+                _noteCutEffectSpawner = UnityEngine.Object.FindObjectOfType<NoteCutEffectSpawner>();
+                if (_noteCutEffectSpawner != null)
+                    _noteCutHapticEffect = ReflectionUtil.GetPrivateField<NoteCutHapticEffect>(_noteCutEffectSpawner, "_noteCutHapticEffect");
+                if (_noteCutHapticEffect != null)
+                    _hapticFeedbackController = ReflectionUtil.GetPrivateField<HapticFeedbackController>(_noteCutHapticEffect, "_hapticFeedbackController");
+                if (_hapticFeedbackController != null)
+                    _mainSettingsModelOneC = ReflectionUtil.GetPrivateField<MainSettingsModel>(_hapticFeedbackController, "_mainSettingsModel");
+
+                if (_mainSettingsModelOneC == null) return;
+                Vector3 notePos = controller.noteTransform.position;
+
+                Vector3 leftPos = player.leftSaber.transform.position;
+                leftPos += player.leftSaber.transform.forward * 0.5f;
+                Vector3 rightPos = player.rightSaber.transform.position;
+                rightPos += player.rightSaber.transform.forward * 0.5f;
+
+                float leftDist = Vector3.Distance(leftPos, notePos);
+                float rightDist = Vector3.Distance(rightPos, notePos);
+               // Log(leftDist.ToString() + "   " + rightDist.ToString());
+                _mainSettingsModelOneC.controllersRumbleEnabled = true;
+                Saber.SaberType targetType = (leftDist > rightDist) ? Saber.SaberType.SaberB : Saber.SaberType.SaberA;
+                if (!(Mathf.Abs(leftDist - rightDist) <= 0.2f))
+                    _noteCutHapticEffect.RumbleController(targetType);
+                else
+                {
+                    _noteCutHapticEffect.RumbleController(Saber.SaberType.SaberA);
+                    _noteCutHapticEffect.RumbleController(Saber.SaberType.SaberB);
+                }
+                _mainSettingsModel.controllersRumbleEnabled = false;
 
 
-            Vector3 notePos = controller.noteTransform.position;
-
-            Vector3 leftPos = player.leftSaber.transform.position;
-            leftPos += player.leftSaber.transform.forward * 0.5f;
-            Vector3 rightPos = player.rightSaber.transform.position;
-            rightPos += player.rightSaber.transform.forward * 0.5f;
-
-            float leftDist = Vector3.Distance(leftPos, notePos);
-            float rightDist = Vector3.Distance(rightPos, notePos);
-            Log(leftDist.ToString() + "   " + rightDist.ToString());
-            _mainSettingsModel.controllersRumbleEnabled = true;
-            Saber.SaberType targetType = (leftDist > rightDist) ? Saber.SaberType.SaberB : Saber.SaberType.SaberA;
-            if (!(Mathf.Abs(leftDist - rightDist) <= 0.2f))
-                _noteCutHapticEffect.RumbleController(targetType);
-            else
-            {
-                _noteCutHapticEffect.RumbleController(Saber.SaberType.SaberA);
-                _noteCutHapticEffect.RumbleController(Saber.SaberType.SaberB);
             }
-            _mainSettingsModel.controllersRumbleEnabled = false;
 
-
-            }
-        
 
 
         }
@@ -796,15 +822,15 @@
         public static void ApplyPatches()
         {
             Log("Apply Patch Function: " + invalidForScoring);
-            if(!invalidForScoring)
+            if (!invalidForScoring)
             {
                 try
                 {
-            harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
-                Log("Blocking Score Submission. Applying Harmony Patches");
-                invalidForScoring = true;
+                    harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
+                    Log("Blocking Score Submission. Applying Harmony Patches");
+                    invalidForScoring = true;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Log(ex.ToString());
                 }
@@ -827,7 +853,7 @@
 
         public static void CheckGMPModifiers()
         {
-            if (GMPUI.bulletTime || GMPUI.chatIntegration || GMPUI.funky || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.rainbow || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f)
+            if (GMPUI.bulletTime || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.rainbow || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f)
             {
                 ApplyPatches();
                 if (GMPUI.njsRandom)
@@ -850,7 +876,8 @@
                 }
                 if (GMPUI.oneColor)
                 {
-                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.OneColor());
+                    Log("One Color Activating");
+                    twitchPowers.StartCoroutine(TwitchPowers.OneColor());
                     ApplyPatches();
                 }
 
