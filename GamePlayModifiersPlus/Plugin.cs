@@ -789,10 +789,7 @@
             return CustomColors.Plugin.disablePlugin;
         }
         public static bool DoesCustomColorsAllowEnvironmentColors()
-<<<<<<< HEAD
-        {
-            return CustomColors.Plugin.allowEnvironmentColors;
-=======
+
         {
             return CustomColors.Plugin.allowEnvironmentColors;
         }
@@ -814,7 +811,7 @@
             }
 
 
->>>>>>> Multiplayer-Integration
+
         }
 
         public static void RemovePatches()
