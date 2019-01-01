@@ -69,6 +69,7 @@
             {
                 if (data == "HasPlugin" + version)
                 {
+                    if (!GMPUI.AllowMulti) return;
                     otherGmpPlayer = true;
                     if (playerName == "")
                         playerName = Client.instance.playerInfo.playerName;
@@ -77,6 +78,7 @@
 
                 else if (data.Contains("HavePlugin?"))
                 {
+                    if (!GMPUI.AllowMulti) return;
                     Client.instance.SendEventMessage("GMP", "HasPlugin" + version);
                 }
             }

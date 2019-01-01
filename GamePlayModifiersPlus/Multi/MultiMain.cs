@@ -100,6 +100,7 @@
 
             if (newScene.name == "GameCore")
             {
+                if (!GMPUI.AllowMulti) return;
                 if (multiActive)
                 {
                         MultiClientInterface.Init();
