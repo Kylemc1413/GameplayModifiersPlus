@@ -1,38 +1,5 @@
 #### Github: https://github.com/Kylemc1413/GameplayModifiersPlus/
 
-# Adds additional modifiers to the game, as well as Twitch Chat Integration
-
-- ### Requires AsyncTwitch and BeatSaberCustomUI 
-
-# Standard Usage
-- ### There are several modifiers added to the menu that do not require setting up Async Twitch, however you must do so if you plan on using chat integration
-- #### Additional modifiers can be accessed through the ' Additional modifiers' option in the GameplayModfiersPlus option in the modifers panel, which can be accessed by scrolling down the right side of modifiers, below no fail
-- #### For Usage of the modifiers, refer to their tooltips that explain what they do
-- #### Any modifier that disables score submission defaults to off every time you start the game, including chat integration
-
-# Chat Integration
-- ## Make sure to edit the Async Twitch Config in the USERDATA folder, not in Config
-- ## GamePlayModifiersPlusChatSettings.ini will be genereated in the UserData folder after running the game with the plugin installed
-##### Async Twitch Setup Guide
-- Example Async Config
-![Async Config Image](https://i.imgur.com/d9abU8R.png)
-- Make sure the game is closed before editing the config
-- Username: The name of the user the plugin will send chat messages through
-- ChannelName: The name of the channel the plugin will monitor the chat of to look for messages
-- OauthKey: The oauth key for the user put in the Username section which is required for the plugin to be able to send messages through that user, you can generate one for that account at https://twitchapps.com/tmi/
-- OauthKey MUST Include the 'oauth:' part of the key that is generated
-- Do NOT freely give out your oauth key to other people, (And no that is not my actual oauth key in the image, just an example)
-
-- ### To Use Chat Integration, ensure you have set up Async Twitch to connect to your channel, then turn on the modifier, type !gm help into your chat for details on how to use it, the config for chat settings is located in `UserData/GameplayModifiersPlusChatSettings.ini`
-- ### Refer to below for more information on using chat integration, if you decide not to read it and end up confused because you did not read it, go read it. But you should probably just read it in the first place and save yourself the future trouble
-
-## IMPORTANT COMMANDS FOR USERS - GAMEPLAY COMMANDS ARE DETAILED BELOW CONFIG
-- #####  '!gm help' Links to readme for the mod, lists various commands that give useful information
-- ##### '!gm status' Displays whether chat integration is currently on, as well as who can currently use chat integration commands
-- ##### '!gm charges' Displays the current charge count, the commands that currently have costs, and the amount of commands that can be in one message. If a command is not listed here, that means it has no cost set
-#### UI
-![UI Image](https://i.imgur.com/gaK45ww.png)
-- When chat integration is active, there is now a UI display in game, On the left in red are the currently active cooldowns, indicating which commands can not be used at the moment. In the center is a counter of the current charges compared to the max charges, and on the right in yellow is the commands that are currently active.
 
 #### Basic Chat Config Options (More Below)
 | Option | About |
@@ -96,13 +63,3 @@
 #### `!configchange property=value`
 - To be used for Basic properties not attached to commands
 - Example usage: `!configchange commandsPerMessage=2` Would change the commands per message to be 2
-
-## Multiplayer Mode
-### Setup
-- If you have the BeatSaberMultiplayer plugin installed you can enable GMP's multiplayer functionality by toggling 'Allow in Multiplayer' in the modifiers menu, located below the Additional Modifiers Button
-- When the multiplayer functionality is enabled, if you're in a multiplayer room with another person using the same version of GMP with the multiplayer functionality enabled, the mode will activate when a song starts
-- When the mode is active, players in the lobby that have GMP active will have (GMP) appended to their names
-### Basics
-- Multiplayer GMP functions similarly to Chat Integration, in that there will be a charge counter wherever you have the chat integration UI set to appear, with active commands appearing in yellow to the right of it, and commands on cooldown appearing to the left of it in red.
-- In multiplayer however, the commands you recieve are sent by other players
-- Every few seconds you have a chance of generating a charge, when your charge meter fills you recieve a random powerup, pressing either of the triggers on your controllers will send the power to other players in the lobby using your version of GMP
