@@ -450,6 +450,7 @@
 
             if (GMPUI.oneColor)
             {
+                if (!defaultRumble) return;
                 _noteCutEffectSpawner = UnityEngine.Object.FindObjectOfType<NoteCutEffectSpawner>();
                 if (_noteCutEffectSpawner != null)
                     _noteCutHapticEffect = ReflectionUtil.GetPrivateField<NoteCutHapticEffect>(_noteCutEffectSpawner, "_noteCutHapticEffect");
@@ -493,7 +494,7 @@
             {
                 Utilities.Rainbow.RandomizeColors();
                 Resources.FindObjectsOfTypeAll<ColorManager>().First().RefreshColors();
-                ApplyPatches();
+     
 
             }
 
@@ -502,7 +503,7 @@
             if (GMPUI.funky)
             {
                 noteTransform.gameObject.AddComponent<FloatBehavior>();
-                ApplyPatches();
+
 
             }
 
@@ -520,20 +521,20 @@
                 if (superRandom)
                 {
                     noteTransform.localScale *= UnityEngine.Random.Range(ChatConfig.randomMin, ChatConfig.randomMax);
-                    ApplyPatches();
+
                 }
                 else
                 {
                     if (!GMPUI.randomSize)
                     {
                         noteTransform.localScale *= altereddNoteScale;
-                        ApplyPatches();
+
                     }
 
                     if (GMPUI.randomSize)
                     {
                         noteTransform.localScale *= UnityEngine.Random.Range(ChatConfig.randomMin, ChatConfig.randomMax);
-                        ApplyPatches();
+
                     }
                 }
 
@@ -544,7 +545,7 @@
 
             if (GMPUI.fixedNoteScale != 1f)
             {
-                ApplyPatches();
+ 
                 //    Transform noteTransform = controller.GetField<Transform>("_noteTransform");
                 //       Log("SPAWN" + noteTransform.localScale.ToString());
                 noteTransform.localScale *= GMPUI.fixedNoteScale;
@@ -880,7 +881,6 @@
                 {
                     Log("One Color Activating");
                     twitchPowers.StartCoroutine(TwitchPowers.OneColor());
-                    ApplyPatches();
                 }
 
 
