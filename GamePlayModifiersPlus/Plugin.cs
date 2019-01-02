@@ -285,12 +285,19 @@
 
                 if (_hasRegistered == false)
                 {
-
+                    try
+                    {
                     TwitchConnection.Instance.StartConnection();
                     TwitchConnection.Instance.RegisterOnMessageReceived(TwitchConnection_OnMessageReceived);
                     if (multiInstalled)
                         TwitchConnection.Instance.RegisterOnMessageReceived(multi.TwitchConnectionMulti_OnMessageReceived);
                     _hasRegistered = true;
+                    }
+                    catch(Exception ex)
+                    {
+                        Log(ex.ToString());
+                    }
+
                 }
 
                 var controllers = Resources.FindObjectsOfTypeAll<VRController>();
