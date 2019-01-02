@@ -3,12 +3,17 @@
 
 # Chat Integration for Chat Users
 ## IMPORTANT COMMANDS 
-- #####  '!gm help' Links to readmes for people who don't know how the mod works
-- ##### '!gm status' Displays whether chat integration is currently on, as well as who can currently use chat integration commands
-- ##### '!gm charges' Displays the current charge count, the commands that currently have costs, and the amount of commands that can be in one message. If a command is not listed here, that means it has no cost set
+-  '!gm help' Links to readmes for people who don't know how the mod works
+- '!gm status' Displays whether chat integration is currently on, as well as who can currently use chat integration commands
+- '!gm charges' Displays the current charge count, the commands that currently have costs, and the amount of commands that can be in one message. If a command is not listed here, that means it has no cost set
 
 ### Basics
-- You can use any of the commands specified below by including '!gm' followed by a command in your message, i.e. '!gm da' and the command will activate if there isn't a cooldown active for that command and you have enough charges, you can type '!gm charges' to see the current charges and the cost of each command, or you can look at the UI described below in the streamer's game to see the current charges and active commands/cooldowns
+- You can use any of the commands specified below by including '!gm' followed by a command in your message, i.e. '!gm da'
+
+- The command will activate if there isn't a cooldown active for that command and you have enough charges
+
+- You can type '!gm charges' to see the current charges and the cost of each command, or you can look at the UI described below in the streamer's game to see the current charges and active commands/cooldowns
+
 - You can use the '!gm chargehelp' command to see more information about how the streamer has charges set up to generate
 
 #### UI
