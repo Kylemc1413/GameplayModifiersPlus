@@ -210,8 +210,7 @@
         {
             if (message.Content.ToLower().Contains("!gm help"))
             {
-                TwitchConnection.Instance.SendChatMessage("Include !gm followed by a command in your message while the streamer has twitch mode on to mess with their game:" +
-                    " !gm commands to view info commands. Information about how to use the plugin, game commands, and moderator powers can be found in the mod readme: https://github.com/Kylemc1413/GameplayModifiersPlus/blob/master/README.md");
+                TwitchConnection.Instance.SendChatMessage("Guides: For Regular Users - http://bit.ly/1413ChatUser | For Streamers - http://bit.ly/1413Readme | For moderators also view http://bit.ly/1413Config");
             }
             if (message.Content.ToLower().Contains("!gm chargehelp"))
             {
