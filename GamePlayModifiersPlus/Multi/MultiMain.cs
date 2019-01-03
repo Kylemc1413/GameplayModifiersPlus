@@ -88,7 +88,7 @@
                 Log("Null Creation of Multi Powers Object");
                 multiObject = new GameObject("Multi Powers");
                 Powers = multiObject.AddComponent<MultiPowers>();
-                GameObject.DontDestroyOnLoad(multiObject);
+
             }
 
             //        }
@@ -100,24 +100,26 @@
 
             if (newScene.name == "GameCore")
             {
-                if (!GMPUI.AllowMulti) return;
-                if (multiActive)
+                Log("GameCore");
+                if (!GMPUI.AllowMulti)
                 {
-                        MultiClientInterface.Init();
-
+                    Log("Multi Not Allowed, Returning");
+                    return;
                 }
-
-              
                 if (multiActive)
                 {
-
+                    
                     GamePlayModifiersPlus.TwitchStuff.GMPDisplay ChatDisplay = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>();
                     if (ChatDisplay != null)
                     {
                         ChatDisplay.Destroy();
                         GameObject.Destroy(ChatDisplay);
                     }
+                //    Log("MultiMain - Multi Level Started");
+                    MultiClientInterface.Client_ClientLevelStarted();
                 }
+                else
+                    Log("Multi Not Active, Returning");
 
 
 

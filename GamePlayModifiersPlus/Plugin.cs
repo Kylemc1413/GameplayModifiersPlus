@@ -77,10 +77,10 @@
         public static bool haveSongNJS;
         public static SimpleColorSO colorA;
         public static SimpleColorSO colorB;
-        public static SimpleColorSO oldColorA = new SimpleColorSO();
-        public static SimpleColorSO oldColorB = new SimpleColorSO();
-        public static SimpleColorSO defColorA = new SimpleColorSO();
-        public static SimpleColorSO defColorB = new SimpleColorSO();
+        public static SimpleColorSO oldColorA = ScriptableObject.CreateInstance<SimpleColorSO>();
+        public static SimpleColorSO oldColorB = ScriptableObject.CreateInstance<SimpleColorSO>();
+        public static SimpleColorSO defColorA = ScriptableObject.CreateInstance<SimpleColorSO>();
+        public static SimpleColorSO defColorB = ScriptableObject.CreateInstance<SimpleColorSO>();
         public static int commandsLeftForMessage;
         public static bool test;
         public static float currentSongSpeed;
@@ -154,7 +154,7 @@
                     twitchCommands.CheckGameplayCommands(message);
                     twitchCommands.CheckHealthCommands(message);
                     twitchCommands.CheckSizeCommands(message);
-               //     twitchCommands.CheckSpeedCommands(message);
+                    //     twitchCommands.CheckSpeedCommands(message);
                     twitchCommands.CheckGlobalCoolDown();
                 }
             }
@@ -178,6 +178,8 @@
                 {
                     Log(ex.ToString());
                 }
+                if(multiInstalled)
+                    Multiplayer.MultiClientInterface.Init();
 
             }
         }
@@ -189,17 +191,21 @@
             if (_mainSettingsModel == null)
             {
                 var menu = Resources.FindObjectsOfTypeAll<MainMenuViewController>().FirstOrDefault();
-                _mainSettingsModel = menu.GetField<MainSettingsModel>("_mainSettingsModel");
-                _mainSettingsModel.Load();
-                Log("RUMBLE: " + _mainSettingsModel.controllersRumbleEnabled.ToString());
-
-                if (!setDefaultRumble)
+                if (menu != null)
                 {
-                    defaultRumble = _mainSettingsModel.controllersRumbleEnabled;
-                    ModPrefs.SetInt("GameplayModifiersPlus", "GameRumbleSetting", _mainSettingsModel.controllersRumbleEnabled? 1 : 0);
-                    setDefaultRumble = true;
-                    Log("Set Default Rumble Value");
+                    _mainSettingsModel = menu.GetField<MainSettingsModel>("_mainSettingsModel");
+                    _mainSettingsModel.Load();
+                    Log("RUMBLE: " + _mainSettingsModel.controllersRumbleEnabled.ToString());
+
+                    if (!setDefaultRumble)
+                    {
+                        defaultRumble = _mainSettingsModel.controllersRumbleEnabled;
+                        ModPrefs.SetInt("GameplayModifiersPlus", "GameRumbleSetting", _mainSettingsModel.controllersRumbleEnabled ? 1 : 0);
+                        setDefaultRumble = true;
+                        Log("Set Default Rumble Value");
+                    }
                 }
+
             }
 
             if (_mainSettingsModel != null)
@@ -233,7 +239,7 @@
                 Log("Null Creation of Chat Powers Object");
                 chatPowers = new GameObject("Chat Powers");
                 twitchPowers = chatPowers.AddComponent<TwitchPowers>();
-                GameObject.DontDestroyOnLoad(chatPowers);
+ 
             }
 
             //        }
@@ -287,13 +293,13 @@
                 {
                     try
                     {
-                    TwitchConnection.Instance.StartConnection();
-                    TwitchConnection.Instance.RegisterOnMessageReceived(TwitchConnection_OnMessageReceived);
-                    if (multiInstalled)
-                        TwitchConnection.Instance.RegisterOnMessageReceived(multi.TwitchConnectionMulti_OnMessageReceived);
-                    _hasRegistered = true;
+                        TwitchConnection.Instance.StartConnection();
+                        TwitchConnection.Instance.RegisterOnMessageReceived(TwitchConnection_OnMessageReceived);
+                        if (multiInstalled)
+                            TwitchConnection.Instance.RegisterOnMessageReceived(multi.TwitchConnectionMulti_OnMessageReceived);
+                        _hasRegistered = true;
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         Log(ex.ToString());
                     }
@@ -476,7 +482,7 @@
 
                 float leftDist = Vector3.Distance(leftPos, notePos);
                 float rightDist = Vector3.Distance(rightPos, notePos);
-               // Log(leftDist.ToString() + "   " + rightDist.ToString());
+                // Log(leftDist.ToString() + "   " + rightDist.ToString());
                 _mainSettingsModelOneC.controllersRumbleEnabled = true;
                 Saber.SaberType targetType = (leftDist > rightDist) ? Saber.SaberType.SaberB : Saber.SaberType.SaberA;
                 if (!(Mathf.Abs(leftDist - rightDist) <= 0.2f))
@@ -501,7 +507,7 @@
             {
                 Utilities.Rainbow.RandomizeColors();
                 Resources.FindObjectsOfTypeAll<ColorManager>().First().RefreshColors();
-     
+
 
             }
 
@@ -552,7 +558,7 @@
 
             if (GMPUI.fixedNoteScale != 1f)
             {
- 
+
                 //    Transform noteTransform = controller.GetField<Transform>("_noteTransform");
                 //       Log("SPAWN" + noteTransform.localScale.ToString());
                 noteTransform.localScale *= GMPUI.fixedNoteScale;
@@ -678,6 +684,8 @@
             //  GMPUI.chatIntegration = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.chatIntegration", false, true);
             //    GMPUI.swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
             GMPUI.chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
+            GMPUI.AllowMulti = ModPrefs.GetBool("GameplayModifiersPlus", "allowMulti", false, true);
+            
 
             ChatConfig.Save();
         }
@@ -702,86 +710,93 @@
             if (ppText != null)
             {
 
-
-                if (!ppText.text.Contains("html"))
-                    Log(ppText.text);
-                if (!(ppText.text.Contains("Refresh") || ppText.text.Contains("html")))
+                try
                 {
-                    rank = ppText.text.Split('#', '<')[1];
-                    pp = ppText.text.Split('(', 'p')[1];
-                    currentpp = float.Parse(pp, System.Globalization.CultureInfo.InvariantCulture);
-                    currentRank = int.Parse(rank, System.Globalization.CultureInfo.InvariantCulture);
-                    Log("Rank: " + currentRank);
-                    Log("PP: " + currentpp);
-                    //        if (firstLoad == true)
-                    //           if (GMPUI.chatDelta)
-                    //                 TwitchConnection.Instance.SendChatMessage("Loaded. PP: " + currentpp + " pp. Rank: " + currentRank);
-
-                    if (oldpp != 0)
+                    if (!ppText.text.Contains("html"))
+                        Log(ppText.text);
+                    if (!(ppText.text.Contains("Refresh") || ppText.text.Contains("html")))
                     {
-                        deltaPP = 0;
-                        deltaRank = 0;
-                        deltaPP = currentpp - oldpp;
-                        deltaRank = currentRank - oldRank;
+                        rank = ppText.text.Split('#', '<')[1];
+                        pp = ppText.text.Split('(', 'p')[1];
+                        currentpp = float.Parse(pp, System.Globalization.CultureInfo.InvariantCulture);
+                        currentRank = int.Parse(rank, System.Globalization.CultureInfo.InvariantCulture);
+                        Log("Rank: " + currentRank);
+                        Log("PP: " + currentpp);
+                        //        if (firstLoad == true)
+                        //           if (GMPUI.chatDelta)
+                        //                 TwitchConnection.Instance.SendChatMessage("Loaded. PP: " + currentpp + " pp. Rank: " + currentRank);
 
-                        if (deltaPP != 0 || deltaRank != 0)
+                        if (oldpp != 0)
                         {
-                            ppText.enableWordWrapping = false;
-                            if (deltaRank < 0)
+                            deltaPP = 0;
+                            deltaRank = 0;
+                            deltaPP = currentpp - oldpp;
+                            deltaRank = currentRank - oldRank;
+
+                            if (deltaPP != 0 || deltaRank != 0)
                             {
-                                if (deltaRank == -1)
+                                ppText.enableWordWrapping = false;
+                                if (deltaRank < 0)
+                                {
+                                    if (deltaRank == -1)
+                                    {
+                                        if (GMPUI.chatDelta)
+                                            TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Gained 1 Rank.");
+                                        ppText.text += " Change: Gained " + deltaPP + " pp. " + "Gained 1 Rank";
+                                    }
+
+                                    else
+                                    {
+                                        if (GMPUI.chatDelta)
+                                            TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Gained " + Math.Abs(deltaRank) + " Ranks.");
+                                        ppText.text += " Change: Gained " + deltaPP + " pp. " + "Gained " + Math.Abs(deltaRank) + " Ranks";
+                                    }
+
+                                }
+                                else if (deltaRank == 0)
                                 {
                                     if (GMPUI.chatDelta)
-                                        TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Gained 1 Rank.");
-                                    ppText.text += " Change: Gained " + deltaPP + " pp. " + "Gained 1 Rank";
+                                        TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. No change in Rank.");
+                                    ppText.text += " Change: Gained " + deltaPP + " pp. " + "No change in Rank";
                                 }
 
-                                else
+                                else if (deltaRank > 0)
                                 {
-                                    if (GMPUI.chatDelta)
-                                        TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Gained " + Math.Abs(deltaRank) + " Ranks.");
-                                    ppText.text += " Change: Gained " + deltaPP + " pp. " + "Gained " + Math.Abs(deltaRank) + " Ranks";
+                                    if (deltaRank == 1)
+                                    {
+                                        if (GMPUI.chatDelta)
+                                            TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Lost 1 Rank.");
+                                        ppText.text += " Change: Gained " + deltaPP + " pp. " + "Lost 1 Rank";
+                                    }
+
+                                    else
+                                    {
+                                        if (GMPUI.chatDelta)
+                                            TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Lost " + Math.Abs(deltaRank) + " Ranks.");
+                                        ppText.text += " Change: Gained " + deltaPP + " pp. " + "Lost " + Math.Abs(deltaRank) + " Ranks";
+                                    }
+
                                 }
 
+                                oldRank = currentRank;
+                                oldpp = currentpp;
                             }
-                            else if (deltaRank == 0)
-                            {
-                                if (GMPUI.chatDelta)
-                                    TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. No change in Rank.");
-                                ppText.text += " Change: Gained " + deltaPP + " pp. " + "No change in Rank";
-                            }
-
-                            else if (deltaRank > 0)
-                            {
-                                if (deltaRank == 1)
-                                {
-                                    if (GMPUI.chatDelta)
-                                        TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Lost 1 Rank.");
-                                    ppText.text += " Change: Gained " + deltaPP + " pp. " + "Lost 1 Rank";
-                                }
-
-                                else
-                                {
-                                    if (GMPUI.chatDelta)
-                                        TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Lost " + Math.Abs(deltaRank) + " Ranks.");
-                                    ppText.text += " Change: Gained " + deltaPP + " pp. " + "Lost " + Math.Abs(deltaRank) + " Ranks";
-                                }
-
-                            }
-
+                        }
+                        else
+                        {
                             oldRank = currentRank;
                             oldpp = currentpp;
+                            deltaPP = 0;
+                            deltaRank = 0;
                         }
-                    }
-                    else
-                    {
-                        oldRank = currentRank;
-                        oldpp = currentpp;
-                        deltaPP = 0;
-                        deltaRank = 0;
-                    }
 
+                    }
                 }
+                catch
+                {
+                    Log("Exception Trying to Grab PP");
+                }
+
             }
             firstLoad = false;
         }

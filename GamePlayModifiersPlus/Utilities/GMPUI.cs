@@ -65,7 +65,7 @@
             //Multiplayer Option toggle
             var multiOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Allow in Multiplayer", "GMP1", "Allow GMP activation in multiplayer room if players equip similar version of the plugin, refer to the readme for more information. Your Version: " + Plugin.pluginVersion, _GMPIcon);
             multiOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "allowMulti", false, true);
-            multiOption.OnToggle += (value) => { ModPrefs.SetBool("GameplayModifiersPlus", "allowMulti", value); Plugin.Log("Changed value"); };
+            multiOption.OnToggle += (value) => { AllowMulti = value; ModPrefs.SetBool("GameplayModifiersPlus", "allowMulti", value); Plugin.Log("Changed value"); };
 
 
             var repeatOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Repeat", "GMP2", disableScoreString + "Restarts song on song end", _RepeatIcon);

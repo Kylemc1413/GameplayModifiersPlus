@@ -15,33 +15,37 @@
     public class MultiClientInterface
     {
         public static BeatSaberMultiplayer.Data.PlayerInfo playerInfo;
-        public static Client playerClient;
         public static bool otherGmpPlayer = false;
         public static bool initialized = false;
         public static string playerName = "";
         public static string version = GamePlayModifiersPlus.Plugin.pluginVersion;
+        public static bool spectating;
         public static void Init()
         {
 
-                MultiMain.Log("initializing");
-                playerClient = GameObject.Find("MultiplayerClient").GetComponent<Client>();
+
             Client.EventMessageReceived += Client_EventMessageReceived;
-            Client.ClientCreated += Client_ClientCreated;
-            Client.ClientDestroyed += Client_ClientDestroyed;
+     //       Client.ClientLevelStarted += Client_ClientLevelStarted;
+            Client.ClientJoinedRoom += Client_ClientJoinedRoom;
+            MultiMain.Log("initializing");
+        }
+
+
+
+        private static void Client_ClientJoinedRoom()
+        {
+            MultiMain.Log("Joined Room, Logging spectator setting");
+            spectating = BeatSaberMultiplayer.Config.Instance.SpectatorMode;
+        }
+
+        public static void Client_ClientLevelStarted()
+        {
+            MultiMain.Log("Multiplayer Level Started");
+            Client.disableScoreSubmission = false;
+            if (!GMPUI.AllowMulti) return;
+            if (spectating) return; 
             SharedCoroutineStarter.instance.StartCoroutine(DelayedSendPluginCheck());
-
-
-            Client_EventMessageReceived("GMP", "HasPlugin" + version);
-        }
-
-        private static void Client_ClientDestroyed()
-        {
-
-        }
-
-        private static void Client_ClientCreated()
-        {
-
+    //        Client_EventMessageReceived("GMP", "HasPlugin" + version);
         }
 
         public static IEnumerator DelayedSendPluginCheck()
@@ -70,15 +74,18 @@
                 if (data == "HasPlugin" + version)
                 {
                     if (!GMPUI.AllowMulti) return;
-                    otherGmpPlayer = true;
+                    if (spectating) return;
+                        otherGmpPlayer = true;
                     if (playerName == "")
                         playerName = Client.instance.playerInfo.playerName;
                     Client.instance.playerInfo.playerName += " (GMP)";
+                    Client.disableScoreSubmission = true;
                 }
 
                 else if (data.Contains("HavePlugin?"))
                 {
                     if (!GMPUI.AllowMulti) return;
+                    if (spectating) return;
                     Client.instance.SendEventMessage("GMP", "HasPlugin" + version);
                 }
             }
