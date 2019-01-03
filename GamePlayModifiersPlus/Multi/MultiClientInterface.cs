@@ -14,7 +14,6 @@
     using BeatSaberMultiplayer;
     public class MultiClientInterface
     {
-        public static BeatSaberMultiplayer.Data.PlayerInfo playerInfo;
         public static bool otherGmpPlayer = false;
         public static bool initialized = false;
         public static string playerName = "";
