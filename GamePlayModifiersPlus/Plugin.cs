@@ -238,6 +238,7 @@
             {
                 Log("Null Creation of Chat Powers Object");
                 chatPowers = new GameObject("Chat Powers");
+                GameObject.DontDestroyOnLoad(chatPowers);
                 twitchPowers = chatPowers.AddComponent<TwitchPowers>();
  
             }
