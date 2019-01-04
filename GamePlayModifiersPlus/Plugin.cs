@@ -883,10 +883,10 @@
                 ApplyPatches();
                 if (GMPUI.njsRandom)
                 {
-                    twitchPowers.StartCoroutine(TwitchPowers.RandomNJS());
+                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.RandomNJS());
                 }
                 if (GMPUI.noArrows)
-                    twitchPowers.StartCoroutine(TwitchPowers.NoArrows());
+                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.NoArrows());
                 if (GMPUI.swapSabers)
                 {
                     Log("Testing Ground Active");
@@ -902,7 +902,7 @@
                 if (GMPUI.oneColor)
                 {
                     Log("One Color Activating");
-                    twitchPowers.StartCoroutine(TwitchPowers.OneColor());
+                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.OneColor());
                 }
 
 
@@ -917,7 +917,7 @@
                             {
                                 try
                                 {
-                                    twitchPowers.StartCoroutine(TwitchPowers.SpecialEvent());
+                                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.SpecialEvent());
                                     Log("Gnoming");
                                 }
                                 catch (Exception ex)
@@ -931,7 +931,7 @@
                         {
                             if (!noteCutInfo.allIsOK)
                             {
-                                twitchPowers.StartCoroutine(TwitchPowers.SpecialEvent());
+                                SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.SpecialEvent());
                                 Log("Gnoming");
                             }
 

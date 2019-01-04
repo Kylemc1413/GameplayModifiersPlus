@@ -421,7 +421,7 @@
             }
             //Adjust Sabers for one color
             var leftSaberType = Plugin.player.leftSaber.GetField<SaberTypeObject>("_saberType");
-            Plugin.Log("1 " + Plugin.player.leftSaber.saberType.ToString());
+    
             try
             {
                 leftSaberType.SetField("_saberType", Saber.SaberType.SaberB);
