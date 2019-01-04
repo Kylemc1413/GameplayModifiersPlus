@@ -20,8 +20,8 @@
 
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.3.1";
-        public static string pluginVersion = "1.3.1";
+        public string Version => "1.3.2";
+        public static string pluginVersion = "1.3.2";
 
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
