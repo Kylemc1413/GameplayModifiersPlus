@@ -68,6 +68,11 @@
             multiOption.OnToggle += (value) => { AllowMulti = value; ModPrefs.SetBool("GameplayModifiersPlus", "allowMulti", value); Plugin.Log("Changed value"); };
 
 
+            var rainbowOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Rainbow", "GMP2",  "Rainbow Notes", _RainbowIcon);
+            rainbowOption.GetValue = rainbow;
+            rainbowOption.OnToggle += (value) => { rainbow = value; Plugin.Log("Changed value"); };
+            rainbowOption.AddConflict("Chat Integration");
+
             var repeatOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Repeat", "GMP2", disableScoreString + "Restarts song on song end", _RepeatIcon);
             repeatOption.GetValue = repeatSong;
             repeatOption.OnToggle += (value) => { repeatSong = value; Plugin.Log("Changed value"); };
@@ -116,11 +121,6 @@
             randomSizeOption.GetValue = njsRandom;
             randomSizeOption.OnToggle += (value) => { randomSize = value; Plugin.Log("Changed value"); };
             randomSizeOption.AddConflict("Chat Integration");
-
-            var rainbowOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Rainbow", "GMP2", disableScoreString + "Rainbow Notes", _RainbowIcon);
-            rainbowOption.GetValue = rainbow;
-            rainbowOption.OnToggle += (value) => { rainbow = value; Plugin.Log("Changed value"); };
-            rainbowOption.AddConflict("Chat Integration");
 
             var funkyOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Funky", "GMP2", disableScoreString + "Funky Notes", _FunkyIcon);
             funkyOption.GetValue = funky;

@@ -114,8 +114,14 @@
 
         public static void RandomizeColors()
         {
-            Plugin.colorA.SetColor(GetLeftColor());
-            Plugin.colorB.SetColor(GetRightColor());
+            Color left = GetLeftColor();
+            Color right = GetRightColor();
+            Plugin.colorA.SetColor(left);
+            Plugin.colorB.SetColor(right);
+            if (Plugin.customColorsInstalled)
+                Plugin.ResetCustomColorsSabers(left, right);
+
+            
         }
 
     }

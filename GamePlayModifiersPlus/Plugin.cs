@@ -20,8 +20,8 @@
 
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.3.3";
-        public static string pluginVersion = "1.3.3";
+        public string Version => "1.3.4";
+        public static string pluginVersion = "1.3.4";
 
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -94,6 +94,8 @@
         static HapticFeedbackController _hapticFeedbackController;
         static MainSettingsModel _mainSettingsModel;
         static MainSettingsModel _mainSettingsModelOneC;
+        static ColorManager ColorManager;
+
         public static HarmonyInstance harmony;
 
         public static bool customColorsInstalled = false;
@@ -342,7 +344,7 @@
                 spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().First();
                 energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().First();
                 energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().First();
-
+                ColorManager = Resources.FindObjectsOfTypeAll<ColorManager>().First();
                 spawnController.noteDidStartJumpEvent += SpawnController_ModifiedJump;
                 spawnController.noteWasCutEvent += SpawnController_ScaleRemoveCut;
                 spawnController.noteWasMissedEvent += SpawnController_ScaleRemoveMiss;
@@ -508,7 +510,7 @@
             if (GMPUI.rainbow)
             {
                 Utilities.Rainbow.RandomizeColors();
-                Resources.FindObjectsOfTypeAll<ColorManager>().First().RefreshColors();
+                ColorManager?.RefreshColors();
 
 
             }
@@ -644,7 +646,10 @@
         {
         }
 
-
+        public static void ResetCustomColorsSabers(Color left, Color right)
+        {
+            CustomColors.Plugin.OverrideCustomSaberColors(left, right);
+        }
         public static bool IsModInstalled(string modName)
         {
             foreach (IPlugin p in PluginManager.Plugins)
@@ -880,7 +885,7 @@
 
         public static void CheckGMPModifiers()
         {
-            if (GMPUI.bulletTime || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.rainbow || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f)
+            if (GMPUI.bulletTime || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f)
             {
                 //     ApplyPatches();
                 BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("GameplayModifiersPlus");
