@@ -23,7 +23,7 @@
         public static string currentPowerUp = "Charging...";
         public void TwitchConnectionMulti_OnMessageReceived(TwitchConnection arg1, TwitchMessage message)
         {
-            if(multiActive)
+            if (multiActive)
             {
                 Log("Checking message");
                 string messageString = message.Content.ToLower();
@@ -108,14 +108,14 @@
                 }
                 if (multiActive)
                 {
-                    
+
                     GamePlayModifiersPlus.TwitchStuff.GMPDisplay ChatDisplay = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>();
                     if (ChatDisplay != null)
                     {
                         ChatDisplay.Destroy();
                         GameObject.Destroy(ChatDisplay);
                     }
-                //    Log("MultiMain - Multi Level Started");
+                    //    Log("MultiMain - Multi Level Started");
                     MultiClientInterface.Client_ClientLevelStarted();
                 }
                 else
@@ -135,7 +135,7 @@
         {
             if (!activated) return;
 
-            if(Config.charges >= Config.maxCharges)
+            if (Config.charges >= Config.maxCharges)
             {
                 if (multiGMPDisplay.chargeText.text.Contains("Charging"))
                 {
@@ -144,9 +144,9 @@
                 }
 
 
-                if((GamePlayModifiersPlus.Plugin.leftController.triggerValue >= 0.8 || GamePlayModifiersPlus.Plugin.rightController.triggerValue >= 0.8))
+                if ((GamePlayModifiersPlus.Plugin.leftController.triggerValue >= 0.8 || GamePlayModifiersPlus.Plugin.rightController.triggerValue >= 0.8))
                 {
-                    
+
                     MultiClientInterface.SendCommand("!gmm " + currentPowerUp.ToLower());
                     Config.charges = 0;
                     currentPowerUp = "Charging...";
@@ -169,7 +169,7 @@
         }
 
 
-            public static void Log(string message)
+        public static void Log(string message)
         {
             Console.WriteLine("[{0}] {1}", "GameplayModifiersPlus-Multi", message);
         }

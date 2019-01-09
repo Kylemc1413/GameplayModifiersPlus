@@ -302,6 +302,7 @@
                     }
                     catch (Exception ex)
                     {
+                        Log("Failed To Connect with Async Twitch, Check Config and Internet Connection");
                         Log(ex.ToString());
                     }
 
@@ -881,7 +882,9 @@
         {
             if (GMPUI.bulletTime || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.rainbow || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f)
             {
-                ApplyPatches();
+                //     ApplyPatches();
+                BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("GameplayModifiersPlus");
+
                 if (GMPUI.njsRandom)
                 {
                     SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.RandomNJS());
