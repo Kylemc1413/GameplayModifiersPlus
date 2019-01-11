@@ -4,6 +4,7 @@
     using UnityEngine;
     using CustomUI.GameplaySettings;
     using IllusionPlugin;
+
     public class GMPUI
     {
         private static Sprite _ChatDeltaIcon;
@@ -137,8 +138,6 @@
             oneColorOption.OnToggle += (value) => { oneColor = value; Plugin.Log("Changed value"); };
             oneColorOption.AddConflict("Chat Integration");
         }
-
-
 
 
 

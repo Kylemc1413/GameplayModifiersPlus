@@ -14,6 +14,8 @@
     using UnityEngine.SceneManagement;
     using Harmony;
     using GamePlayModifiersPlus.TwitchStuff;
+    using GamePlayModifiersPlus.Utilities;
+
     public class Plugin : IPlugin
     {
         public static readonly ChatConfig ChatConfig = new ChatConfig(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
@@ -118,8 +120,10 @@
                 Log("Multiplayer Detected, enabling multiplayer functionality");
             }
 
-            if (PluginManager.Plugins.Any(x => x.Name == "CustomColorsEdit"))
+            if (PluginManager.Plugins.Any(x => x.Name == "CustomColorsEdit"))//BeatSaberChallenges
                 customColorsInstalled = true;
+            if (PluginManager.Plugins.Any(x => x.Name == "BeatSaberChallenges"))
+                ChallengeIntegration.AddListeners();
 
             ReadPrefs();
             cooldowns = new Cooldowns();
@@ -341,7 +345,7 @@
 
             if (scene.name == "GameCore")
             {
-                if (BS_Utils.Gameplay.Gamemode.isIsolatedLevel && !activateDuringIsolated) return;
+                if (BS_Utils.Gameplay.Gamemode.IsIsolatedLevel && !activateDuringIsolated) return;
 
 
 
@@ -725,7 +729,6 @@
             yield return new WaitForSecondsRealtime(9f);
             if (ppText != null)
             {
-
                 try
                 {
                     if (!ppText.text.Contains("html"))
