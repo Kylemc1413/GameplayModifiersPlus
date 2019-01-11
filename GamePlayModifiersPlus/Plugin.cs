@@ -95,7 +95,7 @@
         static MainSettingsModel _mainSettingsModel;
         static MainSettingsModel _mainSettingsModelOneC;
         static ColorManager ColorManager;
-
+        public static bool activateDuringIsolated = false;
         public static HarmonyInstance harmony;
 
         public static bool customColorsInstalled = false;
@@ -188,6 +188,59 @@
 
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
+
+            if (scene.name == ("Menu"))
+            {
+                activateDuringIsolated = false;
+                Log("Switched to Menu");
+                SharedCoroutineStarter.instance.StartCoroutine(GrabPP());
+
+
+                if (_hasRegistered == false)
+                {
+                    try
+                    {
+                        TwitchConnection.Instance.StartConnection();
+                        TwitchConnection.Instance.RegisterOnMessageReceived(TwitchConnection_OnMessageReceived);
+                        if (multiInstalled)
+                            TwitchConnection.Instance.RegisterOnMessageReceived(multi.TwitchConnectionMulti_OnMessageReceived);
+                        _hasRegistered = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Log("Failed To Connect with Async Twitch, Check Config and Internet Connection");
+                        Log(ex.ToString());
+                    }
+
+                }
+
+                var controllers = Resources.FindObjectsOfTypeAll<VRController>();
+                if (controllers != null)
+                {
+                    foreach (VRController controller in controllers)
+                    {
+                        if (controller != null)
+                        {
+                            if (controller.ToString() == "ControllerLeft (VRController)")
+                                leftController = controller;
+                            if (controller.ToString() == "ControllerRight (VRController)")
+                                rightController = controller;
+                        }
+                        //        Log(controller.ToString());
+
+                    }
+                    //                 Log("Left:" + leftController.ToString());
+                    //                   Log("Right: " + rightController.ToString());
+
+                }
+
+
+            }
+
+
+
+
+
             if (scene.name == "GameCore")
                 RemovePatches();
             if (_mainSettingsModel == null)
@@ -286,57 +339,13 @@
             if (arg0.name == "EmpyTransition" && chatPowers != null)
                 GameObject.Destroy(chatPowers);
 
-            if (scene.name == ("Menu"))
-            {
-                Log("Switched to Menu");
-                SharedCoroutineStarter.instance.StartCoroutine(GrabPP());
-
-
-                if (_hasRegistered == false)
-                {
-                    try
-                    {
-                        TwitchConnection.Instance.StartConnection();
-                        TwitchConnection.Instance.RegisterOnMessageReceived(TwitchConnection_OnMessageReceived);
-                        if (multiInstalled)
-                            TwitchConnection.Instance.RegisterOnMessageReceived(multi.TwitchConnectionMulti_OnMessageReceived);
-                        _hasRegistered = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        Log("Failed To Connect with Async Twitch, Check Config and Internet Connection");
-                        Log(ex.ToString());
-                    }
-
-                }
-
-                var controllers = Resources.FindObjectsOfTypeAll<VRController>();
-                if (controllers != null)
-                {
-                    foreach (VRController controller in controllers)
-                    {
-                        if (controller != null)
-                        {
-                            if (controller.ToString() == "ControllerLeft (VRController)")
-                                leftController = controller;
-                            if (controller.ToString() == "ControllerRight (VRController)")
-                                rightController = controller;
-                        }
-                        //        Log(controller.ToString());
-
-                    }
-                    //                 Log("Left:" + leftController.ToString());
-                    //                   Log("Right: " + rightController.ToString());
-
-                }
-
-
-            }
-
-
-
             if (scene.name == "GameCore")
             {
+                if (BS_Utils.Gameplay.Gamemode.isIsolatedLevel && !activateDuringIsolated) return;
+
+
+
+
                 GameObject.Destroy(GameObject.Find("Color Setter"));
                 environmentColorsSetter = Resources.FindObjectsOfTypeAll<EnvironmentColorsSetter>().FirstOrDefault();
                 soundEffectManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().First();
