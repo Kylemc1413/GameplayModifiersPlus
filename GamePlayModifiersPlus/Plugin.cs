@@ -120,7 +120,7 @@
                 Log("Multiplayer Detected, enabling multiplayer functionality");
             }
 
-            if (PluginManager.Plugins.Any(x => x.Name == "CustomColorsEdit"))//BeatSaberChallenges
+            if (PluginManager.Plugins.Any(x => x.Name == "CustomColorsEdit"))
                 customColorsInstalled = true;
             if (PluginManager.Plugins.Any(x => x.Name == "BeatSaberChallenges"))
                 ChallengeIntegration.AddListeners();
