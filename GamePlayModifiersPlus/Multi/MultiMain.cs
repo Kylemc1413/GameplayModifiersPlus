@@ -161,8 +161,16 @@
 
         public static void Activate()
         {
-
+            Log("Activating Multi UI");
+            if(multiObject != null)
             multiGMPDisplay = multiObject.AddComponent<MultiGMPDisplay>();
+            else
+            {
+                Log("Multi Object null, creating it");
+                multiObject = new GameObject("Multi Powers");
+                Powers = multiObject.AddComponent<MultiPowers>();
+                multiGMPDisplay = multiObject.AddComponent<MultiGMPDisplay>();
+            }
             Powers.StartCoroutine(MultiPowers.ChargeOverTime());
             activated = true;
 

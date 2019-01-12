@@ -39,6 +39,8 @@
 
         public static void Client_ClientLevelStarted()
         {
+            initialized = false;
+            otherGmpPlayer = false;
             MultiMain.Log("Multiplayer Level Started");
             Client.disableScoreSubmission = false;
             if (!GMPUI.AllowMulti) return;
@@ -49,7 +51,7 @@
 
         public static IEnumerator DelayedSendPluginCheck()
         {
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(1f);
                 SendCommand("HavePlugin?");
 
         }
@@ -81,11 +83,11 @@
                     Client.disableScoreSubmission = true;
                 }
 
-                else if (data.Contains("HavePlugin?"))
+                if (data.Contains("HavePlugin?"))
                 {
                     if (!GMPUI.AllowMulti) return;
                     if (spectating) return;
-                    Client.instance.SendEventMessage("GMP", "HasPlugin" + version);
+                    SendCommand("HasPlugin");
                 }
             }
 
