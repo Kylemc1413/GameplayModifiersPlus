@@ -25,7 +25,6 @@
         {
             if (multiActive)
             {
-                Log("Checking message");
                 string messageString = message.Content.ToLower();
                 multiCommands.CheckHealthCommands(messageString);
                 multiCommands.CheckSizeCommands(messageString);

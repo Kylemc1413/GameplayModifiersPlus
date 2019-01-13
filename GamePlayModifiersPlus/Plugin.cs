@@ -22,8 +22,8 @@
 
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.4.2";
-        public static string pluginVersion = "1.4.2";
+        public string Version => "1.4.3";
+        public static string pluginVersion = "1.4.3";
 
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -140,9 +140,7 @@
 
         private void TwitchConnection_OnMessageReceived(TwitchConnection arg1, TwitchMessage message)
         {
-
-            Log("Message Recieved, AsyncTwitch currently working");
-            //Status check message
+            
             if (charges < 0) charges = 0;
             twitchCommands.CheckChargeMessage(message);
             twitchCommands.CheckConfigMessage(message);
