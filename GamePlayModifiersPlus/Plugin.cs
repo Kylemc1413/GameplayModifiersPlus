@@ -364,7 +364,7 @@
                 oldColorB.SetColor(colorB);
 
 
-                Log(colorA.color.ToString());
+          //      Log(colorA.color.ToString());
                 if (GMPUI.chatIntegration && charges <= ChatConfig.maxCharges && AsyncInstalled)
                 {
                     charges += ChatConfig.chargesPerLevel;
@@ -381,9 +381,9 @@
                 if (AudioTimeSync != null)
                 {
                     songAudio = AudioTimeSync.GetField<AudioSource>("_audioSource");
-                    if (songAudio != null)
-                        Log("Audio not null");
-                    Log("Object Found");
+                    if (songAudio == null)
+                        Log("Audio null");
+      //              Log("Object Found");
                 }
                 //Get Sabers
                 player = Resources.FindObjectsOfTypeAll<PlayerController>().FirstOrDefault();
