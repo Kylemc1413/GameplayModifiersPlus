@@ -8,6 +8,7 @@
         public string FilePath { get; }
         public bool uiOnTop = true;
         public bool showCooldownOnMessage = false;
+        public bool allowModCommands = true;
         public int commandsPerMessage = 2;
         public float globalCommandCooldown = 10f;
         public bool allowSubs = true;

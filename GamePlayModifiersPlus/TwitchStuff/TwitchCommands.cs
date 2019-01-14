@@ -47,7 +47,7 @@
         {
             string messageString = message.Content.ToLower();
             if (!messageString.Contains("!configchange")) return;
-            if (!message.Author.IsMod && !message.Author.IsBroadcaster) return;
+            if (!(message.Author.IsMod && Plugin.ChatConfig.allowModCommands) && !message.Author.IsBroadcaster) return;
             string command = "";
             string property = "";
             bool isPropertyOnly = false;
