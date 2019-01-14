@@ -22,8 +22,8 @@
 
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.4.3";
-        public static string pluginVersion = "1.4.3";
+        public string Version => "1.4.4";
+        public static string pluginVersion = "1.4.4";
 
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -100,11 +100,13 @@
         public static bool activateDuringIsolated = false;
         public static HarmonyInstance harmony;
 
-        public static bool customColorsInstalled = false;
+        internal static bool customColorsInstalled = false;
+        internal static bool AsyncInstalled = false;
         GameObject chatPowers = null;
 
         public void OnApplicationStart()
         {
+            //Asynchronous Twitch Library
             SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
             SceneManager.sceneLoaded += SceneManager_sceneLoaded;
             {
@@ -112,18 +114,7 @@
                 harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
             }
 
-            if (PluginManager.Plugins.Any(x => x.Name == "Beat Saber Multiplayer"))
-            {
-                multi = new GamePlayModifiersPlus.Multiplayer.MultiMain();
-                multi.Initialize();
-                multiInstalled = true;
-                Log("Multiplayer Detected, enabling multiplayer functionality");
-            }
-
-            if (PluginManager.Plugins.Any(x => x.Name == "CustomColorsEdit"))
-                customColorsInstalled = true;
-            if (PluginManager.Plugins.Any(x => x.Name == "BeatSaberChallenges"))
-                ChallengeIntegration.AddListeners();
+            CheckPlugins();
 
             ReadPrefs();
             cooldowns = new Cooldowns();
@@ -151,7 +142,7 @@
                 if (Multiplayer.MultiMain.multiActive) return;
             if (ChatConfig.allowEveryone || (ChatConfig.allowSubs && message.Author.IsSubscriber) || message.Author.IsMod)
             {
-                if (GMPUI.chatIntegration && isValidScene && !cooldowns.GetCooldown("Global"))
+                if (GMPUI.chatIntegration && isValidScene && !cooldowns.GetCooldown("Global") && AsyncInstalled)
                 {
                     commandsLeftForMessage = ChatConfig.commandsPerMessage;
                     twitchCommands.CheckPauseMessage(message);
@@ -197,24 +188,8 @@
                 Log("Switched to Menu");
                 SharedCoroutineStarter.instance.StartCoroutine(GrabPP());
 
-
-                if (_hasRegistered == false)
-                {
-                    try
-                    {
-                        TwitchConnection.Instance.StartConnection();
-                        TwitchConnection.Instance.RegisterOnMessageReceived(TwitchConnection_OnMessageReceived);
-                        if (multiInstalled)
-                            TwitchConnection.Instance.RegisterOnMessageReceived(multi.TwitchConnectionMulti_OnMessageReceived);
-                        _hasRegistered = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        Log("Failed To Connect with Async Twitch, Check Config and Internet Connection");
-                        Log(ex.ToString());
-                    }
-
-                }
+                if (AsyncInstalled)
+                    InitAsync();
 
                 var controllers = Resources.FindObjectsOfTypeAll<VRController>();
                 if (controllers != null)
@@ -317,7 +292,7 @@
 
 
             ReadPrefs();
-            if (GMPUI.chatIntegration)
+            if (GMPUI.chatIntegration && AsyncInstalled)
             {
                 if (twitchPowers != null)
                 {
@@ -367,9 +342,9 @@
 
                 if (!Multiplayer.MultiMain.multiActive)
                 {
-                    if (GMPUI.chatIntegration && ChatConfig.maxCharges > 0)
+                    if (GMPUI.chatIntegration && ChatConfig.maxCharges > 0 && AsyncInstalled)
                         chatPowers.AddComponent<GMPDisplay>();
-                    if (GMPUI.chatIntegration && ChatConfig.timeForCharges > 0)
+                    if (GMPUI.chatIntegration && ChatConfig.timeForCharges > 0 && AsyncInstalled)
                         twitchPowers.StartCoroutine(TwitchPowers.ChargeOverTime());
                 }
 
@@ -390,12 +365,12 @@
 
 
                 Log(colorA.color.ToString());
-                if (GMPUI.chatIntegration && charges <= ChatConfig.maxCharges)
+                if (GMPUI.chatIntegration && charges <= ChatConfig.maxCharges && AsyncInstalled)
                 {
                     charges += ChatConfig.chargesPerLevel;
                     if (charges > ChatConfig.maxCharges)
                         charges = ChatConfig.maxCharges;
-                    //          TwitchConnection.Instance.SendChatMessage("Current Charges: " + charges);
+                    //          TryAsyncMessage("Current Charges: " + charges);
                 }
 
 
@@ -741,7 +716,7 @@
                         Log("PP: " + currentpp);
                         //        if (firstLoad == true)
                         //           if (GMPUI.chatDelta)
-                        //                 TwitchConnection.Instance.SendChatMessage("Loaded. PP: " + currentpp + " pp. Rank: " + currentRank);
+                        //                 TryAsyncMessage("Loaded. PP: " + currentpp + " pp. Rank: " + currentRank);
 
                         if (oldpp != 0)
                         {
@@ -758,14 +733,14 @@
                                     if (deltaRank == -1)
                                     {
                                         if (GMPUI.chatDelta)
-                                            TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Gained 1 Rank.");
+                                            TryAsyncMessage("Gained " + deltaPP + " pp. Gained 1 Rank.");
                                         ppText.text += " Change: Gained " + deltaPP + " pp. " + "Gained 1 Rank";
                                     }
 
                                     else
                                     {
                                         if (GMPUI.chatDelta)
-                                            TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Gained " + Math.Abs(deltaRank) + " Ranks.");
+                                            TryAsyncMessage("Gained " + deltaPP + " pp. Gained " + Math.Abs(deltaRank) + " Ranks.");
                                         ppText.text += " Change: Gained " + deltaPP + " pp. " + "Gained " + Math.Abs(deltaRank) + " Ranks";
                                     }
 
@@ -773,7 +748,7 @@
                                 else if (deltaRank == 0)
                                 {
                                     if (GMPUI.chatDelta)
-                                        TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. No change in Rank.");
+                                        TryAsyncMessage("Gained " + deltaPP + " pp. No change in Rank.");
                                     ppText.text += " Change: Gained " + deltaPP + " pp. " + "No change in Rank";
                                 }
 
@@ -782,14 +757,14 @@
                                     if (deltaRank == 1)
                                     {
                                         if (GMPUI.chatDelta)
-                                            TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Lost 1 Rank.");
+                                            TryAsyncMessage("Gained " + deltaPP + " pp. Lost 1 Rank.");
                                         ppText.text += " Change: Gained " + deltaPP + " pp. " + "Lost 1 Rank";
                                     }
 
                                     else
                                     {
                                         if (GMPUI.chatDelta)
-                                            TwitchConnection.Instance.SendChatMessage("Gained " + deltaPP + " pp. Lost " + Math.Abs(deltaRank) + " Ranks.");
+                                            TryAsyncMessage("Gained " + deltaPP + " pp. Lost " + Math.Abs(deltaRank) + " Ranks.");
                                         ppText.text += " Change: Gained " + deltaPP + " pp. " + "Lost " + Math.Abs(deltaRank) + " Ranks";
                                     }
 
@@ -964,5 +939,66 @@
         }
 
 
+        internal void CheckPlugins()
+        {
+            foreach (IPlugin plugin in PluginManager.Plugins)
+            {
+                switch (plugin.Name)
+                {
+                    case "Asynchronous Twitch Library":
+                        AsyncInstalled = true;
+                        break;
+
+                    case "Beat Saber Multiplayer":
+                        multi = new GamePlayModifiersPlus.Multiplayer.MultiMain();
+                        multi.Initialize();
+                        multiInstalled = true;
+                        Log("Multiplayer Detected, enabling multiplayer functionality");
+                        break;
+
+                    case "CustomColorsEdit":
+                        customColorsInstalled = true;
+                        break;
+
+                    case "BeatSaberChallenges":
+                        ChallengeIntegration.AddListeners();
+                        break;
+                }
+
+            }
+        }
+
+        internal void InitAsync()
+        {
+            if (_hasRegistered == false)
+            {
+                try
+                {
+                    TwitchConnection.Instance.StartConnection();
+                    TwitchConnection.Instance.RegisterOnMessageReceived(TwitchConnection_OnMessageReceived);
+                    if (multiInstalled)
+                        TwitchConnection.Instance.RegisterOnMessageReceived(multi.TwitchConnectionMulti_OnMessageReceived);
+                    _hasRegistered = true;
+                }
+                catch (Exception ex)
+                {
+                    Log("Failed To Connect with Async Twitch, Check Config and Internet Connection");
+                    Log(ex.ToString());
+                }
+
+            }
+
+        }
+
+
+        internal static void TryAsyncMessage(string message)
+        {
+            if (!AsyncInstalled) return;
+            SendAsyncMessage(message);
+        }
+        internal static void SendAsyncMessage(string message)
+        {
+            TryAsyncMessage(message);
+        }
     }
 }

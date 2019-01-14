@@ -44,22 +44,27 @@
             //Rumble Option
             var rumbleOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Controller Rumble", "MainMenu", "Toggle Controller Vibration in songs", _GMPIcon);
             rumbleOption.GetValue = ModPrefs.GetInt("GameplayModifiersPlus", "GameRumbleSetting", -1, false) != 1 ? false : true; ;
-            rumbleOption.OnToggle += (value) => { ModPrefs.SetInt("GameplayModifiersPlus", "GameRumbleSetting", value == true? 1 : 0); Plugin.Log("Changed value"); };
+            rumbleOption.OnToggle += (value) => { ModPrefs.SetInt("GameplayModifiersPlus", "GameRumbleSetting", value == true ? 1 : 0); Plugin.Log("Changed value"); };
 
 
 
             var gmp1Menu = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "GamePlayModifiersPlus", "MainMenu", "GMP1", "GameplayModifiersPlus Options", _GMPIcon);
 
             //GMP1 Options
-      //      var backOption = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "Back", "GMP1", "MainMenu", "Return from GamePlayModifiersOptions", _BackButton);
+            //      var backOption = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "Back", "GMP1", "MainMenu", "Return from GamePlayModifiersOptions", _BackButton);
+            if (Plugin.AsyncInstalled)
+            {
+                var twitchStuffOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Chat Integration", "GMP1", disableScoreString + "Allows Chat to mess with your game if connected. !gm help", _TwitchIcon);
+                twitchStuffOption.GetValue = chatIntegration;
+                twitchStuffOption.OnToggle += (value) => { chatIntegration = value; Plugin.Log("Changed value"); };
 
-            var twitchStuffOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Chat Integration", "GMP1", disableScoreString + "Allows Chat to mess with your game if connected. !gm help", _TwitchIcon);
-            twitchStuffOption.GetValue = chatIntegration;
-            twitchStuffOption.OnToggle += (value) => { chatIntegration = value; Plugin.Log("Changed value"); };
 
-            var chatDeltaOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Chat Delta", "GMP1", "Display Change in Performance Points / Rank in Twitch Chat if Connected", _ChatDeltaIcon);
-            chatDeltaOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
-            chatDeltaOption.OnToggle += (chatDelta) => { ModPrefs.SetBool("GameplayModifiersPlus", "chatDelta", chatDelta); Plugin.Log("Changed value"); };
+
+                var chatDeltaOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Chat Delta", "GMP1", "Display Change in Performance Points / Rank in Twitch Chat if Connected", _ChatDeltaIcon);
+                chatDeltaOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
+                chatDeltaOption.OnToggle += (chatDelta) => { ModPrefs.SetBool("GameplayModifiersPlus", "chatDelta", chatDelta); Plugin.Log("Changed value"); };
+
+            }
 
             //GMP2 Options
             var gmp2Menu = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "Additional Modifiers", "GMP1", "GMP2", "Additional Modifiers", _GMPIcon);
@@ -69,7 +74,7 @@
             multiOption.OnToggle += (value) => { AllowMulti = value; ModPrefs.SetBool("GameplayModifiersPlus", "allowMulti", value); Plugin.Log("Changed value"); };
 
 
-            var rainbowOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Rainbow", "GMP2",  "Rainbow Notes", _RainbowIcon);
+            var rainbowOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Rainbow", "GMP2", "Rainbow Notes", _RainbowIcon);
             rainbowOption.GetValue = rainbow;
             rainbowOption.OnToggle += (value) => { rainbow = value; Plugin.Log("Changed value"); };
             rainbowOption.AddConflict("Chat Integration");
@@ -85,15 +90,15 @@
             gnomeOption.AddConflict("Faster Song");
             gnomeOption.AddConflict("Slower Song");
 
-            
+
             var bulletTimeOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Bullet Time", "GMP2", disableScoreString + "Slow down time by pressing the triggers on your controllers.", _BulletTimeIcon);
             bulletTimeOption.GetValue = bulletTime;
             bulletTimeOption.OnToggle += (value) => { bulletTime = value; Plugin.Log("Changed value"); };
             bulletTimeOption.AddConflict("Faster Song");
             bulletTimeOption.AddConflict("Slower Song");
             bulletTimeOption.AddConflict("Chat Integration");
-            
-            
+
+
             var noteSizeOption = GameplaySettingsUI.CreateListOption(GameplaySettingsPanels.ModifiersRight, "Note Size", "GMP2", disableScoreString + "Change the size of the notes. Overwritten by Chat Integration and any other size changing options");
             for (float i = 10; i <= 200; i += 10)
                 noteSizeOption.AddOption(i / 100);
@@ -106,8 +111,8 @@
                 num = Mathf.Clamp(num, 0.1f, 2f);
                 return num;
             });
-            noteSizeOption.OnChange += (value) => { fixedNoteScale = value;  Plugin.Log("Changed Value"); };
-            
+            noteSizeOption.OnChange += (value) => { fixedNoteScale = value; Plugin.Log("Changed Value"); };
+
             var swapSabersOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Testing Ground", "GMP2", disableScoreString + "Currently Used To test Random stuff", _SwapSabersIcon);
             swapSabersOption.GetValue = swapSabers;
             swapSabersOption.OnToggle += (value) => { swapSabers = value; Plugin.Log("Changed value"); };

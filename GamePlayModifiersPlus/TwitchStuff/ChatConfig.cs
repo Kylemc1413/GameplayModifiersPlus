@@ -220,7 +220,7 @@
             if (success)
             {
                 Save();
-                AsyncTwitch.TwitchConnection.Instance.SendChatMessage("Changed Value");
+                Plugin.TryAsyncMessage("Changed Value");
             }
         }
         public void ChangeConfigValue(string command, string property, string value)
@@ -392,7 +392,7 @@
             if (success)
             {
                 Save();
-                AsyncTwitch.TwitchConnection.Instance.SendChatMessage("Changed Value");
+                Plugin.TryAsyncMessage("Changed Value");
             }
 
         }
