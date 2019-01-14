@@ -134,10 +134,7 @@
 
             Load();
 
-            if (ConfigChangedEvent != null)
-            {
-                ConfigChangedEvent(this);
-            }
+            ConfigChangedEvent?.Invoke(this);
 
         }
 

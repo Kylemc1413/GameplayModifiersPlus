@@ -209,7 +209,7 @@
             text.text = text.text.Replace(" Random | ", "");
         }
 
-        public static IEnumerator njsRandom(float length)
+        public static IEnumerator NjsRandom(float length)
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " NJSRandom | ";

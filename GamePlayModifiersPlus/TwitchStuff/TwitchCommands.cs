@@ -451,7 +451,7 @@
                 if (Plugin.trySuper && Plugin.charges >= Plugin.ChatConfig.chargesForSuperCharge + Plugin.ChatConfig.njsRandomChargeCost)
                 {
                     //         Plugin.beepSound.Play();
-                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.njsRandom(Plugin.songAudio.clip.length));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.NjsRandom(Plugin.songAudio.clip.length));
                     Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.songAudio.clip.length, "NJSRandom", "Super Random Note Jump Speed Active."));
                     Plugin.trySuper = false;
                     Plugin.charges -= Plugin.ChatConfig.chargesForSuperCharge + Plugin.ChatConfig.njsRandomChargeCost;
@@ -461,7 +461,7 @@
                 else if (Plugin.charges >= Plugin.ChatConfig.njsRandomChargeCost)
                 {
                     //         Plugin.beepSound.Play();
-                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.njsRandom(Plugin.ChatConfig.njsRandomDuration));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.NjsRandom(Plugin.ChatConfig.njsRandomDuration));
                     Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.ChatConfig.njsRandomCooldown, "NJSRandom", "Random Note Jump Speed Active."));
                     Plugin.charges -= Plugin.ChatConfig.njsRandomChargeCost;
                     Plugin.commandsLeftForMessage -= 1;
