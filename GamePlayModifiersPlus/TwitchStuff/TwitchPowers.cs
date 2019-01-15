@@ -472,6 +472,8 @@
             GMPUI.rainbow = false;
             Plugin.colorA.SetColor(Plugin.oldColorA);
             Plugin.colorB.SetColor(Plugin.oldColorB);
+            if(Plugin.customColorsInstalled)
+                Plugin.ResetCustomColorsSabers(Plugin.oldColorA, Plugin.oldColorB);
             if (Plugin.environmentColorsSetter != null)
             {
                 Color overrrideA = Plugin.environmentColorsSetter.GetField<Color>("_overrideColorA");
@@ -482,6 +484,7 @@
                     {
                         Plugin.colorB.SetColor(overrrideA);
                         Plugin.colorA.SetColor(overrrideB);
+                        Plugin.ResetCustomColorsSabers(overrrideB, overrrideA);
                     }
                 }
                 else
