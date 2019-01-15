@@ -873,7 +873,7 @@
             if (GMPUI.bulletTime || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f)
             {
                 //     ApplyPatches();
-                BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("GameplayModifiersPlus");
+                BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("Gameplay Modifiers Plus");
 
                 if (GMPUI.njsRandom)
                 {
