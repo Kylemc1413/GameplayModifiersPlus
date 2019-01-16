@@ -11,7 +11,7 @@
 - #### Any modifier that disables score submission defaults to off every time you start the game, including chat integration
 
 # Chat Integration
-- ## Make sure to edit the Async Twitch Config in the USERDATA folder, not in Config
+- ## Make sure to edit the AsyncTwitchConfig.json located in the UserData folder, which can be found in your game installation folder, in the same directory as your game executable, if it does not exist, make sure you have async twitch installed through the mod installer, and run the game to the main menu, then close the game.
 - ## GamePlayModifiersPlusChatSettings.ini will be genereated in the UserData folder after running the game with the plugin installed
 ##### Async Twitch Setup Guide
 - Example Async Config
