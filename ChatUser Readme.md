@@ -35,5 +35,9 @@
 | Rainbow | Randomizes note colors for the duration, currently left colors will be random warm colors, right will be random cool colors |
 | Pause | Literally just pauses the game. Has it's own seperate global command cooldown you can set, `pauseGlobalCooldown`, instead of a standard cooldown |
 | Bombs | For the duration, notes have a chance to be replaced with bombs |
+| Poison | For the duration, health regen is disabled |
+| OffsetRandom | For the duration, randomizes the note spawn offset |
+| Mirror | For the duration, mirrors the map |
+| Reverse | For the duration, reverses the direction the notes come from|
 | Faster (Currently Disabled) | For the duration, the song speed is altered by the multiplier |
 | Slower (Currently Disabled) | For the duration, the song speed is altered by the multiplier |
