@@ -118,14 +118,8 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Beep" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Beep.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="ChatDelta" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ChatDelta.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="gnome" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\gnome.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="SwapSabers" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SwapSabers.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -159,5 +153,14 @@
   </data>
   <data name="RandomIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\RandomIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Beep" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\sounds\beep.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="gnome" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\sounds\gnome.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="sectionpass" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\sounds\sectionpass.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

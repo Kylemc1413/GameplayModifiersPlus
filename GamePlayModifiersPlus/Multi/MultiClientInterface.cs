@@ -43,7 +43,7 @@
             otherGmpPlayer = false;
             MultiMain.Log("Multiplayer Level Started");
             Client.disableScoreSubmission = false;
-            if (!GMPUI.AllowMulti) return;
+            if (!GMPUI.allowMulti) return;
             if (spectating) return; 
             SharedCoroutineStarter.instance.StartCoroutine(DelayedSendPluginCheck());
     //        Client_EventMessageReceived("GMP", "HasPlugin" + version);
@@ -74,7 +74,7 @@
             {
                 if (data == "HasPlugin" + version)
                 {
-                    if (!GMPUI.AllowMulti) return;
+                    if (!GMPUI.allowMulti) return;
                     if (spectating) return;
                         otherGmpPlayer = true;
                     if (playerName == "")
@@ -85,7 +85,7 @@
 
                 if (data.Contains("HavePlugin?"))
                 {
-                    if (!GMPUI.AllowMulti) return;
+                    if (!GMPUI.allowMulti) return;
                     if (spectating) return;
                     SendCommand("HasPlugin");
                 }

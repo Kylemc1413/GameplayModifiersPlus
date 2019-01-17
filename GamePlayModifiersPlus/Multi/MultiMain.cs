@@ -100,7 +100,7 @@
             if (newScene.name == "GameCore")
             {
                 Log("GameCore");
-                if (!GMPUI.AllowMulti)
+                if (!GMPUI.allowMulti)
                 {
                     Log("Multi Not Allowed, Returning");
                     return;

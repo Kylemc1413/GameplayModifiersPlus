@@ -35,8 +35,9 @@
         public static bool randomSize = false;
         public static bool noArrows = false;
         public static bool oneColor = false;
-        public static bool AllowMulti = false;
-
+        public static bool allowMulti = false;
+        public static bool reverse = false;
+        public static bool randomOffset = false;
         public static void CreateUI()
         {
             GetIcons();
@@ -71,13 +72,20 @@
             //Multiplayer Option toggle
             var multiOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Allow in Multiplayer", "GMP1", "Allow GMP activation in multiplayer room if players equip similar version of the plugin, refer to the readme for more information. Your Version: " + Plugin.pluginVersion, _GMPIcon);
             multiOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "allowMulti", false, true);
-            multiOption.OnToggle += (value) => { AllowMulti = value; ModPrefs.SetBool("GameplayModifiersPlus", "allowMulti", value); Plugin.Log("Changed value"); };
+            multiOption.OnToggle += (value) => { allowMulti = value; ModPrefs.SetBool("GameplayModifiersPlus", "allowMulti", value); Plugin.Log("Changed value"); };
 
 
             var rainbowOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Rainbow", "GMP2", "Rainbow Notes", _RainbowIcon);
             rainbowOption.GetValue = rainbow;
             rainbowOption.OnToggle += (value) => { rainbow = value; Plugin.Log("Changed value"); };
             rainbowOption.AddConflict("Chat Integration");
+
+            var reverseOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Reverse ", "GMP2", "", _RainbowIcon);
+            rainbowOption.GetValue = rainbow;
+            rainbowOption.OnToggle += (value) => { rainbow = value; Plugin.Log("Changed value"); };
+            rainbowOption.AddConflict("Chat Integration");
+
+
 
             var repeatOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Repeat", "GMP2", disableScoreString + "Restarts song on song end", _RepeatIcon);
             repeatOption.GetValue = repeatSong;
@@ -122,6 +130,11 @@
             njsRandomOption.GetValue = njsRandom;
             njsRandomOption.OnToggle += (value) => { njsRandom = value; Plugin.Log("Changed value"); };
             njsRandomOption.AddConflict("Chat Integration");
+
+            var randomOffsetOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Random Spawn Offset", "GMP2", disableScoreString + "Randomizes Note Spawn offset", _RandomIcon);
+            randomOffsetOption.GetValue = randomOffset;
+            randomOffsetOption.OnToggle += (value) => { randomOffset = value; Plugin.Log("Changed value"); };
+            randomOffsetOption.AddConflict("Chat Integration");
 
             var randomSizeOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Random Note Size", "GMP2", disableScoreString + "Randomizes Note Size", _RandomIcon);
             randomSizeOption.GetValue = njsRandom;

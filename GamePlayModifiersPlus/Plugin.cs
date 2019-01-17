@@ -22,8 +22,8 @@
 
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.4.4";
-        public static string pluginVersion = "1.4.4";
+        public string Version => "1.5.0";
+        public static string pluginVersion = "1.5.0";
 
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -32,6 +32,7 @@
         public static TwitchPowers twitchPowers = null;
         public static SoundPlayer gnomeSound = new SoundPlayer(Properties.Resources.gnome);
         public static SoundPlayer beepSound = new SoundPlayer(Properties.Resources.Beep);
+        public static SoundPlayer reverseSound = new SoundPlayer(Properties.Resources.sectionpass);
         public static bool soundIsPlaying = false;
         public static AudioTimeSyncController AudioTimeSync { get; private set; }
         public static AudioSource songAudio;
@@ -131,7 +132,7 @@
 
         private void TwitchConnection_OnMessageReceived(TwitchConnection arg1, TwitchMessage message)
         {
-            
+
             if (charges < 0) charges = 0;
             twitchCommands.CheckChargeMessage(message);
             twitchCommands.CheckConfigMessage(message);
@@ -173,7 +174,7 @@
                 {
                     Log(ex.ToString());
                 }
-                if(multiInstalled)
+                if (multiInstalled)
                     Multiplayer.MultiClientInterface.Init();
 
             }
@@ -272,7 +273,7 @@
                 chatPowers = new GameObject("Chat Powers");
                 GameObject.DontDestroyOnLoad(chatPowers);
                 twitchPowers = chatPowers.AddComponent<TwitchPowers>();
- 
+
             }
 
             //        }
@@ -318,6 +319,7 @@
 
             if (scene.name == "GameCore")
             {
+                isValidScene = true;
                 if (BS_Utils.Gameplay.Gamemode.IsIsolatedLevel && !activateDuringIsolated) return;
 
 
@@ -336,7 +338,6 @@
                 spawnController.noteWasMissedEvent += SpawnController_ScaleRemoveMiss;
 
                 currentSongSpeed = levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
-
 
                 levelData.didFinishEvent += LevelData_didFinishEvent;
 
@@ -364,7 +365,7 @@
                 oldColorB.SetColor(colorB);
 
 
-          //      Log(colorA.color.ToString());
+                //      Log(colorA.color.ToString());
                 if (GMPUI.chatIntegration && charges <= ChatConfig.maxCharges && AsyncInstalled)
                 {
                     charges += ChatConfig.chargesPerLevel;
@@ -376,14 +377,13 @@
 
 
                 //   ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 1f);
-                isValidScene = true;
                 AudioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
                 if (AudioTimeSync != null)
                 {
                     songAudio = AudioTimeSync.GetField<AudioSource>("_audioSource");
                     if (songAudio == null)
                         Log("Audio null");
-      //              Log("Object Found");
+                    //              Log("Object Found");
                 }
                 //Get Sabers
                 player = Resources.FindObjectsOfTypeAll<PlayerController>().FirstOrDefault();
@@ -511,12 +511,6 @@
             }
 
 
-            if (!haveSongNJS)
-            {
-                songNJS = spawnController.GetField<float>("_noteJumpMovementSpeed");
-                haveSongNJS = true;
-            }
-
             //          Transform noteTransform = controller.GetField<Transform>("_noteTransform");
             //       Log("SPAWN" + noteTransform.localScale.ToString());
             if (GMPUI.chatIntegration || GMPUI.randomSize || Multiplayer.MultiMain.multiActive)
@@ -555,7 +549,10 @@
                 //     Log("SPAWN" + noteTransform.localScale.ToString());
             }
 
-            NoteData note = controller.noteData;
+
+
+
+
         }
 
         private void LevelData_didFinishEvent(StandardLevelSceneSetupDataSO arg1, LevelCompletionResults arg2)
@@ -677,8 +674,8 @@
             //  GMPUI.chatIntegration = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.chatIntegration", false, true);
             //    GMPUI.swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
             GMPUI.chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
-            GMPUI.AllowMulti = ModPrefs.GetBool("GameplayModifiersPlus", "allowMulti", false, true);
-            
+            GMPUI.allowMulti = ModPrefs.GetBool("GameplayModifiersPlus", "allowMulti", false, true);
+
 
             ChatConfig.Save();
         }
@@ -870,14 +867,14 @@
 
         public static void CheckGMPModifiers()
         {
-            if (GMPUI.bulletTime || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f)
+            if (GMPUI.bulletTime || GMPUI.swapSabers || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.randomOffset)
             {
                 //     ApplyPatches();
                 BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("Gameplay Modifiers Plus");
 
-                if (GMPUI.njsRandom)
+                if (GMPUI.njsRandom || GMPUI.randomOffset)
                 {
-                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.RandomNJS());
+                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.RandomNjsOrOffset());
                 }
                 if (GMPUI.noArrows)
                     SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.NoArrows());
@@ -886,7 +883,7 @@
                     Log("Testing Ground Active");
                     try
                     {
-                        SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.TestingGround(5f));
+                        SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.TestingGround(10f));
                     }
                     catch (Exception ex)
                     {

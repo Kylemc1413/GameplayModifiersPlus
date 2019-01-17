@@ -105,15 +105,15 @@
     <Compile Include="Multi\MultiValues.cs" />
     <Compile Include="Multi\MultiCommands.cs" />
     <Compile Include="Multi\MultiPowers.cs" />
-    <Compile Include="TwitchStuff\ChatConfig.cs" />
-    <Compile Include="Cooldowns.cs" />
-    <Compile Include="Plugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="TwitchStuff\ChatConfig.cs" />
+    <Compile Include="Cooldowns.cs" />
+    <Compile Include="Plugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TwitchStuff\GMPDisplay.cs" />
     <Compile Include="Utilities\ChallengeIntegration.cs" />
     <Compile Include="Utilities\Rainbow.cs" />
@@ -124,6 +124,7 @@
     <Compile Include="Utilities\GMPUI.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\Sounds\sectionpass.wav" />
     <EmbeddedResource Include="Resources\RandomIcon.png" />
     <EmbeddedResource Include="Resources\FunkyIcon.png" />
     <EmbeddedResource Include="Resources\NoArrowsIcon.png" />
@@ -136,8 +137,8 @@
     <EmbeddedResource Include="Resources\RepeatIcon.png" />
     <EmbeddedResource Include="Resources\SwapSabers.png" />
     <EmbeddedResource Include="Resources\ChatDelta.png" />
-    <None Include="Beep.wav" />
-    <Content Include="gnome.wav" />
+    <EmbeddedResource Include="Resources\Sounds\Beep.wav" />
+    <EmbeddedResource Include="Resources\Sounds\gnome.wav" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

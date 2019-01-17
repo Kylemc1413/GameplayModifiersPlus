@@ -70,6 +70,8 @@
         //   public float nMirrorCooldown= 20f;
         public float njsRandomMin = 8f;
         public float njsRandomMax = 16f;
+        public int randomOffsetMin = 0;
+        public int randomOffsetMax = 4;
         public float randomMin = 0.6f;
         public float randomMax = 1.5f;
         public float bombChance = 0.33f;
