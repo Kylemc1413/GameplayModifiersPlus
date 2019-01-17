@@ -1,5 +1,25 @@
 #### Github: https://github.com/Kylemc1413/GameplayModifiersPlus/
 
+#### Changelog 1.5.0 (Unreleased)
+- #### Various Fixes
+- #### Chat Integration
+- Four new commands!
+- Updated the default values for the config
+- Additional option in config to limit changing the config in chat to the broadcaster, rather than all moderators
+- Internal cleanup
+- #### General
+- 2 New Modifiers for Additional Modifiers, Reversal and Random Note Spawnn Offset, based off of the respective commands
+- Plugin should now function properly even if Async Twitch Is Not Installed
+- Support For BS Challenges!
+- Cleanup, Cleanup, Cleanup
+- Further improvements to Rainbow
+- Rainbow no longer disables score submission, will change custom saber colors as well if custom colors is installed, Please use custom colors 1.10.6 or greater if using it.
+- #### BS Utils is now a dependency, can get it from the installer once it is approved
+- Now Uses BS Utils to disable score submission, as well as more properly work with other mods in general
+
+- #### Multiplayer Mode
+- Hopefully made some minor fixes to multiplayer compatible functionality
+
 #### Changelog 1.3.0
 - #### Various Fixes
 - #### Chat Integration
