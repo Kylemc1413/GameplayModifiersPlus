@@ -37,7 +37,7 @@
         public static bool oneColor = false;
         public static bool allowMulti = false;
         public static bool reverse = false;
-        public static bool randomOffset = false;
+        public static bool offsetrandom = false;
         public static void CreateUI()
         {
             GetIcons();
@@ -80,10 +80,10 @@
             rainbowOption.OnToggle += (value) => { rainbow = value; Plugin.Log("Changed value"); };
             rainbowOption.AddConflict("Chat Integration");
 
-            var reverseOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Reverse ", "GMP2", "", _RainbowIcon);
-            rainbowOption.GetValue = rainbow;
-            rainbowOption.OnToggle += (value) => { rainbow = value; Plugin.Log("Changed value"); };
-            rainbowOption.AddConflict("Chat Integration");
+            var reverseOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Reversal ", "GMP2", disableScoreString + "Reverses the direction the notes come from", _SwapSabersIcon);
+            reverseOption.GetValue = reverse;
+            reverseOption.OnToggle += (value) => { reverse = value; Plugin.Log("Changed value"); };
+            reverseOption.AddConflict("Chat Integration");
 
 
 
@@ -121,7 +121,7 @@
             });
             noteSizeOption.OnChange += (value) => { fixedNoteScale = value; Plugin.Log("Changed Value"); };
 
-            var swapSabersOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Testing Ground", "GMP2", disableScoreString + "Currently Used To test Random stuff", _SwapSabersIcon);
+            var swapSabersOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Testing Ground", "GMP2", disableScoreString + "Currently Used To test Random stuff");
             swapSabersOption.GetValue = swapSabers;
             swapSabersOption.OnToggle += (value) => { swapSabers = value; Plugin.Log("Changed value"); };
             swapSabersOption.AddConflict("Chat Integration");
@@ -131,10 +131,10 @@
             njsRandomOption.OnToggle += (value) => { njsRandom = value; Plugin.Log("Changed value"); };
             njsRandomOption.AddConflict("Chat Integration");
 
-            var randomOffsetOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Random Spawn Offset", "GMP2", disableScoreString + "Randomizes Note Spawn offset", _RandomIcon);
-            randomOffsetOption.GetValue = randomOffset;
-            randomOffsetOption.OnToggle += (value) => { randomOffset = value; Plugin.Log("Changed value"); };
-            randomOffsetOption.AddConflict("Chat Integration");
+            var offsetrandomOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Random Spawn Offset", "GMP2", disableScoreString + "Randomizes Note Spawn offset", _RandomIcon);
+            offsetrandomOption.GetValue = offsetrandom;
+            offsetrandomOption.OnToggle += (value) => { offsetrandom = value; Plugin.Log("Changed value"); };
+            offsetrandomOption.AddConflict("Chat Integration");
 
             var randomSizeOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Random Note Size", "GMP2", disableScoreString + "Randomizes Note Size", _RandomIcon);
             randomSizeOption.GetValue = njsRandom;

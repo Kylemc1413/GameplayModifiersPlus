@@ -22,8 +22,8 @@
 
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.5.0";
-        public static string pluginVersion = "1.5.0";
+        public string Version => "1.5.0b";
+        public static string pluginVersion = "1.5.0b";
 
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -867,12 +867,12 @@
 
         public static void CheckGMPModifiers()
         {
-            if (GMPUI.bulletTime || GMPUI.swapSabers || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.randomOffset)
+            if (GMPUI.bulletTime || GMPUI.swapSabers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
             {
                 //     ApplyPatches();
                 BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("Gameplay Modifiers Plus");
 
-                if (GMPUI.njsRandom || GMPUI.randomOffset)
+                if (GMPUI.njsRandom || GMPUI.offsetrandom)
                 {
                     SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.RandomNjsOrOffset());
                 }
@@ -896,6 +896,11 @@
                     SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.OneColor());
                 }
 
+                if(GMPUI.reverse)
+                {
+                    Log("Map Reversal");
+                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.PermaReverse());
+                }
 
                 if (GMPUI.gnomeOnMiss == true)
                 {

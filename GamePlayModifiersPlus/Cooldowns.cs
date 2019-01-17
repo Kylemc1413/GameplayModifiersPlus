@@ -2,18 +2,21 @@
 {
     public class Cooldowns
     {
-        public static bool globalCoolDown;
-        public static bool speedCoolDown;
-        public static bool healthCoolDown;
-        public static bool daCoolDown;
-        public static bool normalSizeCoolDown;
-        public static bool randomCoolDown;
-        public static bool noArrowsCooldown;
-        public static bool njsRandomCoolDown;
-        public static bool funkyCoolDown;
-        public static bool rainbowCoolDown;
-        public static bool bombCoolDown;
-
+        internal static bool globalCoolDown;
+        internal static bool speedCoolDown;
+        internal static bool healthCoolDown;
+        internal static bool daCoolDown;
+        internal static bool normalSizeCoolDown;
+        internal static bool randomCoolDown;
+        internal static bool noArrowsCooldown;
+        internal static bool njsRandomCoolDown;
+        internal static bool funkyCoolDown;
+        internal static bool rainbowCoolDown;
+        internal static bool bombCoolDown;
+        internal static bool offsetrandomCoolDown;
+        internal static bool poisonCoolDown;
+        internal static bool mirrorCoolDown;
+        internal static bool reverseCoolDown;
         public void SetCooldown(bool state, string cooldown)
         {
             cooldown = cooldown.ToLower();
@@ -52,6 +55,18 @@
                 case "bombs":
                     bombCoolDown = state;
                     break;
+                case "poison":
+                    poisonCoolDown = state;
+                    break;
+                case "mirror":
+                    mirrorCoolDown = state;
+                    break;
+                case "offsetrandom":
+                    offsetrandomCoolDown = state;
+                    break;
+                case "reverse":
+                    reverseCoolDown = state;
+                    break;
                 default:
                     break;
             }
@@ -84,6 +99,14 @@
                     return rainbowCoolDown;
                 case "bombs":
                     return bombCoolDown;
+                case "poison":
+                    return poisonCoolDown;
+                case "mirror":
+                    return mirrorCoolDown;
+                case "offsetrandom":
+                    return offsetrandomCoolDown;
+                case "reverse":
+                    return reverseCoolDown;
                 default:
                     return false;
             }
@@ -102,6 +125,10 @@
             noArrowsCooldown = false;
             funkyCoolDown = false;
             bombCoolDown = false;
+            poisonCoolDown = false;
+            mirrorCoolDown = false;
+            reverseCoolDown = false;
+            offsetrandomCoolDown = false;
         }
     }
 }

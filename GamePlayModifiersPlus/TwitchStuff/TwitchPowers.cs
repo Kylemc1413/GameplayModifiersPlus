@@ -101,8 +101,8 @@
 
         public static IEnumerator TempPoison(float length)
         {
-            //       var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            //       text.text += " Poison | ";
+                   var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+                   text.text += " Poison | ";
             Image energyBar = Plugin.energyPanel.GetField<Image>("_energyBar");
             energyBar.color = Color.magenta;
             Plugin.energyCounter.SetField("_goodNoteEnergyCharge", 0f);
@@ -110,7 +110,7 @@
             energyBar.color = Color.white;
             Plugin.energyCounter.SetField("_goodNoteEnergyCharge", 0.01f);
 
-            //            text.text = text.text.Replace(" Poison | ", "");
+                        text.text = text.text.Replace(" Poison | ", "");
         }
 
 
@@ -273,14 +273,14 @@
             text.text = text.text.Replace(" NJSRandom | ", "");
         }
 
-        public static IEnumerator RandomOffset(float length)
+        public static IEnumerator offsetrandom(float length)
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " Random Offset | ";
-            GMPUI.randomOffset = true;
+            GMPUI.offsetrandom = true;
             Plugin.twitchPowers.StartCoroutine(RandomNjsOrOffset());
             yield return new WaitForSeconds(length);
-            GMPUI.randomOffset = false;
+            GMPUI.offsetrandom = false;
             AdjustNjsOrOffset();
             text.text = text.text.Replace(" Random Offset | ", "");
         }
@@ -289,7 +289,7 @@
         {
             yield return new WaitForSeconds(0.33f);
             AdjustNjsOrOffset();
-            if ((GMPUI.njsRandom || GMPUI.randomOffset) && Plugin.isValidScene)
+            if ((GMPUI.njsRandom || GMPUI.offsetrandom) && Plugin.isValidScene)
                 Plugin.twitchPowers.StartCoroutine(RandomNjsOrOffset());
 
         }
@@ -307,8 +307,8 @@
             if (GMPUI.reverse)
                 njs *= -1;
             int noteJumpStartBeatOffset = Plugin.levelData.difficultyBeatmap.noteJumpStartBeatOffset;
-            if (GMPUI.randomOffset)
-                noteJumpStartBeatOffset += UnityEngine.Random.Range(Plugin.ChatConfig.randomOffsetMin, Plugin.ChatConfig.randomOffsetMax);
+            if (GMPUI.offsetrandom)
+                noteJumpStartBeatOffset += UnityEngine.Random.Range(Plugin.ChatConfig.offsetrandomMin, Plugin.ChatConfig.offsetrandomMax);
             float halfJumpDur = 4f;
             float maxHalfJump = Plugin.spawnController.GetField<float>("_maxHalfJumpDistance");
             float moveSpeed = Plugin.spawnController.GetField<float>("_moveSpeed");
@@ -503,6 +503,8 @@
 
         public static IEnumerator Reverse(float length)
         {
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            text.text += " Reverse | ";
             GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
             BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
             Plugin.Log("Grabbed dataModel");
@@ -541,9 +543,46 @@
             Plugin.reverseSound.Play();
             DestroyNotes();
 
+            text.text = text.text.Replace(" Reverse | ", "");
+
+        }
+
+        public static IEnumerator PermaReverse()
+        {
+            yield return new WaitForSecondsRealtime(1f);
+            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
+            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
+            Plugin.Log("Grabbed dataModel");
+            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectData[] objects;
+            NoteData note;
+            float start = Plugin.songAudio.time + 2;
+            
+            foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
+            {
+                objects = line.beatmapObjectsData;
+                foreach (BeatmapObjectData beatmapObject in objects)
+                {
+                    if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
+                        if (beatmapObject.time > start)
+                        {
+                            note = beatmapObject as NoteData;
+
+                            note.SwitchNoteType();
+                            //                           note.MirrorTransformCutDirection();
+                            //                           note.MirrorLineIndex(4);
+                        }
+                }
+            }
+
+            yield return new WaitForSeconds(2f);
+            AdjustNjsOrOffset();
+            Plugin.reverseSound.Play();
+            DestroyNotes();
 
 
         }
+
         public static void MirrorSection(float length)
         {
             Plugin.Log("Starting");
@@ -655,6 +694,16 @@
             text.text = text.text.Replace(" Funky | ", "");
         }
 
+        public static IEnumerator TempMirror(float length)
+        {
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            text.text += " Mirror | ";
+            MirrorSection(length);
+            yield return new WaitForSeconds(length);
+            text.text = text.text.Replace(" Mirror | ", "");
+
+        }
+
         public static IEnumerator Rainbow(float length)
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
@@ -710,34 +759,37 @@
             GMPUI.rainbow = false;
             GMPUI.funky = false;
             GMPUI.njsRandom = false;
+            GMPUI.offsetrandom = false;
             GMPUI.randomSize = false;
             Plugin.altereddNoteScale = 1f;
-            Time.timeScale = 1;
-            Plugin.timeScale = 1;
+     //       Time.timeScale = 1;
+    //        Plugin.timeScale = 1;
             Plugin.superRandom = false;
             if (resetMessage)
             {
                 Plugin.spawnController.SetField("_disappearingArrows", false);
                 Plugin.colorA.SetColor(Plugin.oldColorA);
                 Plugin.colorB.SetColor(Plugin.oldColorB);
+                if(Plugin.isValidScene)
+                    AdjustNjsOrOffset();
                 var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
                 text.text = " ";
                 var text2 = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
                 text2.text = "";
-                GameplayCoreSceneSetup sceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-                AudioMixerSO mixer = sceneSetup.GetField<AudioMixerSO>("_audioMixer");
-                float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
-                Plugin.AudioTimeSync.SetField("_timeScale", songspeedmul);
-                Plugin.songAudio.pitch = songspeedmul;
-                Plugin.currentSongSpeed = songspeedmul;
-                mixer.musicPitch = 1 / songspeedmul;
-                if (songspeedmul == 1f)
-                {
-                    mixer.musicPitch = 1;
-                    Plugin.AudioTimeSync.forcedAudioSync = false;
-                }
-                if (Plugin.pauseManager.gameState == StandardLevelGameplayManager.GameState.Paused)
-                    Plugin.AudioTimeSync.Pause();
+                //           GameplayCoreSceneSetup sceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
+                //            AudioMixerSO mixer = sceneSetup.GetField<AudioMixerSO>("_audioMixer");
+                //           float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
+                //            Plugin.AudioTimeSync.SetField("_timeScale", songspeedmul);
+                //            Plugin.songAudio.pitch = songspeedmul;
+                //            Plugin.currentSongSpeed = songspeedmul;
+                //            mixer.musicPitch = 1 / songspeedmul;
+                //            if (songspeedmul == 1f)
+                //            {
+                //                mixer.musicPitch = 1;
+                //                Plugin.AudioTimeSync.forcedAudioSync = false;
+                //            }
+                //            if (Plugin.pauseManager.gameState == StandardLevelGameplayManager.GameState.Paused)
+                //                 Plugin.AudioTimeSync.Pause();
 
                 resetMessage = false;
             }

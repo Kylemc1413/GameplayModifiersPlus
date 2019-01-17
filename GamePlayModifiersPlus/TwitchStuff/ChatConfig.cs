@@ -36,8 +36,11 @@
         public int bombChargeCost = 7;
         public int fasterChargeCost = 4;
         public int slowerChargeCost = 4;
+        public int poisonChargeCost = 5;
+        public int mirrorChargeCost = 3;
+        public int offsetrandomChargeCost = 4;
+        public int reverseChargeCost = 7;
         //     public int nMirrorChargeCost = 0;
-
         public float daDuration = 15f;
         public float smallerNoteDuration = 10f;
         public float largerNotesDuration = 10f;
@@ -51,6 +54,10 @@
         public float bombDuration = 15f;
         public float fasterDuration = 15f;
         public float slowerDuration = 15f;
+        public float poisonDuration = 15f;
+        public float mirrorDuration = 20f;
+        public float offsetrandomDuration = 10f;
+        public float reverseDuration = 15f;
         //   public float nMirrorDuration = 15f;
 
         public float daCooldown = 20f;
@@ -67,14 +74,22 @@
         public float bombCooldown = 45f;
         public float fasterCooldown = 30f;
         public float slowerCooldown = 30f;
+        public float poisonCooldown = 30f;
+        public float mirrorCooldown = 20f;
+        public float offsetrandomCooldown = 30f;
+        public float reverseCooldown = 60f;
         //   public float nMirrorCooldown= 20f;
         public float njsRandomMin = 8f;
         public float njsRandomMax = 16f;
-        public int randomOffsetMin = 0;
-        public int randomOffsetMax = 4;
+
+        public int offsetrandomMin = 0;
+        public int offsetrandomMax = 4;
+
         public float randomMin = 0.6f;
         public float randomMax = 1.5f;
+
         public float bombChance = 0.33f;
+
         public float fasterMultiplier = 1.2f;
         public float slowerMultiplier = .85f;
         private readonly FileSystemWatcher _configWatcher;
@@ -155,9 +170,14 @@
             chargeCostString += " | Rainbow: " + rainbowChargeCost;
             chargeCostString += " | Pause: " + pauseChargeCost;
             chargeCostString += " | Bombs: " + bombChargeCost;
-     //       chargeCostString += " | Faster: " + fasterChargeCost;
-     //       chargeCostString += " | Slower: " + slowerChargeCost;
-            if (chargeCostString == "Current Costs: DA: 0 | Smaller: 0 | Larger: 0 | Random: 0 | Instafail: 0 | Invincible: 0 | NjsRandom: 0 | NoArrows: 0 | Funky: 0 | Rainbow: 0 | Pause: 0 | Bombs: 0 ") //| Faster: 0 | Slower: 0")
+            chargeCostString += " | Poison: " + poisonChargeCost;
+            chargeCostString += " | offsetrandom: " + offsetrandomChargeCost;
+            chargeCostString += " | Mirror: " + mirrorChargeCost;
+            chargeCostString += " | Reverse: " + reverseChargeCost;
+            //       chargeCostString += " | Faster: " + fasterChargeCost;
+            //       chargeCostString += " | Slower: " + slowerChargeCost;
+            if (chargeCostString == "Current Costs: DA: 0 | Smaller: 0 | Larger: 0 | Random: 0 | Instafail: 0 | Invincible: 0 | NjsRandom: 0 " +
+                "| NoArrows: 0 | Funky: 0 | Rainbow: 0 | Pause: 0 | Bombs: 0 | Poison: 0 | offsetrandom: 0 | Mirror: 0 | Reverse: 0") //| Faster: 0 | Slower: 0")
                 chargeCostString = "Current Costs: None!";
         }
 
@@ -211,6 +231,9 @@
                     break;
                 case "resetchargesperlevel":
                     resetChargesperLevel = Convert.ToBoolean(value);
+                    break;
+                case "allowmodcommands":
+                    allowModCommands = Convert.ToBoolean(value);
                     break;
                 default:
                     success = false;
@@ -379,6 +402,50 @@
                         slowerDuration = float.Parse(value);
                     else if (property == "multiplier")
                         slowerMultiplier = float.Parse(value);
+                    else
+                        success = false;
+                    break;
+                case "poison":
+                    if (property == "chargecost")
+                        poisonChargeCost = int.Parse(value);
+                    else if (property == "cooldown")
+                        poisonCooldown = float.Parse(value);
+                    else if (property == "duration")
+                        poisonDuration = float.Parse(value);
+                    else
+                        success = false;
+                    break;
+                case "mirror":
+                    if (property == "chargecost")
+                        mirrorChargeCost = int.Parse(value);
+                    else if (property == "cooldown")
+                        mirrorCooldown = float.Parse(value);
+                    else if (property == "duration")
+                        mirrorDuration = float.Parse(value);
+                    else
+                        success = false;
+                    break;
+                case "reverse":
+                    if (property == "chargecost")
+                        reverseChargeCost = int.Parse(value);
+                    else if (property == "cooldown")
+                        reverseCooldown = float.Parse(value);
+                    else if (property == "duration")
+                        reverseDuration = float.Parse(value);
+                    else
+                        success = false;
+                    break;
+                case "offsetrandom":
+                    if (property == "chargecost")
+                        offsetrandomChargeCost = int.Parse(value);
+                    else if (property == "cooldown")
+                        offsetrandomCooldown = float.Parse(value);
+                    else if (property == "duration")
+                        offsetrandomDuration = float.Parse(value);
+                    else if (property == "min")
+                        offsetrandomMin = int.Parse(value);
+                    else if (property == "max")
+                        offsetrandomMax = int.Parse(value);
                     else
                         success = false;
                     break;
