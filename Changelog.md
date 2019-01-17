@@ -1,6 +1,6 @@
 #### Github: https://github.com/Kylemc1413/GameplayModifiersPlus/
 
-#### Changelog 1.5.0 (Pending
+#### Changelog 1.5.0 (Pending)
 - #### Various Fixes
 - #### Chat Integration
 - Four new commands!
