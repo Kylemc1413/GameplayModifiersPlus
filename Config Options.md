@@ -6,6 +6,7 @@
 | - | - |
 | `uiOnTop` | Whether the in game chat integration UI is on the top or bottom |
 | `showCooldownOnMessage` | Whether cooldowns are displayed in chat with the message for command activation |
+| `allowModCommands` | Whether the channel's moderators are allowed to edit the config from chat, if off only the broadcaster can |
 | `commandsPerMessage` | How many commands can be stacked in one chat message |
 | `globalCommandCooldown` | How long in seconds must pass before another chat message with commands will be activated |
 | `allowEveryone` | If on, everyone in chat is allowed to use commands for chat integration |
@@ -49,6 +50,10 @@
 | Rainbow | Randomizes note colors for the duration, currently left colors will be random warm colors, right will be random cool colors |
 | Pause | Literally just pauses the game. Has it's own seperate global command cooldown you can set, `pauseGlobalCooldown`, instead of a standard cooldown |
 | Bombs | For the duration, notes have a chance to be replaced with bombs |
+| Poison | For the duration, health regen is disabled |
+| OffsetRandom | For the duration, randomizes the note spawn offset |
+| Mirror | For the duration, mirrors the map |
+| Reverse | For the duration, reverses the direction the notes come from|
 | Faster (Currently Disabled) | For the duration, the song speed is altered by the multiplier |
 | Slower (Currently Disabled) | For the duration, the song speed is altered by the multiplier |
 
