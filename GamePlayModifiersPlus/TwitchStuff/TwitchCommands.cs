@@ -434,14 +434,14 @@
                 }
             }
 
-            if (message.Content.ToLower().Contains("!gm offsetrandom") && !Plugin.cooldowns.GetCooldown("offsetrandom") && Plugin.commandsLeftForMessage > 0)
+            if (message.Content.ToLower().Contains("!gm offsetrandom") && !Plugin.cooldowns.GetCooldown("OffsetRandom") && Plugin.commandsLeftForMessage > 0)
             {
 
                 if (Plugin.trySuper && Plugin.charges >= Plugin.ChatConfig.chargesForSuperCharge + Plugin.ChatConfig.offsetrandomChargeCost)
                 {
                     //         Plugin.beepSound.Play();
                     Plugin.twitchPowers.StartCoroutine(TwitchPowers.offsetrandom(Plugin.songAudio.clip.length));
-                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.songAudio.clip.length, "offsetrandom", "Super Random Note Spawn Offset Active."));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.songAudio.clip.length, "OffsetRandom", "Super Random Note Spawn Offset Active."));
                     Plugin.trySuper = false;
                     Plugin.charges -= Plugin.ChatConfig.chargesForSuperCharge + Plugin.ChatConfig.offsetrandomChargeCost;
                     Plugin.commandsLeftForMessage -= 1;
@@ -451,7 +451,7 @@
                 {
                     //         Plugin.beepSound.Play();
                     Plugin.twitchPowers.StartCoroutine(TwitchPowers.offsetrandom(Plugin.ChatConfig.offsetrandomDuration));
-                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.ChatConfig.offsetrandomCooldown, "offsetrandom", "Random Note Spawn Offset Active."));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.ChatConfig.offsetrandomCooldown, "OffsetRandom", "Random Note Spawn Offset Active."));
                     Plugin.charges -= Plugin.ChatConfig.offsetrandomChargeCost;
                     Plugin.commandsLeftForMessage -= 1;
                     globalActive = true;
