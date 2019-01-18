@@ -663,6 +663,9 @@
             }
 
             Plugin.Log("2 " + Plugin.player.leftSaber.saberType.ToString());
+            yield return new WaitForSeconds(0.1f);
+            if (Plugin.customColorsInstalled)
+                Plugin.ResetCustomColorsSabers(Plugin.oldColorB, Plugin.oldColorB);
             /*
             var playerController = Resources.FindObjectsOfTypeAll<PlayerController>().First();
             Saber targetSaber = playerController.rightSaber;
@@ -714,7 +717,10 @@
             Plugin.colorA.SetColor(Plugin.oldColorA);
             Plugin.colorB.SetColor(Plugin.oldColorB);
             if (Plugin.customColorsInstalled)
+                if(!GMPUI.oneColor)
                 Plugin.ResetCustomColorsSabers(Plugin.oldColorA, Plugin.oldColorB);
+            else
+                    Plugin.ResetCustomColorsSabers(Plugin.oldColorB, Plugin.oldColorB);
             if (Plugin.environmentColorsSetter != null)
             {
                 Color overrrideA = Plugin.environmentColorsSetter.GetField<Color>("_overrideColorA");
@@ -725,7 +731,10 @@
                     {
                         Plugin.colorB.SetColor(overrrideA);
                         Plugin.colorA.SetColor(overrrideB);
-                        Plugin.ResetCustomColorsSabers(overrrideB, overrrideA);
+                        if (!GMPUI.oneColor)
+                            Plugin.ResetCustomColorsSabers(overrrideB, overrrideA);
+                        else
+                            Plugin.ResetCustomColorsSabers(overrrideA, overrrideA);
                     }
                 }
                 else
