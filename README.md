@@ -2,7 +2,7 @@
 
 # Adds additional modifiers to the game, as well as Twitch Chat Integration
 
-- ### Requires AsyncTwitch and BeatSaberCustomUI 
+- ### Requires AsyncTwitch, BS Utils, and BeatSaberCustomUI 
 
 # Standard Usage
 - ### There are several modifiers added to the menu that do not require setting up Async Twitch, however you must do so if you plan on using chat integration
