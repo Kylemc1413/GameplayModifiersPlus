@@ -10,9 +10,9 @@
     {
         public static IEnumerator ChargeOverTime()
         {
-            yield return new WaitForSeconds(Plugin.ChatConfig.timeForCharges);
-            Plugin.charges += Plugin.ChatConfig.chargesOverTime;
-            if (Plugin.charges > Plugin.ChatConfig.maxCharges) Plugin.charges = Plugin.ChatConfig.maxCharges;
+            yield return new WaitForSeconds(ChatConfig.timeForCharges);
+            Plugin.charges += ChatConfig.chargesOverTime;
+            if (Plugin.charges > ChatConfig.maxCharges) Plugin.charges = ChatConfig.maxCharges;
             Plugin.twitchPowers.StartCoroutine(ChargeOverTime());
         }
 
@@ -33,11 +33,11 @@
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
             text.text += " " + cooldown + " | ";
             Plugin.cooldowns.SetCooldown(true, cooldown);
-            if (Plugin.ChatConfig.showCooldownOnMessage)
+            if (ChatConfig.showCooldownOnMessage)
             {
-                if (Plugin.ChatConfig.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
+                if (ChatConfig.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
                 {
-                    TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + Plugin.ChatConfig.globalCommandCooldown + " seconds.");
+                    TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + ChatConfig.globalCommandCooldown + " seconds.");
                 }
                 else
                     TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
@@ -56,7 +56,7 @@
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
 
             Plugin.cooldowns.SetCooldown(true, "Global");
-            yield return new WaitForSeconds(Plugin.ChatConfig.globalCommandCooldown);
+            yield return new WaitForSeconds(ChatConfig.globalCommandCooldown);
             Plugin.cooldowns.SetCooldown(false, "Global");
             text.text = text.text.Replace(" " + "Global" + " | ", "");
         }
@@ -273,7 +273,7 @@
             text.text = text.text.Replace(" NJSRandom | ", "");
         }
 
-        public static IEnumerator offsetrandom(float length)
+        public static IEnumerator OffsetRandom(float length)
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " Random Offset | ";
@@ -303,12 +303,12 @@
             }
             float njs = Plugin.songNJS;
             if (GMPUI.njsRandom)
-                njs = UnityEngine.Random.Range(Plugin.ChatConfig.njsRandomMin, Plugin.ChatConfig.njsRandomMax);
+                njs = UnityEngine.Random.Range(ChatConfig.njsRandomMin, ChatConfig.njsRandomMax);
             if (GMPUI.reverse)
                 njs *= -1;
             int noteJumpStartBeatOffset = Plugin.levelData.difficultyBeatmap.noteJumpStartBeatOffset;
             if (GMPUI.offsetrandom)
-                noteJumpStartBeatOffset += UnityEngine.Random.Range(Plugin.ChatConfig.offsetrandomMin, Plugin.ChatConfig.offsetrandomMax);
+                noteJumpStartBeatOffset += UnityEngine.Random.Range(ChatConfig.offsetrandomMin, ChatConfig.offsetrandomMax);
             float halfJumpDur = 4f;
             float maxHalfJump = Plugin.spawnController.GetField<float>("_maxHalfJumpDistance");
             float moveSpeed = Plugin.spawnController.GetField<float>("_moveSpeed");
@@ -408,13 +408,13 @@
                                 //                        Plugin.Log("Attempting to Convert to Bomb");
                                 note = beatmapObject as NoteData;
 
-                                int randMax = (int)((1 / Plugin.ChatConfig.bombChance) * 100);
+                                int randMax = (int)((1 / ChatConfig.bombsChance) * 100);
                                 int randMin = 100;
                                 int random = Random.Range(1, randMax);
 
                                 //                Plugin.Log("Min: " + randMin + " Max: " + randMax + " Number: " + random);
 
-                                if (random <= randMin || Plugin.ChatConfig.bombChance == 1)
+                                if (random <= randMin || ChatConfig.bombsChance == 1)
                                     note.SetProperty("noteType", NoteType.Bomb);
                             }
                             catch (System.Exception ex)
@@ -755,7 +755,7 @@
                     SaberAfterCutSwingRatingCounter counter = Plugin.player.leftSaber.CreateAfterCutSwingRatingCounter();
                     counter.SetField("_rating", 1f);
                     gameNoteController.SendNoteWasCutEvent(new NoteCutInfo(true, true, true, false, 999f, Vector3.down,
-                        (gameNoteController.noteData.noteType == NoteType.NoteA) ? Saber.SaberType.SaberA : Saber.SaberType.SaberB, 1f, 0f, 0f, Vector3.down, Vector3.zero, counter, 0f));
+                        (gameNoteController.noteData.noteType == NoteType.NoteA) ? Saber.SaberType.SaberA : Saber.SaberType.SaberB, 1f, 0.00001f, 0.000001f, Vector3.down, Vector3.zero, counter, 0.000001f));
                 }
                 catch (System.Exception ex)
                 {
@@ -770,6 +770,7 @@
             GMPUI.njsRandom = false;
             GMPUI.offsetrandom = false;
             GMPUI.randomSize = false;
+            GMPUI.reverse = false;
             Plugin.altereddNoteScale = 1f;
      //       Time.timeScale = 1;
     //        Plugin.timeScale = 1;

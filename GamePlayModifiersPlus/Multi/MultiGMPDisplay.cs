@@ -38,7 +38,7 @@ namespace GamePlayModifiersPlus.Multiplayer
             chargeText.font = Resources.Load<TMP_FontAsset>("Teko-Medium SDF No Glow");
             chargeText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2f);
             chargeText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 2f);
-            if (Plugin.ChatConfig.uiOnTop)
+            if (ChatConfig.uiOnTop)
             {
                 chargeText.rectTransform.position = new Vector3(0f, 3f, 7f);
                 textObj.transform.localScale *= 1.5f;

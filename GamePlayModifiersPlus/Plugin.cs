@@ -18,8 +18,7 @@
 
     public class Plugin : IPlugin
     {
-        public static readonly ChatConfig ChatConfig = new ChatConfig(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
-
+        internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
         public string Version => "1.5.1";
@@ -116,8 +115,18 @@
             }
 
             CheckPlugins();
-
+            ChatConfig.Load();
             ReadPrefs();
+            //Delete old config if it exists
+            if (File.Exists(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini")))
+                try
+                {
+                File.Delete(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
+                }
+                catch(Exception ex)
+                {
+                    Log("Could not Delete Old Config: " + ex);
+                }
             cooldowns = new Cooldowns();
             defColorA.SetColor(new Color(1f, 0, 0));
             defColorB.SetColor(new Color(0, .706f, 1));
@@ -301,7 +310,7 @@
                     TwitchPowers.ResetPowers(false);
                     twitchPowers.StopAllCoroutines();
                 }
-                if (ChatConfig.resetChargesperLevel)
+                if (ChatConfig.resetChargesEachLevel)
                     charges = 0;
 
 
@@ -675,9 +684,6 @@
             //    GMPUI.swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
             GMPUI.chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
             GMPUI.allowMulti = ModPrefs.GetBool("GameplayModifiersPlus", "allowMulti", false, true);
-
-
-            ChatConfig.Save();
         }
 
         public IEnumerator GrabPP()
@@ -1000,7 +1006,7 @@
         }
         internal static void SendAsyncMessage(string message)
         {
-            TryAsyncMessage(message);
+            TwitchConnection.Instance.SendChatMessage(message);
         }
     }
 }

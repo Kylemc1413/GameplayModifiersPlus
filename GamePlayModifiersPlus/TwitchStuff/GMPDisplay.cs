@@ -36,7 +36,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
             chargeText.font = Resources.Load<TMP_FontAsset>("Teko-Medium SDF No Glow");
             chargeText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1f);
             chargeText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
-            if (Plugin.ChatConfig.uiOnTop)
+            if (ChatConfig.uiOnTop)
             {
               chargeText.rectTransform.position = new Vector3(0.1f, 3f, 7f);
                 textObj.transform.localScale *= 1.5f;
@@ -74,7 +74,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
             chargeCounter.fillMethod = Image.FillMethod.Radial360;
             chargeCounter.fillOrigin = (int)Image.Origin360.Top;
             chargeCounter.fillClockwise = true;
-            chargeCounter.fillAmount = Plugin.charges / Plugin.ChatConfig.maxCharges;
+            chargeCounter.fillAmount = Plugin.charges / ChatConfig.maxCharges;
             chargeCounter.color = Color.green;
 
             GameObject background = new GameObject("GMPDisplayBackGround");
@@ -126,7 +126,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
 
         void Update()
         {
-            chargeCounter.fillAmount = Mathf.Lerp(chargeCounter.fillAmount, (float)Plugin.charges / Plugin.ChatConfig.maxCharges, .03f);
+            chargeCounter.fillAmount = Mathf.Lerp(chargeCounter.fillAmount, (float)Plugin.charges / ChatConfig.maxCharges, .03f);
             chargeCountText.text = Plugin.charges.ToString();
         }
 
