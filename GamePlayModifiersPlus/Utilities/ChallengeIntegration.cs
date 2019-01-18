@@ -24,6 +24,9 @@ namespace GamePlayModifiersPlus.Utilities
         public static bool randomSize;
         public static bool noArrows;
         public static bool oneColor;
+        public static bool reverse;
+        public static bool offsetrandom;
+
 
         public static void AddListeners()
         {
@@ -41,16 +44,13 @@ namespace GamePlayModifiersPlus.Utilities
                        GMPUI.fixedNoteScale = float.Parse(arg.Split(':')[1]);
                        continue;
                    }
-                   switch (arg)
+                   switch (arg.ToLower())
                    {
-                       case "gnomeOnMiss":
+                       case "gnomeonmiss":
                            GMPUI.gnomeOnMiss = true;
                            break;
-                       case "bulletTime":
+                       case "bullettime":
                            GMPUI.bulletTime = true;
-                           break;
-                       case "swapSabers":
-                           GMPUI.swapSabers = true;
                            break;
                        case "funky":
                            GMPUI.funky = true;
@@ -58,17 +58,20 @@ namespace GamePlayModifiersPlus.Utilities
                        case "rainbow":
                            GMPUI.rainbow = true;
                            break;
-                       case "njsRandom":
+                       case "njsrandom":
                            GMPUI.njsRandom = true;
                            break;
-                       case "randomSize":
+                       case "randomsize":
                            GMPUI.randomSize = true;
                            break;
-                       case "noArrows":
+                       case "noarrows":
                            GMPUI.noArrows = true;
                            break;
-                       case "oneColor":
+                       case "onecolor":
                            GMPUI.oneColor = true;
+                           break;
+                       case "offsetrandom":
+                           GMPUI.offsetrandom = true;
                            break;
                        default:
                            return false;
@@ -93,6 +96,8 @@ namespace GamePlayModifiersPlus.Utilities
             randomSize = GMPUI.randomSize;
             noArrows = GMPUI.noArrows;
             oneColor = GMPUI.oneColor;
+            reverse = GMPUI.reverse;
+            offsetrandom = GMPUI.offsetrandom;
         }
         private static void SetToDefaultOptions()
         {
@@ -110,6 +115,8 @@ namespace GamePlayModifiersPlus.Utilities
             GMPUI.randomSize = false;
             GMPUI.noArrows = false;
             GMPUI.oneColor = false;
+            GMPUI.reverse = false;
+            GMPUI.offsetrandom = false;
         }
         private static void ReturnOptions()
         {
@@ -128,6 +135,8 @@ namespace GamePlayModifiersPlus.Utilities
             GMPUI.randomSize = randomSize;
             GMPUI.noArrows = noArrows;
             GMPUI.oneColor = oneColor;
+            GMPUI.reverse = reverse;
+            GMPUI.offsetrandom = offsetrandom;
         }
     }
 }
