@@ -23,7 +23,7 @@
 - OauthKey MUST Include the 'oauth:' part of the key that is generated
 - Do NOT freely give out your oauth key to other people, (And no that is not my actual oauth key in the image, just an example)
 
-- ### To Use Chat Integration, ensure you have set up Async Twitch to connect to your channel, then turn on the modifier, type !gm help into your chat for details on how to use it, the config for chat settings is located in `UserData/GameplayModifiersPlusChatSettings.ini`
+- ### To Use Chat Integration, ensure you have set up Async Twitch to connect to your channel, then turn on the modifier, type !gm help into your chat for details on how to use it, the config for chat settings is located in `UserData/GameplayModifiersPlusChatSettings.ini` (As of Version 1.6.0 or Later it is located in `UserData/GameplayModifiersPlus.ini` instead)
 - ### Refer to below for more information on using chat integration, if you decide not to read it and end up confused because you did not read it, go read it. But you should probably just read it in the first place and save yourself the future trouble
 
 ## IMPORTANT COMMANDS FOR USERS - GAMEPLAY COMMANDS ARE DETAILED BELOW CONFIG
