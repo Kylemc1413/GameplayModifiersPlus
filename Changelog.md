@@ -1,6 +1,11 @@
 #### Github: https://github.com/Kylemc1413/GameplayModifiersPlus/
 
-#### Changelog 1.5.0 (Pending)
+#### Changelog 1.6.0 (Unreleased)
+- Restructured the Config, which is now located in `UserData/GameplayModifiersPlus.ini`. the old one will be deleted on first launch after installing this version
+- Squashed some bugs
+- Smaller notes and Larger notes now have a multiplier option
+- Now uses BS Utils for the Config file, and will require Version 1.1.5 or Greater of that Library
+#### Changelog 1.5.0 (Unreleased)
 - #### Various Fixes
 - #### Chat Integration
 - Four new commands!
