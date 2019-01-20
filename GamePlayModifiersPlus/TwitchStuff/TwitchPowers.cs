@@ -607,6 +607,7 @@
                             note = beatmapObject as NoteData;
 
                             note.SwitchNoteType();
+                            if(note.noteType != NoteType.Bomb)
                             note.MirrorTransformCutDirection();
                             note.MirrorLineIndex(4);
                         }
@@ -755,7 +756,7 @@
                     SaberAfterCutSwingRatingCounter counter = Plugin.player.leftSaber.CreateAfterCutSwingRatingCounter();
                     counter.SetField("_rating", 1f);
                     gameNoteController.SendNoteWasCutEvent(new NoteCutInfo(true, true, true, false, 999f, Vector3.down,
-                        (gameNoteController.noteData.noteType == NoteType.NoteA) ? Saber.SaberType.SaberA : Saber.SaberType.SaberB, 1f, 0.00001f, 0.000001f, Vector3.down, Vector3.zero, counter, 0.000001f));
+                        (gameNoteController.noteData.noteType == NoteType.NoteA) ? Saber.SaberType.SaberA : Saber.SaberType.SaberB, 1f, 0f, 0f, Vector3.down, new Vector3(0.0001f, 0.00001f, 0.00001f), counter, 0f));
                 }
                 catch (System.Exception ex)
                 {

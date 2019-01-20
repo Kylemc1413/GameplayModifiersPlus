@@ -38,6 +38,7 @@
         public static bool allowMulti = false;
         public static bool reverse = false;
         public static bool offsetrandom = false;
+        public static bool disableSubmission = false;
         public static void CreateUI()
         {
             GetIcons();
@@ -50,6 +51,18 @@
 
 
             var gmp1Menu = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "GamePlayModifiersPlus", "MainMenu", "GMP1", "GameplayModifiersPlus Options", _GMPIcon);
+
+            var disableScoresOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.PlayerSettingsLeft, "Disable Score Submission", "MainMenu", "<size=120%><color=#ff0000ff><b><u>Disables Score Submission</u></b></color></size>", _GMPIcon);
+            disableScoresOption.GetValue = disableSubmission;
+            disableScoresOption.OnToggle += (value) => {
+                disableSubmission = value;
+                if (value)
+                    BS_Utils.Gameplay.ScoreSubmission.ProlongedDisableSubmission("Gameplay Modifiers Plus");
+                else
+                    BS_Utils.Gameplay.ScoreSubmission.RemoveProlongedDisable("Gameplay Modifiers Plus");
+            };
+
+
 
             //GMP1 Options
             //      var backOption = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "Back", "GMP1", "MainMenu", "Return from GamePlayModifiersOptions", _BackButton);
