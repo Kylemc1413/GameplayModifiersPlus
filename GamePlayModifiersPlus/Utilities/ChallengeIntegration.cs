@@ -120,6 +120,7 @@ namespace GamePlayModifiersPlus.Utilities
         }
         private static void ReturnOptions()
         {
+            Plugin.Log("Returning Options post challenge");
             Plugin.activateDuringIsolated = false;
             GMPUI.chatDelta = chatDelta;
             GMPUI.chatIntegration = chatIntegration;

@@ -329,7 +329,11 @@
             if (scene.name == "GameCore")
             {
                 isValidScene = true;
-                if (BS_Utils.Gameplay.Gamemode.IsIsolatedLevel && !activateDuringIsolated) return;
+                if (BS_Utils.Gameplay.Gamemode.IsIsolatedLevel && !activateDuringIsolated)
+                {
+                    Log("Isolated Level, not activating");
+                    return;
+                }
 
 
 
