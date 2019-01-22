@@ -496,11 +496,45 @@
 
 
 
+
                 }
             }
             //    dataModel.beatmapData = beatmapData;
         }
+        public static IEnumerator ExtraLanes()
+        {
+            Plugin.Log("Starting");
 
+            yield return new WaitForSeconds(0f);
+            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
+            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
+            Plugin.Log(dataModel.beatmapData.bombsCount.ToString());
+            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectData[] objects;
+            NoteData note;
+            foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
+            {
+                objects = line.beatmapObjectsData;
+                foreach (BeatmapObjectData beatmapObject in objects)
+                {
+                    if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
+                    {
+
+                        note = beatmapObject as NoteData;
+                  //      line index 0
+                        note.MirrorLineIndex(0);
+                       // line index 3
+                        note.MirrorLineIndex(8);
+                        
+                    }
+
+
+
+
+                }
+            }
+            //    dataModel.beatmapData = beatmapData;
+        }
         public static IEnumerator Reverse(float length)
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
