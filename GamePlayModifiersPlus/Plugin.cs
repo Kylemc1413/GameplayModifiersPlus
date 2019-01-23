@@ -21,8 +21,8 @@
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.6.1";
-        public static string pluginVersion = "1.6.1";
+        public string Version => "1.7.0";
+        public static string pluginVersion = "1.7.0";
 
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -112,6 +112,7 @@
             {
                 Log("Creating Harmony Instance");
                 harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
+                ApplyPatches();
             }
 
             CheckPlugins();
@@ -121,9 +122,9 @@
             if (File.Exists(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini")))
                 try
                 {
-                File.Delete(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
+                    File.Delete(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini"));
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Log("Could not Delete Old Config: " + ex);
                 }
@@ -845,23 +846,18 @@
         }
         public static void ApplyPatches()
         {
-            Log("Apply Patch Function: " + invalidForScoring);
-            if (!invalidForScoring)
+            Log("Apply Patch Function");
+            try
             {
-                try
-                {
-                    harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
-                    Log("Blocking Score Submission. Applying Harmony Patches");
-                    invalidForScoring = true;
-                }
-                catch (Exception ex)
-                {
-                    Log(ex.ToString());
-                }
+
+                harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
+                Log("Applying Harmony Patches");
             }
-
-
-
+            catch (Exception ex)
+            {
+                Log(ex.ToString());
+            }
+       
         }
 
         public static void RemovePatches()
@@ -877,14 +873,21 @@
 
         public static void CheckGMPModifiers()
         {
-            if (GMPUI.bulletTime || GMPUI.swapSabers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
+            if (GMPUI.bulletTime || GMPUI.swapSabers || GMPUI.sixLanes || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
             {
                 //     ApplyPatches();
+                UnityEngine.Random.InitState(Plugin.levelData.difficultyBeatmap.beatmapData.notesCount);
                 BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("Gameplay Modifiers Plus");
 
                 if (GMPUI.njsRandom || GMPUI.offsetrandom)
                 {
                     SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.RandomNjsOrOffset());
+                }
+
+
+                if (GMPUI.sixLanes)
+                {
+                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.ExtraLanes());
                 }
                 if (GMPUI.noArrows)
                     SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.NoArrows());

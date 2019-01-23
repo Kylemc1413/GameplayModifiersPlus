@@ -39,6 +39,7 @@
         public static bool reverse = false;
         public static bool offsetrandom = false;
         public static bool disableSubmission = false;
+        public static bool sixLanes = false;
         public static void CreateUI()
         {
             GetIcons();
@@ -92,6 +93,12 @@
             rainbowOption.GetValue = rainbow;
             rainbowOption.OnToggle += (value) => { rainbow = value; Plugin.Log("Changed value"); };
             rainbowOption.AddConflict("Chat Integration");
+
+            var sixlanesOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Six Lanes ", "GMP2", disableScoreString + "Extends the map to be in six lanes", _GMPIcon);
+            sixlanesOption.GetValue = sixLanes;
+            sixlanesOption.OnToggle += (value) => { sixLanes = value; Plugin.Log("Changed value"); };
+
+
 
             var reverseOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Reversal ", "GMP2", disableScoreString + "Reverses the direction the notes come from", _SwapSabersIcon);
             reverseOption.GetValue = reverse;

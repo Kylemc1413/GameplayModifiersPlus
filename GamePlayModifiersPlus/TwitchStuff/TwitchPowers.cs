@@ -138,8 +138,8 @@
 
         public static IEnumerator TestingGround(float length)
         {
-            yield return new WaitForSecondsRealtime(10f);
-   //         SharedCoroutineStarter.instance.StartCoroutine(Reverse(10f));
+            yield return new WaitForSecondsRealtime(0.1f);
+        //    SharedCoroutineStarter.instance.StartCoroutine(ExtraLanes());
         }
 
         public static void AdjustNJS(float njs)
@@ -517,16 +517,13 @@
                 objects = line.beatmapObjectsData;
                 foreach (BeatmapObjectData beatmapObject in objects)
                 {
-                    if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
-                    {
-
-                        note = beatmapObject as NoteData;
-                  //      line index 0
-                        note.MirrorLineIndex(0);
-                       // line index 3
-                        note.MirrorLineIndex(8);
+                  if(beatmapObject.lineIndex == 0 && Random.Range(1, 4) >= 2)
+                            beatmapObject.MirrorLineIndex(0);
+                        // line index 3
+                        if (beatmapObject.lineIndex == 3 && Random.Range(1, 4) >= 2)
+                            beatmapObject.MirrorLineIndex(8);
                         
-                    }
+                    
 
 
 
