@@ -26,7 +26,7 @@ namespace GamePlayModifiersPlus.Utilities
         public static bool oneColor;
         public static bool reverse;
         public static bool offsetrandom;
-
+        public static bool sixLanes = false;
 
         public static void AddListeners()
         {
@@ -73,6 +73,9 @@ namespace GamePlayModifiersPlus.Utilities
                        case "offsetrandom":
                            GMPUI.offsetrandom = true;
                            break;
+                       case "sixlanes":
+                           GMPUI.sixLanes = true;
+                           break;
                        default:
                            return false;
                    }
@@ -98,6 +101,7 @@ namespace GamePlayModifiersPlus.Utilities
             oneColor = GMPUI.oneColor;
             reverse = GMPUI.reverse;
             offsetrandom = GMPUI.offsetrandom;
+            sixLanes = GMPUI.sixLanes;
         }
         private static void SetToDefaultOptions()
         {
@@ -117,6 +121,7 @@ namespace GamePlayModifiersPlus.Utilities
             GMPUI.oneColor = false;
             GMPUI.reverse = false;
             GMPUI.offsetrandom = false;
+            GMPUI.sixLanes = false;
         }
         private static void ReturnOptions()
         {
@@ -138,6 +143,7 @@ namespace GamePlayModifiersPlus.Utilities
             GMPUI.oneColor = oneColor;
             GMPUI.reverse = reverse;
             GMPUI.offsetrandom = offsetrandom;
+            GMPUI.sixLanes = sixLanes;
         }
     }
 }
