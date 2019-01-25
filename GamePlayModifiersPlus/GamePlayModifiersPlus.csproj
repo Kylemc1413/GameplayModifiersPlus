@@ -100,6 +100,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Harmony Patches\ColorNoteVisualsHandleNoteControllerDidInitEvent.cs" />
+    <Compile Include="Harmony Patches\NoteBasicCutInfoSOGetBasicCutInfo.cs" />
+    <Compile Include="Harmony Patches\NoteCuDirectionExtensionsRotation.cs" />
+    <Compile Include="Harmony Patches\BeatmapObjectSpawnControllerGetNoteOffset.cs" />
+    <Compile Include="Harmony Patches\BeatmapObjectSpawnControllerLineYPosForLineLayer.cs" />
+    <Compile Include="Harmony Patches\BeatmapObjectSpawnControllerHighestJumpPosYForLineLayer.cs" />
     <Compile Include="Harmony Patches\FlyingScoreSpawnerSpawnFlyingScore.cs" />
     <Compile Include="Harmony Patches\StandardLevelDetailViewRefreshContent.cs" />
     <Compile Include="Multi\MultiGMPDisplay.cs" />

@@ -26,8 +26,8 @@ namespace GamePlayModifiersPlus.Utilities
         public static bool oneColor;
         public static bool reverse;
         public static bool offsetrandom;
-        public static bool sixLanes = false;
-
+        public static bool sixLanes;
+        public static bool fourLayers;
         public static void AddListeners()
         {
             ChallengeExternalModifiers.onChallengeFailedToLoad += ReturnOptions;
@@ -102,6 +102,7 @@ namespace GamePlayModifiersPlus.Utilities
             reverse = GMPUI.reverse;
             offsetrandom = GMPUI.offsetrandom;
             sixLanes = GMPUI.sixLanes;
+            fourLayers = GMPUI.fourLayers;
         }
         private static void SetToDefaultOptions()
         {
@@ -122,6 +123,7 @@ namespace GamePlayModifiersPlus.Utilities
             GMPUI.reverse = false;
             GMPUI.offsetrandom = false;
             GMPUI.sixLanes = false;
+            GMPUI.fourLayers = false;
         }
         private static void ReturnOptions()
         {
@@ -144,6 +146,7 @@ namespace GamePlayModifiersPlus.Utilities
             GMPUI.reverse = reverse;
             GMPUI.offsetrandom = offsetrandom;
             GMPUI.sixLanes = sixLanes;
+            GMPUI.fourLayers = fourLayers;
         }
     }
 }

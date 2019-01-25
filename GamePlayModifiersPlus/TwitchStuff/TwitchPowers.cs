@@ -101,8 +101,8 @@
 
         public static IEnumerator TempPoison(float length)
         {
-                   var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-                   text.text += " Poison | ";
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            text.text += " Poison | ";
             Image energyBar = Plugin.energyPanel.GetField<Image>("_energyBar");
             energyBar.color = Color.magenta;
             Plugin.energyCounter.SetField("_goodNoteEnergyCharge", 0f);
@@ -110,7 +110,7 @@
             energyBar.color = Color.white;
             Plugin.energyCounter.SetField("_goodNoteEnergyCharge", 0.01f);
 
-                        text.text = text.text.Replace(" Poison | ", "");
+            text.text = text.text.Replace(" Poison | ", "");
         }
 
 
@@ -139,7 +139,7 @@
         public static IEnumerator TestingGround(float length)
         {
             yield return new WaitForSecondsRealtime(0.1f);
-        //    SharedCoroutineStarter.instance.StartCoroutine(ExtraLanes());
+            //    SharedCoroutineStarter.instance.StartCoroutine(ExtraLanes());
         }
 
         public static void AdjustNJS(float njs)
@@ -512,18 +512,117 @@
             BeatmapData beatmapData = dataModel.beatmapData;
             BeatmapObjectData[] objects;
             NoteData note;
+            System.Collections.Generic.List<float> claimedCenterTimes = new System.Collections.Generic.List<float>();
+            System.Collections.Generic.List<float> noteTimes = new System.Collections.Generic.List<float>();
+            System.Collections.Generic.List<float> doubleTimes = new System.Collections.Generic.List<float>();
+            //Iterate through once to log double times
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
                 objects = line.beatmapObjectsData;
                 foreach (BeatmapObjectData beatmapObject in objects)
                 {
-                  if(beatmapObject.lineIndex == 0 && Random.Range(1, 4) >= 2)
-                            beatmapObject.MirrorLineIndex(0);
-                        // line index 3
-                        if (beatmapObject.lineIndex == 3 && Random.Range(1, 4) >= 2)
-                            beatmapObject.MirrorLineIndex(8);
-                        
-                    
+                    if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
+                    {
+                        note = beatmapObject as NoteData;
+
+                        if (noteTimes.Contains(note.time))
+                            doubleTimes.Add(note.time);
+                        else
+                            noteTimes.Add(note.time);
+                    }
+
+                }
+            }
+            noteTimes.Clear();
+
+            foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
+            {
+                objects = line.beatmapObjectsData;
+                foreach (BeatmapObjectData beatmapObject in objects)
+                {
+                    if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
+                    {
+                        note = beatmapObject as NoteData;
+                            if (GMPUI.sixLanes || GMPUI.fiveLanes)
+                            {
+                                if (!doubleTimes.Contains(note.time) || GMPUI.laneShift)
+                                {
+                                    if (note.lineIndex == 0 && Random.Range(1, 4) >= 2)
+                                        note.MirrorLineIndex(0);
+                                    // line index 3
+                                    if (note.lineIndex == 3 && Random.Range(1, 4) >= 2)
+                                        note.MirrorLineIndex(8);
+                                }
+                            }
+                        if (GMPUI.fourLayers)
+                        {
+                            if (note.noteLineLayer == NoteLineLayer.Upper && Random.Range(1, 4) > 2)
+                                note.SetProperty("noteLineLayer", (NoteLineLayer)3);
+                        }
+                        int newIndex = 0;
+                        if (GMPUI.fiveLanes)
+                        {
+                            switch (note.lineIndex)
+                            {
+                                case 0:
+                                    newIndex = 1500;
+                                    break;
+
+                                case 1:
+                                    newIndex = UnityEngine.Random.Range(0, 10) > 6 || claimedCenterTimes.Contains(note.time) ? 1500 : 2500;
+                                    break;
+
+                                case 2:
+                                    newIndex = UnityEngine.Random.Range(0, 10) > 6 || claimedCenterTimes.Contains(note.time) ? 3500 : 2500;
+                                    break;
+
+                                case 3:
+                                    newIndex = 3500;
+                                    break;
+
+                                default:
+                                    if (note.lineIndex < 0)
+                                    {
+                                        newIndex = -1500;
+                                    }
+                                    if (note.lineIndex > 3)
+                                    {
+                                        newIndex = 4500;
+                                    }
+                                    break;
+                            }
+                            note.SetProperty("lineIndex", newIndex);
+                            note.SetProperty("flipLineIndex", newIndex);
+                            if (newIndex == 2500)
+                            {
+                                claimedCenterTimes.Add(note.time);
+                            }
+
+
+                        }
+
+
+                        if (!doubleTimes.Contains(note.time))
+                            if (GMPUI.laneShift)
+                            {
+                                if (!(note.lineIndex >= 1000 || note.lineIndex <= -1000))
+                                {
+                                    int shiftedIndex = (note.lineIndex * 1000) + (UnityEngine.Random.Range(1, 8) * 100);
+                                    note.SetProperty("lineIndex", shiftedIndex);
+                                    note.SetProperty("flipLineIndex", shiftedIndex);
+                                }
+                                else if (note.lineIndex >= 1000 && note.lineIndex <= 4500)
+                                {
+                                    int shiftedIndex = note.lineIndex + (UnityEngine.Random.Range(1, 7) * 100);
+                                    note.SetProperty("lineIndex", shiftedIndex);
+                                    note.SetProperty("flipLineIndex", shiftedIndex);
+                                }
+                            }
+
+
+                        noteTimes.Add(note.time);
+                    }
+
 
 
 
@@ -588,7 +687,7 @@
             BeatmapObjectData[] objects;
             NoteData note;
             float start = Plugin.songAudio.time + 2;
-            
+
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
                 objects = line.beatmapObjectsData;
@@ -638,8 +737,8 @@
                             note = beatmapObject as NoteData;
 
                             note.SwitchNoteType();
-                            if(note.noteType != NoteType.Bomb)
-                            note.MirrorTransformCutDirection();
+                            if (note.noteType != NoteType.Bomb)
+                                note.MirrorTransformCutDirection();
                             note.MirrorLineIndex(4);
                         }
                     if (beatmapObject.beatmapObjectType == BeatmapObjectType.Obstacle)
@@ -749,9 +848,9 @@
             Plugin.colorA.SetColor(Plugin.oldColorA);
             Plugin.colorB.SetColor(Plugin.oldColorB);
             if (Plugin.customColorsInstalled)
-                if(!GMPUI.oneColor)
-                Plugin.ResetCustomColorsSabers(Plugin.oldColorA, Plugin.oldColorB);
-            else
+                if (!GMPUI.oneColor)
+                    Plugin.ResetCustomColorsSabers(Plugin.oldColorA, Plugin.oldColorB);
+                else
                     Plugin.ResetCustomColorsSabers(Plugin.oldColorB, Plugin.oldColorB);
             if (Plugin.environmentColorsSetter != null)
             {
@@ -804,15 +903,15 @@
             GMPUI.randomSize = false;
             GMPUI.reverse = false;
             Plugin.altereddNoteScale = 1f;
-     //       Time.timeScale = 1;
-    //        Plugin.timeScale = 1;
+            //       Time.timeScale = 1;
+            //        Plugin.timeScale = 1;
             Plugin.superRandom = false;
             if (resetMessage)
             {
                 Plugin.spawnController.SetField("_disappearingArrows", false);
                 Plugin.colorA.SetColor(Plugin.oldColorA);
                 Plugin.colorB.SetColor(Plugin.oldColorB);
-                if(Plugin.isValidScene)
+                if (Plugin.isValidScene)
                     AdjustNjsOrOffset();
                 var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
                 text.text = " ";

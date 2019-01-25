@@ -21,8 +21,8 @@
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.7.0";
-        public static string pluginVersion = "1.7.0";
+        public string Version => "1.7.0beta2";
+        public static string pluginVersion = "1.7.0beta2";
 
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -873,7 +873,7 @@
 
         public static void CheckGMPModifiers()
         {
-            if (GMPUI.bulletTime || GMPUI.swapSabers || GMPUI.sixLanes || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
+            if (GMPUI.bulletTime || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.laneShift ||GMPUI.sixLanes || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
             {
                 //     ApplyPatches();
                 UnityEngine.Random.InitState(Plugin.levelData.difficultyBeatmap.beatmapData.notesCount);
@@ -885,7 +885,7 @@
                 }
 
 
-                if (GMPUI.sixLanes)
+                if (GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.fiveLanes || GMPUI.laneShift)
                 {
                     SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.ExtraLanes());
                 }

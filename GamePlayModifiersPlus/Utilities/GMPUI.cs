@@ -40,6 +40,9 @@
         public static bool offsetrandom = false;
         public static bool disableSubmission = false;
         public static bool sixLanes = false;
+        public static bool fourLayers = false;
+        public static bool fiveLanes = false;
+        public static bool laneShift = false;
         public static void CreateUI()
         {
             GetIcons();
@@ -94,22 +97,33 @@
             rainbowOption.OnToggle += (value) => { rainbow = value; Plugin.Log("Changed value"); };
             rainbowOption.AddConflict("Chat Integration");
 
-            var sixlanesOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Six Lanes ", "GMP2", disableScoreString + "Extends the map to be in six lanes", _GMPIcon);
-            sixlanesOption.GetValue = sixLanes;
-            sixlanesOption.OnToggle += (value) => { sixLanes = value; Plugin.Log("Changed value"); };
-
-
-
             var reverseOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Reversal ", "GMP2", disableScoreString + "Reverses the direction the notes come from", _SwapSabersIcon);
             reverseOption.GetValue = reverse;
             reverseOption.OnToggle += (value) => { reverse = value; Plugin.Log("Changed value"); };
             reverseOption.AddConflict("Chat Integration");
 
 
-
             var repeatOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Repeat", "GMP2", disableScoreString + "Restarts song on song end", _RepeatIcon);
             repeatOption.GetValue = repeatSong;
             repeatOption.OnToggle += (value) => { repeatSong = value; Plugin.Log("Changed value"); };
+
+            var sixlanesOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Six Lanes", "GMP2", disableScoreString + "Extends the map to be in 6 lanes", _GMPIcon);
+            sixlanesOption.GetValue = sixLanes;
+            sixlanesOption.OnToggle += (value) => { sixLanes = value; Plugin.Log("Changed value"); };
+
+            var fourlayersOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Four Layers", "GMP2", disableScoreString + "Extends the map to be in 4 vertical layers rather than 3", _GMPIcon);
+            fourlayersOption.GetValue = fourLayers;
+            fourlayersOption.OnToggle += (value) => { fourLayers = value; Plugin.Log("Changed value"); };
+
+            var fiveLanesOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Five Lanes", "GMP2", disableScoreString + "Extends the map to be in 5 lanes", _GMPIcon);
+            fiveLanesOption.GetValue = fiveLanes;
+            fiveLanesOption.OnToggle += (value) => { fiveLanes = value; Plugin.Log("Changed value"); };
+            fiveLanesOption.AddConflict("Six Lanes");
+
+            var laneshiftOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Lane Shift", "GMP2", disableScoreString + "Randomly shifts notes off of their normal lane", _GMPIcon);
+            laneshiftOption.GetValue = laneShift;
+            laneshiftOption.OnToggle += (value) => { laneShift = value; Plugin.Log("Changed value"); };
+
 
             var gnomeOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Gnome on miss", "GMP2", "Probably try not to miss.", _GnomeIcon);
             gnomeOption.GetValue = gnomeOnMiss;
