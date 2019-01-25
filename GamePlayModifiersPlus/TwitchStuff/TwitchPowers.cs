@@ -139,6 +139,7 @@
         public static IEnumerator TestingGround(float length)
         {
             yield return new WaitForSecondsRealtime(0.1f);
+
             //    SharedCoroutineStarter.instance.StartCoroutine(ExtraLanes());
         }
 
@@ -543,17 +544,17 @@
                     if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
                     {
                         note = beatmapObject as NoteData;
-                            if (GMPUI.sixLanes || GMPUI.fiveLanes)
+                        if (GMPUI.sixLanes || GMPUI.fiveLanes)
+                        {
+                            if (!doubleTimes.Contains(note.time))// || GMPUI.laneShift)
                             {
-                                if (!doubleTimes.Contains(note.time) || GMPUI.laneShift)
-                                {
-                                    if (note.lineIndex == 0 && Random.Range(1, 4) >= 2)
-                                        note.MirrorLineIndex(0);
-                                    // line index 3
-                                    if (note.lineIndex == 3 && Random.Range(1, 4) >= 2)
-                                        note.MirrorLineIndex(8);
-                                }
+                                if (note.lineIndex == 0 && Random.Range(1, 4) >= 2)
+                                    note.MirrorLineIndex(0);
+                                // line index 3
+                                if (note.lineIndex == 3 && Random.Range(1, 4) >= 2)
+                                    note.MirrorLineIndex(8);
                             }
+                        }
                         if (GMPUI.fourLayers)
                         {
                             if (note.noteLineLayer == NoteLineLayer.Upper && Random.Range(1, 4) > 2)
@@ -570,10 +571,12 @@
 
                                 case 1:
                                     newIndex = UnityEngine.Random.Range(0, 10) > 6 || claimedCenterTimes.Contains(note.time) ? 1500 : 2500;
+                                    if (Random.Range(0, 8) > 5) newIndex = -1500;
                                     break;
 
                                 case 2:
                                     newIndex = UnityEngine.Random.Range(0, 10) > 6 || claimedCenterTimes.Contains(note.time) ? 3500 : 2500;
+                                    if (Random.Range(0, 8) > 5) newIndex = 4500;
                                     break;
 
                                 case 3:
@@ -601,23 +604,26 @@
 
                         }
 
-
-                        if (!doubleTimes.Contains(note.time))
-                            if (GMPUI.laneShift)
+                        if(!doubleTimes.Contains(note.time))
+                        if (GMPUI.laneShift)
+                        {
+                            if (!(note.lineIndex >= 1000 || note.lineIndex <= -1000))
                             {
-                                if (!(note.lineIndex >= 1000 || note.lineIndex <= -1000))
-                                {
-                                    int shiftedIndex = (note.lineIndex * 1000) + (UnityEngine.Random.Range(1, 8) * 100);
-                                    note.SetProperty("lineIndex", shiftedIndex);
-                                    note.SetProperty("flipLineIndex", shiftedIndex);
-                                }
-                                else if (note.lineIndex >= 1000 && note.lineIndex <= 4500)
-                                {
-                                    int shiftedIndex = note.lineIndex + (UnityEngine.Random.Range(1, 7) * 100);
-                                    note.SetProperty("lineIndex", shiftedIndex);
-                                    note.SetProperty("flipLineIndex", shiftedIndex);
-                                }
+                                int shiftedIndex = (note.lineIndex * 1000) + (UnityEngine.Random.Range(1, 8) * 100);
+                                if (note.lineIndex == 0)
+                                    shiftedIndex = 1000 + (UnityEngine.Random.Range(1, 8) * 100);
+                                note.SetProperty("lineIndex", shiftedIndex);
+                                note.SetProperty("flipLineIndex", shiftedIndex);
                             }
+                            else if (note.lineIndex >= 1000 && note.lineIndex <= 4500)
+                            {
+
+                                int shiftedIndex = note.lineIndex + (UnityEngine.Random.Range(1, 7) * 100);
+                                note.SetProperty("lineIndex", shiftedIndex);
+                                note.SetProperty("flipLineIndex", shiftedIndex);
+                            }
+
+                        }
 
 
                         noteTimes.Add(note.time);

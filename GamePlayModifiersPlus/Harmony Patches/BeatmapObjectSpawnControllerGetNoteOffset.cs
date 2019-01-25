@@ -17,18 +17,17 @@ new Type[] {
     [HarmonyPatch("GetNoteOffset", MethodType.Normal)]
     class BeatmapObjectSpawnControllerGetNoteOffset
     {
-        static bool Prefix(BeatmapObjectSpawnController __instance, int noteLineIndex, NoteLineLayer noteLineLayer, ref Vector3 __result, ref float ____noteLinesCount, ref float ____noteLinesDistance)
+        static void Postfix(BeatmapObjectSpawnController __instance, int noteLineIndex, NoteLineLayer noteLineLayer, ref Vector3 __result, ref float ____noteLinesCount, ref float ____noteLinesDistance)
         {
-            if(noteLineIndex >= 1000 || noteLineIndex <= -1000)
+            if (noteLineIndex >= 1000 || noteLineIndex <= -1000)
             {
                 if (noteLineIndex <= -1000)
                     noteLineIndex += 2000;
-            float num = -(____noteLinesCount - 1f) * 0.5f;
-            num = (num + (( (float)noteLineIndex) * (____noteLinesDistance / 1000)));
-            __result = __instance.transform.right * num + new Vector3(0f, __instance.LineYPosForLineLayer(noteLineLayer), 0f);
-                return false;
+                float num = -(____noteLinesCount - 1f) * 0.5f;
+                num = (num + (((float)noteLineIndex) * (____noteLinesDistance / 1000)));
+                __result = __instance.transform.right * num + new Vector3(0f, __instance.LineYPosForLineLayer(noteLineLayer), 0f);
+                return;
             }
-            return true;
         }
 
 

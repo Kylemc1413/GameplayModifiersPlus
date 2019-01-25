@@ -16,23 +16,23 @@ new Type[] {
     [HarmonyPatch("Rotation", MethodType.Normal)]
     class NoteCuDirectionExtensionsRotation
     {
-        static bool Prefix(NoteCutDirection cutDirection, ref Quaternion __result)
+        static void Postfix(NoteCutDirection cutDirection, ref Quaternion __result)
         {
-           if( (int)cutDirection >= 1000 && (int)cutDirection < 2000)
+           if( (int)cutDirection >= 1000 && (int)cutDirection <= 1360)
             {
+                int angle = 1000 - (int)cutDirection;
                 __result = default(Quaternion);
                 __result.eulerAngles = new Vector3(0f, 0f, 1000 - (int)cutDirection);
-                return false;
+                return;
             }
 
-            if ((int)cutDirection >= 2000)
+            if ((int)cutDirection >= 2000 && (int)cutDirection <= 2360)
             {
+                int angle = 2000 - (int)cutDirection;
                 __result = default(Quaternion);
                 __result.eulerAngles = new Vector3(0f, 0f, 2000 - (int)cutDirection);
-                return false;
+                return;
             }
-
-            return true;
         }
 
 

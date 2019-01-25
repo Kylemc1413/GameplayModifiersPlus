@@ -13,7 +13,7 @@ new Type[] {
     [HarmonyPatch("LineYPosForLineLayer", MethodType.Normal)]
     class BeatmapObjectSpawnControllerLineYPosForLineLayer
     {
-        static bool Prefix(NoteLineLayer lineLayer, ref float __result, ref float ____topLinesYPos, ref float ____upperLinesYPos)
+        static void Postfix(NoteLineLayer lineLayer, ref float __result, ref float ____topLinesYPos, ref float ____upperLinesYPos)
         {
             float delta = (____topLinesYPos - ____upperLinesYPos);
 
@@ -21,23 +21,22 @@ new Type[] {
             {
                 __result = ____upperLinesYPos - delta + (((int)lineLayer) * (delta / 1000f));
 
-                return false;
+                return;
             }
 
             if ((int)lineLayer > 2)
             {
 
                 __result = ____upperLinesYPos - delta + ((int)lineLayer * delta);
-                return false;
+                return;
             }
 
             if ((int)lineLayer < 0)
             {
                 __result = ____upperLinesYPos - delta  + ((int)lineLayer * delta);
-                return false;
+                return;
             }
 
-            return true;
         }
 
     }

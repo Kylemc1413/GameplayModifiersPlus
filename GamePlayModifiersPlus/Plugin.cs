@@ -114,7 +114,8 @@
                 harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
                 ApplyPatches();
             }
-
+            SongLoaderPlugin.SongLoader.RegisterCapability("ChromaToggle");
+            SongLoaderPlugin.SongLoader.RegisterCapability("Extra Lanes");
             CheckPlugins();
             ChatConfig.Load();
             ReadPrefs();
@@ -336,7 +337,10 @@
                     return;
                 }
 
-
+                foreach (string a in SongLoaderPlugin.SongLoader.currentRequirements)
+                {
+                    Plugin.Log(a);
+                }
 
 
                 GameObject.Destroy(GameObject.Find("Color Setter"));

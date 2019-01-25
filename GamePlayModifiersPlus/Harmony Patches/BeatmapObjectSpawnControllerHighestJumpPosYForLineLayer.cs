@@ -13,38 +13,30 @@ new Type[] {
     [HarmonyPatch("HighestJumpPosYForLineLayer", MethodType.Normal)]
     class BeatmapObjectSpawnControllerHighestJumpPosYForLineLayer
     {
-        static bool Prefix(NoteLineLayer lineLayer, ref float __result, ref float ____topLinesHighestJumpPosY, ref float ____globalYJumpOffset, ref float ____upperLinesHighestJumpPosY)
+        static void Postfix(NoteLineLayer lineLayer, ref float __result, ref float ____topLinesHighestJumpPosY, ref float ____globalYJumpOffset, ref float ____upperLinesHighestJumpPosY)
         {
             float delta = (____topLinesHighestJumpPosY - ____upperLinesHighestJumpPosY);
-            //    if (lineLayer == (NoteLineLayer)3)
-            //     {
-            //         __result = ____topLinesHighestJumpPosY + ____globalYJumpOffset + (____topLinesHighestJumpPosY - ____upperLinesHighestJumpPosY);
-            //          return false;
-            //     }
-
 
             if ((int)lineLayer >= 1000 || (int)lineLayer <= -1000)
             {
                 __result = ____upperLinesHighestJumpPosY - delta + ____globalYJumpOffset + (((int)lineLayer) * (delta / 1000f));
 
-                return false;
+                return;
             }
 
             if ((int)lineLayer > 2)
             {
 
                 __result = ____upperLinesHighestJumpPosY - delta + ____globalYJumpOffset + ((int)lineLayer * delta);
-                return false;
+                return;
             }
 
             if( (int)lineLayer < 0)
             {
                 __result = ____upperLinesHighestJumpPosY - delta + ____globalYJumpOffset + ((int)lineLayer * delta);
-                return false;
+                return;
             }
 
-
-            return true;
         }
 
     }
