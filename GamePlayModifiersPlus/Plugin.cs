@@ -23,7 +23,7 @@
 
         public string Version => "1.7.0beta2";
         public static string pluginVersion = "1.7.0beta2";
-
+        internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
         public static bool multiInstalled = false;
@@ -977,6 +977,10 @@
                     case "BeatSaberChallenges":
                         ChallengeIntegration.AddListeners();
                         break;
+                    case "Mapping Extensions":
+                        mappingExtensionsPresent = true;
+                        break;
+
                 }
 
             }

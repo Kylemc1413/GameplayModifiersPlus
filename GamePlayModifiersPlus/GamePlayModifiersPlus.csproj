@@ -103,20 +103,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Harmony Patches\BeatDataMirrorTranformCreateTransformedData.cs" />
-    <Compile Include="Harmony Patches\BeatmapDataClearNotesBeforeStartTimeTransformCreateTransformedData.cs" />
-    <Compile Include="Harmony Patches\BeatmapDataObstaclesAndBombsTransformCreateTransformedData.cs" />
-    <Compile Include="Harmony Patches\NoteDataMirrorTransformCutDirection.cs" />
-    <Compile Include="Harmony Patches\ObstacleDataMirrorLineIndex.cs" />
-    <Compile Include="Harmony Patches\NoteDataMirrorLineIndex.cs" />
-    <Compile Include="Harmony Patches\BeatmapObjectDataMirrorLineIndex.cs" />
-    <Compile Include="Harmony Patches\ColorNoteVisualsHandleNoteControllerDidInitEvent.cs" />
-    <Compile Include="Harmony Patches\GameNoteControllerHandleCut.cs" />
-    <Compile Include="Harmony Patches\NoteCuDirectionExtensionsRotation.cs" />
-    <Compile Include="Harmony Patches\BeatmapObjectSpawnControllerGetNoteOffset.cs" />
-    <Compile Include="Harmony Patches\BeatmapObjectSpawnControllerLineYPosForLineLayer.cs" />
-    <Compile Include="Harmony Patches\BeatmapObjectSpawnControllerHighestJumpPosYForLineLayer.cs" />
-    <Compile Include="Harmony Patches\FlyingScoreSpawnerSpawnFlyingScore.cs" />
     <Compile Include="Harmony Patches\StandardLevelDetailViewRefreshContent.cs" />
     <Compile Include="Multi\MultiGMPDisplay.cs" />
     <Compile Include="Multi\MultiClientInterface.cs" />

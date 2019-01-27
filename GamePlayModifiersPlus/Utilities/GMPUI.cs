@@ -58,7 +58,8 @@
 
             var disableScoresOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.PlayerSettingsLeft, "Disable Score Submission", "MainMenu", "<size=120%><color=#ff0000ff><b><u>Disables Score Submission</u></b></color></size>", _GMPIcon);
             disableScoresOption.GetValue = disableSubmission;
-            disableScoresOption.OnToggle += (value) => {
+            disableScoresOption.OnToggle += (value) =>
+            {
                 disableSubmission = value;
                 if (value)
                     BS_Utils.Gameplay.ScoreSubmission.ProlongedDisableSubmission("Gameplay Modifiers Plus");
@@ -106,23 +107,26 @@
             var repeatOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Repeat", "GMP2", disableScoreString + "Restarts song on song end", _RepeatIcon);
             repeatOption.GetValue = repeatSong;
             repeatOption.OnToggle += (value) => { repeatSong = value; Plugin.Log("Changed value"); };
+            if (Plugin.mappingExtensionsPresent)
+            {
+                var sixlanesOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Six Lanes", "GMP2", disableScoreString + "Extends the map to be in 6 lanes", _GMPIcon);
+                sixlanesOption.GetValue = sixLanes;
+                sixlanesOption.OnToggle += (value) => { sixLanes = value; Plugin.Log("Changed value"); };
 
-            var sixlanesOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Six Lanes", "GMP2", disableScoreString + "Extends the map to be in 6 lanes", _GMPIcon);
-            sixlanesOption.GetValue = sixLanes;
-            sixlanesOption.OnToggle += (value) => { sixLanes = value; Plugin.Log("Changed value"); };
+                var fourlayersOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Four Layers", "GMP2", disableScoreString + "Extends the map to be in 4 vertical layers rather than 3", _GMPIcon);
+                fourlayersOption.GetValue = fourLayers;
+                fourlayersOption.OnToggle += (value) => { fourLayers = value; Plugin.Log("Changed value"); };
 
-            var fourlayersOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Four Layers", "GMP2", disableScoreString + "Extends the map to be in 4 vertical layers rather than 3", _GMPIcon);
-            fourlayersOption.GetValue = fourLayers;
-            fourlayersOption.OnToggle += (value) => { fourLayers = value; Plugin.Log("Changed value"); };
+                var fiveLanesOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Five Lanes", "GMP2", disableScoreString + "Extends the map to be in 5 lanes", _GMPIcon);
+                fiveLanesOption.GetValue = fiveLanes;
+                fiveLanesOption.OnToggle += (value) => { fiveLanes = value; Plugin.Log("Changed value"); };
+                fiveLanesOption.AddConflict("Six Lanes");
 
-            var fiveLanesOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Five Lanes", "GMP2", disableScoreString + "Extends the map to be in 5 lanes", _GMPIcon);
-            fiveLanesOption.GetValue = fiveLanes;
-            fiveLanesOption.OnToggle += (value) => { fiveLanes = value; Plugin.Log("Changed value"); };
-            fiveLanesOption.AddConflict("Six Lanes");
+                var laneshiftOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Lane Shift", "GMP2", disableScoreString + "Randomly shifts notes off of their normal lane", _GMPIcon);
+                laneshiftOption.GetValue = laneShift;
+                laneshiftOption.OnToggle += (value) => { laneShift = value; Plugin.Log("Changed value"); };
 
-            var laneshiftOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Lane Shift", "GMP2", disableScoreString + "Randomly shifts notes off of their normal lane", _GMPIcon);
-            laneshiftOption.GetValue = laneShift;
-            laneshiftOption.OnToggle += (value) => { laneShift = value; Plugin.Log("Changed value"); };
+            }
 
 
             var gnomeOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Gnome on miss", "GMP2", "Probably try not to miss.", _GnomeIcon);
