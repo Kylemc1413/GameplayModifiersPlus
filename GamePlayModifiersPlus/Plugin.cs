@@ -21,8 +21,8 @@
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.7.0beta2";
-        public static string pluginVersion = "1.7.0beta2";
+        public string Version => "1.7.0";
+        public static string pluginVersion = "1.7.0";
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;

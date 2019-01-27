@@ -557,7 +557,7 @@
                         }
                         if (GMPUI.fourLayers)
                         {
-                            if (note.noteLineLayer == NoteLineLayer.Upper && Random.Range(1, 4) > 2)
+                            if (note.noteLineLayer == NoteLineLayer.Top && Random.Range(1, 4) > 2)
                                 note.SetProperty("noteLineLayer", (NoteLineLayer)3);
                         }
                         int newIndex = 0;
