@@ -114,8 +114,11 @@
                 harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
                 ApplyPatches();
             }
-            SongLoaderPlugin.SongLoader.RegisterCapability("ChromaToggle");
-            SongLoaderPlugin.SongLoader.RegisterCapability("Extra Lanes");
+            SongLoaderPlugin.SongLoader.RegisterCapability("ME-Precision Placement");
+            SongLoaderPlugin.SongLoader.RegisterCapability("ME-Extra Note Angles");
+            SongLoaderPlugin.SongLoader.RegisterCapability("ME-More Lanes");
+         //   SongLoaderPlugin.SongLoader.RegisterCapability("Chromatoggle");
+            //      SongLoaderPlugin.SongLoader.RegisterCapability("Extra Lanes");
             CheckPlugins();
             ChatConfig.Load();
             ReadPrefs();
@@ -337,10 +340,6 @@
                     return;
                 }
 
-                foreach (string a in SongLoaderPlugin.SongLoader.currentRequirements)
-                {
-                    Plugin.Log(a);
-                }
 
 
                 GameObject.Destroy(GameObject.Find("Color Setter"));

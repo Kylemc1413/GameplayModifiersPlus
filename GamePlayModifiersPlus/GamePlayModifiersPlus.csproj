@@ -103,6 +103,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Harmony Patches\BeatDataMirrorTranformCreateTransformedData.cs" />
+    <Compile Include="Harmony Patches\BeatmapDataClearNotesBeforeStartTimeTransformCreateTransformedData.cs" />
+    <Compile Include="Harmony Patches\BeatmapDataObstaclesAndBombsTransformCreateTransformedData.cs" />
+    <Compile Include="Harmony Patches\NoteDataMirrorTransformCutDirection.cs" />
+    <Compile Include="Harmony Patches\ObstacleDataMirrorLineIndex.cs" />
+    <Compile Include="Harmony Patches\NoteDataMirrorLineIndex.cs" />
+    <Compile Include="Harmony Patches\BeatmapObjectDataMirrorLineIndex.cs" />
     <Compile Include="Harmony Patches\ColorNoteVisualsHandleNoteControllerDidInitEvent.cs" />
     <Compile Include="Harmony Patches\GameNoteControllerHandleCut.cs" />
     <Compile Include="Harmony Patches\NoteCuDirectionExtensionsRotation.cs" />
@@ -129,7 +136,7 @@
     <Compile Include="TwitchStuff\GMPDisplay.cs" />
     <Compile Include="Utilities\ChallengeIntegration.cs" />
     <Compile Include="Utilities\Rainbow.cs" />
-    <Compile Include="ReflectionUtil.cs" />
+    <Compile Include="Utilities\ReflectionUtil.cs" />
     <Compile Include="Utilities\FloatBehavior.cs" />
     <Compile Include="TwitchStuff\TwitchCommands.cs" />
     <Compile Include="TwitchStuff\TwitchPowers.cs" />
