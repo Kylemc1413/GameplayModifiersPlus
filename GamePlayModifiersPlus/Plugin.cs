@@ -114,11 +114,7 @@
                 harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
                 ApplyPatches();
             }
-            SongLoaderPlugin.SongLoader.RegisterCapability("ME-Precision Placement");
-            SongLoaderPlugin.SongLoader.RegisterCapability("ME-Extra Note Angles");
-            SongLoaderPlugin.SongLoader.RegisterCapability("ME-More Lanes");
-         //   SongLoaderPlugin.SongLoader.RegisterCapability("Chromatoggle");
-            //      SongLoaderPlugin.SongLoader.RegisterCapability("Extra Lanes");
+
             CheckPlugins();
             ChatConfig.Load();
             ReadPrefs();
@@ -876,7 +872,7 @@
 
         public static void CheckGMPModifiers()
         {
-            if (GMPUI.bulletTime || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.laneShift ||GMPUI.sixLanes || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
+            if (GMPUI.bulletTime || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.laneShift ||GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
             {
                 //     ApplyPatches();
                 UnityEngine.Random.InitState(Plugin.levelData.difficultyBeatmap.beatmapData.notesCount);
