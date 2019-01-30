@@ -17,7 +17,10 @@ namespace GamePlayModifiersPlus.Harmony_Patches
         {
             IBeatmapLevel level = ____difficultyBeatmap.level;
            PlayerDataModelSO.LocalPlayer localPlayer = ____player as PlayerDataModelSO.LocalPlayer;
-            PlayerLevelStatsData playerLevelStats = localPlayer.GetPlayerLevelStatsData(level.levelID, ____difficultyBeatmap.difficulty);
+            if(localPlayer != null)
+            { 
+    PlayerLevelStatsData playerLevelStats = localPlayer.GetPlayerLevelStatsData(level.levelID, ____difficultyBeatmap.difficulty);
+                if(playerLevelStats != null)
             if(playerLevelStats.validScore)
             {
                 
@@ -32,6 +35,8 @@ namespace GamePlayModifiersPlus.Harmony_Patches
 
 
             }
+}
+        
 
         }
     }

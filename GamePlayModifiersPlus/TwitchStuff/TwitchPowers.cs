@@ -570,13 +570,13 @@
                                     break;
 
                                 case 1:
-                                    newIndex = UnityEngine.Random.Range(0, 10) > 6 || claimedCenterTimes.Contains(note.time) ? 1500 : 2500;
-                                    if (Random.Range(0, 8) > 5) newIndex = -1500;
+                                    newIndex = UnityEngine.Random.Range(0, 10) > 3 || claimedCenterTimes.Contains(note.time) ? 1500 : 2500;
+                                    if (Random.Range(0, 8) > 6) newIndex = -1500;
                                     break;
 
                                 case 2:
-                                    newIndex = UnityEngine.Random.Range(0, 10) > 6 || claimedCenterTimes.Contains(note.time) ? 3500 : 2500;
-                                    if (Random.Range(0, 8) > 5) newIndex = 4500;
+                                    newIndex = UnityEngine.Random.Range(0, 10) > 3 || claimedCenterTimes.Contains(note.time) ? 3500 : 2500;
+                                    if (Random.Range(0, 8) > 6) newIndex = 4500;
                                     break;
 
                                 case 3:
@@ -610,7 +610,9 @@
                             if (!(note.lineIndex >= 1000 || note.lineIndex <= -1000))
                             {
                                 int shiftedIndex = (note.lineIndex * 1000) + (UnityEngine.Random.Range(1, 8) * 100);
-                                if (note.lineIndex == 0)
+                                    if(note.lineIndex < 0)
+                                        shiftedIndex = (note.lineIndex * 1000) - (UnityEngine.Random.Range(1, 8) * 100);
+                                    if (note.lineIndex == 0)
                                     shiftedIndex = 1000 + (UnityEngine.Random.Range(1, 8) * 100);
                                 note.SetProperty("lineIndex", shiftedIndex);
                                 note.SetProperty("flipLineIndex", shiftedIndex);
@@ -625,6 +627,51 @@
 
                         }
 
+                        if(GMPUI.angleShift)
+                        {
+                            int angle = 1000;
+                            switch(note.cutDirection)
+                            {
+                                case NoteCutDirection.Any:
+                                    angle = 2000;
+                                    break;
+                                case NoteCutDirection.Down:
+                                    angle = 1000;
+                                    break;
+                                case NoteCutDirection.DownLeft:
+                                    angle = 1045;
+                                    break;
+                                case NoteCutDirection.Left:
+                                    angle = 1090;
+                                    break;
+                                case NoteCutDirection.UpLeft:
+                                    angle = 1135;
+                                    break;
+                                case NoteCutDirection.Up:
+                                    angle = 1180;
+                                    break;
+                                case NoteCutDirection.UpRight:
+                                    angle = 1225;
+                                    break;
+                                case NoteCutDirection.Right:
+                                    angle = 1270;
+                                    break;
+                                case NoteCutDirection.DownRight:
+                                    angle = 1315;
+                                    break;
+                            }
+                            if(angle == 2000)
+                            {
+                                angle += Random.Range(0, 360);
+                                note.SetProperty("cutDirection", angle);
+                            }
+                            else if(angle >= 1000)
+                            {
+                                angle += Random.Range(-30, 30);
+                                angle = Mathf.Clamp(angle, 1000, 1360);
+                                note.SetProperty("cutDirection", angle);
+                            }
+                        }
 
                         noteTimes.Add(note.time);
                     }

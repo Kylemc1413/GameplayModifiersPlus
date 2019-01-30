@@ -21,8 +21,8 @@
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.7.0";
-        public static string pluginVersion = "1.7.0";
+        public string Version => "1.7.3";
+        public static string pluginVersion = "1.7.3";
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -174,7 +174,6 @@
 
             if (scene.name == "Menu")
             {
-
                 ReadPrefs();
                 try
                 {
@@ -872,7 +871,7 @@
 
         public static void CheckGMPModifiers()
         {
-            if (GMPUI.bulletTime || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.laneShift ||GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
+            if (GMPUI.bulletTime || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.angleShift || GMPUI.laneShift ||GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
             {
                 //     ApplyPatches();
                 UnityEngine.Random.InitState(Plugin.levelData.difficultyBeatmap.beatmapData.notesCount);
@@ -884,7 +883,7 @@
                 }
 
 
-                if (GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.fiveLanes || GMPUI.laneShift)
+                if (GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.fiveLanes || GMPUI.laneShift || GMPUI.angleShift)
                 {
                     SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.ExtraLanes());
                 }

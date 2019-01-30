@@ -43,6 +43,7 @@
         public static bool fourLayers = false;
         public static bool fiveLanes = false;
         public static bool laneShift = false;
+        public static bool angleShift = false;
         public static void CreateUI()
         {
             GetIcons();
@@ -125,6 +126,10 @@
                 var laneshiftOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Lane Shift", "GMP2", disableScoreString + "Randomly shifts notes off of their normal lane", _GMPIcon);
                 laneshiftOption.GetValue = laneShift;
                 laneshiftOption.OnToggle += (value) => { laneShift = value; Plugin.Log("Changed value"); };
+
+                var angleShiftOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Angle Shift", "GMP2", disableScoreString + "Randomly shifts notes off of their normal Angle", _GMPIcon);
+                angleShiftOption.GetValue = angleShift;
+                angleShiftOption.OnToggle += (value) => { angleShift = value; Plugin.Log("Changed value"); };
 
             }
 
