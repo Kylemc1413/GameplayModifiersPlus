@@ -78,8 +78,8 @@
                     if (spectating) return;
                         otherGmpPlayer = true;
                     if (playerName == "")
-                        playerName = Client.instance.playerInfo.playerName;
-                    Client.instance.playerInfo.playerName += " (GMP)";
+                        playerName = Client.Instance.playerInfo.playerName;
+                    Client.Instance.playerInfo.playerName += " (GMP)";
                     Client.disableScoreSubmission = true;
                 }
 
@@ -103,12 +103,12 @@
         public static void SendCommand(string command)
         {
                 MultiMain.Log("Sending Command: " + command + version);
-               Client.instance.SendEventMessage("GMP", command + version);
+               Client.Instance.SendEventMessage("GMP", command + version);
         }
         public static void ResetName()
         {
             if (playerName != "")
-                Client.instance.playerInfo.playerName = playerName;
+                Client.Instance.playerInfo.playerName = playerName;
         }
     }
 }

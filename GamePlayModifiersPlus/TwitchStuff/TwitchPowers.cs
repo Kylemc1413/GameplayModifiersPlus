@@ -633,7 +633,6 @@
                             switch(note.cutDirection)
                             {
                                 case NoteCutDirection.Any:
-                                    angle = 2000;
                                     break;
                                 case NoteCutDirection.Down:
                                     angle = 1000;
@@ -662,8 +661,7 @@
                             }
                             if(angle == 2000)
                             {
-                                angle += Random.Range(0, 360);
-                                note.SetProperty("cutDirection", angle);
+                               //Do Nothing for now
                             }
                             else if(angle >= 1000)
                             {

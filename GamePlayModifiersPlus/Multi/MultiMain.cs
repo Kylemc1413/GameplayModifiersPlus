@@ -18,12 +18,12 @@
         public static MultiPowers Powers;
         public static MultiCommands multiCommands = new MultiCommands();
         public static MultiGMPDisplay multiGMPDisplay;
-        public static bool multiActive = false;
+        public static bool? multiActive = false;
         public static bool activated = false;
         public static string currentPowerUp = "Charging...";
         public void TwitchConnectionMulti_OnMessageReceived(TwitchConnection arg1, TwitchMessage message)
         {
-            if (multiActive)
+            if (multiActive.Value)
             {
                 string messageString = message.Content.ToLower();
                 multiCommands.CheckHealthCommands(messageString);
@@ -58,20 +58,9 @@
             Config.charges = 0;
             activated = false;
             MultiClientInterface.initialized = false;
-            GameObject client = GameObject.Find("MultiplayerClient");
-            if (client != null)
-            {
-                multiActive = true;
-                Log("Found MultiplayerClient game object!");
+            multiActive = BeatSaberMultiplayer.Client.Instance?.Connected;
 
-            }
-            else
-            {
-                multiActive = false;
-                Log(" MultiplayerClient game object not found!");
-            }
-
-            if (multiActive)
+            if (multiActive.Value)
             {
                 MultiClientInterface.ResetName();
                 if (newScene.name == "EmptyTransition")
@@ -105,7 +94,7 @@
                     Log("Multi Not Allowed, Returning");
                     return;
                 }
-                if (multiActive)
+                if (multiActive.Value)
                 {
 
                     GamePlayModifiersPlus.TwitchStuff.GMPDisplay ChatDisplay = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>();

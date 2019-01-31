@@ -21,8 +21,8 @@
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.7.3";
-        public static string pluginVersion = "1.7.3";
+        public string Version => "1.7.5";
+        public static string pluginVersion = "1.7.5";
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -150,7 +150,7 @@
             twitchCommands.CheckInfoCommands(message);
 
             if (multiInstalled)
-                if (Multiplayer.MultiMain.multiActive) return;
+                if (Multiplayer.MultiMain.multiActive.Value) return;
             if (ChatConfig.allowEveryone || (ChatConfig.allowSubs && message.Author.IsSubscriber) || message.Author.IsMod)
             {
                 if (GMPUI.chatIntegration && isValidScene && !cooldowns.GetCooldown("Global") && AsyncInstalled)
@@ -353,7 +353,7 @@
 
                 levelData.didFinishEvent += LevelData_didFinishEvent;
 
-                if (!Multiplayer.MultiMain.multiActive)
+                if (!Multiplayer.MultiMain.multiActive.Value)
                 {
                     if (GMPUI.chatIntegration && ChatConfig.maxCharges > 0 && AsyncInstalled)
                         chatPowers.AddComponent<GMPDisplay>();
@@ -525,7 +525,7 @@
 
             //          Transform noteTransform = controller.GetField<Transform>("_noteTransform");
             //       Log("SPAWN" + noteTransform.localScale.ToString());
-            if (GMPUI.chatIntegration || GMPUI.randomSize || Multiplayer.MultiMain.multiActive)
+            if (GMPUI.chatIntegration || GMPUI.randomSize || Multiplayer.MultiMain.multiActive.Value)
             {
                 if (superRandom)
                 {

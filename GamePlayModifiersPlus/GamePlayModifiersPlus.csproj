@@ -49,8 +49,9 @@
     <Reference Include="BeatSaberCustomUI">
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\BeatSaberCustomUI.dll</HintPath>
     </Reference>
-    <Reference Include="BeatSaberMultiplayer">
-      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\BeatSaberMultiplayer.dll</HintPath>
+    <Reference Include="BeatSaberMultiplayer, Version=0.5.4.2, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\BeatSaberMultiplayer.dll</HintPath>
     </Reference>
     <Reference Include="BS_Utils, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
