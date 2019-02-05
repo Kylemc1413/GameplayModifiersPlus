@@ -44,6 +44,7 @@
         public static bool fiveLanes = false;
         public static bool laneShift = false;
         public static bool angleShift = false;
+        public static bool removeCrouchWalls = false;
         public static void CreateUI()
         {
             GetIcons();
@@ -198,6 +199,11 @@
             oneColorOption.GetValue = oneColor;
             oneColorOption.OnToggle += (value) => { oneColor = value; Plugin.Log("Changed value"); };
             oneColorOption.AddConflict("Chat Integration");
+
+            var removeCrouchOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Remove Crouch Walls ", "GMP2", disableScoreString + "Removes walls that require you to duck, leaving other walls in tact", _GMPIcon);
+            removeCrouchOption.GetValue = removeCrouchWalls;
+            removeCrouchOption.OnToggle += (value) => { removeCrouchWalls = value; Plugin.Log("Changed value"); };
+
         }
 
 

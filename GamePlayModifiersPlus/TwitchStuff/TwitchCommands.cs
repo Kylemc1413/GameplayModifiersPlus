@@ -209,6 +209,15 @@
             {
                 TwitchConnection.Instance.SendChatMessage("Guides: For Regular Users - http://bit.ly/1413ChatUser | For Streamers - http://bit.ly/1413Readme | For moderators also view http://bit.ly/1413Config");
             }
+            if (message.Content.ToLower().Contains("!currentsong"))
+            {
+                if(!Plugin.isValidScene)
+                TwitchConnection.Instance.SendChatMessage("No song is currently being played.");
+                else
+                    TwitchConnection.Instance.SendChatMessage("Current Song: " + Plugin.levelData.difficultyBeatmap.level.songName
+                        + " - " + Plugin.levelData.difficultyBeatmap.level.songSubName + " mapped by " + Plugin.levelData.difficultyBeatmap.level.songAuthorName);
+            }
+
             if (message.Content.ToLower().Contains("!gm chargehelp"))
             {
                 if (ChatConfig.timeForCharges == 0 || ChatConfig.chargesOverTime == 0)

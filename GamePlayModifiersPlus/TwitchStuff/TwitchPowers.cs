@@ -775,8 +775,8 @@
             BeatmapObjectData[] objects;
             NoteData note;
             ObstacleData obstacle;
-            float start = Plugin.songAudio.time + 2;
-            float end = start + length + 2f + 300f;
+            float start = Plugin.songAudio.time + 4f;
+            float end = start + length;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
                 objects = line.beatmapObjectsData;
