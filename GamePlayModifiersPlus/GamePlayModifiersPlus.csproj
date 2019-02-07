@@ -67,6 +67,9 @@
     <Reference Include="IllusionPlugin">
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\IllusionPlugin.dll</HintPath>
     </Reference>
+    <Reference Include="PracticePlugin">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\PracticePlugin.dll</HintPath>
+    </Reference>
     <Reference Include="SongLoaderPlugin">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\SongLoaderPlugin.dll</HintPath>
     </Reference>
@@ -104,6 +107,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Harmony Patches\ResultsViewControllerDidActivate.cs" />
     <Compile Include="Harmony Patches\StandardLevelDetailViewRefreshContent.cs" />
     <Compile Include="Multi\MultiGMPDisplay.cs" />
     <Compile Include="Multi\MultiClientInterface.cs" />

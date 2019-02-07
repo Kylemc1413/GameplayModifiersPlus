@@ -11,8 +11,8 @@
         {
             yield return new WaitForSeconds(MultiMain.Config.timeForCharges);
             float random = UnityEngine.Random.Range(0f, 10f);
-            if(random >= 4f)
-            MultiMain.Config.charges += MultiMain.Config.chargesOverTime;
+            if (random >= 4f)
+                MultiMain.Config.charges += MultiMain.Config.chargesOverTime;
             if (MultiMain.Config.charges > MultiMain.Config.maxCharges) MultiMain.Config.charges = MultiMain.Config.maxCharges;
             MultiMain.Powers.StartCoroutine(ChargeOverTime());
         }
@@ -47,18 +47,18 @@
                 case 7:
                     powerup = "Bombs";
                     break;
- //               case 8:
- //                   powerup = "Faster";
- //                   break;
+                //               case 8:
+                //                   powerup = "Faster";
+                //                   break;
                 case 8:
                     powerup = "NoArrows";
                     break;
-//                case 10:
- //                   powerup = "Slower";
- //                   break;
+                //                case 10:
+                //                   powerup = "Slower";
+                //                   break;
                 //case 11:
-               //     powerup = "InstaFail";
-             //       break;
+                //     powerup = "InstaFail";
+                //       break;
                 default:
                     powerup = "DA";
                     break;
@@ -67,7 +67,7 @@
         }
         public static IEnumerator TempDA(float length)
         {
-           
+
             var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " DA | ";
             Plugin.spawnController.SetField("_disappearingArrows", true);
@@ -236,7 +236,7 @@
             AdjustNJS(Plugin.songNJS);
             text.text = text.text.Replace(" NJSRandom | ", "");
         }
-        
+
         public static IEnumerator RandomNJS()
         {
             AdjustNJS(UnityEngine.Random.Range(MultiMain.Config.njsRandomMin, MultiMain.Config.njsRandomMax));
@@ -358,7 +358,7 @@
                 Plugin.AudioTimeSync.forcedAudioSync = true;
             else
                 Plugin.AudioTimeSync.forcedAudioSync = false;
-            Plugin.soundEffectManager.SetField("_beatAlignOffset", beatAlignOffset * (1.5f * pitch) );
+            Plugin.soundEffectManager.SetField("_beatAlignOffset", beatAlignOffset * (1.5f * pitch));
 
             yield return new WaitForSeconds(length);
 
@@ -377,9 +377,8 @@
 
 
 
-            public static IEnumerator NoArrows()
+        public static IEnumerator NoArrows()
         {
-            Plugin.Log("Starting");
 
             yield return new WaitForSeconds(0f);
             GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
@@ -448,44 +447,6 @@
             }
             text.text = text.text.Replace(" Rainbow | ", "");
         }
-
-        public static void ResetPowers(bool resetMessage)
-        {
-            GMPUI.rainbow = false;
-            GMPUI.funky = false;
-            GMPUI.njsRandom = false;
-            GMPUI.randomSize = false;
-            Plugin.altereddNoteScale = 1f;
-            Time.timeScale = 1;
-            Plugin.timeScale = 1;
-            Plugin.superRandom = false;
-            if (resetMessage)
-            {
-                Plugin.spawnController.SetField("_disappearingArrows", false);
-                Plugin.colorA.SetColor(Plugin.oldColorA);
-                Plugin.colorB.SetColor(Plugin.oldColorB);
-                var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().cooldownText;
-                text.text = "";
-                var text2 = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
-                    text2.text = "";
-                GameplayCoreSceneSetup sceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-                AudioMixerSO mixer = sceneSetup.GetField<AudioMixerSO>("_audioMixer");
-                float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
-                Plugin.AudioTimeSync.SetField("_timeScale", songspeedmul);
-                Plugin.songAudio.pitch = songspeedmul;
-                Plugin.currentSongSpeed = songspeedmul;
-                mixer.musicPitch = 1 / songspeedmul;
-                if (songspeedmul == 1f)
-                {
-                    mixer.musicPitch = 1;
-                    Plugin.AudioTimeSync.forcedAudioSync = false;
-                }
-                if (Plugin.pauseManager.gameState == StandardLevelGameplayManager.GameState.Paused)
-                    Plugin.AudioTimeSync.Pause();
-
-                resetMessage = false;
-            }
-
-        }
+        
     }
 }

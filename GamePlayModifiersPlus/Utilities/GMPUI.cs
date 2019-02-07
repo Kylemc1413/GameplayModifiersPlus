@@ -45,6 +45,7 @@
         public static bool laneShift = false;
         public static bool angleShift = false;
         public static bool removeCrouchWalls = false;
+        public static bool disableFireworks = false;
         public static void CreateUI()
         {
             GetIcons();
@@ -54,6 +55,9 @@
             rumbleOption.GetValue = ModPrefs.GetInt("GameplayModifiersPlus", "GameRumbleSetting", -1, false) != 1 ? false : true; ;
             rumbleOption.OnToggle += (value) => { ModPrefs.SetInt("GameplayModifiersPlus", "GameRumbleSetting", value == true ? 1 : 0); Plugin.Log("Changed value"); };
 
+            var disableFireWorksOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Disable Fireworks", "MainMenu", "Disable fireworks after a song", _GMPIcon);
+            disableFireWorksOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "DisableFireworks", false, false);
+            disableFireWorksOption.OnToggle += (value) => { disableFireworks = value; ModPrefs.SetBool("GameplayModifiersPlus", "DisableFireworks", value); Plugin.Log("Changed value"); };
 
 
             var gmp1Menu = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "GamePlayModifiersPlus", "MainMenu", "GMP1", "GameplayModifiersPlus Options", _GMPIcon);

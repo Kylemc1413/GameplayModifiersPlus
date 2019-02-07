@@ -678,7 +678,11 @@
         {
             if (message.Content.ToLower().Contains("!gm faster") && !Plugin.cooldowns.GetCooldown("Speed") && Plugin.commandsLeftForMessage > 0)
             {
-
+                if (!Plugin.practicePluginInstalled)
+                {
+                    Plugin.TryAsyncMessage("Speed altering commands currently require Practice Plugin to be installed");
+                    return;
+                }
                 if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.fasterChargeCost)
                 {
                     //               Plugin.beepSound.Play();
@@ -701,6 +705,12 @@
             }
             if (message.Content.ToLower().Contains("!gm slower") && !Plugin.cooldowns.GetCooldown("Speed") && Plugin.commandsLeftForMessage > 0)
             {
+                if (!Plugin.practicePluginInstalled)
+                {
+                    Plugin.TryAsyncMessage("Speed altering commands currently require Practice Plugin to be installed");
+                    return;
+                }
+
 
                 if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.slowerChargeCost)
                 {

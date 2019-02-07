@@ -21,12 +21,14 @@
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.7.8";
-        public static string pluginVersion = "1.7.8";
+        public string Version => "1.7.10";
+        public static string pluginVersion = "1.7.10";
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
         public static bool multiInstalled = false;
+        internal static bool practicePluginInstalled = false;
+        internal static bool modifiersInit = false;
         public TwitchCommands twitchCommands = new TwitchCommands();
         public static TwitchPowers twitchPowers = null;
         public static SoundPlayer gnomeSound = new SoundPlayer(Properties.Resources.gnome);
@@ -148,7 +150,7 @@
             twitchCommands.CheckConfigMessage(message);
             twitchCommands.CheckStatusCommands(message);
             twitchCommands.CheckInfoCommands(message);
-
+            twitchCommands.CheckSpeedCommands(message);
 
             if (multiInstalled)
                 if (Multiplayer.MultiMain.multiActive.Value) return;
@@ -324,6 +326,7 @@
             soundIsPlaying = false;
             isValidScene = false;
             playerInfo = false;
+            modifiersInit = false;
             if (arg0.name == "EmpyTransition" && chatPowers != null)
                 GameObject.Destroy(chatPowers);
 
@@ -610,7 +613,7 @@
                 return;
             }
 
-            if (GMPUI.bulletTime == true && isValidScene == true && soundIsPlaying == false)
+            if (GMPUI.bulletTime == true && isValidScene == true && soundIsPlaying == false && modifiersInit)
             {
                 SetTimeScale(1 - (leftController.triggerValue + rightController.triggerValue) / 2);
                 Time.timeScale = timeScale;
@@ -686,6 +689,7 @@
             //   GMPUI.bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.bulletTime", false, true);
             //  GMPUI.chatIntegration = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.chatIntegration", false, true);
             //    GMPUI.swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
+            GMPUI.disableFireworks = ModPrefs.GetBool("GameplayModifiersPlus", "DisableFireworks", false, false);
             GMPUI.chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
             GMPUI.allowMulti = ModPrefs.GetBool("GameplayModifiersPlus", "allowMulti", false, true);
         }
@@ -800,8 +804,18 @@
             firstLoad = false;
         }
 
+        internal static void SetPracticePluginTimeScale(float value)
+        {
+                ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", value);
+        }
         public static void SetTimeScale(float value)
         {
+            if (practicePluginInstalled)
+            {
+                SetPracticePluginTimeScale(value);
+                return;
+            }
+
             timeScale = value;
             if ((timeScale != 1))
             {
@@ -952,7 +966,7 @@
                     }
                 }
 
-
+                modifiersInit = true;
             }
         }
 
@@ -983,6 +997,9 @@
                         break;
                     case "Mapping Extensions":
                         mappingExtensionsPresent = true;
+                        break;
+                    case "Practice Plugin":
+                        practicePluginInstalled = true;
                         break;
 
                 }

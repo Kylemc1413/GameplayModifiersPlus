@@ -438,34 +438,16 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " Speed | ";
-            float beatAlignOffset = Plugin.soundEffectManager.GetField<float>("_beatAlignOffset");
-            GameplayCoreSceneSetup sceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
+
             float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
-            Plugin.songAudio.pitch = pitch;
-            Plugin.currentSongSpeed = pitch;
-            AudioMixerSO mixer = sceneSetup.GetField<AudioMixerSO>("_audioMixer");
-            mixer.musicPitch = 1f / pitch;
 
-            if (pitch != 1f)
-                Plugin.AudioTimeSync.forcedAudioSync = true;
-            else
-                Plugin.AudioTimeSync.forcedAudioSync = false;
-
-            Plugin.soundEffectManager.SetField("_beatAlignOffset", beatAlignOffset * (1.5f * pitch));
+            Plugin.SetTimeScale(pitch);
 
 
             yield return new WaitForSeconds(length);
 
-            Plugin.songAudio.pitch = songspeedmul;
-            Plugin.currentSongSpeed = songspeedmul;
-            mixer.musicPitch = 1 / songspeedmul;
 
-            if (songspeedmul == 1f)
-            {
-                mixer.musicPitch = 1;
-                Plugin.AudioTimeSync.forcedAudioSync = false;
-            }
-            Plugin.soundEffectManager.SetField("_beatAlignOffset", beatAlignOffset);
+            Plugin.SetTimeScale(songspeedmul);
             text.text = text.text.Replace(" Speed | ", "");
         }
 
@@ -473,7 +455,6 @@
 
         public static IEnumerator NoArrows()
         {
-            Plugin.Log("Starting");
 
             yield return new WaitForSeconds(0f);
             GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
@@ -504,7 +485,6 @@
         }
         public static IEnumerator ExtraLanes()
         {
-            Plugin.Log("Starting");
 
             yield return new WaitForSeconds(0f);
             GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
@@ -766,7 +746,6 @@
 
         public static void MirrorSection(float length)
         {
-            Plugin.Log("Starting");
 
             GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
             BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
@@ -786,7 +765,6 @@
                         if (beatmapObject.time > start && beatmapObject.time < end)
                         {
                             note = beatmapObject as NoteData;
-
                             note.SwitchNoteType();
                             if (note.noteType != NoteType.Bomb)
                                 note.MirrorTransformCutDirection();
@@ -811,8 +789,6 @@
 
         public static IEnumerator OneColor()
         {
-            Plugin.Log("Starting");
-
             yield return new WaitForSeconds(0f);
             GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
             BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
@@ -968,20 +944,8 @@
                 text.text = " ";
                 var text2 = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
                 text2.text = "";
-                //           GameplayCoreSceneSetup sceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-                //            AudioMixerSO mixer = sceneSetup.GetField<AudioMixerSO>("_audioMixer");
-                //           float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
-                //            Plugin.AudioTimeSync.SetField("_timeScale", songspeedmul);
-                //            Plugin.songAudio.pitch = songspeedmul;
-                //            Plugin.currentSongSpeed = songspeedmul;
-                //            mixer.musicPitch = 1 / songspeedmul;
-                //            if (songspeedmul == 1f)
-                //            {
-                //                mixer.musicPitch = 1;
-                //                Plugin.AudioTimeSync.forcedAudioSync = false;
-                //            }
-                //            if (Plugin.pauseManager.gameState == StandardLevelGameplayManager.GameState.Paused)
-                //                 Plugin.AudioTimeSync.Pause();
+                if (Plugin.practicePluginInstalled)
+                    Plugin.SetTimeScale(Plugin.currentSongSpeed);
 
                 resetMessage = false;
             }
