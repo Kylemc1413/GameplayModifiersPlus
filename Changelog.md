@@ -1,12 +1,28 @@
 #### Github: https://github.com/Kylemc1413/GameplayModifiersPlus/
 
-#### Changelog 1.6.1 (Unreleased)
+#### Changelog for Version 1.7.11
+- Modifier to disable note cut ripple effect
+- Fixed angle shift turning dot notes into arrow notes
+
+#### Changelog 1.7.10
+- Modifier to disable Fireworks/Level Cleared sound at the end of a level
+- Readded speed commands to chat integration, will only function if Practice Plugin is installed, hopefully no more hitsound sync issues?
+
+#### Changelog 1.7.8
+- Modifier to remove walls forcing you to crouch under additional modifiers
+- !currentsong command to display information about the song currently playing in chat if connected to twitch chat
+
+#### Changelog1.7.1
+- Bug Fixes
+- New modifiers accessible if Mapping Extensions is Installed
+
+#### Changelog 1.6.1 
 - Restructured the Config, which is now located in `UserData/GameplayModifiersPlus.ini`. the old one will be deleted on first launch after installing this version
 - Squashed some bugs
 - Smaller notes and Larger notes now have a multiplier option
 - Now uses BS Utils for the Config file, and will require Version 1.1.5 or Greater of that Library
 - Added setting to simply disable score submission to player settings
-#### Changelog 1.5.0 (Unreleased)
+#### Changelog 1.5.0 
 - #### Various Fixes
 - #### Chat Integration
 - Four new commands!
