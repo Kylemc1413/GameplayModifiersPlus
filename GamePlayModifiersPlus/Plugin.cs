@@ -21,8 +21,8 @@
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.7.10";
-        public static string pluginVersion = "1.7.10";
+        public string Version => "1.7.12";
+        public static string pluginVersion = "1.7.12";
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -332,14 +332,13 @@
 
             if (scene.name == "GameCore")
             {
+                Log("Isolated: " + BS_Utils.Gameplay.Gamemode.IsIsolatedLevel);
                 isValidScene = true;
                 if (BS_Utils.Gameplay.Gamemode.IsIsolatedLevel && !activateDuringIsolated)
                 {
                     Log("Isolated Level, not activating");
                     return;
                 }
-
-
 
                 GameObject.Destroy(GameObject.Find("Color Setter"));
                 environmentColorsSetter = Resources.FindObjectsOfTypeAll<EnvironmentColorsSetter>().FirstOrDefault();
@@ -415,8 +414,10 @@
                     playerInfo = false;
                     Log("Player is null");
                 }
-
                 CheckGMPModifiers();
+                
+
+
 
             }
         }
@@ -692,6 +693,7 @@
             GMPUI.disableFireworks = ModPrefs.GetBool("GameplayModifiersPlus", "DisableFireworks", false, false);
             GMPUI.chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
             GMPUI.allowMulti = ModPrefs.GetBool("GameplayModifiersPlus", "allowMulti", false, true);
+            GMPUI.disableRipple = ModPrefs.GetBool("GameplayModifiersPlus", "DisableRipple", false, false);
         }
 
         public IEnumerator GrabPP()
@@ -982,10 +984,10 @@
                         break;
 
                     case "Beat Saber Multiplayer":
-                        multi = new GamePlayModifiersPlus.Multiplayer.MultiMain();
-                        multi.Initialize();
-                        multiInstalled = true;
-                        Log("Multiplayer Detected, enabling multiplayer functionality");
+                //        multi = new GamePlayModifiersPlus.Multiplayer.MultiMain();
+                  //      multi.Initialize();
+                    //    multiInstalled = true;
+                      //  Log("Multiplayer Detected, enabling multiplayer functionality");
                         break;
 
                     case "CustomColorsEdit":

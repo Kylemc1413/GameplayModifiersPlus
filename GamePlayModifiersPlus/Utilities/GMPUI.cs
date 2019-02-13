@@ -46,9 +46,27 @@
         public static bool angleShift = false;
         public static bool removeCrouchWalls = false;
         public static bool disableFireworks = false;
+        public static bool disableRipple = false;
         public static void CreateUI()
         {
             GetIcons();
+
+            if (BS_Utils.Gameplay.GetUserInfo.GetUserID() == 76561198047644920)
+            {
+
+                CustomUI.MenuButton.MenuButtonUI.AddButton("AYAYA", null, _GMPIcon);
+                CustomUI.MenuButton.MenuButtonUI.AddButton("papatutuwawa", null, _GMPIcon);
+                CustomUI.MenuButton.MenuButtonUI.AddButton("chikin dayo", null, _GMPIcon);
+                CustomUI.MenuButton.MenuButtonUI.AddButton("cececlown", null, _GMPIcon);
+                CustomUI.MenuButton.MenuButtonUI.AddButton("desu", null, _GMPIcon);
+                CustomUI.MenuButton.MenuButtonUI.AddButton("Smilew", null, _GMPIcon);
+                CustomUI.MenuButton.MenuButtonUI.AddButton("hamnomanim", null, _GMPIcon);
+                CustomUI.MenuButton.MenuButtonUI.AddButton("catgirls", null, _GMPIcon);
+                CustomUI.MenuButton.MenuButtonUI.AddButton("mousegirl", null, _GMPIcon);
+                CustomUI.MenuButton.MenuButtonUI.AddButton("miku", null, _GMPIcon);
+                CustomUI.MenuButton.MenuButtonUI.AddButton("ohisee", null, _GMPIcon);
+
+            }
             string disableScoreString = "<size=120%><color=#ff0000ff><b><u>Disables Score Submission</u> </b></color></size> \r\n<size=100%> ";
             //Rumble Option
             var rumbleOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Controller Rumble", "MainMenu", "Toggle Controller Vibration in songs", _GMPIcon);
@@ -58,6 +76,10 @@
             var disableFireWorksOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Disable Fireworks", "MainMenu", "Disable fireworks after a song", _GMPIcon);
             disableFireWorksOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "DisableFireworks", false, false);
             disableFireWorksOption.OnToggle += (value) => { disableFireworks = value; ModPrefs.SetBool("GameplayModifiersPlus", "DisableFireworks", value); Plugin.Log("Changed value"); };
+
+            var disableRippleOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Disable Note Ripple", "MainMenu", "Disable ripple effect after cutting a note", _GMPIcon);
+            disableRippleOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "DisableRipple", false, false);
+            disableRippleOption.OnToggle += (value) => { disableRipple = value; ModPrefs.SetBool("GameplayModifiersPlus", "DisableRipple", value); Plugin.Log("Changed value"); };
 
 
             var gmp1Menu = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "GamePlayModifiersPlus", "MainMenu", "GMP1", "GameplayModifiersPlus Options", _GMPIcon);

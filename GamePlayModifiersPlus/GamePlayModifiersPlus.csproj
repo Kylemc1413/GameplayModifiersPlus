@@ -107,6 +107,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Harmony Patches\ShockWaveEffectSpawnShockWave.cs" />
     <Compile Include="Harmony Patches\ResultsViewControllerDidActivate.cs" />
     <Compile Include="Harmony Patches\StandardLevelDetailViewRefreshContent.cs" />
     <Compile Include="Multi\MultiGMPDisplay.cs" />

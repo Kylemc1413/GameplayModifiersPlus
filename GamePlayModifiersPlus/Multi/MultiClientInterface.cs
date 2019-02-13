@@ -16,7 +16,7 @@
     {
         public static bool otherGmpPlayer = false;
         public static bool initialized = false;
-        public static string playerName = "";
+     //   public static string playerName = "";
         public static string version = GamePlayModifiersPlus.Plugin.pluginVersion;
         public static bool spectating;
         public static void Init()
@@ -77,9 +77,9 @@
                     if (!GMPUI.allowMulti) return;
                     if (spectating) return;
                         otherGmpPlayer = true;
-                    if (playerName == "")
-                        playerName = Client.Instance.playerInfo.playerName;
-                    Client.Instance.playerInfo.playerName += " (GMP)";
+            //        if (playerName == "")
+             //           playerName = Client.Instance.playerInfo.playerName;
+                 //   Client.Instance.playerInfo.playerName += " (GMP)";
                     Client.disableScoreSubmission = true;
                 }
 
@@ -107,8 +107,8 @@
         }
         public static void ResetName()
         {
-            if (playerName != "")
-                Client.Instance.playerInfo.playerName = playerName;
+        //    if (playerName != "")
+        //        Client.Instance.playerInfo.playerName = playerName;
         }
     }
 }

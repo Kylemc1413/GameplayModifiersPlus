@@ -432,6 +432,9 @@
 
             text.text = text.text.Replace(" Bombs | ", "");
             dataModel.beatmapData = beatmapData;
+
+                
+            
         }
 
         public static IEnumerator SpeedChange(float length, float pitch)
@@ -607,12 +610,13 @@
 
                         }
 
-                        if(GMPUI.angleShift)
+                        if(GMPUI.angleShift && !((int)note.cutDirection >= 1000))
                         {
                             int angle = 1000;
                             switch(note.cutDirection)
                             {
                                 case NoteCutDirection.Any:
+                                    angle = -1;
                                     break;
                                 case NoteCutDirection.Down:
                                     angle = 1000;
