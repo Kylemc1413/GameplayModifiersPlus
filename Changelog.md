@@ -1,5 +1,9 @@
 #### Github: https://github.com/Kylemc1413/GameplayModifiersPlus/
 
+#### Changelog for Version 1.7.12
+- Disabled multiplayer integration for now due to apparent incompatibility with current version of multiplayer
+
+
 #### Changelog for Version 1.7.11
 - Modifier to disable note cut ripple effect
 - Fixed angle shift turning dot notes into arrow notes
