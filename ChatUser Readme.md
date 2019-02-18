@@ -6,6 +6,7 @@
 -  '!gm help' Links to readmes for people who don't know how the mod works
 - '!gm status' Displays whether chat integration is currently on, as well as who can currently use chat integration commands
 - '!gm charges' Displays the current charge count, the commands that currently have costs, and the amount of commands that can be in one message. If a command is not listed here, that means it has no cost set
+- '!currentsong' Will display information about the currently playing song if the streamer is currently in a song
 
 ### Basics
 - You can use any of the commands specified below by including '!gm' followed by a command in your message, i.e. '!gm da'
