@@ -40,5 +40,6 @@
 | OffsetRandom | For the duration, randomizes the note spawn offset |
 | Mirror | For the duration, mirrors the map |
 | Reverse | For the duration, reverses the direction the notes come from|
-| Faster (Currently Disabled) | For the duration, the song speed is altered by the multiplier |
-| Slower (Currently Disabled) | For the duration, the song speed is altered by the multiplier |
+| Faster (Only Enabled if Practice Plugin is Installed) | For the duration, the song speed is altered by the multiplier |
+| Slower (Only Enabled if Practice Plugin is Installed) | For the duration, the song speed is altered by the multiplier |
+#### If you plan on using the faster or slower commands, do not do so while using the base game to modify song speed, otherwsie hitsounds may become off sync
