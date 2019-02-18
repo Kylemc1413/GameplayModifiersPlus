@@ -103,7 +103,7 @@
 - To be used for Basic properties not attached to commands
 - Example usage: `!configchange commandsPerMessage=2` Would change the commands per message to be 2
 
-## Multiplayer Mode
+## Multiplayer Mode (Currently Disabled)
 ### Setup
 - If you have the BeatSaberMultiplayer plugin installed you can enable GMP's multiplayer functionality by toggling 'Allow in Multiplayer' in the modifiers menu, located below the Additional Modifiers Button
 - When the multiplayer functionality is enabled, if you're in a multiplayer room with another person using the same version of GMP with the multiplayer functionality enabled, the mode will activate when a song starts
