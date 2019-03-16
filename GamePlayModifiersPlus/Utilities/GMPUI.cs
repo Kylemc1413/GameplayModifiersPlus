@@ -69,15 +69,16 @@
             }
             string disableScoreString = "<size=120%><color=#ff0000ff><b><u>Disables Score Submission</u> </b></color></size> \r\n<size=100%> ";
             //Rumble Option
+            var gmpTweaksMenu = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "GMP Tweaks", "MainMenu", "gmptweaksMenu", "GameplayModifiersPlus Tweaks", _GMPIcon);
             var rumbleOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Controller Rumble", "MainMenu", "Toggle Controller Vibration in songs", _GMPIcon);
             rumbleOption.GetValue = ModPrefs.GetInt("GameplayModifiersPlus", "GameRumbleSetting", -1, false) != 1 ? false : true; ;
             rumbleOption.OnToggle += (value) => { ModPrefs.SetInt("GameplayModifiersPlus", "GameRumbleSetting", value == true ? 1 : 0); Plugin.Log("Changed value"); };
 
-            var disableFireWorksOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Disable Fireworks", "MainMenu", "Disable fireworks after a song", _GMPIcon);
+            var disableFireWorksOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Disable Fireworks", "gmptweaksMenu", "Disable fireworks after a song", _GMPIcon);
             disableFireWorksOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "DisableFireworks", false, false);
             disableFireWorksOption.OnToggle += (value) => { disableFireworks = value; ModPrefs.SetBool("GameplayModifiersPlus", "DisableFireworks", value); Plugin.Log("Changed value"); };
 
-            var disableRippleOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Disable Note Ripple", "MainMenu", "Disable ripple effect after cutting a note", _GMPIcon);
+            var disableRippleOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Disable Note Ripple", "gmptweaksMenu", "Disable ripple effect after cutting a note", _GMPIcon);
             disableRippleOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "DisableRipple", false, false);
             disableRippleOption.OnToggle += (value) => { disableRipple = value; ModPrefs.SetBool("GameplayModifiersPlus", "DisableRipple", value); Plugin.Log("Changed value"); };
 

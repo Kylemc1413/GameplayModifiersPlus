@@ -214,8 +214,8 @@
                 if(!Plugin.isValidScene)
                 TwitchConnection.Instance.SendChatMessage("No song is currently being played.");
                 else
-                    TwitchConnection.Instance.SendChatMessage("Current Song: " + Plugin.levelData.difficultyBeatmap.level.songName
-                        + " - " + Plugin.levelData.difficultyBeatmap.level.songSubName + " mapped by " + Plugin.levelData.difficultyBeatmap.level.songAuthorName);
+                    TwitchConnection.Instance.SendChatMessage("Current Song: " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.songName
+                        + " - " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.songSubName + " mapped by " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.songAuthorName);
             }
 
             if (message.Content.ToLower().Contains("!gm chargehelp"))
@@ -377,7 +377,7 @@
         public void CheckGameplayCommands(TwitchMessage message)
         {
 
-            if (message.Content.ToLower().Contains("!gm da") && !Plugin.cooldowns.GetCooldown("Note") && !Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.disappearingArrows && Plugin.commandsLeftForMessage > 0)
+            if (message.Content.ToLower().Contains("!gm da") && !Plugin.cooldowns.GetCooldown("Note") && !Plugin.levelData.GameplayCoreSceneSetupData.gameplayModifiers.disappearingArrows && Plugin.commandsLeftForMessage > 0)
             {
                 if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.daChargeCost)
                 {

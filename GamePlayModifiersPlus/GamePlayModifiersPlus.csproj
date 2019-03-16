@@ -37,8 +37,9 @@
     <Reference Include="0Harmony">
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Assembly-CSharp.dll</HintPath>
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="AsyncTwitch">
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\AsyncTwitch.dll</HintPath>
@@ -46,8 +47,9 @@
     <Reference Include="BeatSaberChallenges">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\BeatSaberChallenges.dll</HintPath>
     </Reference>
-    <Reference Include="BeatSaberCustomUI">
-      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\BeatSaberCustomUI.dll</HintPath>
+    <Reference Include="BeatSaberCustomUI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\BeatSaberCustomUI.dll</HintPath>
     </Reference>
     <Reference Include="BeatSaberMultiplayer, Version=0.5.4.2, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -81,8 +83,8 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="TextMeshPro-1.0.55.2017.1.0b12">
-      <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\TextMeshPro-1.0.55.2017.1.0b12.dll</HintPath>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>E:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.dll</HintPath>

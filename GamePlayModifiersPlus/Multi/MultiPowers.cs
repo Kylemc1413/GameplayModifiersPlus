@@ -173,10 +173,10 @@
      Plugin.Log("_beatsPerMinute " + Plugin.spawnController.GetField<float>("_beatsPerMinute").ToString());
      Plugin.Log("_moveDurationInBeats " + Plugin.spawnController.GetField<float>("_moveDurationInBeats").ToString());
      */
-            Plugin.Log("JumpOffset " + Plugin.levelData.difficultyBeatmap.noteJumpStartBeatOffset);
+            Plugin.Log("JumpOffset " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpStartBeatOffset);
             float halfJumpDur = 4f;
             float maxHalfJump = Plugin.spawnController.GetField<float>("_maxHalfJumpDistance");
-            float noteJumpStartBeatOffset = Plugin.levelData.difficultyBeatmap.noteJumpStartBeatOffset;
+            float noteJumpStartBeatOffset = Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpStartBeatOffset;
             float moveSpeed = Plugin.spawnController.GetField<float>("_moveSpeed");
             float moveDir = Plugin.spawnController.GetField<float>("_moveDurationInBeats");
             float jumpDis;
@@ -348,10 +348,10 @@
             text.text += " Speed | ";
             float beatAlignOffset = Plugin.soundEffectManager.GetField<float>("_beatAlignOffset");
             GameplayCoreSceneSetup sceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-            float songspeedmul = Plugin.levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
+            float songspeedmul = Plugin.levelData.GameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul;
             Plugin.songAudio.pitch = pitch;
             Plugin.currentSongSpeed = pitch;
-            AudioMixerSO mixer = sceneSetup.GetField<AudioMixerSO>("_audioMixer");
+            AudioManagerSO mixer = sceneSetup.GetField<AudioManagerSO>("_audioMixer");
             mixer.musicPitch = 1f / pitch;
 
             if (pitch != 1f)

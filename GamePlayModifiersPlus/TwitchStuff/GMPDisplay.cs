@@ -12,10 +12,10 @@ namespace GamePlayModifiersPlus.TwitchStuff
 {
     public class GMPDisplay : MonoBehaviour
     {
-        TextMeshPro chargeText;
-        TextMeshPro chargeCountText;
-        public TextMeshPro cooldownText;
-        public TextMeshPro activeCommandText;
+        TextMeshProUGUI chargeText;
+        TextMeshProUGUI chargeCountText;
+        public TextMeshProUGUI cooldownText;
+        public TextMeshProUGUI activeCommandText;
         Image chargeCounter;
         private void Awake()
         {
@@ -29,22 +29,15 @@ namespace GamePlayModifiersPlus.TwitchStuff
         void Init()
         {
             GameObject textObj = new GameObject("GMPDisplayText");
-            chargeText = textObj.AddComponent<TextMeshPro>();
-            chargeText.text = "Charges";
-            chargeText.fontSize = 3;
-            chargeText.color = Color.white;
-            chargeText.font = Resources.Load<TMP_FontAsset>("Teko-Medium SDF No Glow");
-            chargeText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1f);
-            chargeText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
             if (ChatConfig.uiOnTop)
             {
-              chargeText.rectTransform.position = new Vector3(0.1f, 3f, 7f);
+                textObj.transform.position = new Vector3(0.1f, 3f, 7f);
                 textObj.transform.localScale *= 1.5f;
             }
   
             else
             {
-                chargeText.rectTransform.position = new Vector3(0.2f, -1f, 7f);
+                textObj.transform.position = new Vector3(0.2f, -1f, 7f);
                 textObj.transform.localScale *= 2.0f;
             }
 
@@ -90,38 +83,48 @@ namespace GamePlayModifiersPlus.TwitchStuff
             canvasobj.GetComponent<RectTransform>().SetParent(textObj.transform, false);
             canvasobj.transform.localPosition = new Vector3(-0.1f, -.1f, 0f);
 
-            chargeCountText = new GameObject("GMPDisplayChargeCount").AddComponent<TextMeshPro>();
+            chargeText = CustomUI.BeatSaber.BeatSaberUI.CreateText(canvas.transform as RectTransform, "Charges", new Vector2(-0.25f, 0.5f));
+            chargeText.fontSize = 3;
+            chargeText.transform.localScale *= .08f;
+            chargeText.color = Color.white;
+            //    chargeText.font = Resources.Load<TMP_FontAsset>("Teko-Medium SDF No Glow");
+            chargeText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1f);
+            chargeText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
+            chargeText.GetComponent<RectTransform>().SetParent(canvas.transform, false);
+
+
+            chargeCountText = CustomUI.BeatSaber.BeatSaberUI.CreateText(canvas.transform as RectTransform, Plugin.charges.ToString(), new Vector2(0, 0));
             chargeCountText.text = Plugin.charges.ToString();
             chargeCountText.alignment = TextAlignmentOptions.Center;
+            chargeCountText.transform.localScale *= .08f;
             chargeCountText.fontSize = 2.5f;
             chargeCountText.color = Color.white;
-            chargeCountText.font = Resources.Load<TMP_FontAsset>("Teko-Medium SDF No Glow");
             chargeCountText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1f);
             chargeCountText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
-            chargeCountText.GetComponent<RectTransform>().SetParent(textObj.transform, false);
-            chargeCountText.transform.localPosition = new Vector3(-0.0925f, -.13f, 0f);
+            chargeCountText.GetComponent<RectTransform>().SetParent(canvas.transform, false);
+         //   chargeCountText.transform.localPosition = new Vector3(-0.0925f, -.13f, 0f);
 
-            cooldownText = new GameObject("GMPDisplayCoolDown").AddComponent<TextMeshPro>();
+            cooldownText = CustomUI.BeatSaber.BeatSaberUI.CreateText(canvas.transform as RectTransform, Plugin.charges.ToString(), new Vector2(-1f, 0.015f));
             cooldownText.text = "";
             cooldownText.alignment = TextAlignmentOptions.MidlineRight;
             cooldownText.fontSize = 2.5f;
+            cooldownText.transform.localScale *= .08f;
             cooldownText.color = Color.red;
-            cooldownText.font = Resources.Load<TMP_FontAsset>("Teko-Medium SDF No Glow");
+       //     cooldownText.font = Resources.Load<TMP_FontAsset>("Teko-Medium SDF No Glow");
             cooldownText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 10f);
             cooldownText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
-            cooldownText.GetComponent<RectTransform>().SetParent(textObj.transform, false);
-            cooldownText.transform.localPosition = new Vector3(-5.5f, -.13f, 0f);
+            cooldownText.GetComponent<RectTransform>().SetParent(canvas.transform, false);
 
-            activeCommandText = new GameObject("GMPDisplayActiveCommands").AddComponent<TextMeshPro>();
+            activeCommandText = CustomUI.BeatSaber.BeatSaberUI.CreateText(canvas.transform as RectTransform, Plugin.charges.ToString(), new Vector2(1f, 0.015f));
             activeCommandText.text = "";
             activeCommandText.alignment = TextAlignmentOptions.MidlineLeft;
             activeCommandText.fontSize = 2.5f;
+            activeCommandText.transform.localScale *= .08f;
             activeCommandText.color = Color.yellow;
-            activeCommandText.font = Resources.Load<TMP_FontAsset>("Teko-Medium SDF No Glow");
+       //     activeCommandText.font = Resources.Load<TMP_FontAsset>("Teko-Medium SDF No Glow");
             activeCommandText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 10f);
             activeCommandText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
-            activeCommandText.GetComponent<RectTransform>().SetParent(textObj.transform, false);
-            activeCommandText.transform.localPosition = new Vector3(5.3f, -.13f, 0f);
+            activeCommandText.GetComponent<RectTransform>().SetParent(canvas.transform, false);
         }
 
         void Update()

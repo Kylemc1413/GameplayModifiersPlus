@@ -6,6 +6,7 @@
     using IllusionPlugin;
     using System;
     using System.Collections;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Media;
@@ -21,8 +22,8 @@
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.7.12";
-        public static string pluginVersion = "1.7.12";
+        public string Version => "1.9.0";
+        public static string pluginVersion = "1.9.0";
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -61,7 +62,7 @@
         public static bool firstLoad = true;
         public static VRController leftController;
         public static VRController rightController;
-        public static StandardLevelSceneSetupDataSO levelData;
+        public static BS_Utils.Gameplay.LevelData levelData;
         private static bool invalidForScoring = false;
         private static bool _hasRegistered = false;
         public static BeatmapObjectSpawnController spawnController;
@@ -101,7 +102,6 @@
         static ColorManager ColorManager;
         public static bool activateDuringIsolated = false;
         public static HarmonyInstance harmony;
-
         internal static bool customColorsInstalled = false;
         internal static bool AsyncInstalled = false;
         GameObject chatPowers = null;
@@ -175,7 +175,7 @@
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode arg1)
         {
 
-            if (scene.name == "Menu")
+            if (scene.name == "MenuCore")
             {
                 ReadPrefs();
                 try
@@ -195,7 +195,7 @@
         private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
         {
 
-            if (scene.name == ("Menu"))
+            if (scene.name == ("MenuCore"))
             {
                 activateDuringIsolated = false;
                 Log("Switched to Menu");
@@ -203,7 +203,6 @@
 
                 if (AsyncInstalled)
                     InitAsync();
-
                 var controllers = Resources.FindObjectsOfTypeAll<VRController>();
                 if (controllers != null)
                 {
@@ -339,23 +338,29 @@
                     Log("Isolated Level, not activating");
                     return;
                 }
-
+           //     Log("Pre GrabGrab");
                 GameObject.Destroy(GameObject.Find("Color Setter"));
                 environmentColorsSetter = Resources.FindObjectsOfTypeAll<EnvironmentColorsSetter>().FirstOrDefault();
-                soundEffectManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().First();
-                levelData = Resources.FindObjectsOfTypeAll<StandardLevelSceneSetupDataSO>().First();
-                spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().First();
+                soundEffectManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().FirstOrDefault();
+                spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().FirstOrDefault();
                 energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().First();
                 energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().First();
                 ColorManager = Resources.FindObjectsOfTypeAll<ColorManager>().First();
-                spawnController.noteDidStartJumpEvent += SpawnController_ModifiedJump;
-                spawnController.noteWasCutEvent += SpawnController_ScaleRemoveCut;
-                spawnController.noteWasMissedEvent += SpawnController_ScaleRemoveMiss;
+                levelData = BS_Utils.Plugin.LevelData;
+            //    Log("Post GrabGrab");
+                if (spawnController != null)
+                {
+                    spawnController.noteDidStartJumpEvent += SpawnController_ModifiedJump;
+                    spawnController.noteWasCutEvent += SpawnController_ScaleRemoveCut;
+                    spawnController.noteWasMissedEvent += SpawnController_ScaleRemoveMiss;
 
-                currentSongSpeed = levelData.gameplayCoreSetupData.gameplayModifiers.songSpeedMul;
+                }
+                else Log("Spawn Controller Null");
+             //   Log("Post GrabGrab 2");
+                currentSongSpeed = levelData.GameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul;
 
-                levelData.didFinishEvent += LevelData_didFinishEvent;
-
+                BS_Utils.Plugin.LevelDidFinishEvent += LevelData_didFinishEvent;
+             //   Log("Post GrabGrab 3");
                 if (!Multiplayer.MultiMain.multiActive.Value)
                 {
                     if (GMPUI.chatIntegration && ChatConfig.maxCharges > 0 && AsyncInstalled)
@@ -363,22 +368,23 @@
                     if (GMPUI.chatIntegration && ChatConfig.timeForCharges > 0 && AsyncInstalled)
                         twitchPowers.StartCoroutine(TwitchPowers.ChargeOverTime());
                 }
-
+             //   Log("Post GrabGrab 4");
 
 
                 pauseManager = Resources.FindObjectsOfTypeAll<StandardLevelGameplayManager>().First();
                 var colors = Resources.FindObjectsOfTypeAll<SimpleColorSO>();
+            //    Log("Pre Color");
                 foreach (SimpleColorSO color in colors)
                 {
                     //     Log(color.name);
-                    if (color.name == "Color0")
+                    if (color.name == "BaseNoteColor0")
                         colorA = color;
-                    if (color.name == "Color1")
+                    if (color.name == "BaseNoteColor1")
                         colorB = color;
                 }
                 oldColorA.SetColor(colorA);
                 oldColorB.SetColor(colorB);
-
+          //      Log("Pre ChatInt");
 
                 //      Log(colorA.color.ToString());
                 if (GMPUI.chatIntegration && charges <= ChatConfig.maxCharges && AsyncInstalled)
@@ -390,7 +396,7 @@
                 }
 
 
-
+              //  Log("Pre Audio/Player");
                 //   ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 1f);
                 AudioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
                 if (AudioTimeSync != null)
@@ -423,20 +429,18 @@
         }
 
 
-
-
         private void SpawnController_ScaleRemoveMiss(BeatmapObjectSpawnController arg1, NoteController controller)
         {
             //         Log(songAudio.time.ToString());
             NoteData note = controller.noteData;
-            Transform noteTransform = controller.GetField<Transform>("_noteTransform");
+            Transform noteTransform = controller.transform;
             //      Log("DESPAWN" + noteTransform.localScale.ToString());
-            if (noteTransform.localScale.x != 1)
+            if (noteTransform?.localScale.x != 1)
                 noteTransform.localScale = new Vector3(1f, 1f, 1f);
             //      Log("DESPAWN" + noteTransform.localScale.ToString());
             //        if (modifiedNotes[note.id] != null)
             //           note = modifiedNotes[note.id];
-            FloatBehavior behavior = noteTransform.gameObject.GetComponent<FloatBehavior>();
+            FloatBehavior behavior = noteTransform?.gameObject.GetComponent<FloatBehavior>();
             if (behavior != null)
             {
 
@@ -449,7 +453,7 @@
         private void SpawnController_ScaleRemoveCut(BeatmapObjectSpawnController arg1, NoteController controller, NoteCutInfo arg3)
         {
             NoteData note = controller.noteData;
-            Transform noteTransform = controller.GetField<Transform>("_noteTransform");
+            Transform noteTransform = controller.transform;
             //      Log("DESPAWN" + noteTransform.localScale.ToString());
             if (noteTransform.localScale.x != 1)
                 noteTransform.localScale = new Vector3(1f, 1f, 1f);
@@ -493,11 +497,11 @@
                 _mainSettingsModelOneC.controllersRumbleEnabled = true;
                 Saber.SaberType targetType = (leftDist > rightDist) ? Saber.SaberType.SaberB : Saber.SaberType.SaberA;
                 if (!(Mathf.Abs(leftDist - rightDist) <= 0.2f))
-                    _noteCutHapticEffect.RumbleController(targetType);
+                    _noteCutHapticEffect.HitNote(targetType);
                 else
                 {
-                    _noteCutHapticEffect.RumbleController(Saber.SaberType.SaberA);
-                    _noteCutHapticEffect.RumbleController(Saber.SaberType.SaberB);
+                    _noteCutHapticEffect.HitNote(Saber.SaberType.SaberA);
+                    _noteCutHapticEffect.HitNote(Saber.SaberType.SaberB);
                 }
                 _mainSettingsModel.controllersRumbleEnabled = false;
 
@@ -518,11 +522,11 @@
 
             }
 
-            Transform noteTransform = controller.GetField<Transform>("_noteTransform");
+            Transform noteTransform = controller.transform;
             //       noteTransform.Translate(0f, 4f, 0f);
             if (GMPUI.funky)
             {
-                noteTransform.gameObject.AddComponent<FloatBehavior>();
+                noteTransform?.gameObject.AddComponent<FloatBehavior>();
 
 
             }
@@ -572,7 +576,7 @@
 
         }
 
-        private void LevelData_didFinishEvent(StandardLevelSceneSetupDataSO arg1, LevelCompletionResults arg2)
+        private void LevelData_didFinishEvent(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults arg2)
         {
             if (arg2.levelEndStateType == LevelCompletionResults.LevelEndStateType.Quit) return;
             if (arg2.levelEndStateType == LevelCompletionResults.LevelEndStateType.Restart) return;
@@ -699,12 +703,14 @@
         public IEnumerator GrabPP()
         {
             yield return new WaitForSecondsRealtime(1f);
+            //
+            //
             var texts = Resources.FindObjectsOfTypeAll<TMP_Text>();
             if (texts != null)
                 foreach (TMP_Text text in texts)
                 {
                     if (text != null)
-                        if (text.ToString() == "PP (TMPro.TextMeshPro)")
+                        if (text.ToString() == "RankText (TMPro.TextMeshPro)")
                         {
                             ppText = text;
                             break;
@@ -805,10 +811,9 @@
             }
             firstLoad = false;
         }
-
-        internal static void SetPracticePluginTimeScale(float value)
+   internal static void SetPracticePluginTimeScale(float value)
         {
-                ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", value);
+            //    ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", value);
         }
         public static void SetTimeScale(float value)
         {
@@ -891,7 +896,7 @@
             if (GMPUI.bulletTime || GMPUI.removeCrouchWalls || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.angleShift || GMPUI.laneShift ||GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
             {
                 //     ApplyPatches();
-                UnityEngine.Random.InitState(Plugin.levelData.difficultyBeatmap.beatmapData.notesCount);
+                UnityEngine.Random.InitState(Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.beatmapData.notesCount);
                 BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("Gameplay Modifiers Plus");
 
                 if (GMPUI.njsRandom || GMPUI.offsetrandom)
@@ -901,8 +906,8 @@
 
                 if (GMPUI.removeCrouchWalls)
                 {
-                    if (levelData.gameplayCoreSetupData.gameplayModifiers.enabledObstacleType != GameplayModifiers.EnabledObstacleType.NoObstacles)
-                        levelData.gameplayCoreSetupData.gameplayModifiers.enabledObstacleType = GameplayModifiers.EnabledObstacleType.FullHeightOnly;
+                    if (levelData.GameplayCoreSceneSetupData.gameplayModifiers.enabledObstacleType != GameplayModifiers.EnabledObstacleType.NoObstacles)
+                        levelData.GameplayCoreSceneSetupData.gameplayModifiers.enabledObstacleType = GameplayModifiers.EnabledObstacleType.FullHeightOnly;
                 }
                 if (GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.fiveLanes || GMPUI.laneShift || GMPUI.angleShift)
                 {
