@@ -22,8 +22,8 @@
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.9.0";
-        public static string pluginVersion = "1.9.0";
+        public string Version => "1.9.1";
+        public static string pluginVersion = "1.9.1";
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -41,8 +41,6 @@
         public static bool isValidScene = false;
         public static bool gnomeActive = false;
         public static PlayerController player;
-        public static Saber leftSaber;
-        public static Saber rightSaber;
         public static bool playerInfo = false;
         public static float prevLeftPos;
         public static float prevRightPos;
@@ -377,9 +375,9 @@
                 foreach (SimpleColorSO color in colors)
                 {
                     //     Log(color.name);
-                    if (color.name == "BaseNoteColor0")
-                        colorA = color;
                     if (color.name == "BaseNoteColor1")
+                        colorA = color;
+                    if (color.name == "BaseNoteColor0")
                         colorB = color;
                 }
                 oldColorA.SetColor(colorA);
@@ -410,9 +408,6 @@
                 player = Resources.FindObjectsOfTypeAll<PlayerController>().FirstOrDefault();
                 if (player != null)
                 {
-                    leftSaber = player.leftSaber;
-                    rightSaber = player.rightSaber;
-
                     playerInfo = true;
                 }
                 else
