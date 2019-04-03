@@ -22,8 +22,8 @@
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.9.1";
-        public static string pluginVersion = "1.9.1";
+        public string Version => "1.9.2";
+        public static string pluginVersion = "1.9.2";
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -115,6 +115,8 @@
                 ApplyPatches();
             }
 
+            Sprite chromaIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.chromaIcon.png");
+            SongLoaderPlugin.SongLoader.RegisterCustomCharacteristic(chromaIcon, "ChromaToggle", "ChromaToggle", "ChromaToggle", "ChromaToggle");
             CheckPlugins();
             ChatConfig.Load();
             ReadPrefs();
@@ -232,11 +234,11 @@
                 RemovePatches();
             if (_mainSettingsModel == null)
             {
-                var menu = Resources.FindObjectsOfTypeAll<MainMenuViewController>().FirstOrDefault();
+                var menu = Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().FirstOrDefault();
                 if (menu != null)
                 {
                     _mainSettingsModel = menu.GetField<MainSettingsModel>("_mainSettingsModel");
-                    _mainSettingsModel.Load();
+                    _mainSettingsModel.Load(true);
                     Log("RUMBLE: " + _mainSettingsModel.controllersRumbleEnabled.ToString());
 
                     if (!setDefaultRumble)
@@ -253,7 +255,7 @@
             if (_mainSettingsModel != null)
             {
                 defaultRumble = ModPrefs.GetInt("GameplayModifiersPlus", "GameRumbleSetting", -1, false) != 1 ? false : true;
-                _mainSettingsModel.controllersRumbleEnabled = defaultRumble;
+                _mainSettingsModel.controllersRumbleEnabled.value = defaultRumble;
                 _mainSettingsModel.Save();
             }
 
@@ -489,7 +491,7 @@
                 float leftDist = Vector3.Distance(leftPos, notePos);
                 float rightDist = Vector3.Distance(rightPos, notePos);
                 // Log(leftDist.ToString() + "   " + rightDist.ToString());
-                _mainSettingsModelOneC.controllersRumbleEnabled = true;
+                _mainSettingsModelOneC.controllersRumbleEnabled.value = true;
                 Saber.SaberType targetType = (leftDist > rightDist) ? Saber.SaberType.SaberB : Saber.SaberType.SaberA;
                 if (!(Mathf.Abs(leftDist - rightDist) <= 0.2f))
                     _noteCutHapticEffect.HitNote(targetType);
@@ -498,7 +500,7 @@
                     _noteCutHapticEffect.HitNote(Saber.SaberType.SaberA);
                     _noteCutHapticEffect.HitNote(Saber.SaberType.SaberB);
                 }
-                _mainSettingsModel.controllersRumbleEnabled = false;
+                _mainSettingsModel.controllersRumbleEnabled.value = false;
 
 
             }

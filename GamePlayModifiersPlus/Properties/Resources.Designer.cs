@@ -102,6 +102,16 @@ namespace GamePlayModifiersPlus.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap chromaIcon {
+            get {
+                object obj = ResourceManager.GetObject("chromaIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap FunkyIcon {
             get {
                 object obj = ResourceManager.GetObject("FunkyIcon", resourceCulture);
