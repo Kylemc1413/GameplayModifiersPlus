@@ -1,9 +1,9 @@
 ﻿namespace GamePlayModifiersPlus
 {
-    using AsyncTwitch;
+    //using AsyncTwitch;
     using CustomUI.GameplaySettings;
-    using IllusionInjector;
-    using IllusionPlugin;
+    //using IllusionInjector;
+    //using IllusionPlugin;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -16,14 +16,20 @@
     using Harmony;
     using GamePlayModifiersPlus.TwitchStuff;
     using GamePlayModifiersPlus.Utilities;
+    using IPA.Old;
+    using IPA.Config;
+    using StreamCore;
+    using StreamCore.Chat;
+    using StreamCore.Config;
+    using IPA.Loader;
 
     public class Plugin : IPlugin
     {
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.9.2";
-        public static string pluginVersion = "1.9.2";
+        public string Version => "1.9.3";
+        public static string pluginVersion = "1.9.3";
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -115,6 +121,8 @@
                 ApplyPatches();
             }
 
+            TwitchWebSocketClient.Initialize();
+            TwitchAsync();
             Sprite chromaIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.chromaIcon.png");
             SongLoaderPlugin.SongLoader.RegisterCustomCharacteristic(chromaIcon, "ChromaToggle", "ChromaToggle", "ChromaToggle", "ChromaToggle");
             CheckPlugins();
@@ -142,34 +150,41 @@
 
         }
 
-        private void TwitchConnection_OnMessageReceived(TwitchConnection arg1, TwitchMessage message)
+        private void TwitchAsync()
         {
-
-            if (charges < 0) charges = 0;
-            twitchCommands.CheckChargeMessage(message);
-            twitchCommands.CheckConfigMessage(message);
-            twitchCommands.CheckStatusCommands(message);
-            twitchCommands.CheckInfoCommands(message);
-            twitchCommands.CheckSpeedCommands(message);
-
-            if (multiInstalled)
-                if (Multiplayer.MultiMain.multiActive.Value) return;
-            if (ChatConfig.allowEveryone || (ChatConfig.allowSubs && message.Author.IsSubscriber) || message.Author.IsMod)
+            TwitchMessageHandlers.PRIVMSG += (message) =>
             {
-                if (GMPUI.chatIntegration && isValidScene && !cooldowns.GetCooldown("Global") && AsyncInstalled)
+                if (message.channelName != TwitchLoginConfig.Instance.TwitchChannelName)
+                    return;
+
+                if (charges < 0) charges = 0;
+                twitchCommands.CheckChargeMessage(message);
+                twitchCommands.CheckConfigMessage(message);
+                twitchCommands.CheckStatusCommands(message);
+                twitchCommands.CheckInfoCommands(message);
+                twitchCommands.CheckSpeedCommands(message);
+
+                if (multiInstalled)
+                    if (Multiplayer.MultiMain.multiActive.Value) return;
+                if (ChatConfig.allowEveryone || (ChatConfig.allowSubs && message.user.isSub) || message.user.isMod)
                 {
-                    commandsLeftForMessage = ChatConfig.commandsPerMessage;
-                    twitchCommands.CheckPauseMessage(message);
-                    twitchCommands.CheckGameplayCommands(message);
-                    twitchCommands.CheckHealthCommands(message);
-                    twitchCommands.CheckSizeCommands(message);
-                    //     twitchCommands.CheckSpeedCommands(message);
-                    twitchCommands.CheckGlobalCoolDown();
+                    if (GMPUI.chatIntegration && isValidScene && !cooldowns.GetCooldown("Global") && AsyncInstalled)
+                    {
+                        commandsLeftForMessage = ChatConfig.commandsPerMessage;
+                        twitchCommands.CheckPauseMessage(message);
+                        twitchCommands.CheckGameplayCommands(message);
+                        twitchCommands.CheckHealthCommands(message);
+                        twitchCommands.CheckSizeCommands(message);
+                        //     twitchCommands.CheckSpeedCommands(message);
+                        twitchCommands.CheckGlobalCoolDown();
+                    }
                 }
-            }
-            trySuper = false;
-            sizeActivated = false;
-            healthActivated = false;
+                trySuper = false;
+                sizeActivated = false;
+                healthActivated = false;
+            };
+
+            
         }
 
         private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode arg1)
@@ -202,7 +217,7 @@
                 SharedCoroutineStarter.instance.StartCoroutine(GrabPP());
 
                 if (AsyncInstalled)
-                    InitAsync();
+                    Log("StreamCore Installed");
                 var controllers = Resources.FindObjectsOfTypeAll<VRController>();
                 if (controllers != null)
                 {
@@ -651,7 +666,7 @@
         {
             CustomColors.Plugin.OverrideCustomSaberColors(left, right);
         }
-        public static bool IsModInstalled(string modName)
+        public static bool isModInstalled(string modName)
         {
             foreach (IPlugin p in PluginManager.Plugins)
             {
@@ -981,7 +996,7 @@
             {
                 switch (plugin.Name)
                 {
-                    case "Asynchronous Twitch Library":
+                    case "StreamCore":
                         AsyncInstalled = true;
                         break;
 
@@ -1017,15 +1032,11 @@
             {
                 try
                 {
-                    TwitchConnection.Instance.StartConnection();
-                    TwitchConnection.Instance.RegisterOnMessageReceived(TwitchConnection_OnMessageReceived);
-                    if (multiInstalled)
-                        TwitchConnection.Instance.RegisterOnMessageReceived(multi.TwitchConnectionMulti_OnMessageReceived);
+                    //honestly too lazy to remove this cause i dont wanna break anything
                     _hasRegistered = true;
                 }
                 catch (Exception ex)
                 {
-                    Log("Failed To Connect with Async Twitch, Check Config and Internet Connection");
                     Log(ex.ToString());
                 }
 
@@ -1041,7 +1052,7 @@
         }
         internal static void SendAsyncMessage(string message)
         {
-            TwitchConnection.Instance.SendChatMessage(message);
+            TwitchWebSocketClient.SendMessage(message);
         }
     }
 }

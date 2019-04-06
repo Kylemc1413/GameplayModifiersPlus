@@ -1,8 +1,6 @@
 ﻿namespace GamePlayModifiersPlus.Multiplayer
 {
-    using AsyncTwitch;
-    using IllusionInjector;
-    using IllusionPlugin;
+    
     using System;
     using System.Collections;
     using System.IO;

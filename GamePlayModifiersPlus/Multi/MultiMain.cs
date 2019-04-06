@@ -1,8 +1,7 @@
 ﻿namespace GamePlayModifiersPlus.Multiplayer
 {
-    using AsyncTwitch;
-    using IllusionInjector;
-    using IllusionPlugin;
+    using StreamCore.Chat;
+    using StreamCore.Config;
     using System;
     using System.Collections;
     using System.IO;
@@ -21,17 +20,22 @@
         public static bool? multiActive = false;
         public static bool activated = false;
         public static string currentPowerUp = "Charging...";
-        public void TwitchConnectionMulti_OnMessageReceived(TwitchConnection arg1, TwitchMessage message)
+        public void TwitchAsync()
         {
-            if (multiActive.Value)
+            TwitchMessageHandlers.PRIVMSG += (message) =>
             {
-                string messageString = message.Content.ToLower();
-                multiCommands.CheckHealthCommands(messageString);
-                multiCommands.CheckSizeCommands(messageString);
-                multiCommands.CheckGameplayCommands(messageString);
-                multiCommands.CheckSpeedCommands(messageString);
+                if (message.channelName != TwitchLoginConfig.Instance.TwitchChannelName)
+                    return;
 
-            }
+                if (multiActive.Value)
+                {
+                    string messageString = message.message.ToLower();
+                    multiCommands.CheckHealthCommands(messageString);
+                    multiCommands.CheckSizeCommands(messageString);
+                    multiCommands.CheckGameplayCommands(messageString);
+                    multiCommands.CheckSpeedCommands(messageString);
+                }
+            };
         }
 
         public void Initialize()

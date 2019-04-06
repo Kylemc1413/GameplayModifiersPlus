@@ -1,6 +1,7 @@
 ﻿namespace GamePlayModifiersPlus
 {
-    using AsyncTwitch;
+    //using AsyncTwitch;
+    using StreamCore.Chat;
     using UnityEngine;
     public class TwitchCommands
     {
@@ -8,7 +9,7 @@
 
         public void CheckPauseMessage(TwitchMessage message)
         {
-            if (message.Content.ToLower().Contains("!gm pause") && Plugin.commandsLeftForMessage > 0)
+            if (message.message.ToLower().Contains("!gm pause") && Plugin.commandsLeftForMessage > 0)
             {
 
                 if (Plugin.charges >= ChatConfig.pauseChargeCost)
@@ -26,18 +27,18 @@
         public void CheckChargeMessage(TwitchMessage message)
         {
 
-            if (message.BitAmount >= ChatConfig.bitsPerCharge && ChatConfig.bitsPerCharge > 0)
+            if (message.bits >= ChatConfig.bitsPerCharge && ChatConfig.bitsPerCharge > 0)
             {
 
-                Plugin.charges += (message.BitAmount / ChatConfig.bitsPerCharge);
-                TwitchConnection.Instance.SendChatMessage("Current Charges: " + Plugin.charges);
+                Plugin.charges += (message.bits / ChatConfig.bitsPerCharge);
+                TwitchWebSocketClient.SendMessage("Current Charges: " + Plugin.charges);
             }
-            if (message.Author.DisplayName.ToLower().Contains("kyle1413k") && message.Content.ToLower().Contains("!charge"))
+            if (message.user.displayName.ToLower().Contains("kyle1413k") && message.message.ToLower().Contains("!charge"))
             {
                 Plugin.charges += (ChatConfig.chargesForSuperCharge / 2 + 5);
-                TwitchConnection.Instance.SendChatMessage("Current Charges: " + Plugin.charges);
+                TwitchWebSocketClient.SendMessage("Current Charges: " + Plugin.charges);
             }
-            if (message.Content.ToLower().Contains("!gm") && message.Content.ToLower().Contains("super"))
+            if (message.message.ToLower().Contains("!gm") && message.message.ToLower().Contains("super"))
             {
                 Plugin.trySuper = true;
             }
@@ -45,9 +46,9 @@
 
         public void CheckConfigMessage(TwitchMessage message)
         {
-            string messageString = message.Content.ToLower();
+            string messageString = message.message.ToLower();
             if (!messageString.Contains("!configchange")) return;
-            if (!(message.Author.IsMod && ChatConfig.allowModCommands) && !message.Author.IsBroadcaster) return;
+            if (!(message.user.isMod && ChatConfig.allowModCommands) && !message.user.isBroadcaster) return;
             string command = "";
             string property = "";
             bool isPropertyOnly = false;
@@ -205,64 +206,65 @@
 
         public void CheckInfoCommands(TwitchMessage message)
         {
-            if (message.Content.ToLower().Contains("!gm help"))
+            if (message.message.ToLower().Contains("!gm help"))
             {
-                TwitchConnection.Instance.SendChatMessage("Guides: For Regular Users - http://bit.ly/1413ChatUser | For Streamers - http://bit.ly/1413Readme | For moderators also view http://bit.ly/1413Config");
+                TwitchWebSocketClient.SendMessage("Guides: For Regular Users - http://bit.ly/1413ChatUser | For Streamers - http://bit.ly/1413Readme | For moderators also view http://bit.ly/1413Config");
+                
             }
-            if (message.Content.ToLower().Contains("!currentsong"))
+            if (message.message.ToLower().Contains("!currentsong"))
             {
                 if(!Plugin.isValidScene)
-                TwitchConnection.Instance.SendChatMessage("No song is currently being played.");
+                TwitchWebSocketClient.SendMessage("No song is currently being played.");
                 else
-                    TwitchConnection.Instance.SendChatMessage("Current Song: " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.songName
+                    TwitchWebSocketClient.SendMessage("Current Song: " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.songName
                         + " - " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.songSubName + " mapped by " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.songAuthorName);
             }
 
-            if (message.Content.ToLower().Contains("!gm chargehelp"))
+            if (message.message.ToLower().Contains("!gm chargehelp"))
             {
                 if (ChatConfig.timeForCharges == 0 || ChatConfig.chargesOverTime == 0)
-                    TwitchConnection.Instance.SendChatMessage("Every " + ChatConfig.bitsPerCharge + " bits sent with a message adds a charge, which are used to activate commands! If you add super at the end of a command, it will cost " + ChatConfig.chargesForSuperCharge + " Charges but will make the effect last much longer! " + ChatConfig.chargesPerLevel + " Charges are generated every song with chat mode on.");
+                    TwitchWebSocketClient.SendMessage("Every " + ChatConfig.bitsPerCharge + " bits sent with a message adds a charge, which are used to activate commands! If you add super at the end of a command, it will cost " + ChatConfig.chargesForSuperCharge + " Charges but will make the effect last much longer! " + ChatConfig.chargesPerLevel + " Charges are generated every song with chat mode on.");
                 else
-                    TwitchConnection.Instance.SendChatMessage("Every " + ChatConfig.bitsPerCharge + " bits sent with a message adds a charge, which are used to activate commands! If you add super at the end of a command, it will cost " + ChatConfig.chargesForSuperCharge + " Charges but will make the effect last much longer! " + ChatConfig.chargesPerLevel + " Charges are generated every song with chat mode on. Every " + ChatConfig.timeForCharges + " seconds, " + ChatConfig.chargesOverTime + " are added.");
+                    TwitchWebSocketClient.SendMessage("Every " + ChatConfig.bitsPerCharge + " bits sent with a message adds a charge, which are used to activate commands! If you add super at the end of a command, it will cost " + ChatConfig.chargesForSuperCharge + " Charges but will make the effect last much longer! " + ChatConfig.chargesPerLevel + " Charges are generated every song with chat mode on. Every " + ChatConfig.timeForCharges + " seconds, " + ChatConfig.chargesOverTime + " are added.");
 
             }
-            if (message.Content.ToLower().Contains("!gm commands"))
+            if (message.message.ToLower().Contains("!gm commands"))
             {
-                TwitchConnection.Instance.SendChatMessage("Currently supported commands | status: Currrent Status of chat integration | charges: view current charges and costs | chargehelp: Explain charge system");
+                TwitchWebSocketClient.SendMessage("Currently supported commands | status: Currrent Status of chat integration | charges: view current charges and costs | chargehelp: Explain charge system");
             }
 
 
-            if (message.Content.ToLower().Contains("!gm charges"))
+            if (message.message.ToLower().Contains("!gm charges"))
             {
-                TwitchConnection.Instance.SendChatMessage("Charges: " + Plugin.charges + " | Commands Per Message: " + ChatConfig.commandsPerMessage + " | " + ChatConfig.GetChargeCostString());
+                TwitchWebSocketClient.SendMessage("Charges: " + Plugin.charges + " | Commands Per Message: " + ChatConfig.commandsPerMessage + " | " + ChatConfig.GetChargeCostString());
             }
         }
 
         public void CheckStatusCommands(TwitchMessage message)
         {
-            if (message.Author.IsBroadcaster || message.Author.IsMod)
+            if (message.user.isBroadcaster || message.user.isMod)
             {
-                if (message.Content.ToLower().Contains("!gm reset"))
+                if (message.message.ToLower().Contains("!gm reset"))
                 {
                     Plugin.cooldowns.ResetCooldowns();
                     TwitchPowers.ResetPowers(true);
                     Plugin.twitchPowers.StopAllCoroutines();
                     Plugin.charges = ChatConfig.chargesPerLevel;
-                    TwitchConnection.Instance.SendChatMessage("Resetting non Permanent Powers");
+                    TwitchWebSocketClient.SendMessage("Resetting non Permanent Powers");
                 }
 
 
             }
 
 
-            if (message.Content.ToLower().Contains("!gm pp"))
+            if (message.message.ToLower().Contains("!gm pp"))
             {
                 if (Plugin.currentpp != 0)
-                    TwitchConnection.Instance.SendChatMessage("Streamer Rank: #" + Plugin.currentRank + ". Streamer pp: " + Plugin.currentpp + "pp");
+                    TwitchWebSocketClient.SendMessage("Streamer Rank: #" + Plugin.currentRank + ". Streamer pp: " + Plugin.currentpp + "pp");
                 else
-                    TwitchConnection.Instance.SendChatMessage("Currently do not have streamer info");
+                    TwitchWebSocketClient.SendMessage("Currently do not have streamer info");
             }
-            if (message.Content.ToLower().Contains("!gm status"))
+            if (message.message.ToLower().Contains("!gm status"))
             {
                 string scopeMessage = "";
                 int scope = CheckCommandScope();
@@ -282,9 +284,9 @@
 
                 Plugin.beepSound.Play();
                 if (GMPUI.chatIntegration)
-                    TwitchConnection.Instance.SendChatMessage("Chat Integration Enabled. " + scopeMessage);
+                    TwitchWebSocketClient.SendMessage("Chat Integration Enabled. " + scopeMessage);
                 else
-                    TwitchConnection.Instance.SendChatMessage("Chat Integration Not Enabled. " + scopeMessage);
+                    TwitchWebSocketClient.SendMessage("Chat Integration Not Enabled. " + scopeMessage);
             }
         }
 
@@ -292,7 +294,7 @@
         {
             if (!Plugin.cooldowns.GetCooldown("Health"))
             {
-                if (message.Content.ToLower().Contains("!gm instafail"))
+                if (message.message.ToLower().Contains("!gm instafail"))
                 {
 
                     if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.instaFailChargeCost)
@@ -320,7 +322,7 @@
 
                 }
 
-                if (message.Content.ToLower().Contains("!gm invincible") && !Plugin.healthActivated && !Plugin.cooldowns.GetCooldown("Health"))
+                if (message.message.ToLower().Contains("!gm invincible") && !Plugin.healthActivated && !Plugin.cooldowns.GetCooldown("Health"))
                 {
                     if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.invincibleChargeCost)
                     {
@@ -343,7 +345,7 @@
                     }
 
                 }
-                if (message.Content.ToLower().Contains("!gm poison"))
+                if (message.message.ToLower().Contains("!gm poison"))
                 {
 
                     if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.poisonChargeCost)
@@ -377,7 +379,7 @@
         public void CheckGameplayCommands(TwitchMessage message)
         {
 
-            if (message.Content.ToLower().Contains("!gm da") && !Plugin.cooldowns.GetCooldown("Note") && !Plugin.levelData.GameplayCoreSceneSetupData.gameplayModifiers.disappearingArrows && Plugin.commandsLeftForMessage > 0)
+            if (message.message.ToLower().Contains("!gm da") && !Plugin.cooldowns.GetCooldown("Note") && !Plugin.levelData.GameplayCoreSceneSetupData.gameplayModifiers.disappearingArrows && Plugin.commandsLeftForMessage > 0)
             {
                 if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.daChargeCost)
                 {
@@ -401,7 +403,7 @@
                 }
             }
 
-            if (message.Content.ToLower().Contains("!gm njsrandom") && !Plugin.cooldowns.GetCooldown("RandomNJS") && Plugin.commandsLeftForMessage > 0)
+            if (message.message.ToLower().Contains("!gm njsrandom") && !Plugin.cooldowns.GetCooldown("RandomNJS") && Plugin.commandsLeftForMessage > 0)
             {
 
                 if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.njsRandomChargeCost)
@@ -425,7 +427,7 @@
                 }
             }
 
-            if (message.Content.ToLower().Contains("!gm offsetrandom") && !Plugin.cooldowns.GetCooldown("OffsetRandom") && Plugin.commandsLeftForMessage > 0)
+            if (message.message.ToLower().Contains("!gm offsetrandom") && !Plugin.cooldowns.GetCooldown("OffsetRandom") && Plugin.commandsLeftForMessage > 0)
             {
 
                 if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.offsetrandomChargeCost)
@@ -449,7 +451,7 @@
                 }
             }
 
-            if (message.Content.ToLower().Contains("!gm noarrows") && !Plugin.cooldowns.GetCooldown("NoArrows") && Plugin.commandsLeftForMessage > 0)
+            if (message.message.ToLower().Contains("!gm noarrows") && !Plugin.cooldowns.GetCooldown("NoArrows") && Plugin.commandsLeftForMessage > 0)
             {
 
                 if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.noArrowsChargeCost)
@@ -473,7 +475,7 @@
                 }
             }
 
-            if (message.Content.ToLower().Contains("!gm mirror") && !Plugin.cooldowns.GetCooldown("Mirror") && Plugin.commandsLeftForMessage > 0)
+            if (message.message.ToLower().Contains("!gm mirror") && !Plugin.cooldowns.GetCooldown("Mirror") && Plugin.commandsLeftForMessage > 0)
             {
 
                 if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.mirrorChargeCost)
@@ -497,7 +499,7 @@
                 }
             }
 
-            if (message.Content.ToLower().Contains("!gm reverse") && !Plugin.cooldowns.GetCooldown("Reverse") && Plugin.commandsLeftForMessage > 0)
+            if (message.message.ToLower().Contains("!gm reverse") && !Plugin.cooldowns.GetCooldown("Reverse") && Plugin.commandsLeftForMessage > 0)
             {
 
                 if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.reverseChargeCost)
@@ -521,7 +523,7 @@
                 }
             }
 
-            if (message.Content.ToLower().Contains("!gm funky") && !Plugin.cooldowns.GetCooldown("Funky") && Plugin.commandsLeftForMessage > 0)
+            if (message.message.ToLower().Contains("!gm funky") && !Plugin.cooldowns.GetCooldown("Funky") && Plugin.commandsLeftForMessage > 0)
             {
 
                 if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.funkyChargeCost)
@@ -544,7 +546,7 @@
                     globalActive = true;
                 }
             }
-            if (message.Content.ToLower().Contains("!gm rainbow") && !Plugin.cooldowns.GetCooldown("Rainbow") && Plugin.commandsLeftForMessage > 0)
+            if (message.message.ToLower().Contains("!gm rainbow") && !Plugin.cooldowns.GetCooldown("Rainbow") && Plugin.commandsLeftForMessage > 0)
             {
 
                 if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.rainbowChargeCost)
@@ -568,7 +570,7 @@
                 }
             }
 
-            if (message.Content.ToLower().Contains("!gm bombs") && !Plugin.cooldowns.GetCooldown("Bombs") && Plugin.commandsLeftForMessage > 0 && ChatConfig.bombsChance > 0)
+            if (message.message.ToLower().Contains("!gm bombs") && !Plugin.cooldowns.GetCooldown("Bombs") && Plugin.commandsLeftForMessage > 0 && ChatConfig.bombsChance > 0)
             {
 
                 if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.bombsChargeCost)
@@ -598,7 +600,7 @@
 
         public void CheckSizeCommands(TwitchMessage message)
         {
-            if (message.Content.ToLower().Contains("!gm smaller") && !Plugin.cooldowns.GetCooldown("NormalSize") && Plugin.commandsLeftForMessage > 0)
+            if (message.message.ToLower().Contains("!gm smaller") && !Plugin.cooldowns.GetCooldown("NormalSize") && Plugin.commandsLeftForMessage > 0)
             {
                 if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.smallerChargeCost)
                 {
@@ -624,7 +626,7 @@
 
             }
 
-            if (message.Content.ToLower().Contains("!gm larger") && !Plugin.cooldowns.GetCooldown("NormalSize") && !Plugin.sizeActivated && Plugin.commandsLeftForMessage > 0)
+            if (message.message.ToLower().Contains("!gm larger") && !Plugin.cooldowns.GetCooldown("NormalSize") && !Plugin.sizeActivated && Plugin.commandsLeftForMessage > 0)
             {
                 if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.largerChargeCost)
                 {
@@ -648,7 +650,7 @@
 
             }
 
-            if (message.Content.ToLower().Contains("!gm random") && !Plugin.cooldowns.GetCooldown("Random") && Plugin.commandsLeftForMessage > 0)
+            if (message.message.ToLower().Contains("!gm random") && !Plugin.cooldowns.GetCooldown("Random") && Plugin.commandsLeftForMessage > 0)
             {
                 if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.randomChargeCost)
                 {
@@ -676,7 +678,7 @@
 
         public void CheckSpeedCommands(TwitchMessage message)
         {
-            if (message.Content.ToLower().Contains("!gm faster") && !Plugin.cooldowns.GetCooldown("Speed") && Plugin.commandsLeftForMessage > 0)
+            if (message.message.ToLower().Contains("!gm faster") && !Plugin.cooldowns.GetCooldown("Speed") && Plugin.commandsLeftForMessage > 0)
             {
                 if (!Plugin.practicePluginInstalled)
                 {
@@ -703,7 +705,7 @@
                     globalActive = true;
                 }
             }
-            if (message.Content.ToLower().Contains("!gm slower") && !Plugin.cooldowns.GetCooldown("Speed") && Plugin.commandsLeftForMessage > 0)
+            if (message.message.ToLower().Contains("!gm slower") && !Plugin.cooldowns.GetCooldown("Speed") && Plugin.commandsLeftForMessage > 0)
             {
                 if (!Plugin.practicePluginInstalled)
                 {

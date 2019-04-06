@@ -3,7 +3,7 @@
     using System;
     using UnityEngine;
     using CustomUI.GameplaySettings;
-    using IllusionPlugin;
+    using IPA.Config;
 
     public class GMPUI
     {
