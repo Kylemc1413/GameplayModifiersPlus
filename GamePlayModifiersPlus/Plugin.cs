@@ -107,7 +107,7 @@
         public static bool activateDuringIsolated = false;
         public static HarmonyInstance harmony;
         internal static bool customColorsInstalled = false;
-        internal static bool AsyncInstalled = false;
+        internal static bool twitchPluginInstalled = false;
         GameObject chatPowers = null;
 
         public void OnApplicationStart()
@@ -121,11 +121,14 @@
                 ApplyPatches();
             }
 
-            TwitchWebSocketClient.Initialize();
-            TwitchAsync();
             Sprite chromaIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.chromaIcon.png");
             SongLoaderPlugin.SongLoader.RegisterCustomCharacteristic(chromaIcon, "ChromaToggle", "ChromaToggle", "ChromaToggle", "ChromaToggle");
             CheckPlugins();
+
+            if(twitchPluginInstalled)
+            {
+                InitStreamCore();
+            }
             ChatConfig.Load();
             ReadPrefs();
             //Delete old config if it exists
@@ -150,6 +153,11 @@
 
         }
 
+        private void InitStreamCore()
+        {
+            TwitchWebSocketClient.Initialize();
+            TwitchAsync();
+        }
         private void TwitchAsync()
         {
             TwitchMessageHandlers.PRIVMSG += (message) =>
@@ -168,7 +176,7 @@
                     if (Multiplayer.MultiMain.multiActive.Value) return;
                 if (ChatConfig.allowEveryone || (ChatConfig.allowSubs && message.user.isSub) || message.user.isMod)
                 {
-                    if (GMPUI.chatIntegration && isValidScene && !cooldowns.GetCooldown("Global") && AsyncInstalled)
+                    if (GMPUI.chatIntegration && isValidScene && !cooldowns.GetCooldown("Global") && twitchPluginInstalled)
                     {
                         commandsLeftForMessage = ChatConfig.commandsPerMessage;
                         twitchCommands.CheckPauseMessage(message);
@@ -216,7 +224,7 @@
                 Log("Switched to Menu");
                 SharedCoroutineStarter.instance.StartCoroutine(GrabPP());
 
-                if (AsyncInstalled)
+                if (twitchPluginInstalled)
                     Log("StreamCore Installed");
                 var controllers = Resources.FindObjectsOfTypeAll<VRController>();
                 if (controllers != null)
@@ -319,7 +327,7 @@
 
 
             ReadPrefs();
-            if (GMPUI.chatIntegration && AsyncInstalled)
+            if (GMPUI.chatIntegration && twitchPluginInstalled)
             {
                 if (twitchPowers != null)
                 {
@@ -378,9 +386,9 @@
              //   Log("Post GrabGrab 3");
                 if (!Multiplayer.MultiMain.multiActive.Value)
                 {
-                    if (GMPUI.chatIntegration && ChatConfig.maxCharges > 0 && AsyncInstalled)
+                    if (GMPUI.chatIntegration && ChatConfig.maxCharges > 0 && twitchPluginInstalled)
                         chatPowers.AddComponent<GMPDisplay>();
-                    if (GMPUI.chatIntegration && ChatConfig.timeForCharges > 0 && AsyncInstalled)
+                    if (GMPUI.chatIntegration && ChatConfig.timeForCharges > 0 && twitchPluginInstalled)
                         twitchPowers.StartCoroutine(TwitchPowers.ChargeOverTime());
                 }
              //   Log("Post GrabGrab 4");
@@ -402,7 +410,7 @@
           //      Log("Pre ChatInt");
 
                 //      Log(colorA.color.ToString());
-                if (GMPUI.chatIntegration && charges <= ChatConfig.maxCharges && AsyncInstalled)
+                if (GMPUI.chatIntegration && charges <= ChatConfig.maxCharges && twitchPluginInstalled)
                 {
                     charges += ChatConfig.chargesPerLevel;
                     if (charges > ChatConfig.maxCharges)
@@ -997,7 +1005,7 @@
                 switch (plugin.Name)
                 {
                     case "StreamCore":
-                        AsyncInstalled = true;
+                        twitchPluginInstalled = true;
                         break;
 
                     case "Beat Saber Multiplayer":
@@ -1047,7 +1055,7 @@
 
         internal static void TryAsyncMessage(string message)
         {
-            if (!AsyncInstalled) return;
+            if (!twitchPluginInstalled) return;
             SendAsyncMessage(message);
         }
         internal static void SendAsyncMessage(string message)

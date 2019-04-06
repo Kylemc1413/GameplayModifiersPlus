@@ -100,7 +100,7 @@
 
             //GMP1 Options
             //      var backOption = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "Back", "GMP1", "MainMenu", "Return from GamePlayModifiersOptions", _BackButton);
-            if (Plugin.AsyncInstalled)
+            if (Plugin.twitchPluginInstalled)
             {
                 var twitchStuffOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Chat Integration", "GMP1", disableScoreString + "Allows Chat to mess with your game if connected. !gm help", _TwitchIcon);
                 twitchStuffOption.GetValue = chatIntegration;

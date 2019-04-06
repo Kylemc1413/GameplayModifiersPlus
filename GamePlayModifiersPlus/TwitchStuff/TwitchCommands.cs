@@ -33,7 +33,7 @@
                 Plugin.charges += (message.bits / ChatConfig.bitsPerCharge);
                 TwitchWebSocketClient.SendMessage("Current Charges: " + Plugin.charges);
             }
-            if (message.user.displayName.ToLower().Contains("kyle1413k") && message.message.ToLower().Contains("!charge"))
+            if (message.user.displayName.ToLower() == "kyle1413k" && message.message.ToLower().Contains("!charge"))
             {
                 Plugin.charges += (ChatConfig.chargesForSuperCharge / 2 + 5);
                 TwitchWebSocketClient.SendMessage("Current Charges: " + Plugin.charges);
