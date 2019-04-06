@@ -2,7 +2,8 @@
 ###### Obligatory SellOut Message: If you like the mod, consider contributing to my snack fund: [Here](https://ko-fi.com/kyle1413k)
 # Adds additional modifiers to the game, as well as Twitch Chat Integration
 
-- ### Requires StreamCore, BS Utils, and BeatSaberCustomUI 
+- ### Requires Harmony, BS Utils, and BeatSaberCustomUI 
+- #### Requires StreamCore if you plan on using Chat Integration
 
 # Standard Usage
 - ### There are several modifiers added to the menu that do not require setting up StreamCore, however you must do so if you plan on using chat integration
