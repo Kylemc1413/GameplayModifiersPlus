@@ -2,20 +2,20 @@
 ###### Obligatory SellOut Message: If you like the mod, consider contributing to my snack fund: [Here](https://ko-fi.com/kyle1413k)
 # Adds additional modifiers to the game, as well as Twitch Chat Integration
 
-- ### Requires AsyncTwitch, BS Utils, and BeatSaberCustomUI 
+- ### Requires StreamCore, BS Utils, and BeatSaberCustomUI 
 
 # Standard Usage
-- ### There are several modifiers added to the menu that do not require setting up Async Twitch, however you must do so if you plan on using chat integration
+- ### There are several modifiers added to the menu that do not require setting up StreamCore, however you must do so if you plan on using chat integration
 - #### Additional modifiers can be accessed through the ' Additional modifiers' option in the GameplayModfiersPlus option in the modifers panel, which can be accessed by scrolling down the right side of modifiers, below no fail
 - #### For Usage of the modifiers, refer to their tooltips that explain what they do
 - #### Any modifier that disables score submission defaults to off every time you start the game, including chat integration
 
 # Chat Integration
-- ## Make sure to edit the AsyncTwitchConfig.json located in the UserData folder, which can be found in your game installation folder, in the same directory as your game executable, if it does not exist, make sure you have async twitch installed through the mod installer, and run the game to the main menu, then close the game.
+- ## Make sure to edit the TwitchLoginInfo.ini located in the UserData/StreamCore folder, which can be found in your game installation folder, in the same directory as your game executable, if it does not exist, make sure you have StreamCore installed through the mod installer, and run the game to the main menu, then close the game.
 - ## GamePlayModifiersPlusChatSettings.ini will be genereated in the UserData folder after running the game with the plugin installed
-##### Async Twitch Setup Guide
-- Example Async Config
-![Async Config Image](https://i.imgur.com/d9abU8R.png)
+##### StreamCore Setup Guide
+- Example StreamCore Config
+![StreamCore Config Image](https://imgur.com/a/r34mRMz)
 - Make sure the game is closed before editing the config
 - Username: The name of the user the plugin will send chat messages through
 - ChannelName: The name of the channel the plugin will monitor the chat of to look for messages
@@ -23,7 +23,7 @@
 - OauthKey MUST Include the 'oauth:' part of the key that is generated
 - Do NOT freely give out your oauth key to other people, (And no that is not my actual oauth key in the image, just an example)
 
-- ### To Use Chat Integration, ensure you have set up Async Twitch to connect to your channel, then turn on the modifier, type !gm help into your chat for details on how to use it, the config for chat settings is located in `UserData/GameplayModifiersPlusChatSettings.ini` (As of Version 1.6.0 or Later it is located in `UserData/GameplayModifiersPlus.ini` instead)
+- ### To Use Chat Integration, ensure you have set up StreamCore to connect to your channel, then turn on the modifier, type !gm help into your chat for details on how to use it, the config for chat settings is located in `UserData/GameplayModifiersPlusChatSettings.ini` (As of Version 1.6.0 or Later it is located in `UserData/GameplayModifiersPlus.ini` instead)
 - ### Refer to below for more information on using chat integration, if you decide not to read it and end up confused because you did not read it, go read it. But you should probably just read it in the first place and save yourself the future trouble
 
 ## IMPORTANT COMMANDS FOR USERS - GAMEPLAY COMMANDS ARE DETAILED BELOW CONFIG

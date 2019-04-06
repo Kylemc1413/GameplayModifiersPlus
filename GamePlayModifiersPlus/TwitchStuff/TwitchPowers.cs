@@ -1,6 +1,7 @@
 ﻿namespace GamePlayModifiersPlus
 {
-    using AsyncTwitch;
+    
+    using StreamCore.Chat;
     using System.Collections;
     using System.Linq;
     using UnityEngine;
@@ -37,13 +38,13 @@
             {
                 if (ChatConfig.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
                 {
-                    TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + ChatConfig.globalCommandCooldown + " seconds.");
+                    TwitchWebSocketClient.SendMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + ChatConfig.globalCommandCooldown + " seconds.");
                 }
                 else
-                    TwitchConnection.Instance.SendChatMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
+                    TwitchWebSocketClient.SendMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
             }
             else
-                TwitchConnection.Instance.SendChatMessage(message);
+                TwitchWebSocketClient.SendMessage(message);
 
 
             yield return new WaitForSeconds(waitTime);

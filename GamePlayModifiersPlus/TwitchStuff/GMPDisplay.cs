@@ -22,10 +22,6 @@ namespace GamePlayModifiersPlus.TwitchStuff
             Init();
         }
 
-
-
-
-
         void Init()
         {
             GameObject textObj = new GameObject("GMPDisplayText");
