@@ -28,8 +28,8 @@
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.9.3";
-        public static string pluginVersion = "1.9.3";
+        public string Version => "1.10.0";
+        public static string pluginVersion = "1.10.0";
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -120,10 +120,7 @@
                 harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
                 ApplyPatches();
             }
-
-            Sprite chromaIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.chromaIcon.png");
-            SongLoaderPlugin.SongLoader.RegisterCustomCharacteristic(chromaIcon, "ChromaToggle", "ChromaToggle", "ChromaToggle", "ChromaToggle");
-            CheckPlugins();
+                CheckPlugins();
 
             if(twitchPluginInstalled)
             {
@@ -224,8 +221,6 @@
                 Log("Switched to Menu");
                 SharedCoroutineStarter.instance.StartCoroutine(GrabPP());
 
-                if (twitchPluginInstalled)
-                    Log("StreamCore Installed");
                 var controllers = Resources.FindObjectsOfTypeAll<VRController>();
                 if (controllers != null)
                 {
@@ -994,6 +989,12 @@
                 }
 
                 modifiersInit = true;
+            }
+
+            if(GMPUI.tunnel)
+            {
+                Log("Tunnel Activating");
+                SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.PermaEncasement(0f));
             }
         }
 

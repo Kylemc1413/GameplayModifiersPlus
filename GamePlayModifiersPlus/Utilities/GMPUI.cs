@@ -47,6 +47,7 @@
         public static bool removeCrouchWalls = false;
         public static bool disableFireworks = false;
         public static bool disableRipple = false;
+        public static bool tunnel = false;
         public static void CreateUI()
         {
             GetIcons();
@@ -126,6 +127,11 @@
             rainbowOption.GetValue = rainbow;
             rainbowOption.OnToggle += (value) => { rainbow = value; Plugin.Log("Changed value"); };
             rainbowOption.AddConflict("Chat Integration");
+
+            var tunnelOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Tunnel", "GMP2", "Play the song in a tunnel", _GMPIcon);
+            tunnelOption.GetValue = tunnel;
+            tunnelOption.OnToggle += (value) => { tunnel = value; Plugin.Log("Changed value"); };
+
 
             var reverseOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Reversal ", "GMP2", disableScoreString + "Reverses the direction the notes come from", _SwapSabersIcon);
             reverseOption.GetValue = reverse;

@@ -6,7 +6,7 @@
     using System.Linq;
     using UnityEngine;
     using UnityEngine.UI;
-
+    using System.Collections.Generic;
     public class TwitchPowers : MonoBehaviour
     {
         public static IEnumerator ChargeOverTime()
@@ -139,9 +139,8 @@
 
         public static IEnumerator TestingGround(float length)
         {
-            yield return new WaitForSecondsRealtime(10f);
-
-            StaticLights();
+            yield return new WaitForSecondsRealtime(0f);
+            SharedCoroutineStarter.instance.StartCoroutine(Encasement(0f, Plugin.songAudio.clip.length));
         }
 
         public static void AdjustNJS(float njs)
@@ -788,6 +787,7 @@
             }
         }
 
+
         public static void StaticLights()
         {
 
@@ -973,5 +973,101 @@
             }
 
         }
+
+
+        public static IEnumerator MadScience(float length)
+        {
+            yield return new WaitForSeconds(0f);
+            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
+            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
+            Plugin.Log("Grabbed dataModel");
+            BeatmapData beatmapData = dataModel.beatmapData;
+            List<BeatmapObjectData> objects;
+            float start = Plugin.songAudio.time + 2;
+            float end = start + length + 2f;
+            foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
+            {
+                objects = line.beatmapObjectsData.ToList();
+                for (int i = 0; i < objects.Count; ++i)
+                {
+                    BeatmapObjectData beatmapObject = objects[i];
+                    if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
+                    objects.Add(NoteToWall(beatmapObject, Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.beatsPerMinute));
+                }
+                objects = objects.OrderBy(o => o.time).ToList();
+                line.beatmapObjectsData = objects.ToArray();
+                objects.Clear();
+            }
+            yield return new WaitForSeconds(length + 2f);
+            dataModel.beatmapData = beatmapData;
+
+
+
+        }
+
+        public static IEnumerator Encasement(float start, float duration)
+        {
+            yield return new WaitForSeconds(0.1f);
+            float startTime = start;
+            float durationTime = duration;
+
+
+            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
+            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
+            Plugin.Log("Grabbed dataModel");
+            BeatmapData beatmapData = dataModel.beatmapData;
+            List<BeatmapObjectData> objects;
+            objects = beatmapData.beatmapLinesData[0].beatmapObjectsData.ToList();
+            objects.Add(new ObstacleData(14131, startTime, -1, (ObstacleType)4000, durationTime, 1001));
+            objects.Add(new ObstacleData(14132, startTime,  4, (ObstacleType)4000, durationTime, 1001));
+            objects.Add(new ObstacleData(14133, startTime, -1, (ObstacleType)1001, durationTime, 6500));
+            objects.Add(new ObstacleData(14134, startTime, -1, (ObstacleType)5000, durationTime, 6500));
+            objects = objects.OrderBy(o => o.time).ToList();
+            beatmapData.beatmapLinesData[0].beatmapObjectsData = objects.ToArray();
+            objects.Clear();
+
+
+
+        }
+
+        public static IEnumerator PermaEncasement(float start)
+        {
+            yield return new WaitForSeconds(0f);
+            float startTime = start;
+            float durationTime = Plugin.songAudio.clip.length;
+
+
+            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
+            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
+            Plugin.Log("Grabbed dataModel");
+            BeatmapData beatmapData = dataModel.beatmapData;
+            List<BeatmapObjectData> objects;
+            objects = beatmapData.beatmapLinesData[0].beatmapObjectsData.ToList();
+            objects.Add(new ObstacleData(14131, startTime, -1, (ObstacleType)4000, durationTime, 1001));
+            objects.Add(new ObstacleData(14132, startTime, 4, (ObstacleType)4000, durationTime, 1001));
+            objects.Add(new ObstacleData(14133, startTime, -1, (ObstacleType)1001, durationTime, 6500));
+            objects.Add(new ObstacleData(14134, startTime, -1, (ObstacleType)5000, durationTime, 6500));
+            objects = objects.OrderBy(o => o.time).ToList();
+            beatmapData.beatmapLinesData[0].beatmapObjectsData = objects.ToArray();
+            objects.Clear();
+
+
+
+        }
+        public static BeatmapObjectData NoteToWall(BeatmapObjectData original, float bpm)
+        {
+            NoteData note = original as NoteData;
+            int startHeight = 120 + (((int)note.noteLineLayer) * 120);
+            int height = 150;
+            int width = 1800;
+            int type = height * 1000 + startHeight + 4001;
+            float duration = (bpm / 60f) * (1f/32f);
+            
+            BeatmapObjectData newWall = new ObstacleData(original.id * 14130, original.time, original.lineIndex, (ObstacleType)type, duration, width);
+            return newWall;
+        }
+
+
+
     }
 }
