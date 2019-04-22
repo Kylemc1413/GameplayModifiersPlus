@@ -119,7 +119,7 @@
             chargesForSuperCharge = Plugin.ChatConfigSettings.GetInt("Charges", "chargesForSuperCharge", 10, true);
             chargesPerLevel = Plugin.ChatConfigSettings.GetInt("Charges", "chargesPerLevel", 10, true);
             chargesOverTime = Plugin.ChatConfigSettings.GetInt("Charges", "chargesOverTime", 1, true);
-            timeForCharges = Plugin.ChatConfigSettings.GetInt("Charges", "timeForCharges", 15, true);
+            timeForCharges = Plugin.ChatConfigSettings.GetFloat("Charges", "timeForCharges", 15f, true);
             bitsPerCharge = Plugin.ChatConfigSettings.GetInt("Charges", "bitsPerCharge", 10, true);
 
             // COMMANDS
@@ -249,6 +249,7 @@
         public static void ChangeConfigValue(string property, string value)
         {
             bool success = true;
+            property = property.ToLower();
             Plugin.Log("Config Change Attempt: " + property + " " + value);
             switch (property)
             {

@@ -23,7 +23,6 @@ namespace GamePlayModifiersPlus.Harmony_Patches
                 if(playerLevelStats != null)
             if(playerLevelStats.validScore)
             {
-                
                int highScore =  int.Parse(____highScoreText.text);
                 int maxScore = ScoreController.MaxScoreForNumberOfNotes(____selectedDifficultyBeatmap.beatmapData.notesCount);
                 float percent = (float)highScore / maxScore;

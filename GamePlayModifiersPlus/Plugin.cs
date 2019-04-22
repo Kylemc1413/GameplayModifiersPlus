@@ -28,8 +28,8 @@
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.10.0";
-        public static string pluginVersion = "1.10.0";
+        public string Version => "1.10.2";
+        public static string pluginVersion = "1.10.2";
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -448,7 +448,7 @@
         {
             //         Log(songAudio.time.ToString());
             NoteData note = controller.noteData;
-            Transform noteTransform = controller.transform;
+            Transform noteTransform = controller.noteTransform;
             //      Log("DESPAWN" + noteTransform.localScale.ToString());
             if (noteTransform?.localScale.x != 1)
                 noteTransform.localScale = new Vector3(1f, 1f, 1f);
@@ -468,7 +468,7 @@
         private void SpawnController_ScaleRemoveCut(BeatmapObjectSpawnController arg1, NoteController controller, NoteCutInfo arg3)
         {
             NoteData note = controller.noteData;
-            Transform noteTransform = controller.transform;
+            Transform noteTransform = controller.noteTransform;
             //      Log("DESPAWN" + noteTransform.localScale.ToString());
             if (noteTransform.localScale.x != 1)
                 noteTransform.localScale = new Vector3(1f, 1f, 1f);
@@ -537,7 +537,7 @@
 
             }
 
-            Transform noteTransform = controller.transform;
+            Transform noteTransform = controller.noteTransform;
             //       noteTransform.Translate(0f, 4f, 0f);
             if (GMPUI.funky)
             {
@@ -547,7 +547,6 @@
             }
 
 
-            //          Transform noteTransform = controller.GetField<Transform>("_noteTransform");
             //       Log("SPAWN" + noteTransform.localScale.ToString());
             if (GMPUI.chatIntegration || GMPUI.randomSize || Multiplayer.MultiMain.multiActive.Value)
             {
@@ -828,7 +827,7 @@
         }
    internal static void SetPracticePluginTimeScale(float value)
         {
-            //    ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", value);
+                ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", value);
         }
         public static void SetTimeScale(float value)
         {
