@@ -28,8 +28,8 @@
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.10.2";
-        public static string pluginVersion = "1.10.2";
+        public string Version => "1.10.4";
+        public static string pluginVersion = "1.10.4";
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -1000,11 +1000,12 @@
 
         internal void CheckPlugins()
         {
-            foreach (IPlugin plugin in PluginManager.Plugins)
+            foreach (IPlugin plugin in IPA.Loader.PluginManager.Plugins)
             {
                 switch (plugin.Name)
                 {
                     case "StreamCore":
+                    case "Stream Core":
                         twitchPluginInstalled = true;
                         break;
 
@@ -1015,7 +1016,7 @@
                       //  Log("Multiplayer Detected, enabling multiplayer functionality");
                         break;
 
-                    case "CustomColorsEdit":
+                    case "CustomColorsEdit":  case "Custom Colors":
                         customColorsInstalled = true;
                         break;
 
@@ -1026,6 +1027,40 @@
                         mappingExtensionsPresent = true;
                         break;
                     case "Practice Plugin":
+                    case "PracticePlugin":
+                        practicePluginInstalled = true;
+                        break;
+
+                }
+
+            }
+            foreach (PluginLoader.PluginInfo plugin in IPA.Loader.PluginManager.AllPlugins)
+            {
+                switch (plugin.Metadata.Id)
+                {
+                    case "Stream Core":
+                        twitchPluginInstalled = true;
+                        break;
+
+                    case "Beat Saber Multiplayer":
+                        //        multi = new GamePlayModifiersPlus.Multiplayer.MultiMain();
+                        //      multi.Initialize();
+                        //    multiInstalled = true;
+                        //  Log("Multiplayer Detected, enabling multiplayer functionality");
+                        break;
+
+                    case "Custom Colors":
+                        customColorsInstalled = true;
+                        break;
+
+                    case "BeatSaberChallenges":
+                        ChallengeIntegration.AddListeners();
+                        break;
+                    case "Mapping Extensions":
+                        mappingExtensionsPresent = true;
+                        break;
+                    case "Practice Plugin":
+                    case "PracticePlugin":
                         practicePluginInstalled = true;
                         break;
 
