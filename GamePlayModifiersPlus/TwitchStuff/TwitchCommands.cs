@@ -6,7 +6,7 @@
     public class TwitchCommands
     {
         public static bool globalActive = false;
-
+        
         public void CheckPauseMessage(TwitchMessage message)
         {
             if (message.message.ToLower().Contains("!gm pause") && Plugin.commandsLeftForMessage > 0)

@@ -20,7 +20,7 @@
 
         internal void Update()
         {
-            Plugin.Log(transform.localPosition.ToString());
+   //         Plugin.Log(transform.localPosition.ToString());
             transform.localPosition = new Vector3(
                transform.localPosition.x,
                 (originalY) + ((float)Math.Sin(Time.time * frequency) * floatStrength),

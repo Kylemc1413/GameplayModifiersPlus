@@ -28,8 +28,8 @@
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.10.4";
-        public static string pluginVersion = "1.10.4";
+        public string Version => "1.11.40";
+        public static string pluginVersion = "1.11.0";
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -907,17 +907,24 @@
 
         public static void CheckGMPModifiers()
         {
+         //   Log($"badNote: {energyCounter.GetField("_badNoteEnergyDrain")}");
+         //   Log($"missNote: {energyCounter.GetField("_missNoteEnergyDrain")}");
+         //   Log($"goodNote: {energyCounter.GetField("_goodNoteEnergyCharge")}");
+         //   Log($"obstaclePerSec: {energyCounter.GetField("_obstacleEnergyDrainPerSecond")}");
+         //   Log($"hitBomb: {energyCounter.GetField("_hitBombEnergyDrain")}");
+
+
             if (GMPUI.bulletTime || GMPUI.removeCrouchWalls || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.angleShift || GMPUI.laneShift ||GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
             {
                 //     ApplyPatches();
                 UnityEngine.Random.InitState(Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.beatmapData.notesCount);
-                BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("Gameplay Modifiers Plus");
+                BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("Yourself. Nice pause idjot");
 
                 if (GMPUI.njsRandom || GMPUI.offsetrandom)
                 {
                     SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.RandomNjsOrOffset());
                 }
-
+                
                 if (GMPUI.removeCrouchWalls)
                 {
                     if (levelData.GameplayCoreSceneSetupData.gameplayModifiers.enabledObstacleType != GameplayModifiers.EnabledObstacleType.NoObstacles)
