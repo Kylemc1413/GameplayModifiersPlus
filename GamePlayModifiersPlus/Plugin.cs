@@ -28,8 +28,8 @@
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.11.40";
-        public static string pluginVersion = "1.11.0";
+        public string Version => "1.11.1";
+        public static string pluginVersion = "1.11.1";
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -167,7 +167,7 @@
                 twitchCommands.CheckConfigMessage(message);
                 twitchCommands.CheckStatusCommands(message);
                 twitchCommands.CheckInfoCommands(message);
-                twitchCommands.CheckSpeedCommands(message);
+         //       twitchCommands.CheckSpeedCommands(message);
 
                 if (multiInstalled)
                     if (Multiplayer.MultiMain.multiActive.Value) return;
@@ -176,11 +176,11 @@
                     if (GMPUI.chatIntegration && isValidScene && !cooldowns.GetCooldown("Global") && twitchPluginInstalled)
                     {
                         commandsLeftForMessage = ChatConfig.commandsPerMessage;
+                        twitchCommands.CheckSpeedCommands(message);
                         twitchCommands.CheckPauseMessage(message);
                         twitchCommands.CheckGameplayCommands(message);
                         twitchCommands.CheckHealthCommands(message);
                         twitchCommands.CheckSizeCommands(message);
-                        //     twitchCommands.CheckSpeedCommands(message);
                         twitchCommands.CheckGlobalCoolDown();
                     }
                 }
@@ -592,10 +592,10 @@
 
         private void LevelData_didFinishEvent(StandardLevelScenesTransitionSetupDataSO arg1, LevelCompletionResults arg2)
         {
-            if (arg2.levelEndStateType == LevelCompletionResults.LevelEndStateType.Quit) return;
-            if (arg2.levelEndStateType == LevelCompletionResults.LevelEndStateType.Restart) return;
+            if (arg2.levelEndAction == LevelCompletionResults.LevelEndAction.Quit) return;
+            if (arg2.levelEndAction == LevelCompletionResults.LevelEndAction.Restart) return;
             if (GMPUI.repeatSong)
-                ReflectionUtil.SetProperty(arg2, "levelEndStateType", LevelCompletionResults.LevelEndStateType.Restart);
+                ReflectionUtil.SetProperty(arg2, "levelEndAction", LevelCompletionResults.LevelEndAction.Restart);
         }
 
         public void OnApplicationQuit()
@@ -1030,7 +1030,7 @@
                     case "BeatSaberChallenges":
                         ChallengeIntegration.AddListeners();
                         break;
-                    case "Mapping Extensions":
+                    case "MappingExtensions":
                         mappingExtensionsPresent = true;
                         break;
                     case "Practice Plugin":
@@ -1063,7 +1063,7 @@
                     case "BeatSaberChallenges":
                         ChallengeIntegration.AddListeners();
                         break;
-                    case "Mapping Extensions":
+                    case "MappingExtensions":
                         mappingExtensionsPresent = true;
                         break;
                     case "Practice Plugin":

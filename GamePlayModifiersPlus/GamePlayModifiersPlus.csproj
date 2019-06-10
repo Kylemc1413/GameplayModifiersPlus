@@ -83,8 +83,8 @@
     <Reference Include="PracticePlugin">
       <HintPath>..\..\..\..\..\..\..\..\..\Programs\Steam\steamapps\common\Beat Saber\Plugins\PracticePlugin.dll</HintPath>
     </Reference>
-    <Reference Include="SongLoaderPlugin">
-      <HintPath>..\..\..\..\..\..\..\..\..\Programs\Steam\steamapps\common\Beat Saber\Plugins\SongLoaderPlugin.dll</HintPath>
+    <Reference Include="SongCore">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\SongCore.dll</HintPath>
     </Reference>
     <Reference Include="StreamCore">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\StreamCore.dll</HintPath>

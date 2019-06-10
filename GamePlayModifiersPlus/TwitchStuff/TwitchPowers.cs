@@ -307,9 +307,9 @@
                 njs = UnityEngine.Random.Range(ChatConfig.njsRandomMin, ChatConfig.njsRandomMax);
             if (GMPUI.reverse)
                 njs *= -1;
-            int noteJumpStartBeatOffset = Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpStartBeatOffset;
+            float noteJumpStartBeatOffset = Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpStartBeatOffset;
             if (GMPUI.offsetrandom)
-                noteJumpStartBeatOffset += UnityEngine.Random.Range(ChatConfig.offsetrandomMin, ChatConfig.offsetrandomMax);
+                noteJumpStartBeatOffset += UnityEngine.Random.Range((float)ChatConfig.offsetrandomMin, (float)ChatConfig.offsetrandomMax);
             float halfJumpDur = 4f;
             float maxHalfJump = Plugin.spawnController.GetField<float>("_maxHalfJumpDistance");
             float moveSpeed = Plugin.spawnController.GetField<float>("_moveSpeed");

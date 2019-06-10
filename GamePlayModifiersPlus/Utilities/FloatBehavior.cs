@@ -25,6 +25,12 @@
                transform.localPosition.x,
                 (originalY) + ((float)Math.Sin(Time.time * frequency) * floatStrength),
                 transform.localPosition.z);
+            /*
+ *             transform.localPosition = new Vector3(
+   (originalX) + ((float)Math.Sin(Time.time * frequency) * floatStrength),
+    transform.localPosition.y,
+    transform.localPosition.z);
+    */
         }
     }
 }
