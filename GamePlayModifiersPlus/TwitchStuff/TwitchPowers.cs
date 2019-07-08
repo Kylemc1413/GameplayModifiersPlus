@@ -490,6 +490,7 @@
         {
 
             yield return new WaitForSeconds(0f);
+            MappingExtensions.Plugin.ForceActivateForSong();
             GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
             BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
             Plugin.Log(dataModel.beatmapData.bombsCount.ToString());
@@ -831,6 +832,7 @@
                 }
             }
             //Adjust Sabers for one color
+            yield return new WaitForSeconds(0.2f);
             var leftSaberType = Plugin.player.leftSaber.GetField<SaberTypeObject>("_saberType");
 
             try
@@ -842,8 +844,7 @@
                 Plugin.Log(ex.ToString());
             }
 
-            Plugin.Log("2 " + Plugin.player.leftSaber.saberType.ToString());
-            yield return new WaitForSeconds(0.1f);
+       //     Plugin.Log("2 " + Plugin.player.leftSaber.saberType.ToString());
             if (Plugin.customColorsInstalled)
                 Plugin.ResetCustomColorsSabers(Plugin.oldColorB, Plugin.oldColorB);
             /*

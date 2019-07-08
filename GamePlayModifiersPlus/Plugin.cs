@@ -28,8 +28,8 @@
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.11.1";
-        public static string pluginVersion = "1.11.1";
+        public string Version => "1.11.2";
+        public static string pluginVersion = "1.11.2";
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -102,7 +102,7 @@
         static NoteCutHapticEffect _noteCutHapticEffect;
         static HapticFeedbackController _hapticFeedbackController;
         static MainSettingsModel _mainSettingsModel;
-        static MainSettingsModel _mainSettingsModelOneC;
+        static BoolSO _RumbleEnabledOneC;
         static ColorManager ColorManager;
         public static bool activateDuringIsolated = false;
         public static HarmonyInstance harmony;
@@ -496,9 +496,9 @@
                 if (_noteCutHapticEffect != null)
                     _hapticFeedbackController = ReflectionUtil.GetPrivateField<HapticFeedbackController>(_noteCutHapticEffect, "_hapticFeedbackController");
                 if (_hapticFeedbackController != null)
-                    _mainSettingsModelOneC = ReflectionUtil.GetPrivateField<MainSettingsModel>(_hapticFeedbackController, "_mainSettingsModel");
+                    _RumbleEnabledOneC = ReflectionUtil.GetPrivateField<BoolSO>(_hapticFeedbackController, "_controllersRumbleEnabled");
 
-                if (_mainSettingsModelOneC == null) return;
+                if (_RumbleEnabledOneC == null) return;
                 Vector3 notePos = controller.noteTransform.position;
 
                 Vector3 leftPos = player.leftSaber.transform.position;
@@ -509,7 +509,7 @@
                 float leftDist = Vector3.Distance(leftPos, notePos);
                 float rightDist = Vector3.Distance(rightPos, notePos);
                 // Log(leftDist.ToString() + "   " + rightDist.ToString());
-                _mainSettingsModelOneC.controllersRumbleEnabled.value = true;
+                _RumbleEnabledOneC.value = true;
                 Saber.SaberType targetType = (leftDist > rightDist) ? Saber.SaberType.SaberB : Saber.SaberType.SaberA;
                 if (!(Mathf.Abs(leftDist - rightDist) <= 0.2f))
                     _noteCutHapticEffect.HitNote(targetType);
@@ -518,7 +518,7 @@
                     _noteCutHapticEffect.HitNote(Saber.SaberType.SaberA);
                     _noteCutHapticEffect.HitNote(Saber.SaberType.SaberB);
                 }
-                _mainSettingsModel.controllersRumbleEnabled.value = false;
+                _RumbleEnabledOneC.value = false;
 
 
             }
