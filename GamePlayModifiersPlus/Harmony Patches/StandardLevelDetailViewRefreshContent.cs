@@ -13,13 +13,13 @@ namespace GamePlayModifiersPlus.Harmony_Patches
 
     class StandardLevelDetailViewRefreshContent
     {
-        static void Postfix(StandardLevelDetailViewController __instance, ref LevelParamsPanel ____levelParamsPanel, ref TextMeshProUGUI ____highScoreText, ref IDifficultyBeatmap ____selectedDifficultyBeatmap, ref IPlayer ____player)
+        static void Postfix(StandardLevelDetailViewController __instance, ref LevelParamsPanel ____levelParamsPanel, ref TextMeshProUGUI ____highScoreText, ref IDifficultyBeatmap ____selectedDifficultyBeatmap, ref PlayerData ____playerData)
         {
 
             try
             {
                 IBeatmapLevel level = ____selectedDifficultyBeatmap.level;
-                PlayerDataModelSO.LocalPlayer localPlayer = ____player as PlayerDataModelSO.LocalPlayer;
+                PlayerData localPlayer = ____playerData;
                 if (localPlayer != null)
                 {
                     PlayerLevelStatsData playerLevelStats = localPlayer.GetPlayerLevelStatsData(level.levelID, ____selectedDifficultyBeatmap.difficulty, ____selectedDifficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic);

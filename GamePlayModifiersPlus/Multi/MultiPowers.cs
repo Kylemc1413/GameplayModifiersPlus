@@ -354,10 +354,10 @@
             AudioManagerSO mixer = sceneSetup.GetField<AudioManagerSO>("_audioMixer");
             mixer.musicPitch = 1f / pitch;
 
-            if (pitch != 1f)
-                Plugin.AudioTimeSync.forcedAudioSync = true;
-            else
-                Plugin.AudioTimeSync.forcedAudioSync = false;
+      //      if (pitch != 1f)
+      //          Plugin.AudioTimeSync.forcedAudioSync = true;
+      //      else
+      //          Plugin.AudioTimeSync.forcedAudioSync = false;
             Plugin.soundEffectManager.SetField("_beatAlignOffset", beatAlignOffset * (1.5f * pitch));
 
             yield return new WaitForSeconds(length);
@@ -369,7 +369,7 @@
             if (songspeedmul == 1f)
             {
                 mixer.musicPitch = 1;
-                Plugin.AudioTimeSync.forcedAudioSync = false;
+           //     Plugin.AudioTimeSync.forcedAudioSync = false;
             }
             Plugin.soundEffectManager.SetField("_beatAlignOffset", beatAlignOffset);
             text.text = text.text.Replace(" Speed | ", "");
@@ -427,24 +427,6 @@
             GMPUI.rainbow = false;
             Plugin.colorA.SetColor(Plugin.oldColorA);
             Plugin.colorB.SetColor(Plugin.oldColorB);
-            if (Plugin.environmentColorsSetter != null)
-            {
-                Color overrrideA = Plugin.environmentColorsSetter.GetField<Color>("_overrideColorA");
-                Color overrrideB = Plugin.environmentColorsSetter.GetField<Color>("_overrideColorB");
-                if (Plugin.customColorsInstalled)
-                {
-                    if (Plugin.IsCustomColorsDisabled() || Plugin.DoesCustomColorsAllowEnvironmentColors())
-                    {
-                        Plugin.colorB.SetColor(overrrideA);
-                        Plugin.colorA.SetColor(overrrideB);
-                    }
-                }
-                else
-                {
-                    Plugin.colorB.SetColor(overrrideA);
-                    Plugin.colorA.SetColor(overrrideB);
-                }
-            }
             text.text = text.text.Replace(" Rainbow | ", "");
         }
         

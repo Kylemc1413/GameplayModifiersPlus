@@ -902,28 +902,7 @@
                     Plugin.ResetCustomColorsSabers(Plugin.oldColorA, Plugin.oldColorB);
                 else
                     Plugin.ResetCustomColorsSabers(Plugin.oldColorB, Plugin.oldColorB);
-            if (Plugin.environmentColorsSetter != null)
-            {
-                Color overrrideA = Plugin.environmentColorsSetter.GetField<Color>("_overrideColorA");
-                Color overrrideB = Plugin.environmentColorsSetter.GetField<Color>("_overrideColorB");
-                if (Plugin.customColorsInstalled)
-                {
-                    if (Plugin.IsCustomColorsDisabled() || Plugin.DoesCustomColorsAllowEnvironmentColors())
-                    {
-                        Plugin.colorB.SetColor(overrrideA);
-                        Plugin.colorA.SetColor(overrrideB);
-                        if (!GMPUI.oneColor)
-                            Plugin.ResetCustomColorsSabers(overrrideB, overrrideA);
-                        else
-                            Plugin.ResetCustomColorsSabers(overrrideA, overrrideA);
-                    }
-                }
-                else
-                {
-                    Plugin.colorB.SetColor(overrrideA);
-                    Plugin.colorA.SetColor(overrrideB);
-                }
-            }
+           
             text.text = text.text.Replace(" Rainbow | ", "");
         }
 
@@ -933,10 +912,11 @@
             {
                 try
                 {
-                    SaberAfterCutSwingRatingCounter counter = Plugin.player.leftSaber.CreateAfterCutSwingRatingCounter();
-                    counter.SetField("_rating", 1f);
+                    SaberSwingRatingCounter counter = Plugin.player.leftSaber.CreateSwingRatingCounter(gameNoteController.noteTransform);
+                    counter.SetField("_beforeCutRating", 1f);
+                    counter.SetField("_afterCutRating", 1f);
                     gameNoteController.InvokeMethod("SendNoteWasCutEvent",(new NoteCutInfo(true, true, true, false, 999f, Vector3.down,
-                        (gameNoteController.noteData.noteType == NoteType.NoteA) ? Saber.SaberType.SaberA : Saber.SaberType.SaberB, 1f, 0f, 0f, Vector3.down, new Vector3(0.0001f, 0.00001f, 0.00001f), counter, 0f)));
+                        (gameNoteController.noteData.noteType == NoteType.NoteA) ? Saber.SaberType.SaberA : Saber.SaberType.SaberB, 1f, 0f, Vector3.down, new Vector3(0.0001f, 0.00001f, 0.00001f), counter, 0f)));
                 }
                 catch (System.Exception ex)
                 {

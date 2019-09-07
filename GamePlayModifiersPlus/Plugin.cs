@@ -28,8 +28,8 @@
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.11.2";
-        public static string pluginVersion = "1.11.2";
+        public string Version => "1.12.0";
+        public static string pluginVersion = "1.12.0";
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
@@ -95,7 +95,6 @@
         public static float currentSongSpeed;
         public static StandardLevelGameplayManager pauseManager;
         public static NoteCutSoundEffectManager soundEffectManager;
-        public static EnvironmentColorsSetter environmentColorsSetter;
         public static bool defaultRumble = true;
         static bool setDefaultRumble = false;
         static NoteCutEffectSpawner _noteCutEffectSpawner;
@@ -358,7 +357,6 @@
                 }
            //     Log("Pre GrabGrab");
                 GameObject.Destroy(GameObject.Find("Color Setter"));
-                environmentColorsSetter = Resources.FindObjectsOfTypeAll<EnvironmentColorsSetter>().FirstOrDefault();
                 soundEffectManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().FirstOrDefault();
                 spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().FirstOrDefault();
                 energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().First();
@@ -532,7 +530,6 @@
             if (GMPUI.rainbow)
             {
                 Utilities.Rainbow.RandomizeColors();
-                ColorManager?.RefreshColors();
 
 
             }
@@ -614,7 +611,6 @@
 
         public void OnUpdate()
         {
-
             if (multiInstalled)
                 multi.Update();
 
@@ -843,14 +839,14 @@
 
                 if (AudioTimeSync != null)
                 {
-                    AudioTimeSync.forcedAudioSync = true;
+              //      AudioTimeSync.forcedAudioSync = true;
                 }
             }
             else
             {
                 if (AudioTimeSync != null)
                 {
-                    AudioTimeSync.forcedAudioSync = false;
+               //     AudioTimeSync.forcedAudioSync = false;
                 }
             }
 
