@@ -20,23 +20,6 @@
         public static bool? multiActive = false;
         public static bool activated = false;
         public static string currentPowerUp = "Charging...";
-        public void TwitchAsync()
-        {
-            TwitchMessageHandlers.PRIVMSG += (message) =>
-            {
-                if (message.channelName != TwitchLoginConfig.Instance.TwitchChannelName)
-                    return;
-
-                if (multiActive.Value)
-                {
-                    string messageString = message.message.ToLower();
-                    multiCommands.CheckHealthCommands(messageString);
-                    multiCommands.CheckSizeCommands(messageString);
-                    multiCommands.CheckGameplayCommands(messageString);
-                    multiCommands.CheckSpeedCommands(messageString);
-                }
-            };
-        }
 
         public void Initialize()
         {

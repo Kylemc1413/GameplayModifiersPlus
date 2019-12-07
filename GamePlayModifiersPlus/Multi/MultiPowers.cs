@@ -250,7 +250,7 @@
         public static IEnumerator Pause()
         {
             yield return new WaitForSeconds(0f);
-            StandardLevelGameplayManager pauseManager = Resources.FindObjectsOfTypeAll<StandardLevelGameplayManager>().First();
+            PauseController pauseManager = Resources.FindObjectsOfTypeAll<PauseController>().First();
             pauseManager.HandlePauseTriggered();
         }
 
@@ -259,10 +259,9 @@
             var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " NoArrows | ";
             yield return new WaitForSeconds(0f);
-            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
-            Plugin.Log("Grabbed dataModel");
-            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
             float start = Plugin.songAudio.time + 2;
@@ -296,10 +295,9 @@
 
 
             yield return new WaitForSeconds(0f);
-            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
-            Plugin.Log("Grabbed dataModel");
-            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
             float start = Plugin.songAudio.time + 2;
@@ -339,7 +337,7 @@
             yield return new WaitForSeconds(length + 2f);
 
             text.text = text.text.Replace(" Bombs | ", "");
-            dataModel.beatmapData = beatmapData;
+            callbackController.SetField("_beatmapData", beatmapData);
         }
 
         public static IEnumerator SpeedChange(float length, float pitch)
@@ -381,10 +379,9 @@
         {
 
             yield return new WaitForSeconds(0f);
-            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
-            Plugin.Log(dataModel.beatmapData.bombsCount.ToString());
-            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)

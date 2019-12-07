@@ -2,6 +2,7 @@
 {
     //using AsyncTwitch;
     using StreamCore.Chat;
+    using StreamCore.Twitch;
     using UnityEngine;
     public class TwitchCommands
     {
@@ -33,7 +34,7 @@
                 Plugin.charges += (message.bits / ChatConfig.bitsPerCharge);
                 TwitchWebSocketClient.SendMessage("Current Charges: " + Plugin.charges);
             }
-            if (message.user.displayName.ToLower() == "kyle1413k" && message.message.ToLower().Contains("!charge"))
+            if (message.user.Twitch.Twitch.displayName.ToLower() == "kyle1413k" && message.message.ToLower().Contains("!charge"))
             {
                 Plugin.charges += (ChatConfig.chargesForSuperCharge / 2 + 5);
                 TwitchWebSocketClient.SendMessage("Current Charges: " + Plugin.charges);
@@ -48,7 +49,7 @@
         {
             string messageString = message.message.ToLower();
             if (!messageString.Contains("!configchange")) return;
-            if (!(message.user.isMod && ChatConfig.allowModCommands) && !message.user.isBroadcaster) return;
+            if (!(message.user.Twitch.Twitch.isMod && ChatConfig.allowModCommands) && !message.user.Twitch.isBroadcaster) return;
             string command = "";
             string property = "";
             bool isPropertyOnly = false;
@@ -242,7 +243,7 @@
 
         public void CheckStatusCommands(TwitchMessage message)
         {
-            if (message.user.isBroadcaster || message.user.isMod)
+            if (message.user.Twitch.isBroadcaster || message.user.Twitch.isMod)
             {
                 if (message.message.ToLower().Contains("!gm reset"))
                 {

@@ -38,13 +38,13 @@
             {
                 if (ChatConfig.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
                 {
-                    TwitchWebSocketClient.SendMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + ChatConfig.globalCommandCooldown + " seconds.");
+                    StreamCore.Twitch.TwitchWebSocketClient.SendMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + ChatConfig.globalCommandCooldown + " seconds.");
                 }
                 else
-                    TwitchWebSocketClient.SendMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
+                    StreamCore.Twitch.TwitchWebSocketClient.SendMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
             }
             else
-                TwitchWebSocketClient.SendMessage(message);
+                StreamCore.Twitch.TwitchWebSocketClient.SendMessage(message);
 
 
             yield return new WaitForSeconds(waitTime);
@@ -342,7 +342,7 @@
         public static IEnumerator Pause()
         {
             yield return new WaitForSeconds(0f);
-            StandardLevelGameplayManager pauseManager = Resources.FindObjectsOfTypeAll<StandardLevelGameplayManager>().First();
+            PauseController pauseManager = Resources.FindObjectsOfTypeAll<PauseController>().First();
             pauseManager.HandlePauseTriggered();
         }
 
@@ -351,10 +351,9 @@
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " NoArrows | ";
             yield return new WaitForSeconds(0f);
-            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
-            Plugin.Log("Grabbed dataModel");
-            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
             float start = Plugin.songAudio.time + 2;
@@ -388,10 +387,9 @@
 
 
             yield return new WaitForSeconds(0f);
-            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
-            Plugin.Log("Grabbed dataModel");
-            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
             float start = Plugin.songAudio.time + 2;
@@ -431,7 +429,7 @@
             yield return new WaitForSeconds(length + 2f);
 
             text.text = text.text.Replace(" Bombs | ", "");
-            dataModel.beatmapData = beatmapData;
+            callbackController.SetField("_beatmapData", beatmapData);
 
                 
             
@@ -460,10 +458,9 @@
         {
 
             yield return new WaitForSeconds(0f);
-            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
-            Plugin.Log(dataModel.beatmapData.bombsCount.ToString());
-            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
@@ -491,10 +488,9 @@
 
             yield return new WaitForSeconds(0f);
             MappingExtensions.Plugin.ForceActivateForSong();
-            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
-            Plugin.Log(dataModel.beatmapData.bombsCount.ToString());
-            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
             System.Collections.Generic.List<float> claimedCenterTimes = new System.Collections.Generic.List<float>();
@@ -671,10 +667,9 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " Reverse | ";
-            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
-            Plugin.Log("Grabbed dataModel");
-            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
             float start = Plugin.songAudio.time + 2;
@@ -716,10 +711,9 @@
         public static IEnumerator PermaReverse()
         {
             yield return new WaitForSecondsRealtime(1f);
-            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
-            Plugin.Log("Grabbed dataModel");
-            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
             float start = Plugin.songAudio.time + 2;
@@ -752,10 +746,9 @@
         public static void MirrorSection(float length)
         {
 
-            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
-            Plugin.Log("Grabbed dataModel");
-            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
             ObstacleData obstacle;
@@ -792,10 +785,9 @@
         public static void StaticLights()
         {
 
-            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
-            Plugin.Log("Grabbed dataModel");
-            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            Plugin.Log("Grabbed BeatmapData");
             float start = Plugin.songAudio.time;
             int? nextIndex = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>()?.FirstOrDefault()?.GetField<int>("_nextEventIndex");
             BeatmapEventData[] newData = new BeatmapEventData[beatmapData.beatmapEventData.Length];
@@ -813,10 +805,9 @@
         public static IEnumerator OneColor()
         {
             yield return new WaitForSeconds(0f);
-            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
-            Plugin.Log(dataModel.beatmapData.bombsCount.ToString());
-            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
@@ -959,10 +950,9 @@
         public static IEnumerator MadScience(float length)
         {
             yield return new WaitForSeconds(0f);
-            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
-            Plugin.Log("Grabbed dataModel");
-            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            Plugin.Log("Grabbed BeatmapData");
             List<BeatmapObjectData> objects;
             float start = Plugin.songAudio.time + 2;
             float end = start + length + 2f;
@@ -980,7 +970,7 @@
                 objects.Clear();
             }
             yield return new WaitForSeconds(length + 2f);
-            dataModel.beatmapData = beatmapData;
+            callbackController.SetField("_beatmapData", beatmapData);
 
 
 
@@ -993,10 +983,9 @@
             float durationTime = duration;
 
 
-            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
-            Plugin.Log("Grabbed dataModel");
-            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            Plugin.Log("Grabbed BeatmapData");
             List<BeatmapObjectData> objects;
             objects = beatmapData.beatmapLinesData[0].beatmapObjectsData.ToList();
             objects.Add(new ObstacleData(14131, startTime, -1, (ObstacleType)4000, durationTime, 1001));
@@ -1018,10 +1007,9 @@
             float durationTime = Plugin.songAudio.clip.length;
 
 
-            GameplayCoreSceneSetup gameplayCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().First();
-            BeatmapDataModel dataModel = gameplayCoreSceneSetup.GetField<BeatmapDataModel>("_beatmapDataModel");
-            Plugin.Log("Grabbed dataModel");
-            BeatmapData beatmapData = dataModel.beatmapData;
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            Plugin.Log("Grabbed BeatmapData");
             List<BeatmapObjectData> objects;
             objects = beatmapData.beatmapLinesData[0].beatmapObjectsData.ToList();
             objects.Add(new ObstacleData(14131, startTime, -1, (ObstacleType)4000, durationTime, 1001));

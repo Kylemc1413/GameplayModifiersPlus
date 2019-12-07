@@ -8,19 +8,15 @@ using UnityEngine;
 using TMPro;
 namespace GamePlayModifiersPlus.Harmony_Patches
 {
-    [HarmonyPatch(typeof(ResultsViewController),
-           new Type[] {
-            typeof(bool),
-            typeof(VRUI.VRUIViewController.ActivationType),
-           })]
+    [HarmonyPatch(typeof(ResultsViewController))]
     [HarmonyPatch("DidActivate", MethodType.Normal)]
 
     class ResultsViewControllerDidActivate
     {
         internal static bool initialNewHighScore = false;
-        static void Prefix(bool firstActivation, VRUI.VRUIViewController.ActivationType activationType, ref ResultsViewController __instance, ref bool ____newHighScore)
+        static void Prefix(bool firstActivation, HMUI.ViewController.ActivationType activationType, ref ResultsViewController __instance, ref bool ____newHighScore)
         {
-            if (activationType == VRUI.VRUIViewController.ActivationType.AddedToHierarchy)
+            if (activationType == HMUI.ViewController.ActivationType.AddedToHierarchy)
             {
                 if (GMPUI.disableFireworks)
                 {
@@ -31,7 +27,7 @@ namespace GamePlayModifiersPlus.Harmony_Patches
 
             }
         }
-        static void Postfix(bool firstActivation, VRUI.VRUIViewController.ActivationType activationType, ref ResultsViewController __instance, ref bool ____newHighScore, ref GameObject ____newHighScoreText)
+        static void Postfix(bool firstActivation, HMUI.ViewController.ActivationType activationType, ref ResultsViewController __instance, ref bool ____newHighScore, ref GameObject ____newHighScoreText)
         {
             if (GMPUI.disableFireworks)
             {

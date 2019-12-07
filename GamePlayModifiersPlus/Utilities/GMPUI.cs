@@ -118,7 +118,7 @@
             //GMP2 Options
             var gmp2Menu = GameplaySettingsUI.CreateSubmenuOption(GameplaySettingsPanels.ModifiersRight, "Additional Modifiers", "GMP1", "GMP2", "Additional Modifiers", _GMPIcon);
             //Multiplayer Option toggle
-            var multiOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Allow in Multiplayer", "GMP1", "Allow GMP activation in multiplayer room if players equip similar version of the plugin, refer to the readme for more information. Your Version: " + Plugin.pluginVersion, _GMPIcon);
+            var multiOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Allow in Multiplayer", "GMP1", "Allow GMP activation in multiplayer room if players equip similar version of the plugin, refer to the readme for more information. Your Version: " + Plugin.Version, _GMPIcon);
             multiOption.GetValue = ModPrefs.GetBool("GameplayModifiersPlus", "allowMulti", false, true);
             multiOption.OnToggle += (value) => { allowMulti = value; ModPrefs.SetBool("GameplayModifiersPlus", "allowMulti", value); Plugin.Log("Changed value"); };
 
@@ -127,11 +127,6 @@
             rainbowOption.GetValue = rainbow;
             rainbowOption.OnToggle += (value) => { rainbow = value; Plugin.Log("Changed value"); };
             rainbowOption.AddConflict("Chat Integration");
-
-            var tunnelOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Tunnel", "GMP2", "Play the song in a tunnel", _GMPIcon);
-            tunnelOption.GetValue = tunnel;
-            tunnelOption.OnToggle += (value) => { tunnel = value; Plugin.Log("Changed value"); };
-
 
             var reverseOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Reversal ", "GMP2", disableScoreString + "Reverses the direction the notes come from", _SwapSabersIcon);
             reverseOption.GetValue = reverse;
@@ -164,6 +159,11 @@
                 var angleShiftOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Angle Shift", "GMP2", disableScoreString + "Randomly shifts notes off of their normal Angle", _GMPIcon);
                 angleShiftOption.GetValue = angleShift;
                 angleShiftOption.OnToggle += (value) => { angleShift = value; Plugin.Log("Changed value"); };
+
+                var tunnelOption = GameplaySettingsUI.CreateToggleOption(GameplaySettingsPanels.ModifiersRight, "Tunnel", "GMP2", "Play the song in a tunnel", _GMPIcon);
+                tunnelOption.GetValue = tunnel;
+                tunnelOption.OnToggle += (value) => { tunnel = value; Plugin.Log("Changed value"); };
+
 
             }
 

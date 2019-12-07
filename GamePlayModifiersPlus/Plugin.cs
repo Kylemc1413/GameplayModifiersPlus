@@ -22,21 +22,21 @@
     using StreamCore.Chat;
     using StreamCore.Config;
     using IPA.Loader;
-
-    public class Plugin : IPlugin
+    using IPA;
+    public class Plugin : IBeatSaberPlugin
     {
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
-        public string Name => "GameplayModifiersPlus";
 
-        public string Version => "1.12.0";
-        public static string pluginVersion = "1.12.0";
+
+        public static string Version = "1.13.0";
+
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
         public static bool multiInstalled = false;
         internal static bool practicePluginInstalled = false;
         internal static bool modifiersInit = false;
-        public TwitchCommands twitchCommands = new TwitchCommands();
+        public static TwitchCommands twitchCommands = new TwitchCommands();
         public static TwitchPowers twitchPowers = null;
         public static SoundPlayer gnomeSound = new SoundPlayer(Properties.Resources.gnome);
         public static SoundPlayer beepSound = new SoundPlayer(Properties.Resources.Beep);
@@ -100,7 +100,7 @@
         static NoteCutEffectSpawner _noteCutEffectSpawner;
         static NoteCutHapticEffect _noteCutHapticEffect;
         static HapticFeedbackController _hapticFeedbackController;
-        static MainSettingsModel _mainSettingsModel;
+        static MainSettingsModelSO _mainSettingsModel;
         static BoolSO _RumbleEnabledOneC;
         static ColorManager ColorManager;
         public static bool activateDuringIsolated = false;
@@ -111,17 +111,13 @@
 
         public void OnApplicationStart()
         {
-            //Asynchronous Twitch Library
-            SceneManager.activeSceneChanged += SceneManagerOnActiveSceneChanged;
-            SceneManager.sceneLoaded += SceneManager_sceneLoaded;
-            {
-                Log("Creating Harmony Instance");
-                harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
-                ApplyPatches();
-            }
-                CheckPlugins();
 
-            if(twitchPluginInstalled)
+            Log("Creating Harmony Instance");
+            harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
+            ApplyPatches();
+            CheckPlugins();
+
+            if (twitchPluginInstalled)
             {
                 InitStreamCore();
             }
@@ -151,47 +147,11 @@
 
         private void InitStreamCore()
         {
-            TwitchWebSocketClient.Initialize();
-            TwitchAsync();
-        }
-        private void TwitchAsync()
-        {
-            TwitchMessageHandlers.PRIVMSG += (message) =>
-            {
-                if (message.channelName != TwitchLoginConfig.Instance.TwitchChannelName)
-                    return;
-
-                if (charges < 0) charges = 0;
-                twitchCommands.CheckChargeMessage(message);
-                twitchCommands.CheckConfigMessage(message);
-                twitchCommands.CheckStatusCommands(message);
-                twitchCommands.CheckInfoCommands(message);
-         //       twitchCommands.CheckSpeedCommands(message);
-
-                if (multiInstalled)
-                    if (Multiplayer.MultiMain.multiActive.Value) return;
-                if (ChatConfig.allowEveryone || (ChatConfig.allowSubs && message.user.isSub) || message.user.isMod)
-                {
-                    if (GMPUI.chatIntegration && isValidScene && !cooldowns.GetCooldown("Global") && twitchPluginInstalled)
-                    {
-                        commandsLeftForMessage = ChatConfig.commandsPerMessage;
-                        twitchCommands.CheckSpeedCommands(message);
-                        twitchCommands.CheckPauseMessage(message);
-                        twitchCommands.CheckGameplayCommands(message);
-                        twitchCommands.CheckHealthCommands(message);
-                        twitchCommands.CheckSizeCommands(message);
-                        twitchCommands.CheckGlobalCoolDown();
-                    }
-                }
-                trySuper = false;
-                sizeActivated = false;
-                healthActivated = false;
-            };
-
-            
+            //    TwitchStuff.ChatMessageHandler messageHandler = new GameObject("GMP Chat Message Handler").AddComponent<ChatMessageHandler>();
+            //    GameObject.DontDestroyOnLoad(messageHandler.gameObject);
         }
 
-        private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode arg1)
+        public void OnSceneLoaded(Scene scene, LoadSceneMode arg1)
         {
 
             if (scene.name == "MenuCore")
@@ -211,10 +171,10 @@
             }
         }
 
-        private void SceneManagerOnActiveSceneChanged(Scene arg0, Scene scene)
+        public void OnActiveSceneChanged(Scene arg0, Scene scene)
         {
 
-            if (scene.name == ("MenuCore"))
+            if (scene.name == "MenuViewControllers")
             {
                 activateDuringIsolated = false;
                 Log("Switched to Menu");
@@ -254,7 +214,7 @@
                 var menu = Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().FirstOrDefault();
                 if (menu != null)
                 {
-                    _mainSettingsModel = menu.GetField<MainSettingsModel>("_mainSettingsModel");
+                    _mainSettingsModel = menu.GetField<MainSettingsModelSO>("_mainSettingsModel");
                     _mainSettingsModel.Load(true);
                     Log("RUMBLE: " + _mainSettingsModel.controllersRumbleEnabled.ToString());
 
@@ -355,7 +315,7 @@
                     Log("Isolated Level, not activating");
                     return;
                 }
-           //     Log("Pre GrabGrab");
+                //     Log("Pre GrabGrab");
                 GameObject.Destroy(GameObject.Find("Color Setter"));
                 soundEffectManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().FirstOrDefault();
                 spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().FirstOrDefault();
@@ -363,7 +323,7 @@
                 energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().First();
                 ColorManager = Resources.FindObjectsOfTypeAll<ColorManager>().First();
                 levelData = BS_Utils.Plugin.LevelData;
-            //    Log("Post GrabGrab");
+                //    Log("Post GrabGrab");
                 if (spawnController != null)
                 {
                     spawnController.noteDidStartJumpEvent += SpawnController_ModifiedJump;
@@ -372,11 +332,11 @@
 
                 }
                 else Log("Spawn Controller Null");
-             //   Log("Post GrabGrab 2");
+                //   Log("Post GrabGrab 2");
                 currentSongSpeed = levelData.GameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul;
 
                 BS_Utils.Plugin.LevelDidFinishEvent += LevelData_didFinishEvent;
-             //   Log("Post GrabGrab 3");
+                //   Log("Post GrabGrab 3");
                 if (!Multiplayer.MultiMain.multiActive.Value)
                 {
                     if (GMPUI.chatIntegration && ChatConfig.maxCharges > 0 && twitchPluginInstalled)
@@ -384,12 +344,12 @@
                     if (GMPUI.chatIntegration && ChatConfig.timeForCharges > 0 && twitchPluginInstalled)
                         twitchPowers.StartCoroutine(TwitchPowers.ChargeOverTime());
                 }
-             //   Log("Post GrabGrab 4");
+                //   Log("Post GrabGrab 4");
 
 
                 pauseManager = Resources.FindObjectsOfTypeAll<StandardLevelGameplayManager>().First();
                 var colors = Resources.FindObjectsOfTypeAll<SimpleColorSO>();
-            //    Log("Pre Color");
+                //    Log("Pre Color");
                 foreach (SimpleColorSO color in colors)
                 {
                     //     Log(color.name);
@@ -400,7 +360,7 @@
                 }
                 oldColorA.SetColor(colorA);
                 oldColorB.SetColor(colorB);
-          //      Log("Pre ChatInt");
+                //      Log("Pre ChatInt");
 
                 //      Log(colorA.color.ToString());
                 if (GMPUI.chatIntegration && charges <= ChatConfig.maxCharges && twitchPluginInstalled)
@@ -412,7 +372,7 @@
                 }
 
 
-              //  Log("Pre Audio/Player");
+                //  Log("Pre Audio/Player");
                 //   ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", 1f);
                 AudioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
                 if (AudioTimeSync != null)
@@ -434,7 +394,7 @@
                     Log("Player is null");
                 }
                 CheckGMPModifiers();
-                
+
 
 
 
@@ -442,7 +402,7 @@
         }
 
 
-        private void SpawnController_ScaleRemoveMiss(BeatmapObjectSpawnController arg1, NoteController controller)
+        private void SpawnController_ScaleRemoveMiss(BeatmapObjectSpawnController arg1, INoteController controller)
         {
             //         Log(songAudio.time.ToString());
             NoteData note = controller.noteData;
@@ -463,7 +423,7 @@
             }
         }
 
-        private void SpawnController_ScaleRemoveCut(BeatmapObjectSpawnController arg1, NoteController controller, NoteCutInfo arg3)
+        private void SpawnController_ScaleRemoveCut(BeatmapObjectSpawnController arg1, INoteController controller, NoteCutInfo arg3)
         {
             NoteData note = controller.noteData;
             Transform noteTransform = controller.noteTransform;
@@ -597,8 +557,7 @@
 
         public void OnApplicationQuit()
         {
-            SceneManager.sceneLoaded += SceneManager_sceneLoaded;
-            SceneManager.activeSceneChanged -= SceneManagerOnActiveSceneChanged;
+
         }
 
         public void OnLevelWasLoaded(int level)
@@ -712,15 +671,15 @@
 
         public IEnumerator GrabPP()
         {
-            yield return new WaitForSecondsRealtime(1f);
+            yield return new WaitForSecondsRealtime(0f);
             //
             //
-            var texts = Resources.FindObjectsOfTypeAll<TMP_Text>();
+            var texts = Resources.FindObjectsOfTypeAll<TextMeshProUGUI>();
             if (texts != null)
-                foreach (TMP_Text text in texts)
+                foreach (TextMeshProUGUI text in texts)
                 {
                     if (text != null)
-                        if (text.ToString() == "RankText (TMPro.TextMeshPro)")
+                        if (text.ToString().Contains("CustomUIText") && text.text.Contains("pp"))
                         {
                             ppText = text;
                             break;
@@ -728,7 +687,7 @@
                         }
 
                 }
-            yield return new WaitForSecondsRealtime(9f);
+            yield return new WaitForSecondsRealtime(8f);
             if (ppText != null)
             {
                 try
@@ -743,9 +702,13 @@
                         currentRank = int.Parse(rank, System.Globalization.CultureInfo.InvariantCulture);
                         Log("Rank: " + currentRank);
                         Log("PP: " + currentpp);
-                        //        if (firstLoad == true)
-                        //           if (GMPUI.chatDelta)
-                        //                 TryAsyncMessage("Loaded. PP: " + currentpp + " pp. Rank: " + currentRank);
+                        if (firstLoad == true)
+                            if (GMPUI.chatDelta)
+                            {
+                                TryAsyncMessage("Loaded. PP: " + currentpp + " pp. Rank: " + currentRank);
+                                firstLoad = false;
+                            }
+
 
                         if (oldpp != 0)
                         {
@@ -819,11 +782,11 @@
                 }
 
             }
-            firstLoad = false;
+            //     firstLoad = false;
         }
-   internal static void SetPracticePluginTimeScale(float value)
+        internal static void SetPracticePluginTimeScale(float value)
         {
-                ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", value);
+            ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", value);
         }
         public static void SetTimeScale(float value)
         {
@@ -839,14 +802,14 @@
 
                 if (AudioTimeSync != null)
                 {
-              //      AudioTimeSync.forcedAudioSync = true;
+                    //      AudioTimeSync.forcedAudioSync = true;
                 }
             }
             else
             {
                 if (AudioTimeSync != null)
                 {
-               //     AudioTimeSync.forcedAudioSync = false;
+                    //     AudioTimeSync.forcedAudioSync = false;
                 }
             }
 
@@ -887,7 +850,7 @@
             {
                 Log(ex.ToString());
             }
-       
+
         }
 
         public static void RemovePatches()
@@ -903,24 +866,24 @@
 
         public static void CheckGMPModifiers()
         {
-         //   Log($"badNote: {energyCounter.GetField("_badNoteEnergyDrain")}");
-         //   Log($"missNote: {energyCounter.GetField("_missNoteEnergyDrain")}");
-         //   Log($"goodNote: {energyCounter.GetField("_goodNoteEnergyCharge")}");
-         //   Log($"obstaclePerSec: {energyCounter.GetField("_obstacleEnergyDrainPerSecond")}");
-         //   Log($"hitBomb: {energyCounter.GetField("_hitBombEnergyDrain")}");
+            //   Log($"badNote: {energyCounter.GetField("_badNoteEnergyDrain")}");
+            //   Log($"missNote: {energyCounter.GetField("_missNoteEnergyDrain")}");
+            //   Log($"goodNote: {energyCounter.GetField("_goodNoteEnergyCharge")}");
+            //   Log($"obstaclePerSec: {energyCounter.GetField("_obstacleEnergyDrainPerSecond")}");
+            //   Log($"hitBomb: {energyCounter.GetField("_hitBombEnergyDrain")}");
 
 
-            if (GMPUI.bulletTime || GMPUI.removeCrouchWalls || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.angleShift || GMPUI.laneShift ||GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
+            if (GMPUI.bulletTime || GMPUI.removeCrouchWalls || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.angleShift || GMPUI.laneShift || GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
             {
                 //     ApplyPatches();
                 UnityEngine.Random.InitState(Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.beatmapData.notesCount);
-                BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("Yourself. Nice pause idjot");
+                BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("GameplayModifiersPlus");
 
                 if (GMPUI.njsRandom || GMPUI.offsetrandom)
                 {
                     SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.RandomNjsOrOffset());
                 }
-                
+
                 if (GMPUI.removeCrouchWalls)
                 {
                     if (levelData.GameplayCoreSceneSetupData.gameplayModifiers.enabledObstacleType != GameplayModifiers.EnabledObstacleType.NoObstacles)
@@ -950,7 +913,7 @@
                     SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.OneColor());
                 }
 
-                if(GMPUI.reverse)
+                if (GMPUI.reverse)
                 {
                     Log("Map Reversal");
                     SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.PermaReverse());
@@ -961,7 +924,7 @@
 
                     if (spawnController != null)
                     {
-                        spawnController.noteWasMissedEvent += delegate (BeatmapObjectSpawnController beatmapObjectSpawnController2, NoteController noteController)
+                        spawnController.noteWasMissedEvent += delegate (BeatmapObjectSpawnController beatmapObjectSpawnController2, INoteController noteController)
                         {
                             if (noteController.noteData.noteType != NoteType.Bomb)
                             {
@@ -977,7 +940,7 @@
                             }
                         };
 
-                        spawnController.noteWasCutEvent += delegate (BeatmapObjectSpawnController beatmapObjectSpawnController2, NoteController noteController, NoteCutInfo noteCutInfo)
+                        spawnController.noteWasCutEvent += delegate (BeatmapObjectSpawnController beatmapObjectSpawnController2, INoteController noteController, NoteCutInfo noteCutInfo)
                         {
                             if (!noteCutInfo.allIsOK)
                             {
@@ -993,7 +956,7 @@
                 modifiersInit = true;
             }
 
-            if(GMPUI.tunnel)
+            if (GMPUI.tunnel)
             {
                 Log("Tunnel Activating");
                 SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.PermaEncasement(0f));
@@ -1013,13 +976,14 @@
                         break;
 
                     case "Beat Saber Multiplayer":
-                //        multi = new GamePlayModifiersPlus.Multiplayer.MultiMain();
-                  //      multi.Initialize();
-                    //    multiInstalled = true;
-                      //  Log("Multiplayer Detected, enabling multiplayer functionality");
+                        //        multi = new GamePlayModifiersPlus.Multiplayer.MultiMain();
+                        //      multi.Initialize();
+                        //    multiInstalled = true;
+                        //  Log("Multiplayer Detected, enabling multiplayer functionality");
                         break;
 
-                    case "CustomColorsEdit":  case "Custom Colors":
+                    case "CustomColorsEdit":
+                    case "Custom Colors":
                         customColorsInstalled = true;
                         break;
 
@@ -1098,7 +1062,12 @@
         }
         internal static void SendAsyncMessage(string message)
         {
-            TwitchWebSocketClient.SendMessage(message);
+            StreamCore.Twitch.TwitchWebSocketClient.SendMessage(message);
+        }
+
+        public void OnSceneUnloaded(Scene scene)
+        {
+
         }
     }
 }
