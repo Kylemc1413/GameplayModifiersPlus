@@ -5,7 +5,7 @@
     "gameVersion": "1.9.0",
     "id": "GameplayModifiersPlus",
     "name": "GameplayModifiersPlus",
-    "version": "1.14.0",
+    "version": "1.15.0",
     "icon": "GamePlayModifiersPlus.Resources.GMPIcon.png",
   "dependsOn": {
     "Stream Core": "^2.2.0",
