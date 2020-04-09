@@ -71,7 +71,21 @@
         public static BeatmapObjectManager beatmapObjectManager;
         public static BeatmapObjectSpawnController spawnController;
         public static GameEnergyCounter energyCounter;
-        public static GameEnergyUIPanel energyPanel;
+        private static GameEnergyUIPanel _energyPanel;
+        public static GameEnergyUIPanel energyPanel
+        {
+            get
+            {
+                if (_energyPanel == null)
+                    _energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().First();
+                return _energyPanel;
+            }
+            set
+            {
+                _energyPanel = value;
+            }
+        }
+
         public static GameObject chatIntegrationObj;
         public static int charges = 0;
         public static float altereddNoteScale = 1;
@@ -347,8 +361,7 @@
                 soundEffectManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().FirstOrDefault();
                 beatmapObjectManager = Resources.FindObjectsOfTypeAll<BeatmapObjectManager>().FirstOrDefault();
                 spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().FirstOrDefault();
-                energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().Last();
-                energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().Last();
+                energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().First();
                 ColorManager = Resources.FindObjectsOfTypeAll<ColorManager>().Last();
                 oldColorScheme = null;
                 levelData = BS_Utils.Plugin.LevelData;
