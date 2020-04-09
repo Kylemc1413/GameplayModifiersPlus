@@ -385,7 +385,7 @@
                                 //                Plugin.Log("Min: " + randMin + " Max: " + randMax + " Number: " + random);
 
                                 if (random <= randMin || ChatConfig.bombsChance == 1)
-                                    note.SetProperty("noteType", NoteType.Bomb);
+                                    note.SetProperty<NoteData>("noteType", NoteType.Bomb);
                             }
                             catch (System.Exception ex)
                             {
@@ -789,7 +789,7 @@
                     if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
                     {
                         note = beatmapObject as NoteData;
-                        note.SetProperty("noteType", NoteType.NoteB);
+                        note.SetProperty<NoteData>("noteType", NoteType.NoteB);
                     }
                 }
             }

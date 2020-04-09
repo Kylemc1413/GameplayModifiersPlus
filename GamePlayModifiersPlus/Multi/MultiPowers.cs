@@ -281,7 +281,7 @@
                                 //                Plugin.Log("Min: " + randMin + " Max: " + randMax + " Number: " + random);
 
                                 if (random <= randMin || MultiMain.Config.bombChance == 1)
-                                    note.SetProperty("noteType", NoteType.Bomb);
+                                    note.SetProperty<NoteData>("noteType", NoteType.Bomb);
                             }
                             catch (System.Exception ex)
                             {
