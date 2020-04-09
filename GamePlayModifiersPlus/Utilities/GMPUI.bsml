@@ -1,25 +1,25 @@
 ﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
   <horizontal id='modifiers'>
     <modifier-container>
-      <modifier hover-hint='Allows Chat to mess with your game if connected. !gm help' value='ChatIntegration' on-change='SetChatIntegration' source='GamePlayModifiersPlus.Resources.TwitchIcon.png' text ='Chat Integration'></modifier>
-      <modifier hover-hint='Removes normal walls that require you to duck, leaving other walls intact' value='RemoveCrouch' on-change='SetRemoveCrouch' source='GamePlayModifiersPlus.Resources.GMPIcon.png' text ='Remove Crouch Walls'></modifier>
-      <modifier active='~mappingExtensions' hover-hint='Extends the map to be in 6 lanes' value='SixLane' on-change='SetSixLane' source='GamePlayModifiersPlus.Resources.GMPIcon.png' text ='Six Lanes'></modifier>
-      <modifier active='~mappingExtensions' hover-hint='Extends the map to be in 4 vertical layers rather than 3' value='FourLayer' on-change='SetFourLayer' source='GamePlayModifiersPlus.Resources.GMPIcon.png' text ='Four Layer'></modifier>
-      <modifier active='~mappingExtensions' hover-hint='Extends the map to be in 5 lanes' value='FiveLane' on-change='SetFiveLane' source='GamePlayModifiersPlus.Resources.GMPIcon.png' text ='Five Lanes'></modifier>
-      <modifier active='~mappingExtensions' hover-hint='Randomly shifts notes off of their normal lane' value='LaneShift' on-change='SetLaneShift' source='GamePlayModifiersPlus.Resources.GMPIcon.png' text ='Lane Shift'></modifier>
-      <modifier active='~mappingExtensions' hover-hint='Randomly shifts notes off of their normal Angle' value='AngleShift' on-change='SetAngleShift' source='GamePlayModifiersPlus.Resources.GMPIcon.png' text ='Angle Shift'></modifier>
+      <modifier hover-hint='[Disables Submission] Allows Chat to mess with your game if connected. !gm help' value='ChatIntegration' on-change='SetChatIntegration' source='GamePlayModifiersPlus.Resources.TwitchIcon.png' text ='Chat Integration'></modifier>
+      <modifier hover-hint='[Disables Submission] Removes normal walls that require you to duck, leaving other walls intact' value='RemoveCrouch' on-change='SetRemoveCrouch' source='GamePlayModifiersPlus.Resources.GMPIcon.png' text ='Remove Crouch Walls'></modifier>
+      <modifier active='~mappingExtensions' hover-hint='[Disables Submission] Extends the map to be in 6 lanes' value='SixLane' on-change='SetSixLane' source='GamePlayModifiersPlus.Resources.GMPIcon.png' text ='Six Lanes'></modifier>
+      <modifier active='~mappingExtensions' hover-hint='[Disables Submission] Extends the map to be in 4 vertical layers rather than 3' value='FourLayer' on-change='SetFourLayer' source='GamePlayModifiersPlus.Resources.GMPIcon.png' text ='Four Layer'></modifier>
+      <modifier active='~mappingExtensions' hover-hint='[Disables Submission] Extends the map to be in 5 lanes' value='FiveLane' on-change='SetFiveLane' source='GamePlayModifiersPlus.Resources.GMPIcon.png' text ='Five Lanes'></modifier>
+      <modifier active='~mappingExtensions' hover-hint='[Disables Submission] Randomly shifts notes off of their normal lane' value='LaneShift' on-change='SetLaneShift' source='GamePlayModifiersPlus.Resources.GMPIcon.png' text ='Lane Shift'></modifier>
+      <modifier active='~mappingExtensions' hover-hint='[Disables Submission] Randomly shifts notes off of their normal Angle' value='AngleShift' on-change='SetAngleShift' source='GamePlayModifiersPlus.Resources.GMPIcon.png' text ='Angle Shift'></modifier>
       <modifier active='~mappingExtensions' hover-hint='Play the song in a tunnel' value='Tunnel' on-change='SetTunnel' source='GamePlayModifiersPlus.Resources.GMPIcon.png' text ='Tunnel'></modifier>
     </modifier-container>
 
     <modifier-container>
-      <modifier hover-hint='Funky Notes' value='Funky' on-change='SetFunky' source='GamePlayModifiersPlus.Resources.FunkyIcon.png' text ='Funky'></modifier>
+      <modifier hover-hint='[Disables Submission] Funky Notes' value='Funky' on-change='SetFunky' source='GamePlayModifiersPlus.Resources.FunkyIcon.png' text ='Funky'></modifier>
       <modifier hover-hint='Rainbow Notes' value='Rainbow' on-change='SetRainbow' source='GamePlayModifiersPlus.Resources.RainbowIcon.png' text ='Rainbow'></modifier>
-      <modifier hover-hint='Reverses the direction the notes come from' value='Reverse' on-change='SetReverse' source='GamePlayModifiersPlus.Resources.RepeatIcon.png' text ='Reversal'></modifier>
+      <modifier hover-hint='[Disables Submission] Reverses the direction the notes come from' value='Reverse' on-change='SetReverse' source='GamePlayModifiersPlus.Resources.RepeatIcon.png' text ='Reversal'></modifier>
       <modifier hover-hint='Restarts song on song end' value='Repeat' on-change='SetRepeat' source='GamePlayModifiersPlus.Resources.RepeatIcon.png' text ='Repeat'></modifier>
-      <modifier hover-hint='Currently Used To test Random stuff' value='SwapSabers' on-change='SetSwapSabers' source='GamePlayModifiersPlus.Resources.GMPIcon.png' text ='Testing Ground'></modifier>
-      <modifier hover-hint='Randomizes Note Jump Speed' value='NjsRandom' on-change='SetNjsRandom' source='GamePlayModifiersPlus.Resources.RandomIcon.png' text ='Random NJS'></modifier>
-      <modifier hover-hint='Randomizes Note Spawn offset' value='OffsetRandom' on-change='SetOffsetRandom' source='GamePlayModifiersPlus.Resources.RandomIcon.png' text ='Random Spawn Offset'></modifier>
-      <modifier hover-hint='Randomizes Note Size' value='RandomSize' on-change='SetRandomSize' source='GamePlayModifiersPlus.Resources.RandomIcon.png' text ='Random Note Size'></modifier>
+      <modifier hover-hint='[Disables Submission] Currently Used To test Random stuff' value='SwapSabers' on-change='SetSwapSabers' source='GamePlayModifiersPlus.Resources.GMPIcon.png' text ='Testing Ground'></modifier>
+      <modifier hover-hint='[Disables Submission] Randomizes Note Jump Speed' value='NjsRandom' on-change='SetNjsRandom' source='GamePlayModifiersPlus.Resources.RandomIcon.png' text ='Random NJS'></modifier>
+      <modifier hover-hint='[Disables Submission] Randomizes Note Spawn offset' value='OffsetRandom' on-change='SetOffsetRandom' source='GamePlayModifiersPlus.Resources.RandomIcon.png' text ='Random Spawn Offset'></modifier>
+      <modifier hover-hint='[Disables Submission] Randomizes Note Size' value='RandomSize' on-change='SetRandomSize' source='GamePlayModifiersPlus.Resources.RandomIcon.png' text ='Random Note Size'></modifier>
     </modifier-container>
   </horizontal>
 </bg>

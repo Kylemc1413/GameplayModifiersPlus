@@ -6,12 +6,13 @@
     using BeatSaberMarkupLanguage.Attributes;
     using BeatSaberMarkupLanguage;
     using BeatSaberMarkupLanguage.Components;
+    using TMPro;
     public class GMPUI : NotifiableSingleton<GMPUI>
     {
 
         public static bool chatDelta = false;
         public static float fixedNoteScale = 1f;
-    //    public static bool noArrows = false;
+        public static bool noArrows = false;
         public static bool oneColor = false;
         public static bool allowMulti = false;
         public static bool disableFireworks = false;
@@ -303,6 +304,7 @@
         public void PostSetup()
         {
             modifiers.localScale = new Vector3(0.9f, 0.9f, 1);
+
         }
         /*
         public static void CreateUI()
