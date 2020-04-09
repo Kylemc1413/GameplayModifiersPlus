@@ -8,10 +8,19 @@
     using BeatSaberMarkupLanguage.Components;
     public class GMPUI : NotifiableSingleton<GMPUI>
     {
-        [UIComponent("modifiers")]
-        RectTransform modifiers;
 
         public static bool chatDelta = false;
+        public static float fixedNoteScale = 1f;
+    //    public static bool noArrows = false;
+        public static bool oneColor = false;
+        public static bool allowMulti = false;
+        public static bool disableFireworks = false;
+        public static bool disableSubmission = false;
+     //   public static bool disableRipple = false;
+
+
+        [UIComponent("modifiers")]
+        RectTransform modifiers;
 
         public static bool chatIntegration = false;
         [UIValue("ChatIntegration")]
@@ -46,7 +55,7 @@
         {
             Repeat = value;
         }
-        public static float fixedNoteScale = 1f;
+
         public static bool swapSabers = false;
         [UIValue("SwapSabers")]
         public bool SwapSabers
@@ -132,11 +141,7 @@
         {
             RandomSize = value;
         }
-        public static bool noArrows = false;
 
-        public static bool oneColor = false;
-
-        public static bool allowMulti = false;
         public static bool reverse = false;
         [UIValue("Reverse")]
         public bool Reverse
@@ -171,7 +176,7 @@
         {
             OffsetRandom = value;
         }
-        public static bool disableSubmission = false;
+
         public static bool sixLanes = false;
         [UIValue("SixLane")]
         public bool SixLane
@@ -274,8 +279,7 @@
         {
             RemoveCrouch = value;
         }
-        public static bool disableFireworks = false;
-        //    public static bool disableRipple = false;
+
         public static bool tunnel = false;
         [UIValue("Tunnel")]
         public bool Tunnel
