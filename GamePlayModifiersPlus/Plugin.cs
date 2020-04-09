@@ -828,6 +828,7 @@
             //   Log($"missNote: {energyCounter.GetField("_missNoteEnergyDrain")}");
             //   Log($"goodNote: {energyCounter.GetField("_goodNoteEnergyCharge")}");
             //   Log($"obstaclePerSec: {energyCounter.GetField("_obstacleEnergyDrainPerSecond")}");
+            //   Log($"obstaclePerSec: {energyCounter.GetField("_obstacleEnergyDrainPerSecond")}");
             //   Log($"hitBomb: {energyCounter.GetField("_hitBombEnergyDrain")}");
 
 

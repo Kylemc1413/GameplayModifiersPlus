@@ -120,7 +120,7 @@
         public static IEnumerator TestingGround(float length)
         {
             yield return new WaitForSecondsRealtime(0f);
-            SharedCoroutineStarter.instance.StartCoroutine(Encasement(0f, Plugin.songAudio.clip.length));
+            SharedCoroutineStarter.instance.StartCoroutine(MadScience(Plugin.songAudio.clip.length));
         }
 
         public static void AdjustNJS(float njs)
@@ -280,6 +280,8 @@
             if (Plugin.spawnController == null) return;
             BeatmapObjectSpawnMovementData spawnMovementData =
             Plugin.spawnController.GetPrivateField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
+            if (Plugin.levelData.GameplayCoreSceneSetupData == null) return;
+            if (spawnMovementData == null) return;
             if (!Plugin.haveSongNJS)
             {
                 Plugin.songNJS = spawnMovementData.GetField<float>("_startNoteJumpMovementSpeed");
@@ -911,6 +913,7 @@
         public static IEnumerator MadScience(float length)
         {
             yield return new WaitForSeconds(0f);
+            MappingExtensions.Plugin.ForceActivateForSong();
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
             BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
             Plugin.Log("Grabbed BeatmapData");
@@ -924,7 +927,11 @@
                 {
                     BeatmapObjectData beatmapObject = objects[i];
                     if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
-                    objects.Add(NoteToWall(beatmapObject, Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.beatsPerMinute));
+                    {
+                        objects.Remove(beatmapObject);
+                        objects.Add(NoteToWall(beatmapObject, Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.beatsPerMinute));
+
+                    }
                 }
                 objects = objects.OrderBy(o => o.time).ToList();
                 line.beatmapObjectsData = objects.ToArray();
@@ -942,7 +949,7 @@
             yield return new WaitForSeconds(0.1f);
             float startTime = start;
             float durationTime = duration;
-
+            MappingExtensions.Plugin.ForceActivateForSong();
 
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
             BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
