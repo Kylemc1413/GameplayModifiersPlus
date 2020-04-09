@@ -509,7 +509,7 @@
                         if (GMPUI.fourLayers)
                         {
                             if (note.noteLineLayer == NoteLineLayer.Top && Random.Range(1, 4) > 2)
-                                note.SetProperty("noteLineLayer", (NoteLineLayer)3);
+                                note.SetProperty<NoteData>("noteLineLayer", (NoteLineLayer)3);
                         }
                         int newIndex = 0;
                         if (GMPUI.fiveLanes)
@@ -545,8 +545,8 @@
                                     }
                                     break;
                             }
-                            note.SetProperty("lineIndex", newIndex);
-                            note.SetProperty("flipLineIndex", newIndex);
+                            note.SetProperty<NoteData>("lineIndex", newIndex);
+                            note.SetProperty<NoteData>("flipLineIndex", newIndex);
                             if (newIndex == 2500)
                             {
                                 claimedCenterTimes.Add(note.time);
@@ -565,15 +565,15 @@
                                         shiftedIndex = (note.lineIndex * 1000) - (UnityEngine.Random.Range(1, 8) * 100);
                                     if (note.lineIndex == 0)
                                     shiftedIndex = 1000 + (UnityEngine.Random.Range(1, 8) * 100);
-                                note.SetProperty("lineIndex", shiftedIndex);
-                                note.SetProperty("flipLineIndex", shiftedIndex);
+                                note.SetProperty<NoteData>("lineIndex", shiftedIndex);
+                                note.SetProperty<NoteData>("flipLineIndex", shiftedIndex);
                             }
                             else if (note.lineIndex >= 1000 && note.lineIndex <= 4500)
                             {
 
                                 int shiftedIndex = note.lineIndex + (UnityEngine.Random.Range(1, 7) * 100);
-                                note.SetProperty("lineIndex", shiftedIndex);
-                                note.SetProperty("flipLineIndex", shiftedIndex);
+                                note.SetProperty<NoteData>("lineIndex", shiftedIndex);
+                                note.SetProperty<NoteData>("flipLineIndex", shiftedIndex);
                             }
 
                         }
@@ -619,7 +619,7 @@
                             {
                                 angle += Random.Range(-30, 30);
                                 angle = Mathf.Clamp(angle, 1000, 1360);
-                                note.SetProperty("cutDirection", angle);
+                                note.SetProperty<NoteData>("cutDirection", angle);
                             }
                         }
 
