@@ -2,15 +2,12 @@
 ###### Obligatory SellOut Message: If you like the mod, consider contributing to my snack fund: [Here](https://ko-fi.com/kyle1413k)
 # Adds additional modifiers to the game, as well as Twitch Chat Integration
 
-- ### Requires Harmony, BS Utils, and BeatSaberCustomUI 
-- #### Requires StreamCore if you plan on using Chat Integration
+- ### Requires BS Utils, StreamCore, and BeatSaberMarkupLanguage 
+~~#### Requires StreamCore if you plan on using Chat Integration~~
 
 # Standard Usage
-- ### There are several modifiers added to the menu that do not require setting up StreamCore, however you must do so if you plan on using chat integration
-- #### Additional modifiers can be accessed through the ' Additional modifiers' option in the GameplayModfiersPlus option in the modifers panel, which can be accessed by scrolling down the right side of modifiers, below no fail
-- #### For Usage of the modifiers, refer to their tooltips that explain what they do
-- #### Any modifier that disables score submission defaults to off every time you start the game, including chat integration
-
+- ### Modifiers can be found in the GameplayModifiersPlus tab of the Mods section of the Gameplay Setup Panel when selecting songs
+- ### Most modifiers will disable score submission, and because of this default to off when the game is started
 # Chat Integration
 - ## Make sure to edit the TwitchLoginInfo.ini located in the UserData/StreamCore folder, which can be found in your game installation folder, in the same directory as your game executable, if it does not exist, make sure you have StreamCore installed through the mod installer, and run the game to the main menu, then close the game.
 - ## GamePlayModifiersPlusChatSettings.ini will be genereated in the UserData folder after running the game with the plugin installed
@@ -88,8 +85,8 @@
 | OffsetRandom | For the duration, randomizes the note spawn offset |
 | Mirror | For the duration, mirrors the map |
 | Reverse | For the duration, reverses the direction the notes come from|
-| Faster (Only Enabled if Practice Plugin is Installed) | For the duration, the song speed is altered by the multiplier |
-| Slower (Only Enabled if Practice Plugin is Installed) | For the duration, the song speed is altered by the multiplier |
+| Faster | For the duration, the song speed is altered by the multiplier|
+| Slower | For the duration, the song speed is altered by the multiplier|
 #### If you plan on using the faster or slower commands, do not do so while using the base game to modify song speed, otherwsie hitsounds may become off sync
 
 ## Moderator Commands
