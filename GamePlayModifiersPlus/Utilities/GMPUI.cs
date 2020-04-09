@@ -2,52 +2,305 @@
 {
     using System;
     using UnityEngine;
-    using CustomUI.GameplaySettings;
     using IPA.Config;
-
-    public class GMPUI
+    using BeatSaberMarkupLanguage.Attributes;
+    using BeatSaberMarkupLanguage;
+    using BeatSaberMarkupLanguage.Components;
+    public class GMPUI : NotifiableSingleton<GMPUI>
     {
-        private static Sprite _ChatDeltaIcon;
-        private static Sprite _SwapSabersIcon;
-        private static Sprite _RepeatIcon;
-        private static Sprite _GnomeIcon;
-        private static Sprite _BulletTimeIcon;
-        private static Sprite _TwitchIcon;
-        private static Sprite _BackButton;
-        private static Sprite _GMPIcon;
-        private static Sprite _RainbowIcon;
-        private static Sprite _FunkyIcon;
-        private static Sprite _RandomIcon;
-        private static Sprite _NoArrowsIcon;
-
+        [UIComponent("modifiers")]
+        RectTransform modifiers;
 
         public static bool chatDelta = false;
+
         public static bool chatIntegration = false;
-        public static bool gnomeOnMiss = false;
-        public static bool superHot = false;
-        public static bool bulletTime = false;
+        [UIValue("ChatIntegration")]
+        public bool ChatIntegration
+        {
+            get => chatIntegration;
+            set
+            {
+                chatIntegration = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIAction("SetChatIntegration")]
+        public void SetChatIntegration(bool value)
+        {
+            ChatIntegration = value;
+        }
         public static bool repeatSong = false;
+        [UIValue("Repeat")]
+        public bool Repeat
+        {
+            get => repeatSong;
+            set
+            {
+
+                repeatSong = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIAction("SetRepeat")]
+        public void SetRepeat(bool value)
+        {
+            Repeat = value;
+        }
         public static float fixedNoteScale = 1f;
-        public static bool swapSabers;
-        public static bool funky;
-        public static bool rainbow;
-        public static bool njsRandom;
+        public static bool swapSabers = false;
+        [UIValue("SwapSabers")]
+        public bool SwapSabers
+        {
+            get => swapSabers;
+            set
+            {
+
+                swapSabers = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIAction("SetSwapSabers")]
+        public void SetSwapSabers(bool value)
+        {
+            SwapSabers = value;
+        }
+        public static bool funky = false;
+        [UIValue("Funky")]
+        public bool Funky
+        {
+            get => funky;
+            set
+            {
+                
+                funky = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIAction("SetFunky")]
+        public void SetFunky(bool value)
+        {
+            Funky = value;
+        }
+        public static bool rainbow = false;
+        [UIValue("Rainbow")]
+        public bool Rainbow
+        {
+            get => rainbow;
+            set
+            {
+
+                rainbow = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIAction("SetRainbow")]
+        public void SetRainbow(bool value)
+        {
+            Rainbow = value;
+        }
+        public static bool njsRandom = false;
+        [UIValue("NjsRandom")]
+        public bool NjsRandom
+        {
+            get => njsRandom;
+            set
+            {
+
+                njsRandom = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIAction("SetNjsRandom")]
+        public void SetNjsRandom(bool value)
+        {
+            NjsRandom = value;
+        }
         public static bool randomSize = false;
+        [UIValue("RandomSize")]
+        public bool RandomSize
+        {
+            get => randomSize;
+            set
+            {
+
+                randomSize = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIAction("SetRandomSize")]
+        public void SetRandomSize(bool value)
+        {
+            RandomSize = value;
+        }
         public static bool noArrows = false;
+
         public static bool oneColor = false;
+
         public static bool allowMulti = false;
         public static bool reverse = false;
+        [UIValue("Reverse")]
+        public bool Reverse
+        {
+            get => reverse;
+            set
+            {
+
+                reverse = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIAction("SetReverse")]
+        public void SetReverse(bool value)
+        {
+            Reverse = value;
+        }
         public static bool offsetrandom = false;
+        [UIValue("OffsetRandom")]
+        public bool OffsetRandom
+        {
+            get => offsetrandom;
+            set
+            {
+
+                offsetrandom = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIAction("SetOffsetRandom")]
+        public void SetOffsetRandom(bool value)
+        {
+            OffsetRandom = value;
+        }
         public static bool disableSubmission = false;
         public static bool sixLanes = false;
+        [UIValue("SixLane")]
+        public bool SixLane
+        {
+            get => sixLanes;
+            set
+            {
+
+                sixLanes = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIAction("SetSixLane")]
+        public void SetSixLane(bool value)
+        {
+            SixLane = value;
+        }
         public static bool fourLayers = false;
+        [UIValue("FourLayer")]
+        public bool FourLayer
+        {
+            get => fourLayers;
+            set
+            {
+
+                fourLayers = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIAction("SetFourLayer")]
+        public void SetFourLayer(bool value)
+        {
+            FourLayer = value;
+        }
         public static bool fiveLanes = false;
+        [UIValue("FiveLane")]
+        public bool FiveLane
+        {
+            get => fiveLanes;
+            set
+            {
+
+                fiveLanes = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIAction("SetFiveLane")]
+        public void SetFiveLane(bool value)
+        {
+            FiveLane = value;
+        }
         public static bool laneShift = false;
+        [UIValue("LaneShift")]
+        public bool LaneShift
+        {
+            get => laneShift;
+            set
+            {
+
+                laneShift = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIAction("SetLaneShift")]
+        public void SetLaneShift(bool value)
+        {
+            LaneShift = value;
+        }
         public static bool angleShift = false;
+        [UIValue("AngleShift")]
+        public bool AngleShift
+        {
+            get => angleShift;
+            set
+            {
+
+                angleShift = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIAction("SetAngleShift")]
+        public void SetAngleShift(bool value)
+        {
+            AngleShift = value;
+        }
         public static bool removeCrouchWalls = false;
+        [UIValue("RemoveCrouch")]
+        public bool RemoveCrouch
+        {
+            get => removeCrouchWalls;
+            set
+            {
+
+                removeCrouchWalls = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIAction("SetRemoveCrouch")]
+        public void SetRemoveCrouch(bool value)
+        {
+            RemoveCrouch = value;
+        }
         public static bool disableFireworks = false;
-        public static bool disableRipple = false;
+        //    public static bool disableRipple = false;
         public static bool tunnel = false;
+        [UIValue("Tunnel")]
+        public bool Tunnel
+        {
+            get => tunnel;
+            set
+            {
+
+                tunnel = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIAction("SetTunnel")]
+        public void SetTunnel(bool value)
+        {
+            Tunnel = value;
+        }
+        [UIValue("mappingExtensions")]
+        public bool MappingExtensions { get => Plugin.mappingExtensionsPresent; }
+        [UIAction("#post-parse")]
+        public void PostSetup()
+        {
+            modifiers.localScale = new Vector3(0.9f, 0.9f, 1);
+        }
+        /*
         public static void CreateUI()
         {
             GetIcons();
@@ -239,38 +492,38 @@
 
         }
 
+        */
 
 
+        /*
+    internal static void GetIcons()
+    {
+        if (_ChatDeltaIcon == null)
+            _ChatDeltaIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.ChatDelta.png");
+        if (_SwapSabersIcon == null)
+            _SwapSabersIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.SwapSabers.png");
+        if (_RepeatIcon == null)
+            _RepeatIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.RepeatIcon.png");
+        if (_GnomeIcon == null)
+            _GnomeIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.gnomeIcon.png");
+        if (_BulletTimeIcon == null)
+            _BulletTimeIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.BulletIcon.png");
+        if (_TwitchIcon == null)
+            _TwitchIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.TwitchIcon.png");
+        if (_BackButton == null)
+            _BackButton = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.Back_Button.png");
+        if (_GMPIcon == null)
+            _GMPIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.GMPIcon.png");
 
-
-        internal static void GetIcons()
-        {
-            if (_ChatDeltaIcon == null)
-                _ChatDeltaIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.ChatDelta.png");
-            if (_SwapSabersIcon == null)
-                _SwapSabersIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.SwapSabers.png");
-            if (_RepeatIcon == null)
-                _RepeatIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.RepeatIcon.png");
-            if (_GnomeIcon == null)
-                _GnomeIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.gnomeIcon.png");
-            if (_BulletTimeIcon == null)
-                _BulletTimeIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.BulletIcon.png");
-            if (_TwitchIcon == null)
-                _TwitchIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.TwitchIcon.png");
-            if (_BackButton == null)
-                _BackButton = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.Back_Button.png");
-            if (_GMPIcon == null)
-                _GMPIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.GMPIcon.png");
-
-            if (_FunkyIcon == null)
-                _FunkyIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.FunkyIcon.png");
-            if (_RainbowIcon == null)
-                _RainbowIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.RainbowIcon.png");
-            if (_RandomIcon == null)
-                _RandomIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.RandomIcon.png");
-            if (_NoArrowsIcon == null)
-                _NoArrowsIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.NoArrowsIcon.png");
-        }
-
+        if (_FunkyIcon == null)
+            _FunkyIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.FunkyIcon.png");
+        if (_RainbowIcon == null)
+            _RainbowIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.RainbowIcon.png");
+        if (_RandomIcon == null)
+            _RandomIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.RandomIcon.png");
+        if (_NoArrowsIcon == null)
+            _NoArrowsIcon = CustomUI.Utilities.UIUtilities.LoadSpriteFromResources("GamePlayModifiersPlus.Resources.NoArrowsIcon.png");
+    }
+    */
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Harmony;
+using HarmonyLib;
 using UnityEngine;
 using TMPro;
 namespace GamePlayModifiersPlus.Harmony_Patches
@@ -27,7 +27,7 @@ namespace GamePlayModifiersPlus.Harmony_Patches
                         if (playerLevelStats.validScore)
                         {
                             int highScore = int.Parse(____highScoreText.text);
-                            int maxScore = ScoreController.MaxRawScoreForNumberOfNotes(____selectedDifficultyBeatmap.beatmapData.notesCount);
+                            int maxScore = ScoreModel.MaxRawScoreForNumberOfNotes(____selectedDifficultyBeatmap.beatmapData.notesCount);
                             float percent = (float)highScore / maxScore;
                             percent *= 100;
                             ____highScoreText.overflowMode = TextOverflowModes.Overflow;

@@ -116,10 +116,9 @@
         {
             Color left = GetLeftColor();
             Color right = GetRightColor();
-            Plugin.colorA.SetColor(left);
-            Plugin.colorB.SetColor(right);
-            if (Plugin.customColorsInstalled)
-                Plugin.ResetCustomColorsSabers(left, right);
+            Plugin.SetColors(left, right);
+       //     if (Plugin.customColorsInstalled)
+       //         Plugin.ResetCustomColorsSabers(left, right);
 
             
         }

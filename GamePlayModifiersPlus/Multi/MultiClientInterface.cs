@@ -14,8 +14,8 @@
     {
         public static bool otherGmpPlayer = false;
         public static bool initialized = false;
-     //   public static string playerName = "";
-        public static string version = GamePlayModifiersPlus.Plugin.Version;
+        //   public static string playerName = "";
+        public static string version = "0.0.1";
         public static bool spectating;
         public static void Init()
         {

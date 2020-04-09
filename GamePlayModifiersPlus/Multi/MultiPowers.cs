@@ -70,9 +70,9 @@
 
             var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " DA | ";
-            Plugin.spawnController.SetField("_disappearingArrows", true);
+            Plugin.beatmapObjectManager.SetField("_disappearingArrows", true);
             yield return new WaitForSeconds(length);
-            Plugin.spawnController.SetField("_disappearingArrows", false);
+            Plugin.beatmapObjectManager.SetField("_disappearingArrows", false);
             text.text = text.text.Replace(" DA | ", "");
         }
 
@@ -158,48 +158,7 @@
             }
         }
 
-        public static void AdjustNJS(float njs)
-        {
-            /*
-     Plugin.Log("NJS " + Plugin.spawnController.GetField<float>("_noteJumpMovementSpeed"));
-     Plugin.Log("_MaxHalfJump " + Plugin.spawnController.GetField<float>("_maxHalfJumpDistance"));
-     Plugin.Log("_halfJumpDurationInBeats " + Plugin.spawnController.GetField<float>("_halfJumpDurationInBeats").ToString());
-     Plugin.Log("_spawnAheadTime " + Plugin.spawnController.GetField<float>("_spawnAheadTime").ToString());
-     Plugin.Log("_jumpDistance " + Plugin.spawnController.GetField<float>("_jumpDistance").ToString());
-     Plugin.Log("_noteJumpMovementSpeed " + Plugin.spawnController.GetField<float>("_noteJumpMovementSpeed").ToString());
-     Plugin.Log("_moveDistance " + Plugin.spawnController.GetField<float>("_moveDistance").ToString());
-     Plugin.Log("_moveSpeed " + Plugin.spawnController.GetField<float>("_moveSpeed").ToString());
-     Plugin.Log("_moveDurationInBeats " + Plugin.spawnController.GetField<float>("_moveDurationInBeats").ToString());
-     Plugin.Log("_beatsPerMinute " + Plugin.spawnController.GetField<float>("_beatsPerMinute").ToString());
-     Plugin.Log("_moveDurationInBeats " + Plugin.spawnController.GetField<float>("_moveDurationInBeats").ToString());
-     */
-            Plugin.Log("JumpOffset " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpStartBeatOffset);
-            float halfJumpDur = 4f;
-            float maxHalfJump = Plugin.spawnController.GetField<float>("_maxHalfJumpDistance");
-            float noteJumpStartBeatOffset = Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpStartBeatOffset;
-            float moveSpeed = Plugin.spawnController.GetField<float>("_moveSpeed");
-            float moveDir = Plugin.spawnController.GetField<float>("_moveDurationInBeats");
-            float jumpDis;
-            float spawnAheadTime;
-            float moveDis;
-            float bpm = Plugin.spawnController.GetField<float>("_beatsPerMinute");
-            float num = 60f / bpm;
-            moveDis = moveSpeed * num * moveDir;
-            while (njs * num * halfJumpDur > maxHalfJump)
-            {
-                halfJumpDur /= 2f;
-            }
-            halfJumpDur += noteJumpStartBeatOffset;
-            if (halfJumpDur < 1f) halfJumpDur = 1f;
-            //        halfJumpDur = Plugin.spawnController.GetField<float>("_halfJumpDurationInBeats");
-            jumpDis = njs * num * halfJumpDur * 2f;
-            spawnAheadTime = moveDis / moveSpeed + jumpDis * 0.5f / njs;
-            Plugin.spawnController.SetField("_halfJumpDurationInBeats", halfJumpDur);
-            Plugin.spawnController.SetField("_spawnAheadTime", spawnAheadTime);
-            Plugin.spawnController.SetField("_jumpDistance", jumpDis);
-            Plugin.spawnController.SetField("_noteJumpMovementSpeed", njs);
-            Plugin.spawnController.SetField("_moveDistance", moveDis);
-        }
+     
 
         public static IEnumerator Wait(float waitTime)
         {
@@ -233,13 +192,13 @@
             GMPUI.njsRandom = true;
             yield return new WaitForSeconds(length);
             GMPUI.njsRandom = false;
-            AdjustNJS(Plugin.songNJS);
+            TwitchPowers.AdjustNjsOrOffset();
             text.text = text.text.Replace(" NJSRandom | ", "");
         }
 
         public static IEnumerator RandomNJS()
         {
-            AdjustNJS(UnityEngine.Random.Range(MultiMain.Config.njsRandomMin, MultiMain.Config.njsRandomMax));
+            TwitchPowers.AdjustNjsOrOffset();
             yield return new WaitForSeconds(0.33f);
             if (GMPUI.njsRandom)
                 MultiMain.Powers.StartCoroutine(RandomNJS());
@@ -422,8 +381,7 @@
             GMPUI.rainbow = true;
             yield return new WaitForSeconds(length);
             GMPUI.rainbow = false;
-            Plugin.colorA.SetColor(Plugin.oldColorA);
-            Plugin.colorB.SetColor(Plugin.oldColorB);
+            Plugin.ResetColors();
             text.text = text.text.Replace(" Rainbow | ", "");
         }
         

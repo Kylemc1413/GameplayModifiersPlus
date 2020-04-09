@@ -22,9 +22,9 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " DA | ";
-            Plugin.spawnController.SetField("_disappearingArrows", true);
+            Plugin.beatmapObjectManager.SetField("_disappearingArrows", true);
             yield return new WaitForSeconds(length);
-            Plugin.spawnController.SetField("_disappearingArrows", false);
+            Plugin.beatmapObjectManager.SetField("_disappearingArrows", false);
             text.text = text.text.Replace(" DA | ", "");
         }
 
@@ -115,27 +115,7 @@
         }
 
 
-        public static IEnumerator SpecialEvent()
-        {
-            Plugin.gnomeActive = true;
-            yield return new WaitForSecondsRealtime(0.1f);
-            Plugin.SetTimeScale(0f);
-            Time.timeScale = 0f;
-            Plugin.gnomeSound.Load();
-            Plugin.gnomeSound.Play();
-            Plugin.soundIsPlaying = true;
-            Plugin.Log("Waiting");
-            yield return new WaitForSecondsRealtime(16f);
-            if (Plugin.isValidScene == true)
-            {
-                Plugin.soundIsPlaying = false;
-                Plugin.SetTimeScale(1f); ;
-                Time.timeScale = 1f;
-                Plugin.songAudio.pitch = 1f;
-                Plugin.Log("Unpaused");
-                Plugin.gnomeActive = false;
-            }
-        }
+     
 
         public static IEnumerator TestingGround(float length)
         {
@@ -147,14 +127,14 @@
         {
 
             float halfJumpDur = 4f;
-            float maxHalfJump = Plugin.spawnController.GetField<float>("_maxHalfJumpDistance");
+            float maxHalfJump = Plugin.beatmapObjectManager.GetField<float>("_maxHalfJumpDistance");
             float noteJumpStartBeatOffset = Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpStartBeatOffset;
-            float moveSpeed = Plugin.spawnController.GetField<float>("_moveSpeed");
-            float moveDir = Plugin.spawnController.GetField<float>("_moveDurationInBeats");
+            float moveSpeed = Plugin.beatmapObjectManager.GetField<float>("_moveSpeed");
+            float moveDir = Plugin.beatmapObjectManager.GetField<float>("_moveDurationInBeats");
             float jumpDis;
             float spawnAheadTime;
             float moveDis;
-            float bpm = Plugin.spawnController.GetField<float>("_beatsPerMinute");
+            float bpm = Plugin.beatmapObjectManager.GetField<float>("_beatsPerMinute");
             float num = 60f / bpm;
             moveDis = moveSpeed * num * moveDir;
             while (njs * num * halfJumpDur > maxHalfJump)
@@ -166,11 +146,11 @@
             //        halfJumpDur = Plugin.spawnController.GetField<float>("_halfJumpDurationInBeats");
             jumpDis = njs * num * halfJumpDur * 2f;
             spawnAheadTime = moveDis / moveSpeed + jumpDis * 0.5f / njs;
-            Plugin.spawnController.SetField("_halfJumpDurationInBeats", halfJumpDur);
-            Plugin.spawnController.SetField("_spawnAheadTime", spawnAheadTime);
-            Plugin.spawnController.SetField("_jumpDistance", jumpDis);
-            Plugin.spawnController.SetField("_noteJumpMovementSpeed", njs);
-            Plugin.spawnController.SetField("_moveDistance", moveDis);
+            Plugin.beatmapObjectManager.SetField("_halfJumpDurationInBeats", halfJumpDur);
+            Plugin.beatmapObjectManager.SetField("_spawnAheadTime", spawnAheadTime);
+            Plugin.beatmapObjectManager.SetField("_jumpDistance", jumpDis);
+            Plugin.beatmapObjectManager.SetField("_noteJumpMovementSpeed", njs);
+            Plugin.beatmapObjectManager.SetField("_moveDistance", moveDis);
 
         }
 
@@ -179,14 +159,14 @@
 
             float njs = Plugin.songNJS;
             float halfJumpDur = 4f;
-            float maxHalfJump = Plugin.spawnController.GetField<float>("_maxHalfJumpDistance");
+            float maxHalfJump = Plugin.beatmapObjectManager.GetField<float>("_maxHalfJumpDistance");
             float noteJumpStartBeatOffset = Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpStartBeatOffset;
-            float moveSpeed = Plugin.spawnController.GetField<float>("_moveSpeed");
-            float moveDir = Plugin.spawnController.GetField<float>("_moveDurationInBeats");
+            float moveSpeed = Plugin.beatmapObjectManager.GetField<float>("_moveSpeed");
+            float moveDir = Plugin.beatmapObjectManager.GetField<float>("_moveDurationInBeats");
             float jumpDis;
             float spawnAheadTime;
             float moveDis;
-            float bpm = Plugin.spawnController.GetField<float>("_beatsPerMinute");
+            float bpm = Plugin.beatmapObjectManager.GetField<float>("_beatsPerMinute");
             float num = 60f / bpm;
             moveDis = moveSpeed * num * moveDir;
             while (njs * num * halfJumpDur > maxHalfJump)
@@ -198,26 +178,26 @@
             //        halfJumpDur = Plugin.spawnController.GetField<float>("_halfJumpDurationInBeats");
             jumpDis = njs * num * halfJumpDur * 2f;
             spawnAheadTime = moveDis / moveSpeed + jumpDis * 0.5f / njs;
-            Plugin.spawnController.SetField("_halfJumpDurationInBeats", halfJumpDur);
-            Plugin.spawnController.SetField("_spawnAheadTime", spawnAheadTime);
-            Plugin.spawnController.SetField("_jumpDistance", jumpDis);
-            Plugin.spawnController.SetField("_noteJumpMovementSpeed", njs);
-            Plugin.spawnController.SetField("_moveDistance", moveDis);
+            Plugin.beatmapObjectManager.SetField("_halfJumpDurationInBeats", halfJumpDur);
+            Plugin.beatmapObjectManager.SetField("_spawnAheadTime", spawnAheadTime);
+            Plugin.beatmapObjectManager.SetField("_jumpDistance", jumpDis);
+            Plugin.beatmapObjectManager.SetField("_noteJumpMovementSpeed", njs);
+            Plugin.beatmapObjectManager.SetField("_moveDistance", moveDis);
 
         }
         public static void AdjustOffset(int offset)
         {
 
-            float njs = Plugin.spawnController.GetField<float>("_noteJumpMovementSpeed");
+            float njs = Plugin.beatmapObjectManager.GetField<float>("_noteJumpMovementSpeed");
             float halfJumpDur = 4f;
-            float maxHalfJump = Plugin.spawnController.GetField<float>("_maxHalfJumpDistance");
+            float maxHalfJump = Plugin.beatmapObjectManager.GetField<float>("_maxHalfJumpDistance");
             float noteJumpStartBeatOffset = Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpStartBeatOffset + offset;
-            float moveSpeed = Plugin.spawnController.GetField<float>("_moveSpeed");
-            float moveDir = Plugin.spawnController.GetField<float>("_moveDurationInBeats");
+            float moveSpeed = Plugin.beatmapObjectManager.GetField<float>("_moveSpeed");
+            float moveDir = Plugin.beatmapObjectManager.GetField<float>("_moveDurationInBeats");
             float jumpDis;
             float spawnAheadTime;
             float moveDis;
-            float bpm = Plugin.spawnController.GetField<float>("_beatsPerMinute");
+            float bpm = Plugin.beatmapObjectManager.GetField<float>("_beatsPerMinute");
             float num = 60f / bpm;
             moveDis = moveSpeed * num * moveDir;
             while (njs * num * halfJumpDur > maxHalfJump)
@@ -229,11 +209,11 @@
             //        halfJumpDur = Plugin.spawnController.GetField<float>("_halfJumpDurationInBeats");
             jumpDis = njs * num * halfJumpDur * 2f;
             spawnAheadTime = moveDis / moveSpeed + jumpDis * 0.5f / njs;
-            Plugin.spawnController.SetField("_halfJumpDurationInBeats", halfJumpDur);
-            Plugin.spawnController.SetField("_spawnAheadTime", spawnAheadTime);
-            Plugin.spawnController.SetField("_jumpDistance", jumpDis);
-            Plugin.spawnController.SetField("_noteJumpMovementSpeed", njs);
-            Plugin.spawnController.SetField("_moveDistance", moveDis);
+            Plugin.beatmapObjectManager.SetField("_halfJumpDurationInBeats", halfJumpDur);
+            Plugin.beatmapObjectManager.SetField("_spawnAheadTime", spawnAheadTime);
+            Plugin.beatmapObjectManager.SetField("_jumpDistance", jumpDis);
+            Plugin.beatmapObjectManager.SetField("_noteJumpMovementSpeed", njs);
+            Plugin.beatmapObjectManager.SetField("_moveDistance", moveDis);
 
         }
 
@@ -297,9 +277,12 @@
 
         public static void AdjustNjsOrOffset()
         {
+            if (Plugin.spawnController == null) return;
+            BeatmapObjectSpawnMovementData spawnMovementData =
+            Plugin.spawnController.GetPrivateField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
             if (!Plugin.haveSongNJS)
             {
-                Plugin.songNJS = Plugin.spawnController.GetField<float>("_noteJumpMovementSpeed");
+                Plugin.songNJS = spawnMovementData.GetField<float>("_startNoteJumpMovementSpeed");
                 Plugin.haveSongNJS = true;
             }
             float njs = Plugin.songNJS;
@@ -310,31 +293,17 @@
             float noteJumpStartBeatOffset = Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpStartBeatOffset;
             if (GMPUI.offsetrandom)
                 noteJumpStartBeatOffset += UnityEngine.Random.Range((float)ChatConfig.offsetrandomMin, (float)ChatConfig.offsetrandomMax);
-            float halfJumpDur = 4f;
-            float maxHalfJump = Plugin.spawnController.GetField<float>("_maxHalfJumpDistance");
-            float moveSpeed = Plugin.spawnController.GetField<float>("_moveSpeed");
-            float moveDir = Plugin.spawnController.GetField<float>("_moveDurationInBeats");
-            float jumpDis;
-            float spawnAheadTime;
-            float moveDis;
-            float bpm = Plugin.spawnController.GetField<float>("_beatsPerMinute");
-            float num = 60f / bpm;
-            moveDis = moveSpeed * num * moveDir;
-            while (njs * num * halfJumpDur > maxHalfJump)
-            {
-                halfJumpDur /= 2f;
-            }
-            halfJumpDur += noteJumpStartBeatOffset;
-            if (halfJumpDur < 1f) halfJumpDur = 1f;
-            //        halfJumpDur = Plugin.spawnController.GetField<float>("_halfJumpDurationInBeats");
-            jumpDis = njs * num * halfJumpDur * 2f;
-            spawnAheadTime = moveDis / moveSpeed + jumpDis * 0.5f / njs;
-            Plugin.spawnController.SetField("_halfJumpDurationInBeats", halfJumpDur);
-            Plugin.spawnController.SetField("_spawnAheadTime", spawnAheadTime);
-            Plugin.spawnController.SetField("_jumpDistance", jumpDis);
-            Plugin.spawnController.SetField("_noteJumpMovementSpeed", njs);
-            Plugin.spawnController.SetField("_moveDistance", moveDis);
 
+
+            float bpm = Plugin.spawnController.GetPrivateField<VariableBPMProcessor>("_variableBPMProcessor").currentBPM;
+
+
+
+            spawnMovementData.SetPrivateField("_startNoteJumpMovementSpeed", njs);
+            spawnMovementData.SetPrivateField("_noteJumpStartBeatOffset", noteJumpStartBeatOffset);
+
+            spawnMovementData.Update(bpm,
+                Plugin.spawnController.GetPrivateField<float>("_jumpOffsetY"));
             //       Plugin.Log(njs.ToString());
             //       Plugin.Log(noteJumpStartBeatOffset.ToString());
         }
@@ -828,7 +797,7 @@
 
             try
             {
-                leftSaberType.SetField("_saberType", Saber.SaberType.SaberB);
+                leftSaberType.SetField("_saberType", SaberType.SaberB);
             }
             catch (System.Exception ex)
             {
@@ -836,8 +805,8 @@
             }
 
        //     Plugin.Log("2 " + Plugin.player.leftSaber.saberType.ToString());
-            if (Plugin.customColorsInstalled)
-                Plugin.ResetCustomColorsSabers(Plugin.oldColorB, Plugin.oldColorB);
+      //      if (Plugin.customColorsInstalled)
+      //          Plugin.ResetCustomColorsSabers(Plugin.oldColorB, Plugin.oldColorB);
             /*
             var playerController = Resources.FindObjectsOfTypeAll<PlayerController>().First();
             Saber targetSaber = playerController.rightSaber;
@@ -886,14 +855,7 @@
             GMPUI.rainbow = true;
             yield return new WaitForSeconds(length);
             GMPUI.rainbow = false;
-            Plugin.colorA.SetColor(Plugin.oldColorA);
-            Plugin.colorB.SetColor(Plugin.oldColorB);
-            if (Plugin.customColorsInstalled)
-                if (!GMPUI.oneColor)
-                    Plugin.ResetCustomColorsSabers(Plugin.oldColorA, Plugin.oldColorB);
-                else
-                    Plugin.ResetCustomColorsSabers(Plugin.oldColorB, Plugin.oldColorB);
-           
+            Plugin.ResetColors();
             text.text = text.text.Replace(" Rainbow | ", "");
         }
 
@@ -907,7 +869,7 @@
                     counter.SetField("_beforeCutRating", 1f);
                     counter.SetField("_afterCutRating", 1f);
                     gameNoteController.InvokeMethod("SendNoteWasCutEvent",(new NoteCutInfo(true, true, true, false, 999f, Vector3.down,
-                        (gameNoteController.noteData.noteType == NoteType.NoteA) ? Saber.SaberType.SaberA : Saber.SaberType.SaberB, 1f, 0f, Vector3.down, new Vector3(0.0001f, 0.00001f, 0.00001f), counter, 0f)));
+                        (gameNoteController.noteData.noteType == NoteType.NoteA) ? SaberType.SaberA : SaberType.SaberB, 1f, 0f, Vector3.down, new Vector3(0.0001f, 0.00001f, 0.00001f), counter, 0f)));
                 }
                 catch (System.Exception ex)
                 {
@@ -929,9 +891,8 @@
             Plugin.superRandom = false;
             if (resetMessage)
             {
-                Plugin.spawnController.SetField("_disappearingArrows", false);
-                Plugin.colorA.SetColor(Plugin.oldColorA);
-                Plugin.colorB.SetColor(Plugin.oldColorB);
+                Plugin.beatmapObjectManager.SetField("_disappearingArrows", false);
+                Plugin.ResetColors();
                 if (Plugin.isValidScene)
                     AdjustNjsOrOffset();
                 var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
@@ -1003,9 +964,9 @@
         public static IEnumerator PermaEncasement(float start)
         {
             yield return new WaitForSeconds(0f);
+            MappingExtensions.Plugin.ForceActivateForSong();
             float startTime = start;
             float durationTime = Plugin.songAudio.clip.length;
-
 
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
             BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");

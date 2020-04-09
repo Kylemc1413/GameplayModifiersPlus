@@ -1,7 +1,6 @@
 ﻿namespace GamePlayModifiersPlus
 {
     //using AsyncTwitch;
-    using CustomUI.GameplaySettings;
     //using IllusionInjector;
     //using IllusionPlugin;
     using System;
@@ -13,7 +12,7 @@
     using TMPro;
     using UnityEngine;
     using UnityEngine.SceneManagement;
-    using Harmony;
+    using HarmonyLib;
     using GamePlayModifiersPlus.TwitchStuff;
     using GamePlayModifiersPlus.Utilities;
     using IPA.Old;
@@ -23,18 +22,17 @@
     using StreamCore.Config;
     using IPA.Loader;
     using IPA;
-    public class Plugin : IBeatSaberPlugin
+    [Plugin(RuntimeOptions.SingleStartInit)]
+    public class Plugin
     {
         internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
-
-
-        public static string Version = "1.13.0";
+        internal static IPA.Logging.Logger log;
 
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
         Multiplayer.MultiMain multi = null;
         public static bool multiInstalled = false;
-        internal static bool practicePluginInstalled = false;
+        internal static bool practicePluginInstalled = true;
         internal static bool modifiersInit = false;
         public static TwitchCommands twitchCommands = new TwitchCommands();
         public static TwitchPowers twitchPowers = null;
@@ -43,6 +41,7 @@
         public static SoundPlayer reverseSound = new SoundPlayer(Properties.Resources.sectionpass);
         public static bool soundIsPlaying = false;
         public static AudioTimeSyncController AudioTimeSync { get; private set; }
+        public static AudioManagerSO Mixer { get; private set; }
         public static AudioSource songAudio;
         public static bool isValidScene = false;
         public static bool gnomeActive = false;
@@ -69,6 +68,7 @@
         public static BS_Utils.Gameplay.LevelData levelData;
         private static bool invalidForScoring = false;
         private static bool _hasRegistered = false;
+        public static BeatmapObjectManager beatmapObjectManager;
         public static BeatmapObjectSpawnController spawnController;
         public static GameEnergyCounter energyCounter;
         public static GameEnergyUIPanel energyPanel;
@@ -84,12 +84,12 @@
         public static bool noArrow;
         public static float songNJS;
         public static bool haveSongNJS;
-        public static SimpleColorSO colorA;
-        public static SimpleColorSO colorB;
-        public static SimpleColorSO oldColorA = ScriptableObject.CreateInstance<SimpleColorSO>();
-        public static SimpleColorSO oldColorB = ScriptableObject.CreateInstance<SimpleColorSO>();
-        public static SimpleColorSO defColorA = ScriptableObject.CreateInstance<SimpleColorSO>();
-        public static SimpleColorSO defColorB = ScriptableObject.CreateInstance<SimpleColorSO>();
+    //    public static SimpleColorSO colorA;
+    //    public static SimpleColorSO colorB;
+    //    public static SimpleColorSO oldColorA = ScriptableObject.CreateInstance<SimpleColorSO>();
+    //    public static SimpleColorSO oldColorB = ScriptableObject.CreateInstance<SimpleColorSO>();
+    //    public static SimpleColorSO defColorA = ScriptableObject.CreateInstance<SimpleColorSO>();
+    //    public static SimpleColorSO defColorB = ScriptableObject.CreateInstance<SimpleColorSO>();
         public static int commandsLeftForMessage;
         public static bool test;
         public static float currentSongSpeed;
@@ -104,16 +104,17 @@
         static BoolSO _RumbleEnabledOneC;
         static ColorManager ColorManager;
         public static bool activateDuringIsolated = false;
-        public static HarmonyInstance harmony;
-        internal static bool customColorsInstalled = false;
+        public static Harmony harmony;
         internal static bool twitchPluginInstalled = false;
         GameObject chatPowers = null;
-
+        static ColorScheme GMPColorScheme = new ColorScheme("GMPColorScheme", "GMP Color Scheme", false, Color.white, Color.white, Color.white, Color.white, Color.white);
+        static ColorScheme oldColorScheme = null;
+        [OnStart]
         public void OnApplicationStart()
         {
 
             Log("Creating Harmony Instance");
-            harmony = HarmonyInstance.Create("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
+            harmony = new Harmony("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
             ApplyPatches();
             CheckPlugins();
 
@@ -134,17 +135,56 @@
                     Log("Could not Delete Old Config: " + ex);
                 }
             cooldowns = new Cooldowns();
-            defColorA.SetColor(new Color(1f, 0, 0));
-            defColorB.SetColor(new Color(0, .706f, 1));
-
             if (ModPrefs.GetInt("GameplayModifiersPlus", "GameRumbleSetting", -1, false) != -1)
             {
                 Log("Rumble Key Exists");
                 setDefaultRumble = true;
             }
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            SceneManager.activeSceneChanged += OnActiveSceneChanged;
+
+            BeatSaberMarkupLanguage.GameplaySetup.GameplaySetup.instance.AddTab("GameplayModifiersPlus", "GamePlayModifiersPlus.Utilities.GMPUI.bsml", GMPUI.instance);
 
         }
 
+        [Init]
+        public void Init(IPA.Logging.Logger logger)
+        {
+            log = logger;
+        }
+
+        public static void ResetColors()
+        {
+            if (!ColorManager) return;
+            if (oldColorScheme == null)
+                SetupColors();
+            ColorManager.SetField("_colorScheme", oldColorScheme);
+          //  ColorManager.GetField<SimpleColorSO>("_saberAColor").SetColor(ColorManager.GetField<ColorScheme>("_colorScheme").saberAColor);
+          //  ColorManager.GetField<SimpleColorSO>("_saberBColor").SetColor(ColorManager.GetField<ColorScheme>("_colorScheme").saberBColor);
+        }
+        public static void SetupColors()
+        {
+            oldColorScheme = ColorManager.GetField<ColorScheme>("_colorScheme");
+            GMPColorScheme.SetField("_saberAColor", oldColorScheme.saberAColor);
+            GMPColorScheme.SetField("_saberBColor", oldColorScheme.saberBColor);
+            GMPColorScheme.SetField("_environmentColor0", oldColorScheme.environmentColor0);
+            GMPColorScheme.SetField("_environmentColor1", oldColorScheme.environmentColor1);
+            GMPColorScheme.SetField("_obstaclesColor", oldColorScheme.obstaclesColor);
+        }
+        public static void SetColors(Color left, Color right)
+        {
+            if (!ColorManager) return;
+            if (oldColorScheme == null)
+                SetupColors();
+            if(ColorManager.GetField<ColorScheme>("_colorScheme") != GMPColorScheme)
+                ColorManager.SetField("_colorScheme", GMPColorScheme);
+
+           GMPColorScheme.SetField("_saberAColor", left);
+           GMPColorScheme.SetField("_saberBColor",right);
+
+            //ColorManager.GetField<SimpleColorSO>("_saberAColor").SetColor(left);
+            //ColorManager.GetField<SimpleColorSO>("_saberBColor").SetColor(right);
+        }
         private void InitStreamCore()
         {
             //    TwitchStuff.ChatMessageHandler messageHandler = new GameObject("GMP Chat Message Handler").AddComponent<ChatMessageHandler>();
@@ -159,14 +199,14 @@
                 ReadPrefs();
                 try
                 {
-                    GMPUI.CreateUI();
+                  //  GMPUI.CreateUI();
                 }
                 catch (Exception ex)
                 {
                     Log(ex.ToString());
                 }
-                if (multiInstalled)
-                    Multiplayer.MultiClientInterface.Init();
+          //      if (multiInstalled)
+               //     Multiplayer.MultiClientInterface.Init();
 
             }
         }
@@ -203,12 +243,6 @@
 
             }
 
-
-
-
-
-            if (scene.name == "GameCore")
-                RemovePatches();
             if (_mainSettingsModel == null)
             {
                 var menu = Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().FirstOrDefault();
@@ -238,13 +272,6 @@
 
 
             paused = false;
-            if (!customColorsInstalled)
-            {
-                if (colorA != null)
-                    colorA.SetColor(defColorA);
-                if (colorB != null)
-                    colorB.SetColor(defColorB);
-            }
 
 
             //        try
@@ -318,17 +345,19 @@
                 //     Log("Pre GrabGrab");
                 GameObject.Destroy(GameObject.Find("Color Setter"));
                 soundEffectManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().FirstOrDefault();
+                beatmapObjectManager = Resources.FindObjectsOfTypeAll<BeatmapObjectManager>().FirstOrDefault();
                 spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().FirstOrDefault();
                 energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().First();
                 energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().First();
-                ColorManager = Resources.FindObjectsOfTypeAll<ColorManager>().First();
+                ColorManager = Resources.FindObjectsOfTypeAll<ColorManager>().Last();
+                oldColorScheme = null;
                 levelData = BS_Utils.Plugin.LevelData;
                 //    Log("Post GrabGrab");
-                if (spawnController != null)
+                if (beatmapObjectManager != null)
                 {
-                    spawnController.noteDidStartJumpEvent += SpawnController_ModifiedJump;
-                    spawnController.noteWasCutEvent += SpawnController_ScaleRemoveCut;
-                    spawnController.noteWasMissedEvent += SpawnController_ScaleRemoveMiss;
+                    beatmapObjectManager.noteDidStartJumpEvent += SpawnController_ModifiedJump;
+                    beatmapObjectManager.noteWasCutEvent += SpawnController_ScaleRemoveCut;
+                    beatmapObjectManager.noteWasMissedEvent += SpawnController_ScaleRemoveMiss;
 
                 }
                 else Log("Spawn Controller Null");
@@ -348,18 +377,6 @@
 
 
                 pauseManager = Resources.FindObjectsOfTypeAll<StandardLevelGameplayManager>().First();
-                var colors = Resources.FindObjectsOfTypeAll<SimpleColorSO>();
-                //    Log("Pre Color");
-                foreach (SimpleColorSO color in colors)
-                {
-                    //     Log(color.name);
-                    if (color.name == "BaseNoteColor1")
-                        colorA = color;
-                    if (color.name == "BaseNoteColor0")
-                        colorB = color;
-                }
-                oldColorA.SetColor(colorA);
-                oldColorB.SetColor(colorB);
                 //      Log("Pre ChatInt");
 
                 //      Log(colorA.color.ToString());
@@ -382,6 +399,8 @@
                         Log("Audio null");
                     //              Log("Object Found");
                 }
+                var gameCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().FirstOrDefault();
+                Mixer = gameCoreSceneSetup.GetPrivateField<AudioManagerSO>("_audioMixer");
                 //Get Sabers
                 player = Resources.FindObjectsOfTypeAll<PlayerController>().FirstOrDefault();
                 if (player != null)
@@ -402,7 +421,7 @@
         }
 
 
-        private void SpawnController_ScaleRemoveMiss(BeatmapObjectSpawnController arg1, INoteController controller)
+        private void SpawnController_ScaleRemoveMiss(INoteController controller)
         {
             //         Log(songAudio.time.ToString());
             NoteData note = controller.noteData;
@@ -423,7 +442,7 @@
             }
         }
 
-        private void SpawnController_ScaleRemoveCut(BeatmapObjectSpawnController arg1, INoteController controller, NoteCutInfo arg3)
+        private void SpawnController_ScaleRemoveCut(INoteController controller, NoteCutInfo arg3)
         {
             NoteData note = controller.noteData;
             Transform noteTransform = controller.noteTransform;
@@ -468,13 +487,13 @@
                 float rightDist = Vector3.Distance(rightPos, notePos);
                 // Log(leftDist.ToString() + "   " + rightDist.ToString());
                 _RumbleEnabledOneC.value = true;
-                Saber.SaberType targetType = (leftDist > rightDist) ? Saber.SaberType.SaberB : Saber.SaberType.SaberA;
+                SaberType targetType = (leftDist > rightDist) ? SaberType.SaberB : SaberType.SaberA;
                 if (!(Mathf.Abs(leftDist - rightDist) <= 0.2f))
                     _noteCutHapticEffect.HitNote(targetType);
                 else
                 {
-                    _noteCutHapticEffect.HitNote(Saber.SaberType.SaberA);
-                    _noteCutHapticEffect.HitNote(Saber.SaberType.SaberB);
+                    _noteCutHapticEffect.HitNote(SaberType.SaberA);
+                    _noteCutHapticEffect.HitNote(SaberType.SaberB);
                 }
                 _RumbleEnabledOneC.value = false;
 
@@ -485,7 +504,7 @@
 
         }
 
-        private void SpawnController_ModifiedJump(BeatmapObjectSpawnController arg1, NoteController controller)
+        private void SpawnController_ModifiedJump(NoteController controller)
         {
             if (GMPUI.rainbow)
             {
@@ -554,7 +573,7 @@
             if (GMPUI.repeatSong)
                 ReflectionUtil.SetProperty(arg2, "levelEndAction", LevelCompletionResults.LevelEndAction.Restart);
         }
-
+        [OnExit]
         public void OnApplicationQuit()
         {
 
@@ -568,60 +587,10 @@
         {
         }
 
-        public void OnUpdate()
-        {
-            if (multiInstalled)
-                multi.Update();
-
-
-
-
-
-
-
-
-            if (soundIsPlaying == true && songAudio != null && isValidScene == true)
-            {
-                SetTimeScale(0f); ;
-                Time.timeScale = 0f;
-                return;
-            }
-
-            if (GMPUI.bulletTime == true && isValidScene == true && soundIsPlaying == false && modifiersInit)
-            {
-                SetTimeScale(1 - (leftController.triggerValue + rightController.triggerValue) / 2);
-                Time.timeScale = timeScale;
-                //    Time.fixedDeltaTime = timeScale;
-                return;
-            }
-
-            /*
-                        if (GMPUI.superHot == true && playerInfo == true && soundIsPlaying == false && isValidScene == true && startGMPUI.superHot == true)
-                        {
-                            speedPitch = (leftSaber.bladeSpeed / 15 + rightSaber.bladeSpeed / 15) / 1.5f;
-                            if (speedPitch > 1)
-                                speedPitch = 1;
-                            ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", speedPitch);
-                            Time.timeScale = speedPitch;
-            */
-
-
-            else
-            {
-                Time.timeScale = 1f;
-            }
-            if (playerInfo == true)
-                if (player.disableSabers == true)
-                    Time.timeScale = 1;
-        }
-
-        public void OnFixedUpdate()
-        {
-        }
 
         public static void ResetCustomColorsSabers(Color left, Color right)
         {
-            CustomColors.Plugin.OverrideCustomSaberColors(left, right);
+          //  CustomColors.Plugin.OverrideCustomSaberColors(left, right);
         }
         public static bool isModInstalled(string modName)
         {
@@ -637,7 +606,7 @@
 
         public static void Log(string message)
         {
-            Console.WriteLine("[{0}] {1}", "GameplayModifiersPlus", message);
+            log.Debug(message);
         }
 
         public IEnumerator SwapSabers(Saber saber1, Saber saber2)
@@ -666,7 +635,6 @@
             GMPUI.disableFireworks = ModPrefs.GetBool("GameplayModifiersPlus", "DisableFireworks", false, false);
             GMPUI.chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
             GMPUI.allowMulti = ModPrefs.GetBool("GameplayModifiersPlus", "allowMulti", false, true);
-            GMPUI.disableRipple = ModPrefs.GetBool("GameplayModifiersPlus", "DisableRipple", false, false);
         }
 
         public IEnumerator GrabPP()
@@ -784,40 +752,7 @@
             }
             //     firstLoad = false;
         }
-        internal static void SetPracticePluginTimeScale(float value)
-        {
-            ReflectionUtil.SetProperty(typeof(PracticePlugin.Plugin), "TimeScale", value);
-        }
-        public static void SetTimeScale(float value)
-        {
-            if (practicePluginInstalled)
-            {
-                SetPracticePluginTimeScale(value);
-                return;
-            }
 
-            timeScale = value;
-            if ((timeScale != 1))
-            {
-
-                if (AudioTimeSync != null)
-                {
-                    //      AudioTimeSync.forcedAudioSync = true;
-                }
-            }
-            else
-            {
-                if (AudioTimeSync != null)
-                {
-                    //     AudioTimeSync.forcedAudioSync = false;
-                }
-            }
-
-            if (songAudio != null)
-            {
-                songAudio.pitch = timeScale;
-            }
-        }
 
         internal static double RoundToSignificantDigits(double d, int digits)
         {
@@ -828,15 +763,6 @@
             return scale * Math.Round(d / scale, digits);
         }
 
-        public static bool IsCustomColorsDisabled()
-        {
-            return CustomColors.Plugin.disablePlugin;
-        }
-        public static bool DoesCustomColorsAllowEnvironmentColors()
-
-        {
-            return CustomColors.Plugin.allowEnvironmentColors;
-        }
         public static void ApplyPatches()
         {
             Log("Apply Patch Function");
@@ -853,15 +779,47 @@
 
         }
 
-        public static void RemovePatches()
+        public static void SetTimeScale(float value)
         {
-            Log("Remove Patch Function: " + invalidForScoring);
-            if (invalidForScoring)
-            {
-                harmony.UnpatchAll("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
-                invalidForScoring = false;
-                Log("Unblocking Score Submission, Removing Harmony Patches");
-            }
+            if (AudioTimeSync == null) return;
+            timeScale = value;
+            AudioTimeSyncController.InitData initData = AudioTimeSync.GetPrivateField<AudioTimeSyncController.InitData>("_initData");
+            AudioTimeSyncController.InitData newInitData = new AudioTimeSyncController.InitData(initData.audioClip,
+                AudioTimeSync.songTime, initData.songTimeOffset, timeScale);
+            AudioTimeSync.SetPrivateField("_initData", newInitData);
+            //Chipmunk Removal as per base game
+
+            if (timeScale == 1f)
+                Mixer.musicPitch = 1;
+            else
+                Mixer.musicPitch = 1f / timeScale;
+
+            ResetTimeSync(AudioTimeSync, timeScale, newInitData);
+        }
+
+        public static void ResetTimeSync(AudioTimeSyncController timeSync, float newTimeScale, AudioTimeSyncController.InitData newData)
+        {
+            //   timeSync.SetField("_timeScale", newData.timeScale);
+            //   AudioSource audioSource = timeSync.GetField<AudioSource>("_audioSource");
+            //   audioSource.pitch = newData.timeScale;
+            //   timeSync.SetField("_startSongTime", newData.startSongTime);
+            //   float songTimeOffset = newData.songTimeOffset + timeSync.GetField<FloatSO>("_audioLatency");
+            //  timeSync.SetField("_songTimeOffset", songTimeOffset);
+            //  timeSync.SetField("_songTime", newData.startSongTime);
+            //    float num = newData.startSongTime + songTimeOffset;
+            //  audioSource.time = num;
+            //     timeSync.SetField("_audioStartTimeOffsetSinceStart", timeSync.GetProperty<float>("timeSinceStart") - num);
+            //    timeSync.SetField("_fixingAudioSyncError", false);
+            //  timeSync.SetField("_prevAudioSamplePos", (int)((float)audioSource.clip.frequency * num));
+            // timeSync.SetField("_playbackLoopIndex", 0);
+            //     timeSync.SetField("_dspTimeOffset", AudioSettings.dspTime - (double)num);
+            //    timeSync.SetField("_songTime", newData.startSongTime);
+            timeSync.SetPrivateField("_timeScale", newTimeScale);
+            timeSync.SetPrivateField("_startSongTime", timeSync.songTime);
+            timeSync.SetPrivateField("_audioStartTimeOffsetSinceStart", timeSync.GetProperty<float>("timeSinceStart") - (timeSync.songTime + newData.songTimeOffset));
+            timeSync.SetPrivateField("_fixingAudioSyncError", false);
+            timeSync.SetPrivateField("_playbackLoopIndex", 0);
+            timeSync.audioSource.pitch = newTimeScale;
         }
 
         public static void CheckGMPModifiers()
@@ -873,7 +831,7 @@
             //   Log($"hitBomb: {energyCounter.GetField("_hitBombEnergyDrain")}");
 
 
-            if (GMPUI.bulletTime || GMPUI.removeCrouchWalls || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.angleShift || GMPUI.laneShift || GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.gnomeOnMiss || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
+            if (GMPUI.removeCrouchWalls || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.angleShift || GMPUI.laneShift || GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor ||  GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
             {
                 //     ApplyPatches();
                 UnityEngine.Random.InitState(Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.beatmapData.notesCount);
@@ -919,39 +877,7 @@
                     SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.PermaReverse());
                 }
 
-                if (GMPUI.gnomeOnMiss == true)
-                {
-
-                    if (spawnController != null)
-                    {
-                        spawnController.noteWasMissedEvent += delegate (BeatmapObjectSpawnController beatmapObjectSpawnController2, INoteController noteController)
-                        {
-                            if (noteController.noteData.noteType != NoteType.Bomb)
-                            {
-                                try
-                                {
-                                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.SpecialEvent());
-                                    Log("Gnoming");
-                                }
-                                catch (Exception ex)
-                                {
-                                    Log(ex.ToString());
-                                }
-                            }
-                        };
-
-                        spawnController.noteWasCutEvent += delegate (BeatmapObjectSpawnController beatmapObjectSpawnController2, INoteController noteController, NoteCutInfo noteCutInfo)
-                        {
-                            if (!noteCutInfo.allIsOK)
-                            {
-                                SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.SpecialEvent());
-                                Log("Gnoming");
-                            }
-
-                        };
-
-                    }
-                }
+                
 
                 modifiersInit = true;
             }
@@ -982,28 +908,19 @@
                         //  Log("Multiplayer Detected, enabling multiplayer functionality");
                         break;
 
-                    case "CustomColorsEdit":
-                    case "Custom Colors":
-                        customColorsInstalled = true;
-                        break;
-
-                    case "BeatSaberChallenges":
-                        ChallengeIntegration.AddListeners();
-                        break;
+             //       case "BeatSaberChallenges":
+             //           ChallengeIntegration.AddListeners();
+            //            break;
                     case "MappingExtensions":
                         mappingExtensionsPresent = true;
-                        break;
-                    case "Practice Plugin":
-                    case "PracticePlugin":
-                        practicePluginInstalled = true;
                         break;
 
                 }
 
             }
-            foreach (PluginLoader.PluginInfo plugin in IPA.Loader.PluginManager.AllPlugins)
+            foreach (var plugin in IPA.Loader.PluginManager.AllPlugins)
             {
-                switch (plugin.Metadata.Id)
+                switch (plugin.Id)
                 {
                     case "Stream Core":
                         twitchPluginInstalled = true;
@@ -1016,19 +933,11 @@
                         //  Log("Multiplayer Detected, enabling multiplayer functionality");
                         break;
 
-                    case "Custom Colors":
-                        customColorsInstalled = true;
-                        break;
-
-                    case "BeatSaberChallenges":
-                        ChallengeIntegration.AddListeners();
-                        break;
+               //     case "BeatSaberChallenges":
+               //         ChallengeIntegration.AddListeners();
+               //         break;
                     case "MappingExtensions":
                         mappingExtensionsPresent = true;
-                        break;
-                    case "Practice Plugin":
-                    case "PracticePlugin":
-                        practicePluginInstalled = true;
                         break;
 
                 }
