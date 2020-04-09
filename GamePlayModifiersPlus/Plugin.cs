@@ -347,8 +347,8 @@
                 soundEffectManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().FirstOrDefault();
                 beatmapObjectManager = Resources.FindObjectsOfTypeAll<BeatmapObjectManager>().FirstOrDefault();
                 spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().FirstOrDefault();
-                energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().First();
-                energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().First();
+                energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().Last();
+                energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().Last();
                 ColorManager = Resources.FindObjectsOfTypeAll<ColorManager>().Last();
                 oldColorScheme = null;
                 levelData = BS_Utils.Plugin.LevelData;

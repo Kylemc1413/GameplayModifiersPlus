@@ -893,7 +893,7 @@
             Plugin.superRandom = false;
             if (resetMessage)
             {
-                Plugin.beatmapObjectManager.SetField("_disappearingArrows", false);
+                Plugin.spawnController.SetField("_disappearingArrows", false);
                 Plugin.ResetColors();
                 if (Plugin.isValidScene)
                     AdjustNjsOrOffset();
@@ -901,7 +901,6 @@
                 text.text = " ";
                 var text2 = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
                 text2.text = "";
-                if (Plugin.practicePluginInstalled)
                     Plugin.SetTimeScale(Plugin.currentSongSpeed);
 
                 resetMessage = false;
