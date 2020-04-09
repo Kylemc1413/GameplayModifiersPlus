@@ -70,9 +70,9 @@
 
             var text = GameObject.Find("Multi Powers").GetComponent<MultiGMPDisplay>().activeCommandText;
             text.text += " DA | ";
-            Plugin.beatmapObjectManager.SetField("_disappearingArrows", true);
+            Plugin.spawnController.SetField("_disappearingArrows", true);
             yield return new WaitForSeconds(length);
-            Plugin.beatmapObjectManager.SetField("_disappearingArrows", false);
+            Plugin.spawnController.SetField("_disappearingArrows", false);
             text.text = text.text.Replace(" DA | ", "");
         }
 
