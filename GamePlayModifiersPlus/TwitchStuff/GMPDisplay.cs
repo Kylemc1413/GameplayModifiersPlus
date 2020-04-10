@@ -136,7 +136,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
                 display.transform.localPosition = new Vector3(0, 0f, 0f);
                 display.transform.localRotation = Quaternion.identity;
                 display.transform.localScale = Vector3.one * 40f;
-                textObj.transform.localPosition = new Vector3(0, 1f, 0);
+                textObj.transform.localPosition = new Vector3(0, 1.25f, 0);
             }
 
             initialized = true;

@@ -764,11 +764,11 @@
                     {
                         case "ChargeCost":
                             leftChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, reverseChargeCost);
+                            Plugin.ChatConfigSettings.SetInt(command, property, leftChargeCost);
                             break;
                         case "CoolDown":
                             leftCoolDownn = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, reverseCooldown);
+                            Plugin.ChatConfigSettings.SetFloat(command, property, leftCoolDownn);
                             break;
                         default:
                             success = false;
@@ -781,11 +781,11 @@
                     {
                         case "ChargeCost":
                             rightChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, reverseChargeCost);
+                            Plugin.ChatConfigSettings.SetInt(command, property, rightChargeCost);
                             break;
                         case "CoolDown":
                             rightCoolDown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, reverseCooldown);
+                            Plugin.ChatConfigSettings.SetFloat(command, property, rightCoolDown);
                             break;
                         default:
                             success = false;

@@ -12,7 +12,7 @@ namespace GamePlayModifiersPlus.Harmony_Patches
     {
         public static void Postfix(ref int __result)
         {
-            if (__result == 0 && GMPUI.chatIntegration360)
+            if (__result == 0 && GMPUI.chatIntegration360 && GMPUI.chatIntegration)
                 __result = 1;
         }
     }
