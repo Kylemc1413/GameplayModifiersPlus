@@ -53,7 +53,7 @@
         public static bool calculating = false;
         public static bool paused = false;
         public static Cooldowns cooldowns;
-        public static TMP_Text ppText;
+        public static TextMeshProUGUI ppText;
         public static string rank;
         public static string pp;
         public static float currentpp;
