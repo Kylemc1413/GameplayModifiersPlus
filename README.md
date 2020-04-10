@@ -49,6 +49,7 @@
 | `timeForCharges` | How often to add charges during a song, if not 0 |
 | `chargesOverTime` | If charges over time is active, how many charges to give every occurance of the time period |
 | `resetChargesperLevel` | If true, charges will be reset after every song |
+| `chatintegration360` | If true, 360 Degree Chat Integration Capabilities will be enabled |
 ### Charge System
 - Every Command has a `chargeCost` that you can specify, and the command will only be activated if the amount of charges exceeds the cost, and will subtract the cost accordingly
 - You can choose to either have charges only be generated automatically per level, to provide a "budget" to limit command usage, or restrict the generation of charges to bits, or both using the options explained above
