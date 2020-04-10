@@ -113,6 +113,12 @@
                 case "mirror":
                     command = "Mirror";
                     break;
+                case "left":
+                    command = "Left";
+                    break;
+                case "right":
+                    command = "Right";
+                    break;
                 default:
                     isPropertyOnly = true;
                     break;
@@ -163,6 +169,9 @@
                         break;
                     case "allowmodcommands":
                         property = "allowModCommands";
+                        break;
+                    case "chatintegration360":
+                        property = "chatintegration360";
                         break;
                     default:
                         return;

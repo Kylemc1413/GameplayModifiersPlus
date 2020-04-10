@@ -118,6 +118,7 @@
             globalCommandCooldown = Plugin.ChatConfigSettings.GetFloat("Basic Setup", "globalCommandCooldown", 10f, true);
             showCooldownOnMessage = Plugin.ChatConfigSettings.GetBool("Basic Setup", "showCooldownOnMessage", false, true);
 
+            GMPUI.chatIntegration360 = Plugin.ChatConfigSettings.GetBool("Basic Setup", "chatintegration360", false, true);
             //Charges
             resetChargesEachLevel = Plugin.ChatConfigSettings.GetBool("Charges", "resetChargesEachLevel", false, true);
             maxCharges = Plugin.ChatConfigSettings.GetInt("Charges", "maxCharges", 50, true);
@@ -321,6 +322,10 @@
                 case "allowmodcommands":
                     allowModCommands = Convert.ToBoolean(value);
                     Plugin.ChatConfigSettings.SetBool("Basic Setup", property, allowModCommands);
+                    break;
+                case "chatintegration360":
+                    GMPUI.chatIntegration360 = Convert.ToBoolean(value);
+                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, GMPUI.chatIntegration360);
                     break;
                 default:
                     success = false;
