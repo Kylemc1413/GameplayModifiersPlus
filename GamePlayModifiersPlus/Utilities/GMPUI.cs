@@ -39,6 +39,7 @@
         {
             ChatIntegration = value;
         }
+        public static bool chatIntegration360 = true;
         public static bool repeatSong = false;
         [UIValue("Repeat")]
         public bool Repeat

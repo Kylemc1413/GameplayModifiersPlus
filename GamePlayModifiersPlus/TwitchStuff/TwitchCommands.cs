@@ -218,7 +218,7 @@
                 TwitchWebSocketClient.SendMessage("No song is currently being played.");
                 else
                     TwitchWebSocketClient.SendMessage("Current Song: " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.songName
-                        + " - " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.songSubName + " mapped by " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.songAuthorName);
+                        + " - " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.songSubName + " mapped by " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.levelAuthorName);
             }
 
             if (message.message.ToLower().Contains("!gm chargehelp"))
@@ -376,7 +376,34 @@
             }
         }
 
-
+        public void CheckRotationCommands(TwitchMessage message)
+        {
+            if (!Plugin.cooldowns.GetCooldown("Rotation"))
+            {
+                if (message.message.ToLower().Contains("!gm left"))
+                {
+                    if (Plugin.charges >= ChatConfig.leftChargeCost)
+                    {
+                        Plugin.twitchPowers.StartCoroutine(TwitchPowers.LeftRotation());
+                        Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.leftCoolDownn, "Rotation", "Rotating level to the left."));
+                        Plugin.charges -= ChatConfig.leftChargeCost;
+                        Plugin.commandsLeftForMessage -= 1;
+                        globalActive = true;
+                    }
+                }
+                else if(message.message.ToLower().Contains("!gm right"))
+                {
+                    if (Plugin.charges >= ChatConfig.rightChargeCost)
+                    {
+                        Plugin.twitchPowers.StartCoroutine(TwitchPowers.RightRotation());
+                        Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rightCoolDown, "Rotation", "Rotating level to the right."));
+                        Plugin.charges -= ChatConfig.rightChargeCost;
+                        Plugin.commandsLeftForMessage -= 1;
+                        globalActive = true;
+                    }
+                }
+            }
+        }
         public void CheckGameplayCommands(TwitchMessage message)
         {
 

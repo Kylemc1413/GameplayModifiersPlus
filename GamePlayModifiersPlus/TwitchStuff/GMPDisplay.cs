@@ -12,6 +12,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
 {
     public class GMPDisplay : MonoBehaviour
     {
+        private bool initialized = false;
         TextMeshProUGUI chargeText;
         TextMeshProUGUI chargeCountText;
         public TextMeshProUGUI cooldownText;
@@ -19,27 +20,30 @@ namespace GamePlayModifiersPlus.TwitchStuff
         Image chargeCounter;
         private void Awake()
         {
-            Init();
+            StartCoroutine(Init());
         }
 
-        void Init()
+        IEnumerator Init()
         {
+            yield return new WaitForSeconds(0.1f);
+            GameObject display = new GameObject("GMPDisplay");
             GameObject textObj = new GameObject("GMPDisplayText");
             if (ChatConfig.uiOnTop)
             {
                 textObj.transform.position = new Vector3(0.1f, 3f, 7f);
                 textObj.transform.localScale *= 1.5f;
             }
-  
+
             else
             {
                 textObj.transform.position = new Vector3(0.2f, -1f, 7f);
                 textObj.transform.localScale *= 2.0f;
             }
-
+            textObj.transform.SetParent(display.transform);
 
             var counterImage = ReflectionUtil.GetPrivateField<Image>(
     Resources.FindObjectsOfTypeAll<ScoreMultiplierUIController>().First(), "_multiplierProgressImage");
+
 
             GameObject canvasobj = new GameObject("GMPDisplayCanvas");
             Canvas canvas = canvasobj.AddComponent<Canvas>();
@@ -98,7 +102,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
             chargeCountText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 1f);
             chargeCountText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
             chargeCountText.GetComponent<RectTransform>().SetParent(canvas.transform, false);
-         //   chargeCountText.transform.localPosition = new Vector3(-0.0925f, -.13f, 0f);
+            //   chargeCountText.transform.localPosition = new Vector3(-0.0925f, -.13f, 0f);
 
             cooldownText = BeatSaberMarkupLanguage.BeatSaberUI.CreateText(canvas.transform as RectTransform, Plugin.charges.ToString(), new Vector2(-1f, 0.015f));
             cooldownText.text = "";
@@ -106,7 +110,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
             cooldownText.fontSize = 2.5f;
             cooldownText.transform.localScale *= .08f;
             cooldownText.color = Color.red;
-       //     cooldownText.font = Resources.Load<TMP_FontAsset>("Teko-Medium SDF No Glow");
+            //     cooldownText.font = Resources.Load<TMP_FontAsset>("Teko-Medium SDF No Glow");
             cooldownText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 10f);
             cooldownText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
             cooldownText.GetComponent<RectTransform>().SetParent(canvas.transform, false);
@@ -117,14 +121,30 @@ namespace GamePlayModifiersPlus.TwitchStuff
             activeCommandText.fontSize = 2.5f;
             activeCommandText.transform.localScale *= .08f;
             activeCommandText.color = Color.yellow;
-       //     activeCommandText.font = Resources.Load<TMP_FontAsset>("Teko-Medium SDF No Glow");
+            //     activeCommandText.font = Resources.Load<TMP_FontAsset>("Teko-Medium SDF No Glow");
             activeCommandText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 10f);
             activeCommandText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
             activeCommandText.GetComponent<RectTransform>().SetParent(canvas.transform, false);
+
+            GameObject coreGameHUD = Resources.FindObjectsOfTypeAll<CoreGameHUDController>()?.FirstOrDefault(x => x.isActiveAndEnabled)?.gameObject ?? null;
+            FlyingGameHUDRotation flyingGameHUD = Resources.FindObjectsOfTypeAll<FlyingGameHUDRotation>().FirstOrDefault(x => x.isActiveAndEnabled);
+            if (GMPUI.chatIntegration360 || flyingGameHUD != null)
+            {
+
+                display.transform.SetParent(coreGameHUD.transform.GetChild(0), true);
+                textObj.transform.position = new Vector3(0, 0f, 0);
+                display.transform.localPosition = new Vector3(0, 0f, 0f);
+                display.transform.localRotation = Quaternion.identity;
+                display.transform.localScale = Vector3.one * 40f;
+                textObj.transform.localPosition = new Vector3(0, 1f, 0);
+            }
+
+            initialized = true;
         }
 
         void Update()
         {
+            if (!initialized) return;
             chargeCounter.fillAmount = Mathf.Lerp(chargeCounter.fillAmount, (float)Plugin.charges / ChatConfig.maxCharges, .03f);
             chargeCountText.text = Plugin.charges.ToString();
         }
@@ -137,6 +157,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
             Destroy(GameObject.Find("GMPDisplayText"));
             Destroy(GameObject.Find("GMPDisplayCoolDown"));
             Destroy(GameObject.Find("GMPDisplayActiveCommands"));
+            Destroy(GameObject.Find("GMPDisplay"));
         }
     }
 

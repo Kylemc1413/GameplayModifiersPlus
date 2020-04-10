@@ -93,6 +93,11 @@
         public static float largerMultiplier = 1.35f;
         public static float fasterMultiplier = 1.2f;
         public static float slowerMultiplier = .85f;
+
+        public static int leftChargeCost = 5;
+        public static int rightChargeCost = 5;
+        public static float leftCoolDownn = 15;
+        public static float rightCoolDown = 15;
         private static string chargeCostString;
 
 
@@ -210,12 +215,18 @@
             bombsCooldown = Plugin.ChatConfigSettings.GetFloat("Bombs", "CoolDown", 45f, true);
             bombsDuration = Plugin.ChatConfigSettings.GetFloat("Bombs", "Duration", 15f, true);
             bombsChance = Plugin.ChatConfigSettings.GetFloat("Bombs", "Chance", 0.1f, true);
-
+            //Left
+            leftChargeCost = Plugin.ChatConfigSettings.GetInt("Left", "ChargeCost", 5, true);
+            leftCoolDownn = Plugin.ChatConfigSettings.GetFloat("Left", "CoolDown", 15f, true);
+            //Right
+            rightChargeCost = Plugin.ChatConfigSettings.GetInt("Right", "ChargeCost", 5, true);
+            rightCoolDown = Plugin.ChatConfigSettings.GetFloat("Right", "CoolDown", 15f, true);
             CompileChargeCostString();
         }
 
         static void CompileChargeCostString()
         {
+
             chargeCostString = "Current Costs: ";
             chargeCostString += "DA: " + daChargeCost;
             chargeCostString += " | Smaller: " + smallerChargeCost;
@@ -233,10 +244,12 @@
             chargeCostString += " | offsetrandom: " + offsetrandomChargeCost;
             chargeCostString += " | Mirror: " + mirrorChargeCost;
             chargeCostString += " | Reverse: " + reverseChargeCost;
-                   chargeCostString += " | Faster: " + fasterChargeCost;
-                   chargeCostString += " | Slower: " + slowerChargeCost;
+            chargeCostString += " | Faster: " + fasterChargeCost;
+            chargeCostString += " | Slower: " + slowerChargeCost;
+            chargeCostString += " | Left: " + leftChargeCost;
+            chargeCostString += " | Right: " + rightChargeCost;
             if (chargeCostString == "Current Costs: DA: 0 | Smaller: 0 | Larger: 0 | Random: 0 | Instafail: 0 | Invincible: 0 | NjsRandom: 0 " +
-                "| NoArrows: 0 | Funky: 0 | Rainbow: 0 | Pause: 0 | Bombs: 0 | Poison: 0 | offsetrandom: 0 | Mirror: 0 | Reverse: 0 | Faster: 0 | Slower: 0")
+                "| NoArrows: 0 | Funky: 0 | Rainbow: 0 | Pause: 0 | Bombs: 0 | Poison: 0 | offsetrandom: 0 | Mirror: 0 | Reverse: 0 | Faster: 0 | Slower: 0 | Left: 0 | Right: 0")
                 chargeCostString = "Current Costs: None!";
         }
 
@@ -734,6 +747,40 @@
                         case "Max":
                             offsetrandomMax = int.Parse(value);
                             Plugin.ChatConfigSettings.SetFloat(command, property, offsetrandomMax);
+                            break;
+                        default:
+                            success = false;
+                            break;
+
+                    }
+                    break;
+                case "Left":
+                    switch (property)
+                    {
+                        case "ChargeCost":
+                            leftChargeCost = int.Parse(value);
+                            Plugin.ChatConfigSettings.SetInt(command, property, reverseChargeCost);
+                            break;
+                        case "CoolDown":
+                            leftCoolDownn = float.Parse(value);
+                            Plugin.ChatConfigSettings.SetFloat(command, property, reverseCooldown);
+                            break;
+                        default:
+                            success = false;
+                            break;
+
+                    }
+                    break;
+                case "Right":
+                    switch (property)
+                    {
+                        case "ChargeCost":
+                            rightChargeCost = int.Parse(value);
+                            Plugin.ChatConfigSettings.SetInt(command, property, reverseChargeCost);
+                            break;
+                        case "CoolDown":
+                            rightCoolDown = float.Parse(value);
+                            Plugin.ChatConfigSettings.SetFloat(command, property, reverseCooldown);
                             break;
                         default:
                             success = false;

@@ -17,6 +17,7 @@
         internal static bool poisonCoolDown;
         internal static bool mirrorCoolDown;
         internal static bool reverseCoolDown;
+        internal static bool rotationCoolDown;
         public void SetCooldown(bool state, string cooldown)
         {
             cooldown = cooldown.ToLower();
@@ -67,6 +68,9 @@
                 case "reverse":
                     reverseCoolDown = state;
                     break;
+                case "rotation":
+                    rotationCoolDown = state;
+                    break;
                 default:
                     break;
             }
@@ -107,6 +111,8 @@
                     return offsetrandomCoolDown;
                 case "reverse":
                     return reverseCoolDown;
+                case "rotation":
+                    return rotationCoolDown;
                 default:
                     return false;
             }
@@ -129,6 +135,7 @@
             mirrorCoolDown = false;
             reverseCoolDown = false;
             offsetrandomCoolDown = false;
+            rotationCoolDown = false;
         }
     }
 }
