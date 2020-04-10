@@ -56,7 +56,9 @@
 | Reverse | For the duration, reverses the direction the notes come from|
 | Faster | For the duration, the song speed is altered by the multiplier|
 | Slower | For the duration, the song speed is altered by the multiplier|
-#### If you plan on using the faster or slower commands, do not do so while using the base game to modify song speed, otherwsie hitsounds may become off sync
+| Left   | Rotates the level 30 degrees to the left (If 360 Chat Integration Capabilities are enabled) |
+| Right   | Rotates the level 30 degrees to the right (If 360 Chat Integration Capabilities are enabled) |
+
 
 ## Moderator Commands
 ### Reset Command
