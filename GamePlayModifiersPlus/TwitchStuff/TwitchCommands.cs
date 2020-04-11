@@ -119,6 +119,9 @@
                 case "right":
                     command = "Right";
                     break;
+                case "randomrotation":
+                    command = "RandomRotation";
+                    break;
                 default:
                     isPropertyOnly = true;
                     break;
@@ -411,6 +414,27 @@
                         globalActive = true;
                     }
                 }
+                else if (message.message.ToLower().Contains("!gm randomrotation"))
+                {
+                    if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.randomRotationChargeCost)
+                    {
+                        //       Plugin.beepSound.Play();
+                        Plugin.twitchPowers.StartCoroutine(TwitchPowers.RandomRotation(Plugin.songAudio.clip.length));
+                        Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.songAudio.clip.length, "Rotation", "Super random level rotation active."));
+                        Plugin.trySuper = false;
+                        Plugin.charges -= ChatConfig.chargesForSuperCharge + ChatConfig.randomRotationChargeCost;
+                        Plugin.commandsLeftForMessage -= 1;
+                        globalActive = true;
+                    }
+                    else if (Plugin.charges >= ChatConfig.randomRotationChargeCost)
+                    {
+                        Plugin.twitchPowers.StartCoroutine(TwitchPowers.RandomRotation(ChatConfig.randomRotationDuration));
+                        Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.randomRotationCoolDown, "Rotation", "Random level rotation active."));
+                        Plugin.charges -= ChatConfig.randomRotationChargeCost;
+                        Plugin.commandsLeftForMessage -= 1;
+                        globalActive = true;
+                    }
+                }
             }
         }
         public void CheckGameplayCommands(TwitchMessage message)
@@ -687,7 +711,7 @@
 
             }
 
-            if (message.message.ToLower().Contains("!gm random") && !Plugin.cooldowns.GetCooldown("Random") && Plugin.commandsLeftForMessage > 0)
+            if (message.message.ToLower().Contains("!gm random") && !message.message.ToLower().Contains("!gm randomrotation") && !Plugin.cooldowns.GetCooldown("Random") && Plugin.commandsLeftForMessage > 0)
             {
                 if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.randomChargeCost)
                 {

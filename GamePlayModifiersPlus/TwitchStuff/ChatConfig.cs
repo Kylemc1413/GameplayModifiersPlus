@@ -98,6 +98,11 @@
         public static int rightChargeCost = 5;
         public static float leftCoolDownn = 15;
         public static float rightCoolDown = 15;
+
+        public static int randomRotationChargeCost = 10;
+        public static float randomRotationDuration = 5;
+        public static float randomRotationCoolDown = 30;
+
         private static string chargeCostString;
 
 
@@ -222,6 +227,10 @@
             //Right
             rightChargeCost = Plugin.ChatConfigSettings.GetInt("Right", "ChargeCost", 5, true);
             rightCoolDown = Plugin.ChatConfigSettings.GetFloat("Right", "CoolDown", 15f, true);
+            //Random Rotation
+            randomRotationChargeCost = Plugin.ChatConfigSettings.GetInt("RandomRotation", "ChargeCost", 5, true);
+            randomRotationCoolDown = Plugin.ChatConfigSettings.GetFloat("RandomRotation", "CoolDown", 30f, true);
+            randomRotationDuration = Plugin.ChatConfigSettings.GetFloat("RandomRotation", "Duration", 5f, true);
             CompileChargeCostString();
         }
 
@@ -249,8 +258,9 @@
             chargeCostString += " | Slower: " + slowerChargeCost;
             chargeCostString += " | Left: " + leftChargeCost;
             chargeCostString += " | Right: " + rightChargeCost;
+            chargeCostString += " | RandomRotation: " + randomRotationChargeCost;
             if (chargeCostString == "Current Costs: DA: 0 | Smaller: 0 | Larger: 0 | Random: 0 | Instafail: 0 | Invincible: 0 | NjsRandom: 0 " +
-                "| NoArrows: 0 | Funky: 0 | Rainbow: 0 | Pause: 0 | Bombs: 0 | Poison: 0 | offsetrandom: 0 | Mirror: 0 | Reverse: 0 | Faster: 0 | Slower: 0 | Left: 0 | Right: 0")
+                "| NoArrows: 0 | Funky: 0 | Rainbow: 0 | Pause: 0 | Bombs: 0 | Poison: 0 | offsetrandom: 0 | Mirror: 0 | Reverse: 0 | Faster: 0 | Slower: 0 | Left: 0 | Right: 0 | RandomRotation: 0")
                 chargeCostString = "Current Costs: None!";
         }
 
@@ -791,6 +801,23 @@
                             success = false;
                             break;
 
+                    }
+                    break;
+                case "RandomRotation":
+                    switch (property)
+                    {
+                        case "ChargeCost":
+                            randomRotationChargeCost = int.Parse(value);
+                            Plugin.ChatConfigSettings.SetInt(command, property, randomRotationChargeCost);
+                            break;
+                        case "CoolDown":
+                            randomRotationCoolDown = float.Parse(value);
+                            Plugin.ChatConfigSettings.SetFloat(command, property, randomRotationCoolDown);
+                            break;
+                        case "Duration":
+                            randomRotationDuration = float.Parse(value);
+                            Plugin.ChatConfigSettings.SetFloat(command, property, randomRotationDuration);
+                            break;
                     }
                     break;
                 default:

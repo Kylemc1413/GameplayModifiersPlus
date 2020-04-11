@@ -120,7 +120,7 @@
         public static IEnumerator TestingGround(float length)
         {
             yield return new WaitForSecondsRealtime(2f);
-            SharedCoroutineStarter.instance.StartCoroutine(MadScience(Plugin.songAudio.clip.length));
+            SharedCoroutineStarter.instance.StartCoroutine(RandomRotation(Plugin.songAudio.clip.length));
         }
 
         public static IEnumerator LeftRotation()
@@ -150,6 +150,63 @@
          //   data.Add(new BeatmapEventData(eventTime, BeatmapEventType.Event14, 2));
          //   data = data.OrderBy(o => o.time).ToList();
          //   beatmapData.SetProperty<BeatmapData>("beatmapEventData", data.ToArray()); 
+        }
+
+        public static IEnumerator RandomRotation(float length)
+        {
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            text.text += " RandomRotation | ";
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapCallbackItemDataList callBackDataList = Plugin.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
+
+            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            Plugin.Log("Grabbed BeatmapData");
+            float startTime = Plugin.songAudio.time + 0.5f;
+            float endTime = startTime + length;
+            float marker = startTime;
+            List<BeatmapEventData> data = beatmapData.beatmapEventData.ToList();
+            while (marker < endTime)
+            {
+                int state = UnityEngine.Random.Range(0, 3);
+                switch(state)
+                {
+                    case 0:
+                        Plugin.Log($"Left insertion at {marker}");
+                        BeatmapEventData leftEvent = new BeatmapEventData(marker, BeatmapEventType.Event14, 2);
+                        data.Add(leftEvent);
+                        break;
+                    case 1:
+                        Plugin.Log($"right insertion at {marker}");
+                        BeatmapEventData rightEvent = new BeatmapEventData(marker, BeatmapEventType.Event14, 5);
+                        data.Add(rightEvent);
+                        break;
+                    case 2:
+                        Plugin.Log($"Skip at {marker}");
+                        break;
+                    default:
+                        break;
+
+                }
+                marker++;
+            }
+            data = data.OrderBy(o => o.time).ToList();
+            beatmapData.SetProperty<BeatmapData>("beatmapEventData", data.ToArray());
+            callbackController.SetNewBeatmapData(beatmapData);
+            yield return new WaitForSeconds(length);
+            //    List<BeatmapEventData> data = beatmapData.beatmapEventData.ToList();
+            //14 Early Rotation 15 Late Rotation
+            /*
+                Rotation Values
+	        	-60f,
+	        	-45f,
+	        	-30f,
+	        	-15f,
+	        	15f,
+	        	30f,
+	        	45f,
+	            60f
+            */
+            text.text = text.text.Replace(" RandomRotation | ", "");
         }
 
         public static IEnumerator RightRotation()
