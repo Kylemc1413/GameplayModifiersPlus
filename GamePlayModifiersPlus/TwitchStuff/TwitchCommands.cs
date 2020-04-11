@@ -36,7 +36,7 @@
             }
             if (message.user.Twitch.Twitch.displayName.ToLower() == "kyle1413k" && message.message.ToLower().Contains("!charge"))
             {
-                Plugin.charges += (ChatConfig.chargesForSuperCharge / 2 + 5);
+                Plugin.charges += (ChatConfig.maxCharges / 2);
                 TwitchWebSocketClient.SendMessage("Current Charges: " + Plugin.charges);
             }
             if (message.message.ToLower().Contains("!gm") && message.message.ToLower().Contains("super"))
