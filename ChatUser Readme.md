@@ -44,4 +44,4 @@
 | Slower | For the duration, the song speed is altered by the multiplier|
 | Left   | Rotates the level 30 degrees to the left (If 360 Chat Integration Capabilities are enabled) |
 | Right   | Rotates the level 30 degrees to the right (If 360 Chat Integration Capabilities are enabled) |
-
+| RandomRotation   | Randomly sporadically rotates the level 30 degrees to the left/right for the duration (If 360 Chat Integration Capabilities are enabled) |
