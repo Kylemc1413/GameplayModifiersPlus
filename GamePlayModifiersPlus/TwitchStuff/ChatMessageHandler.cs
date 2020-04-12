@@ -31,7 +31,6 @@ namespace GamePlayModifiersPlus.TwitchStuff
                     if (GMPUI.chatIntegration && Plugin.isValidScene && !Plugin.cooldowns.GetCooldown("Global") && Plugin.twitchPluginInstalled)
                     {
                         Plugin.commandsLeftForMessage = ChatConfig.commandsPerMessage;
-                        if(GMPUI.chatIntegration360)
                             Plugin.twitchCommands.CheckRotationCommands(message);
 
                         Plugin.twitchCommands.CheckSpeedCommands(message);

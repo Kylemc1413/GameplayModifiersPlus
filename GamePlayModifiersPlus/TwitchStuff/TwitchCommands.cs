@@ -397,7 +397,9 @@
             {
                 if (message.message.ToLower().Contains("!gm left"))
                 {
-                    if (Plugin.charges >= ChatConfig.leftChargeCost)
+                    if (!GMPUI.chatIntegration360)
+                        StreamCore.Twitch.TwitchWebSocketClient.SendMessage("Rotation Based Commands currently disabled. Please turn on chatintegration360 if you would like to use these commands.");
+                    else if (Plugin.charges >= ChatConfig.leftChargeCost)
                     {
                         Plugin.twitchPowers.StartCoroutine(TwitchPowers.LeftRotation());
                         Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.leftCoolDownn, "Rotation", "Rotating level to the left."));
@@ -408,7 +410,9 @@
                 }
                 else if(message.message.ToLower().Contains("!gm right"))
                 {
-                    if (Plugin.charges >= ChatConfig.rightChargeCost)
+                    if (!GMPUI.chatIntegration360)
+                        StreamCore.Twitch.TwitchWebSocketClient.SendMessage("Rotation Based Commands currently disabled. Please turn on chatintegration360 if you would like to use these commands.");
+                    else if (Plugin.charges >= ChatConfig.rightChargeCost)
                     {
                         Plugin.twitchPowers.StartCoroutine(TwitchPowers.RightRotation());
                         Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rightCoolDown, "Rotation", "Rotating level to the right."));
@@ -419,7 +423,9 @@
                 }
                 else if (message.message.ToLower().Contains("!gm randomrotation"))
                 {
-                    if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.randomRotationChargeCost)
+                    if (!GMPUI.chatIntegration360)
+                        StreamCore.Twitch.TwitchWebSocketClient.SendMessage("Rotation Based Commands currently disabled. Please turn on chatintegration360 if you would like to use these commands.");
+                    else if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.randomRotationChargeCost)
                     {
                         //       Plugin.beepSound.Play();
                         Plugin.twitchPowers.StartCoroutine(TwitchPowers.RandomRotation(Plugin.songAudio.clip.length));
