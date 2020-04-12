@@ -18,6 +18,7 @@
         internal static bool mirrorCoolDown;
         internal static bool reverseCoolDown;
         internal static bool rotationCoolDown;
+        internal static bool tunnelCoolDown;
         public void SetCooldown(bool state, string cooldown)
         {
             cooldown = cooldown.ToLower();
@@ -71,6 +72,9 @@
                 case "rotation":
                     rotationCoolDown = state;
                     break;
+                case "tunnel":
+                    tunnelCoolDown = state;
+                    break;
                 default:
                     break;
             }
@@ -113,6 +117,8 @@
                     return reverseCoolDown;
                 case "rotation":
                     return rotationCoolDown;
+                case "tunnel":
+                    return tunnelCoolDown;
                 default:
                     return false;
             }
@@ -136,6 +142,7 @@
             reverseCoolDown = false;
             offsetrandomCoolDown = false;
             rotationCoolDown = false;
+            tunnelCoolDown = false;
         }
     }
 }

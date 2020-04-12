@@ -359,7 +359,7 @@
             Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
-            float start = Plugin.songAudio.time + 2;
+            float start = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float end = start + length + 2f;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
@@ -395,7 +395,7 @@
             Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
-            float start = Plugin.songAudio.time + 2;
+            float start = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float end = start + length + 2f;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
@@ -676,7 +676,8 @@
             Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
-            float start = Plugin.songAudio.time + 2;
+            float wait =  Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float start = Plugin.songAudio.time + wait;
             float end = start + length + 2f;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
@@ -695,7 +696,7 @@
                 }
             }
 
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(wait);
             GMPUI.reverse = true;
             AdjustNjsOrOffset();
             Plugin.reverseSound.Play();
@@ -720,7 +721,7 @@
             Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
-            float start = Plugin.songAudio.time + 2;
+            float start = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
 
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
@@ -756,7 +757,7 @@
             BeatmapObjectData[] objects;
             NoteData note;
             ObstacleData obstacle;
-            float start = Plugin.songAudio.time + 4f;
+            float start = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 1.5f;
             float end = start + length;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
@@ -950,7 +951,7 @@
             BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
             Plugin.Log("Grabbed BeatmapData");
             List<BeatmapObjectData> objects;
-            float start = Plugin.songAudio.time + 2;
+            float start = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float end = start + length + 2f;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
@@ -976,10 +977,11 @@
 
         }
 
-        public static IEnumerator Encasement(float start, float duration)
+        public static IEnumerator Encasement(float duration)
         {
-            yield return new WaitForSeconds(0.1f);
-            float startTime = start;
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            text.text += " Tunnel | ";
+            float startTime = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float durationTime = duration;
             MappingExtensions.Plugin.ForceActivateForSong();
 
@@ -995,8 +997,8 @@
             objects = objects.OrderBy(o => o.time).ToList();
             beatmapData.beatmapLinesData[0].beatmapObjectsData = objects.ToArray();
             objects.Clear();
-
-
+            yield return new WaitForSeconds(duration);
+            text.text = text.text.Replace(" Tunnel | ", "");
 
         }
 
@@ -1004,7 +1006,7 @@
         {
             yield return new WaitForSeconds(0f);
             MappingExtensions.Plugin.ForceActivateForSong();
-            float startTime = start;
+            float startTime = start + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float durationTime = Plugin.songAudio.clip.length;
 
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();

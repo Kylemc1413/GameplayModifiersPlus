@@ -113,6 +113,9 @@
                 case "mirror":
                     command = "Mirror";
                     break;
+                case "tunnel":
+                    command = "Tunnel";
+                    break;
                 case "left":
                     command = "Left";
                     break;
@@ -650,6 +653,29 @@
                     Plugin.twitchPowers.StartCoroutine(TwitchPowers.RandomBombs(ChatConfig.bombsDuration));
                     Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.bombsCooldown, "Bombs", "Sneaking Bombs into the map."));
                     Plugin.charges -= ChatConfig.bombsChargeCost;
+                    Plugin.commandsLeftForMessage -= 1;
+                    globalActive = true;
+                }
+            }
+            if (message.message.ToLower().Contains("!gm tunnel") && !Plugin.cooldowns.GetCooldown("Tunnel") && Plugin.commandsLeftForMessage > 0)
+            {
+
+                if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.tunnelChargeCost)
+                {
+                    //               Plugin.beepSound.Play();
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.Encasement(Plugin.songAudio.clip.length));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.songAudio.clip.length, "Tunnel", "Entering Tunnel. Estimated time of exit: Unknown."));
+                    Plugin.trySuper = false;
+                    Plugin.charges -= ChatConfig.chargesForSuperCharge + ChatConfig.tunnelChargeCost;
+                    Plugin.commandsLeftForMessage -= 1;
+                    globalActive = true;
+                }
+                else if (Plugin.charges >= ChatConfig.tunnelChargeCost)
+                {
+                    //                Plugin.beepSound.Play();
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.Encasement(ChatConfig.tunnelDuration));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.tunnelCoolDown, "Tunnel", $"Entering Tunnel. Estimated time of exit: {ChatConfig.tunnelDuration} seconds."));
+                    Plugin.charges -= ChatConfig.tunnelChargeCost;
                     Plugin.commandsLeftForMessage -= 1;
                     globalActive = true;
                 }

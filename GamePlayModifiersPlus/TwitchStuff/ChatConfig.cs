@@ -96,13 +96,15 @@
 
         public static int leftChargeCost = 5;
         public static int rightChargeCost = 5;
-        public static float leftCoolDownn = 15;
-        public static float rightCoolDown = 15;
+        public static float leftCoolDownn = 15f;
+        public static float rightCoolDown = 15f;
 
         public static int randomRotationChargeCost = 10;
-        public static float randomRotationDuration = 5;
-        public static float randomRotationCoolDown = 30;
-
+        public static float randomRotationDuration = 5f;
+        public static float randomRotationCoolDown = 30f;
+        public static int tunnelChargeCost = 5;
+        public static float tunnelDuration = 15f;
+        public static float tunnelCoolDown = 30f;
         private static string chargeCostString;
 
 
@@ -221,6 +223,10 @@
             bombsCooldown = Plugin.ChatConfigSettings.GetFloat("Bombs", "CoolDown", 45f, true);
             bombsDuration = Plugin.ChatConfigSettings.GetFloat("Bombs", "Duration", 15f, true);
             bombsChance = Plugin.ChatConfigSettings.GetFloat("Bombs", "Chance", 0.1f, true);
+            //Tunnel
+            tunnelChargeCost = Plugin.ChatConfigSettings.GetInt("Tunnel", "ChargeCost", 5, true);
+            tunnelDuration = Plugin.ChatConfigSettings.GetFloat("Tunnel", "Duration", 15f, true);
+            tunnelCoolDown = Plugin.ChatConfigSettings.GetFloat("Tunnel", "CoolDown", 30f, true);
             //Left
             leftChargeCost = Plugin.ChatConfigSettings.GetInt("Left", "ChargeCost", 5, true);
             leftCoolDownn = Plugin.ChatConfigSettings.GetFloat("Left", "CoolDown", 15f, true);
@@ -256,11 +262,12 @@
             chargeCostString += " | Reverse: " + reverseChargeCost;
             chargeCostString += " | Faster: " + fasterChargeCost;
             chargeCostString += " | Slower: " + slowerChargeCost;
+            chargeCostString += " | Tunnel: " + tunnelChargeCost;
             chargeCostString += " | Left: " + leftChargeCost;
             chargeCostString += " | Right: " + rightChargeCost;
             chargeCostString += " | RandomRotation: " + randomRotationChargeCost;
             if (chargeCostString == "Current Costs: DA: 0 | Smaller: 0 | Larger: 0 | Random: 0 | Instafail: 0 | Invincible: 0 | NjsRandom: 0 " +
-                "| NoArrows: 0 | Funky: 0 | Rainbow: 0 | Pause: 0 | Bombs: 0 | Poison: 0 | offsetrandom: 0 | Mirror: 0 | Reverse: 0 | Faster: 0 | Slower: 0 | Left: 0 | Right: 0 | RandomRotation: 0")
+                "| NoArrows: 0 | Funky: 0 | Rainbow: 0 | Pause: 0 | Bombs: 0 | Poison: 0 | offsetrandom: 0 | Mirror: 0 | Reverse: 0 | Faster: 0 | Slower: 0 | Tunnel: 0 | Left: 0 | Right: 0 | RandomRotation: 0")
                 chargeCostString = "Current Costs: None!";
         }
 
@@ -764,6 +771,26 @@
                             Plugin.ChatConfigSettings.SetFloat(command, property, offsetrandomMax);
                             break;
                         default:
+                            success = false;
+                            break;
+
+                    }
+                    break;
+                case "Tunnel":
+                    switch (property)
+                    {
+                        case "ChargeCost":
+                            tunnelChargeCost = int.Parse(value);
+                            Plugin.ChatConfigSettings.SetInt(command, property, tunnelChargeCost);
+                            break;
+                        case "CoolDown":
+                            tunnelCoolDown = float.Parse(value);
+                            Plugin.ChatConfigSettings.SetFloat(command, property, tunnelCoolDown);
+                            break;
+                        case "Duration":
+                            tunnelDuration = float.Parse(value);
+                            Plugin.ChatConfigSettings.SetFloat(command, property, tunnelDuration);
+                            break;
                             success = false;
                             break;
 
