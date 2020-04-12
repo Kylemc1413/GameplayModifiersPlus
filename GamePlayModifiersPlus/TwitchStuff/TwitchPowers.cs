@@ -981,7 +981,7 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " Tunnel | ";
-            float startTime = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float startTime = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.2f;
             float durationTime = duration;
             MappingExtensions.Plugin.ForceActivateForSong();
 
