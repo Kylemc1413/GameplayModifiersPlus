@@ -138,7 +138,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
                 display.transform.localScale = Vector3.one * 40f;
                 textObj.transform.localPosition = new Vector3(0, 1.25f, 0);
             }
-
+            display.SetActive(GMPUI.chatIntegration);
             initialized = true;
         }
 

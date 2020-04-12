@@ -131,7 +131,7 @@
 
             BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
             Plugin.Log("Grabbed BeatmapData");
-            float eventTime = Plugin.songAudio.time + 0.5f;
+            float eventTime = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             //    List<BeatmapEventData> data = beatmapData.beatmapEventData.ToList();
             //14 Early Rotation 15 Late Rotation
             /*
@@ -146,7 +146,23 @@
 	            60f
             */
             BeatmapEventData newEvent = new BeatmapEventData(eventTime, BeatmapEventType.Event14, 2);
-            callBackDataList.InsertBeatmapEventData(newEvent);
+            List<BeatmapEventData> data = beatmapData.beatmapEventData.ToList();
+            data.Add(newEvent);
+            data = data.OrderBy(o => o.time).ToList();
+            List<BeatmapObjectData>[] data2 = new List<BeatmapObjectData>[4];
+            for (int i = 0; i < beatmapData.beatmapLinesData.Length; i++)
+            {
+                data2[i] = new List<BeatmapObjectData>();
+                data2[i].AddRange(beatmapData.beatmapLinesData[i].beatmapObjectsData);
+                data2[i].RemoveAll(x => x.time < eventTime);
+                beatmapData.beatmapLinesData[i].beatmapObjectsData = data2[i].ToArray();
+            }
+            //    for(int i = 0; i < 4; i++)
+            //        lineData[i] = new BeatmapLineData { beatmapObjectsData = data2[i].ToArray()};
+       //     data.RemoveAll(x => x.time < eventTime);
+            beatmapData.SetProperty<BeatmapData>("beatmapEventData", data.ToArray());
+            callbackController.SetNewBeatmapData(beatmapData);
+       //     callBackDataList.InsertBeatmapEventData(newEvent);
             //   data.Add(new BeatmapEventData(eventTime, BeatmapEventType.Event14, 2));
             //   data = data.OrderBy(o => o.time).ToList();
             //   beatmapData.SetProperty<BeatmapData>("beatmapEventData", data.ToArray()); 
@@ -161,12 +177,13 @@
 
             BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
             Plugin.Log("Grabbed BeatmapData");
-            float startTime = Plugin.songAudio.time + 0.5f;
+            float startTime = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f; 
             float endTime = startTime + length;
             float marker = startTime;
             List<BeatmapEventData> data = beatmapData.beatmapEventData.ToList();
             while (marker < endTime)
             {
+                marker += 1f;
                 int state = UnityEngine.Random.Range(0, 3);
                 switch (state)
                 {
@@ -187,9 +204,19 @@
                         break;
 
                 }
-                marker++;
             }
             data = data.OrderBy(o => o.time).ToList();
+            List<BeatmapObjectData>[] data2 = new List<BeatmapObjectData>[4];
+            for (int i = 0; i < beatmapData.beatmapLinesData.Length; i++)
+            {
+                data2[i] = new List<BeatmapObjectData>();
+                data2[i].AddRange(beatmapData.beatmapLinesData[i].beatmapObjectsData);
+                data2[i].RemoveAll(x => x.time < startTime);
+                beatmapData.beatmapLinesData[i].beatmapObjectsData = data2[i].ToArray();
+            }
+        //    for(int i = 0; i < 4; i++)
+        //        lineData[i] = new BeatmapLineData { beatmapObjectsData = data2[i].ToArray()};
+       //     data.RemoveAll(x => x.time < startTime);
             beatmapData.SetProperty<BeatmapData>("beatmapEventData", data.ToArray());
             callbackController.SetNewBeatmapData(beatmapData);
             yield return new WaitForSeconds(length);
@@ -209,32 +236,33 @@
             text.text = text.text.Replace(" RandomRotation | ", "");
         }
 
+
         public static IEnumerator RightRotation()
         {
             yield return new WaitForSeconds(0f);
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
             BeatmapCallbackItemDataList callBackDataList = Plugin.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
+
             BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
             Plugin.Log("Grabbed BeatmapData");
-            float eventTime = Plugin.songAudio.time + 0.5f;
-            //  List<BeatmapEventData> data = beatmapData.beatmapEventData.ToList();
-            //14 Early Rotation 15 Late Rotation
-            /*
-                Rotation Values
-	        	-60f,
-	        	-45f,
-	        	-30f,
-	        	-15f,
-	        	15f,
-	        	30f,
-	        	45f,
-	            60f
-            */
-            BeatmapEventData newEvent = new BeatmapEventData(eventTime, BeatmapEventType.Event14, 5);
-            callBackDataList.InsertBeatmapEventData(newEvent);
-            //    data.Add(newEvent);
-            //    data = data.OrderBy(o => o.time).ToList();
-            //    beatmapData.SetProperty<BeatmapData>("beatmapEventData", data.ToArray());
+            float startTime = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            List<BeatmapEventData> data = beatmapData.beatmapEventData.ToList();
+            BeatmapEventData rightEvent = new BeatmapEventData(startTime, BeatmapEventType.Event14, 5);
+            data.Add(rightEvent);
+            data = data.OrderBy(o => o.time).ToList();
+            List<BeatmapObjectData>[] data2 = new List<BeatmapObjectData>[4];
+            for (int i = 0; i < beatmapData.beatmapLinesData.Length; i++)
+            {
+                data2[i] = new List<BeatmapObjectData>();
+                data2[i].AddRange(beatmapData.beatmapLinesData[i].beatmapObjectsData);
+                data2[i].RemoveAll(x => x.time < startTime);
+                beatmapData.beatmapLinesData[i].beatmapObjectsData = data2[i].ToArray();
+            }
+            //    for(int i = 0; i < 4; i++)
+            //        lineData[i] = new BeatmapLineData { beatmapObjectsData = data2[i].ToArray()};
+            //     data.RemoveAll(x => x.time < startTime);
+            beatmapData.SetProperty<BeatmapData>("beatmapEventData", data.ToArray());
+            callbackController.SetNewBeatmapData(beatmapData);
         }
 
         public static IEnumerator Wait(float waitTime)

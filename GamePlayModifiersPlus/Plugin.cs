@@ -381,7 +381,7 @@
                 //   Log("Post GrabGrab 3");
                 if (!Multiplayer.MultiMain.multiActive.Value)
                 {
-                    if (GMPUI.chatIntegration && ChatConfig.maxCharges > 0 && twitchPluginInstalled)
+                    if (twitchPluginInstalled)
                         chatPowers.AddComponent<GMPDisplay>();
                     if (GMPUI.chatIntegration && ChatConfig.timeForCharges > 0 && twitchPluginInstalled)
                         twitchPowers.StartCoroutine(TwitchPowers.ChargeOverTime());
