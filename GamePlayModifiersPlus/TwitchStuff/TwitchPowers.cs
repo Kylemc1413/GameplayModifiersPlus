@@ -678,7 +678,7 @@
             NoteData note;
             float wait =  Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float start = Plugin.songAudio.time + wait;
-            float end = start + length + 2f;
+            float end = start + length;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
                 objects = line.beatmapObjectsData;
