@@ -7,7 +7,7 @@
     public class TwitchCommands
     {
         public static bool globalActive = false;
-        
+
         public void CheckPauseMessage(TwitchMessage message)
         {
             if (message.message.ToLower().Contains("!gm pause") && Plugin.commandsLeftForMessage > 0)
@@ -225,12 +225,12 @@
             if (message.message.ToLower().Contains("!gm help"))
             {
                 TwitchWebSocketClient.SendMessage("Guides: For Regular Users - http://bit.ly/1413ChatUser | For Streamers - http://bit.ly/1413Readme | For moderators also view http://bit.ly/1413Config");
-                
+
             }
             if (message.message.ToLower().Contains("!currentsong"))
             {
-                if(!Plugin.isValidScene)
-                TwitchWebSocketClient.SendMessage("No song is currently being played.");
+                if (!Plugin.isValidScene)
+                    TwitchWebSocketClient.SendMessage("No song is currently being played.");
                 else
                     TwitchWebSocketClient.SendMessage("Current Song: " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.songName
                         + " - " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.songSubName + " mapped by " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.levelAuthorName);
@@ -249,11 +249,12 @@
                 TwitchWebSocketClient.SendMessage("Currently supported commands | status: Currrent Status of chat integration | charges: view current charges and costs | chargehelp: Explain charge system");
             }
 
-
-            if (message.message.ToLower().Contains("!gm charges"))
-            {
-                TwitchWebSocketClient.SendMessage("Charges: " + Plugin.charges + " | Commands Per Message: " + ChatConfig.commandsPerMessage + " | " + ChatConfig.GetChargeCostString());
-            }
+            if (!Plugin.cooldowns.GetCooldown("chargescommand"))
+                if (message.message.ToLower().Contains("!gm charges"))
+                {
+                    TwitchWebSocketClient.SendMessage("Charges: " + Plugin.charges + " | Commands Per Message: " + ChatConfig.commandsPerMessage + " | " + ChatConfig.GetChargeCostString());
+                    SharedCoroutineStarter.instance.StartCoroutine(Cooldowns.CommandCoolDown("chargescommand", ChatConfig.chargesCommandCoolDown));
+                }
         }
 
         public void CheckStatusCommands(TwitchMessage message)
@@ -408,7 +409,7 @@
                         globalActive = true;
                     }
                 }
-                else if(message.message.ToLower().Contains("!gm right"))
+                else if (message.message.ToLower().Contains("!gm right"))
                 {
                     if (!GMPUI.chatIntegration360)
                         StreamCore.Twitch.TwitchWebSocketClient.SendMessage("Rotation Based Commands currently disabled. Please turn on chatintegration360 if you would like to use these commands.");

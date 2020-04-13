@@ -389,7 +389,7 @@
                 //   Log("Post GrabGrab 4");
 
 
-                pauseManager = Resources.FindObjectsOfTypeAll<StandardLevelGameplayManager>().First();
+                pauseManager = Resources.FindObjectsOfTypeAll<StandardLevelGameplayManager>().FirstOrDefault();
                 //      Log("Pre ChatInt");
 
                 //      Log(colorA.color.ToString());

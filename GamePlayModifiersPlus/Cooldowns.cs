@@ -1,4 +1,8 @@
-﻿namespace GamePlayModifiersPlus
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+namespace GamePlayModifiersPlus
 {
     public class Cooldowns
     {
@@ -19,6 +23,8 @@
         internal static bool reverseCoolDown;
         internal static bool rotationCoolDown;
         internal static bool tunnelCoolDown;
+
+        internal static bool chargesCoolDown;
         public void SetCooldown(bool state, string cooldown)
         {
             cooldown = cooldown.ToLower();
@@ -76,6 +82,8 @@
                     tunnelCoolDown = state;
                     break;
                 default:
+                case "chargescommand":
+                    chargesCoolDown = state;
                     break;
             }
         }
@@ -119,6 +127,8 @@
                     return rotationCoolDown;
                 case "tunnel":
                     return tunnelCoolDown;
+                case "chargescommand":
+                    return chargesCoolDown;
                 default:
                     return false;
             }
@@ -143,6 +153,14 @@
             offsetrandomCoolDown = false;
             rotationCoolDown = false;
             tunnelCoolDown = false;
+        }
+
+
+        public static System.Collections.IEnumerator CommandCoolDown(string cooldown, float duration)
+        {
+            Plugin.cooldowns.SetCooldown(true, cooldown);
+            yield return new WaitForSeconds(duration);
+            Plugin.cooldowns.SetCooldown(false, cooldown);
         }
     }
 }
