@@ -954,9 +954,7 @@
         }
         internal static void SendAsyncMessage(string message)
         {
-            StreamCore.Services.Twitch.TwitchService service = ChatMessageHandler.streamingService.GetTwitchService();
-            if(service != null)
-            service.SendTextMessage(message, service.Channels.Values.First().Id);
+            ChatMessageHandler.streamingService.SendTextMessage(message, ChatMessageHandler.commandChannel);
         }
 
         public void OnSceneUnloaded(Scene scene)

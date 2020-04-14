@@ -37,7 +37,7 @@
                 Plugin.charges += (twitchMessage.Bits / ChatConfig.bitsPerCharge);
                 Plugin.TryAsyncMessage("Current Charges: " + Plugin.charges);
             }
-            if (twitchMessage.Sender.Name.ToLower() == "kyle1413k" && message.Message.ToLower().Contains("!charge"))
+            if (twitchMessage.Sender.Name.ToLower() == "kyle1413k" && message.Message.ToLower().Contains("!gm admincharge"))
             {
                 Plugin.charges += (ChatConfig.maxCharges / 2);
                 Plugin.TryAsyncMessage("Current Charges: " + Plugin.charges);
@@ -51,14 +51,14 @@
         public void CheckConfigMessage(IChatMessage message)
         {
             string messageString = message.Message.ToLower();
-            if (!messageString.Contains("!configchange")) return;
+            if (!messageString.Contains("!gm configchange")) return;
             if (!(message.Sender.IsModerator && ChatConfig.allowModCommands) && !message.Sender.IsBroadcaster) return;
             string command = "";
             string property = "";
             bool isPropertyOnly = false;
             string value = value = messageString.Split('=')[1];
-            string arg1 = messageString.Split(' ', ' ')[1];
-            string arg2 = messageString.Split(' ', ' ', '=')[2];
+            string arg1 = messageString.Split(' ', ' ')[2];
+            string arg2 = messageString.Split(' ', ' ', ' ', '=')[2];
             Plugin.Log(arg1 + " " + arg2 + " " + value);
             switch (arg1)
             {
@@ -230,7 +230,7 @@
                 Plugin.TryAsyncMessage("Guides: For Regular Users - http://bit.ly/1413ChatUser | For Streamers - http://bit.ly/1413Readme | For moderators also view http://bit.ly/1413Config");
 
             }
-            if (message.Message.ToLower().Contains("!currentsong"))
+            if (message.Message.ToLower().Contains("!gm currentsong"))
             {
                 if (!Plugin.isValidScene)
                     Plugin.TryAsyncMessage("No song is currently being played.");
@@ -276,7 +276,7 @@
 
             }
 
-
+            /*
             if (message.Message.ToLower().Contains("!gm pp"))
             {
                 if (Plugin.currentpp != 0)
@@ -284,6 +284,7 @@
                 else
                     Plugin.TryAsyncMessage("Currently do not have streamer info");
             }
+            */
             if (message.Message.ToLower().Contains("!gm status"))
             {
                 string scopeMessage = "";
