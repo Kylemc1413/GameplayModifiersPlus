@@ -1,7 +1,7 @@
 ﻿namespace GamePlayModifiersPlus
 {
 
-    using StreamCore.Chat;
+    using StreamCore;
     using System.Collections;
     using System.Linq;
     using UnityEngine;
@@ -38,13 +38,13 @@
             {
                 if (ChatConfig.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
                 {
-                    StreamCore.Twitch.TwitchWebSocketClient.SendMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + ChatConfig.globalCommandCooldown + " seconds.");
+                    Plugin.TryAsyncMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + ChatConfig.globalCommandCooldown + " seconds.");
                 }
                 else
-                    StreamCore.Twitch.TwitchWebSocketClient.SendMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
+                    Plugin.TryAsyncMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
             }
             else
-                StreamCore.Twitch.TwitchWebSocketClient.SendMessage(message);
+                Plugin.TryAsyncMessage(message);
 
 
             yield return new WaitForSeconds(waitTime);
@@ -163,9 +163,8 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " RandomRotation | ";
-            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().FirstOrDefault();
             BeatmapCallbackItemDataList callBackDataList = Plugin.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
-
             BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
             Plugin.Log("Grabbed BeatmapData");
             float startTime = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f; 

@@ -1,6 +1,6 @@
 ﻿namespace GamePlayModifiersPlus.Multiplayer
 {
-    using StreamCore.Chat;
+    using StreamCore;
     using StreamCore.Config;
     using System;
     using System.Collections;

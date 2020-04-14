@@ -1,21 +1,23 @@
 ﻿using StreamCore;
-using StreamCore.Chat;
+using StreamCore;
 using StreamCore.Config;
-using StreamCore.YouTube;
-using StreamCore.Twitch;
+using StreamCore.Models.Twitch;
 using UnityEngine;
 namespace GamePlayModifiersPlus.TwitchStuff
 {
-    public class ChatMessageHandler : MonoBehaviour, ITwitchIntegration, IYouTubeIntegration
+    public class ChatMessageHandler
     {
-        public bool IsPluginReady { get; set; } = false;
-
-        public void Awake()
+        public static StreamCoreInstance streamCoreInstance;
+        public static StreamCore.Services.StreamingService streamingService;
+        public static void Load()
         {
+            streamCoreInstance = StreamCore.StreamCoreInstance.Create();
+            streamingService = streamCoreInstance.RunAllServices();
             // Setup chat message callbacks
-            TwitchMessageHandlers.PRIVMSG += (TwitchMessage message) => {
-                if (message.channelName != TwitchLoginConfig.Instance.TwitchChannelName)
-                    return;
+            streamingService.OnTextMessageReceived += (StreamCore.Interfaces.IStreamingService service, StreamCore.Interfaces.IChatMessage message) => {
+
+                TwitchMessage twitchMessage = message is TwitchMessage ? message as TwitchMessage : null;
+                
 
                 if (Plugin.charges < 0) Plugin.charges = 0;
                 Plugin.twitchCommands.CheckChargeMessage(message);
@@ -23,10 +25,10 @@ namespace GamePlayModifiersPlus.TwitchStuff
                 Plugin.twitchCommands.CheckStatusCommands(message);
                 Plugin.twitchCommands.CheckInfoCommands(message);
                 //       twitchCommands.CheckSpeedCommands(message);
-
+                
                 if (Plugin.multiInstalled)
                     if (Multiplayer.MultiMain.multiActive.Value) return;
-                if (ChatConfig.allowEveryone || (ChatConfig.allowSubs && message.user.Twitch.isSub) || message.user.Twitch.isMod)
+                if (ChatConfig.allowEveryone || (ChatConfig.allowSubs && (twitchMessage?.Sender as TwitchUser).IsSubscriber) || (twitchMessage?.Sender).IsModerator)
                 {
                     if (GMPUI.chatIntegration && Plugin.isValidScene && !Plugin.cooldowns.GetCooldown("Global") && Plugin.twitchPluginInstalled)
                     {
@@ -48,7 +50,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
 
                 if (Multiplayer.MultiMain.multiActive.Value)
                 {
-                    string messageString = message.message.ToLower();
+                    string messageString = message.Message.ToLower();
                     Multiplayer.MultiMain.multiCommands.CheckHealthCommands(messageString);
                     Multiplayer.MultiMain.multiCommands.CheckSizeCommands(messageString);
                     Multiplayer.MultiMain.multiCommands.CheckGameplayCommands(messageString);
@@ -57,9 +59,6 @@ namespace GamePlayModifiersPlus.TwitchStuff
 
             };
 
-
-            // Signal to StreamCore that this class is ready to receive chat callbacks
-            IsPluginReady = true;
         }
     }
 }

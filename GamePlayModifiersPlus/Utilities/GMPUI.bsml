@@ -15,7 +15,7 @@
       <modifier hover-hint='[Disables Submission] Funky Notes' value='Funky' on-change='SetFunky' source='GamePlayModifiersPlus.Resources.FunkyIcon.png' text ='Funky'></modifier>
       <modifier hover-hint='Rainbow Notes' value='Rainbow' on-change='SetRainbow' source='GamePlayModifiersPlus.Resources.RainbowIcon.png' text ='Rainbow'></modifier>
       <modifier hover-hint='[Disables Submission] Reverses the direction the notes come from' value='Reverse' on-change='SetReverse' source='GamePlayModifiersPlus.Resources.RepeatIcon.png' text ='Reversal'></modifier>
-      <modifier hover-hint='Restarts song on song end' value='Repeat' on-change='SetRepeat' source='GamePlayModifiersPlus.Resources.RepeatIcon.png' text ='Repeat'></modifier>
+   <!--   <modifier hover-hint='Restarts song on song end' value='Repeat' on-change='SetRepeat' source='GamePlayModifiersPlus.Resources.RepeatIcon.png' text ='Repeat'></modifier> -->
       <modifier hover-hint='[Disables Submission] Currently Used To test Random stuff' value='SwapSabers' on-change='SetSwapSabers' source='GamePlayModifiersPlus.Resources.GMPIcon.png' text ='Testing Ground'></modifier>
       <modifier hover-hint='[Disables Submission] Randomizes Note Jump Speed' value='NjsRandom' on-change='SetNjsRandom' source='GamePlayModifiersPlus.Resources.RandomIcon.png' text ='Random NJS'></modifier>
       <modifier hover-hint='[Disables Submission] Randomizes Note Spawn offset' value='OffsetRandom' on-change='SetOffsetRandom' source='GamePlayModifiersPlus.Resources.RandomIcon.png' text ='Random Spawn Offset'></modifier>

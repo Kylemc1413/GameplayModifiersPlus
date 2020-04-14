@@ -18,7 +18,6 @@
     using IPA.Old;
     using IPA.Config;
     using StreamCore;
-    using StreamCore.Chat;
     using StreamCore.Config;
     using IPA.Loader;
     using IPA;
@@ -131,11 +130,6 @@
             harmony = new Harmony("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
             ApplyPatches();
             CheckPlugins();
-
-            if (twitchPluginInstalled)
-            {
-                InitStreamCore();
-            }
             ChatConfig.Load();
             ReadPrefs();
             //Delete old config if it exists
@@ -158,9 +152,14 @@
             SceneManager.activeSceneChanged += OnActiveSceneChanged;
 
             BeatSaberMarkupLanguage.GameplaySetup.GameplaySetup.instance.AddTab("GameplayModifiersPlus", "GamePlayModifiersPlus.Utilities.GMPUI.bsml", GMPUI.instance);
-
+            if (twitchPluginInstalled)
+                InitStreamCore();
         }
 
+        public void InitStreamCore()
+        {
+            ChatMessageHandler.Load();
+        }
         [Init]
         public void Init(IPA.Logging.Logger logger)
         {
@@ -198,11 +197,6 @@
 
             //ColorManager.GetField<SimpleColorSO>("_saberAColor").SetColor(left);
             //ColorManager.GetField<SimpleColorSO>("_saberBColor").SetColor(right);
-        }
-        private void InitStreamCore()
-        {
-            //    TwitchStuff.ChatMessageHandler messageHandler = new GameObject("GMP Chat Message Handler").AddComponent<ChatMessageHandler>();
-            //    GameObject.DontDestroyOnLoad(messageHandler.gameObject);
         }
 
         public void OnSceneLoaded(Scene scene, LoadSceneMode arg1)
@@ -381,7 +375,6 @@
                 //   Log("Post GrabGrab 3");
                 if (!Multiplayer.MultiMain.multiActive.Value)
                 {
-                    if (twitchPluginInstalled)
                         chatPowers.AddComponent<GMPDisplay>();
                     if (GMPUI.chatIntegration && ChatConfig.timeForCharges > 0 && twitchPluginInstalled)
                         twitchPowers.StartCoroutine(TwitchPowers.ChargeOverTime());
@@ -583,8 +576,8 @@
         {
             if (arg2.levelEndAction == LevelCompletionResults.LevelEndAction.Quit) return;
             if (arg2.levelEndAction == LevelCompletionResults.LevelEndAction.Restart) return;
-            if (GMPUI.repeatSong)
-                ReflectionUtil.SetProperty(arg2, "levelEndAction", LevelCompletionResults.LevelEndAction.Restart);
+       //     if (GMPUI.repeatSong)
+       //         ReflectionUtil.SetProperty(arg2, "levelEndAction", LevelCompletionResults.LevelEndAction.Restart);
         }
         [OnExit]
         public void OnApplicationQuit()
@@ -906,32 +899,7 @@
 
         internal void CheckPlugins()
         {
-            foreach (IPlugin plugin in IPA.Loader.PluginManager.Plugins)
-            {
-                switch (plugin.Name)
-                {
-                    case "StreamCore":
-                    case "Stream Core":
-                        twitchPluginInstalled = true;
-                        break;
 
-                    case "Beat Saber Multiplayer":
-                        //        multi = new GamePlayModifiersPlus.Multiplayer.MultiMain();
-                        //      multi.Initialize();
-                        //    multiInstalled = true;
-                        //  Log("Multiplayer Detected, enabling multiplayer functionality");
-                        break;
-
-             //       case "BeatSaberChallenges":
-             //           ChallengeIntegration.AddListeners();
-            //            break;
-                    case "MappingExtensions":
-                        mappingExtensionsPresent = true;
-                        break;
-
-                }
-
-            }
             foreach (var plugin in IPA.Loader.PluginManager.AllPlugins)
             {
                 switch (plugin.Id)
@@ -957,6 +925,7 @@
                 }
 
             }
+      //      twitchPluginInstalled = true;
         }
 
         internal void InitAsync()
@@ -985,7 +954,9 @@
         }
         internal static void SendAsyncMessage(string message)
         {
-            StreamCore.Twitch.TwitchWebSocketClient.SendMessage(message);
+            StreamCore.Services.Twitch.TwitchService service = ChatMessageHandler.streamingService.GetTwitchService();
+            if(service != null)
+            service.SendTextMessage(message, service.Channels.Values.First().Id);
         }
 
         public void OnSceneUnloaded(Scene scene)
