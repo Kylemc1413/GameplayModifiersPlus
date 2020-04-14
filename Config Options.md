@@ -67,9 +67,10 @@
 - Moderators can use '!gm reset' to deactivate all non permament commands (Permanent ones being things like noarrows and pause), reset all active cooldowns, and reset charges to the charges per level, or 0 if that value is set to 0
 ### Changing the Config
 - The config can be changed from the file, and will update itself once the game scene changes, without having to restart
-- The config can also be changed from chat by the broadcaster or moderators using the `!configchange` command, the usage of which is below
-#### `!configchange command property=value`
+- The config can also be changed from chat by the broadcaster or moderators using the `!gm configchange` command, the usage of which is below
+#### `!gm configchange command property=value`
 - Example Usage: `!configchange da cooldown=5` would change the cooldown for DA to 5 seconds
-#### `!configchange property=value`
+#### `!gm configchange property=value`
 - To be used for Basic properties not attached to commands
-- Example usage: `!configchange commandsPerMessage=2` Would change the commands per message to be 2
+- Example usage: `!gm configchange commandsPerMessage=2` Would change the commands per message to be 2
+
