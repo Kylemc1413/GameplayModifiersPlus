@@ -925,7 +925,7 @@
                 }
 
             }
-      //      twitchPluginInstalled = true;
+            twitchPluginInstalled = true;
         }
 
         internal void InitAsync()
@@ -954,7 +954,8 @@
         }
         internal static void SendAsyncMessage(string message)
         {
-            ChatMessageHandler.streamingService.SendTextMessage(message, ChatMessageHandler.commandChannel);
+            //  ChatMessageHandler.streamingService.SendTextMessage(message, ChatMessageHandler.commandChannel);
+            ChatMessageHandler.streamingService.GetTwitchService().SendTextMessage(message, "kyle1413k");
         }
 
         public void OnSceneUnloaded(Scene scene)

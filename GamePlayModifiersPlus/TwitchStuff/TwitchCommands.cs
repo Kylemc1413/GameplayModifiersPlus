@@ -58,7 +58,7 @@
             bool isPropertyOnly = false;
             string value = value = messageString.Split('=')[1];
             string arg1 = messageString.Split(' ', ' ')[2];
-            string arg2 = messageString.Split(' ', ' ', ' ', '=')[2];
+            string arg2 = messageString.Split(' ', ' ', ' ', '=')[3];
             Plugin.Log(arg1 + " " + arg2 + " " + value);
             switch (arg1)
             {

@@ -286,9 +286,9 @@
         public static void ChangeConfigValue(string property, string value)
         {
             bool success = true;
-            property = property.ToLower();
+            string propertyLower = property.ToLower();
             Plugin.Log("Config Change Attempt: " + property + " " + value);
-            switch (property)
+            switch (propertyLower)
             {
                 case "bitspercharge":
                     bitsPerCharge = int.Parse(value);
