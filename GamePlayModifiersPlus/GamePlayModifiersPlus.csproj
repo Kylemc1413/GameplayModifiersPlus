@@ -61,6 +61,9 @@
     <Reference Include="HMUI">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\HMUI.dll</HintPath>
     </Reference>
+    <Reference Include="INIFileParser">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\INIFileParser.dll</HintPath>
+    </Reference>
     <Reference Include="IPA.Injector">
       <HintPath>..\..\..\..\..\..\..\..\..\Programs\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\IPA.Injector.dll</HintPath>
     </Reference>

@@ -16,19 +16,22 @@ namespace GamePlayModifiersPlus.TwitchStuff
             streamCoreInstance = StreamCore.StreamCoreInstance.Create();
             streamingService = streamCoreInstance.RunAllServices();
             // Setup chat message callbacks
-            streamingService.OnTextMessageReceived += (StreamCore.Interfaces.IStreamingService service, StreamCore.Interfaces.IChatMessage message) => {
+            streamingService.OnTextMessageReceived += (StreamCore.Interfaces.IStreamingService service, StreamCore.Interfaces.IChatMessage message) =>
+            {
 
                 if (message.Message.Contains("!gm"))
                     commandChannel = message.Channel;
+                else
+                    return;
                 TwitchMessage twitchMessage = message is TwitchMessage ? message as TwitchMessage : null;
-                
+
 
                 if (Plugin.charges < 0) Plugin.charges = 0;
                 Plugin.twitchCommands.CheckChargeMessage(message);
                 Plugin.twitchCommands.CheckConfigMessage(message);
                 Plugin.twitchCommands.CheckStatusCommands(message);
                 Plugin.twitchCommands.CheckInfoCommands(message);
-                
+
                 if (Plugin.multiInstalled)
                     if (Multiplayer.MultiMain.multiActive.Value) return;
                 if (ChatConfig.allowEveryone || (ChatConfig.allowSubs && (twitchMessage?.Sender as TwitchUser).IsSubscriber) || (twitchMessage?.Sender).IsModerator)

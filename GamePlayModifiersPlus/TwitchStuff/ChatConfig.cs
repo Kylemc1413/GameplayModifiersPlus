@@ -248,38 +248,34 @@
 
         static void CompileChargeCostString()
         {
+            var iniData = Plugin.ChatConfigSettings.GetField<object>("_instance").GetField<IniParser.Model.IniData>("data");
+            System.Text.StringBuilder result = new System.Text.StringBuilder("Current Costs | ");
+            int totalCosts = 0;
+            foreach (var section in iniData.Sections)
+            {
+                string name = section.SectionName;
+                if(iniData.Sections[name].ContainsKey("ChargeCost"))
+                {
+                    int cost = 0;
+                    int.TryParse(iniData[name]["ChargeCost"], out cost);
+                    totalCosts += cost;
+                    result.Append($"{name}: {cost} | ");
+                }
+            }
+            if (totalCosts == 0)
+            {
+                result.Clear();
+                result.Append("Current Costs: None");
+            }
 
-            chargeCostString = "Current Costs: ";
-            chargeCostString += "DA: " + daChargeCost;
-            chargeCostString += " | Smaller: " + smallerChargeCost;
-            chargeCostString += " | Larger: " + largerChargeCost;
-            chargeCostString += " | Random: " + randomChargeCost;
-            chargeCostString += " | Instafail: " + instaFailChargeCost;
-            chargeCostString += " | Invincible: " + invincibleChargeCost;
-            chargeCostString += " | NjsRandom: " + njsRandomChargeCost;
-            chargeCostString += " | NoArrows: " + noArrowsChargeCost;
-            chargeCostString += " | Funky: " + funkyChargeCost;
-            chargeCostString += " | Rainbow: " + rainbowChargeCost;
-            chargeCostString += " | Pause: " + pauseChargeCost;
-            chargeCostString += " | Bombs: " + bombsChargeCost;
-            chargeCostString += " | Poison: " + poisonChargeCost;
-            chargeCostString += " | offsetrandom: " + offsetrandomChargeCost;
-            chargeCostString += " | Mirror: " + mirrorChargeCost;
-            chargeCostString += " | Reverse: " + reverseChargeCost;
-            chargeCostString += " | Faster: " + fasterChargeCost;
-            chargeCostString += " | Slower: " + slowerChargeCost;
-            chargeCostString += " | Tunnel: " + tunnelChargeCost;
-            chargeCostString += " | Left: " + leftChargeCost;
-            chargeCostString += " | Right: " + rightChargeCost;
-            chargeCostString += " | RandomRotation: " + randomRotationChargeCost;
-            if (chargeCostString == "Current Costs: DA: 0 | Smaller: 0 | Larger: 0 | Random: 0 | Instafail: 0 | Invincible: 0 | NjsRandom: 0 " +
-                "| NoArrows: 0 | Funky: 0 | Rainbow: 0 | Pause: 0 | Bombs: 0 | Poison: 0 | offsetrandom: 0 | Mirror: 0 | Reverse: 0 | Faster: 0 | Slower: 0 | Tunnel: 0 | Left: 0 | Right: 0 | RandomRotation: 0")
-                chargeCostString = "Current Costs: None!";
+            chargeCostString = result.ToString();
+            return;
+         
         }
 
         public static string GetChargeCostString()
         {
-            CompileChargeCostString();
+           // CompileChargeCostString();
             return chargeCostString;
         }
 
@@ -863,6 +859,7 @@
             if (success)
             {
                 Plugin.TryAsyncMessage("Changed Value");
+                CompileChargeCostString();
             }
 
         }
