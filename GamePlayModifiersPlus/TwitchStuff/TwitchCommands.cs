@@ -55,170 +55,57 @@
             if (!(message.Sender.IsModerator && ChatConfig.allowModCommands) && !message.Sender.IsBroadcaster) return;
             string command = "";
             string property = "";
-            bool isPropertyOnly = false;
+            bool isPropertyOnly = true;
             string value = value = messageString.Split('=')[1];
             string arg1 = messageString.Split(' ', ' ')[2];
             string arg2 = messageString.Split(' ', ' ', ' ', '=')[3];
             Plugin.Log(arg1 + " " + arg2 + " " + value);
-            switch (arg1)
+            IniParser.Model.IniData data = Plugin.ChatConfigSettings.GetField<object>("_instance").GetField<IniParser.Model.IniData>("data");
+            foreach(var section in data.Sections)
             {
-                case "da":
-                    command = "DA";
-                    break;
-                case "smaller":
-                    command = "Smaller";
-                    break;
-                case "larger":
-                    command = "Larger";
-                    break;
-                case "random":
-                    command = "Random";
-                    break;
-                case "instafail":
-                    command = "Instafail";
-                    break;
-                case "invincible":
-                    command = "Invincible";
-                    break;
-                case "njsrandom":
-                    command = "NjsRandom";
-                    break;
-                case "noarrows":
-                    command = "NoArrows";
-                    break;
-                case "funky":
-                    command = "Funky";
-                    break;
-                case "rainbow":
-                    command = "Rainbow";
-                    break;
-                case "pause":
-                    command = "Pause";
-                    break;
-                case "bombs":
-                    command = "Bombs";
-                    break;
-                case "faster":
-                    command = "Faster";
-                    break;
-                case "slower":
-                    command = "Slower";
-                    break;
-                case "poison":
-                    command = "Poison";
-                    break;
-                case "offsetrandom":
-                    command = "OffsetRandom";
-                    break;
-                case "reverse":
-                    command = "Reverse";
-                    break;
-                case "mirror":
-                    command = "Mirror";
-                    break;
-                case "tunnel":
-                    command = "Tunnel";
-                    break;
-                case "left":
-                    command = "Left";
-                    break;
-                case "right":
-                    command = "Right";
-                    break;
-                case "randomrotation":
-                    command = "RandomRotation";
-                    break;
-                default:
-                    isPropertyOnly = true;
-                    break;
+                string sectionName = section.SectionName.ToLower();
+                if (sectionName == arg1)
+                {
+                    isPropertyOnly = false;
+                    command = section.SectionName;
+                }
 
             }
+
             if (isPropertyOnly)
             {
-                switch (arg1.Split('=')[0])
+                var arg = arg1.Split('=')[0];
+                bool found = false;
+                foreach (var section in data.Sections)
                 {
-                    case "bitspercharge":
-                        property = "bitsPerCharge";
-                        break;
-                    case "chargesforsupercharge":
-                        property = "chargesForSuperCharge";
-                        break;
-                    case "maxcharges":
-                        property = "maxCharges";
-                        break;
-                    case "chargesperlevel":
-                        property = "chargesPerLevel";
-                        break;
-                    case "allowsubs":
-                        property = "allowSubs";
-                        break;
-                    case "alloweveryone":
-                        property = "allowEveryone";
-                        break;
-                    case "commandspermessage":
-                        property = "commandsPerMessage";
-                        break;
-                    case "globalcommandcooldown":
-                        property = "globalCommandCooldown";
-                        break;
-                    case "timeforcharges":
-                        property = "timeForCharges";
-                        break;
-                    case "chargesovertime":
-                        property = "chargesOverTime";
-                        break;
-                    case "showcooldownonmessage":
-                        property = "showCooldownOnMessage";
-                        break;
-                    case "uiontop":
-                        property = "uiOnTop";
-                        break;
-                    case "resetchargeseachlevel":
-                        property = "resetChargesEachLevel";
-                        break;
-                    case "allowmodcommands":
-                        property = "allowModCommands";
-                        break;
-                    case "chatintegration360":
-                        property = "chatintegration360";
-                        break;
-                    default:
-                        return;
+                    foreach(var key in section.Keys)
+                    {
+                       if(arg == key.KeyName.ToLower())
+                        {
+                            found = true;
+                            property = key.KeyName;
+                        }
+                    }
                 }
+                if (!found) return;
                 ChatConfig.ChangeConfigValue(property, value);
             }
             else
             {
-                switch (arg2)
+                bool found = false;
+                foreach (var section in data.Sections)
                 {
-                    case "chargecost":
-                        property = "ChargeCost";
-                        break;
-                    case "cooldown":
-                        property = "CoolDown";
-                        break;
-                    case "globalcooldown":
-                        property = "CoolDown";
-                        break;
-                    case "duration":
-                        property = "Duration";
-                        break;
-                    case "min":
-                        property = "Min";
-                        break;
-                    case "max":
-                        property = "Max";
-                        break;
-                    case "chance":
-                        property = "Chance";
-                        break;
-                    case "multiplier":
-                        property = "Multiplier";
-                        break;
-                    default:
-                        return;
+                    if (section.SectionName != command) continue;
+                    foreach (var key in section.Keys)
+                    {
+                        if (arg2 == key.KeyName.ToLower())
+                        {
+                            found = true;
+                            property = key.KeyName;
+                        }
+                    }
                 }
-
+                if (!found) return;
                 ChatConfig.ChangeConfigValue(command, property, value);
             }
         }
