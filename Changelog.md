@@ -8,4 +8,4 @@
  
 - UI Converted to BSML
 - Mapping Extensions related modifiers revamped to be more playable
-- Some internal cleanup
+- A LOT of internal cleanup
