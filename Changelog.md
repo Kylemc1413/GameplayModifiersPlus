@@ -9,3 +9,4 @@
 - UI Converted to BSML
 - Mapping Extensions related modifiers revamped to be more playable
 - A LOT of internal cleanup
+- Remove Multiplayer Functionality due to being extremely outdated and overall just a mess internally
