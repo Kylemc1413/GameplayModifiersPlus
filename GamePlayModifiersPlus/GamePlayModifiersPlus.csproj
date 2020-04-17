@@ -148,12 +148,6 @@
     <Compile Include="Harmony Patches\BeatmapDataspawnRotationEventsCountGet.cs" />
     <Compile Include="Harmony Patches\ResultsViewControllerDidActivate.cs" />
     <Compile Include="Harmony Patches\StandardLevelDetailViewRefreshContent.cs" />
-    <Compile Include="Multi\MultiGMPDisplay.cs" />
-    <Compile Include="Multi\MultiClientInterface.cs" />
-    <Compile Include="Multi\MultiMain.cs" />
-    <Compile Include="Multi\MultiValues.cs" />
-    <Compile Include="Multi\MultiCommands.cs" />
-    <Compile Include="Multi\MultiPowers.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

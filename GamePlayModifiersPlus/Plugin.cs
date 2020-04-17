@@ -29,7 +29,6 @@
 
         internal static bool mappingExtensionsPresent = false;
         public static float timeScale = 1;
-        Multiplayer.MultiMain multi = null;
         public static bool multiInstalled = false;
         internal static bool practicePluginInstalled = true;
         internal static bool modifiersInit = false;
@@ -97,12 +96,12 @@
         public static bool noArrow;
         public static float songNJS;
         public static bool haveSongNJS;
-    //    public static SimpleColorSO colorA;
-    //    public static SimpleColorSO colorB;
-    //    public static SimpleColorSO oldColorA = ScriptableObject.CreateInstance<SimpleColorSO>();
-    //    public static SimpleColorSO oldColorB = ScriptableObject.CreateInstance<SimpleColorSO>();
-    //    public static SimpleColorSO defColorA = ScriptableObject.CreateInstance<SimpleColorSO>();
-    //    public static SimpleColorSO defColorB = ScriptableObject.CreateInstance<SimpleColorSO>();
+        //    public static SimpleColorSO colorA;
+        //    public static SimpleColorSO colorB;
+        //    public static SimpleColorSO oldColorA = ScriptableObject.CreateInstance<SimpleColorSO>();
+        //    public static SimpleColorSO oldColorB = ScriptableObject.CreateInstance<SimpleColorSO>();
+        //    public static SimpleColorSO defColorA = ScriptableObject.CreateInstance<SimpleColorSO>();
+        //    public static SimpleColorSO defColorB = ScriptableObject.CreateInstance<SimpleColorSO>();
         public static int commandsLeftForMessage;
         public static bool test;
         public static float currentSongSpeed;
@@ -172,8 +171,8 @@
             if (oldColorScheme == null)
                 SetupColors();
             ColorManager.SetField("_colorScheme", oldColorScheme);
-          //  ColorManager.GetField<SimpleColorSO>("_saberAColor").SetColor(ColorManager.GetField<ColorScheme>("_colorScheme").saberAColor);
-          //  ColorManager.GetField<SimpleColorSO>("_saberBColor").SetColor(ColorManager.GetField<ColorScheme>("_colorScheme").saberBColor);
+            //  ColorManager.GetField<SimpleColorSO>("_saberAColor").SetColor(ColorManager.GetField<ColorScheme>("_colorScheme").saberAColor);
+            //  ColorManager.GetField<SimpleColorSO>("_saberBColor").SetColor(ColorManager.GetField<ColorScheme>("_colorScheme").saberBColor);
         }
         public static void SetupColors()
         {
@@ -189,11 +188,11 @@
             if (!ColorManager) return;
             if (oldColorScheme == null)
                 SetupColors();
-            if(ColorManager.GetField<ColorScheme>("_colorScheme") != GMPColorScheme)
+            if (ColorManager.GetField<ColorScheme>("_colorScheme") != GMPColorScheme)
                 ColorManager.SetField("_colorScheme", GMPColorScheme);
 
-           GMPColorScheme.SetField("_saberAColor", left);
-           GMPColorScheme.SetField("_saberBColor",right);
+            GMPColorScheme.SetField("_saberAColor", left);
+            GMPColorScheme.SetField("_saberBColor", right);
 
             //ColorManager.GetField<SimpleColorSO>("_saberAColor").SetColor(left);
             //ColorManager.GetField<SimpleColorSO>("_saberBColor").SetColor(right);
@@ -207,14 +206,14 @@
                 ReadPrefs();
                 try
                 {
-                  //  GMPUI.CreateUI();
+                    //  GMPUI.CreateUI();
                 }
                 catch (Exception ex)
                 {
                     Log(ex.ToString());
                 }
-          //      if (multiInstalled)
-               //     Multiplayer.MultiClientInterface.Init();
+                //      if (multiInstalled)
+                //     Multiplayer.MultiClientInterface.Init();
 
             }
         }
@@ -373,12 +372,10 @@
 
                 BS_Utils.Plugin.LevelDidFinishEvent += LevelData_didFinishEvent;
                 //   Log("Post GrabGrab 3");
-                if (!Multiplayer.MultiMain.multiActive.Value)
-                {
-                        chatPowers.AddComponent<GMPDisplay>();
-                    if (GMPUI.chatIntegration && ChatConfig.timeForCharges > 0 && twitchPluginInstalled)
-                        twitchPowers.StartCoroutine(TwitchPowers.ChargeOverTime());
-                }
+
+                chatPowers.AddComponent<GMPDisplay>();
+                if (GMPUI.chatIntegration && ChatConfig.timeForCharges > 0 && twitchPluginInstalled)
+                    twitchPowers.StartCoroutine(TwitchPowers.ChargeOverTime());
                 //   Log("Post GrabGrab 4");
 
 
@@ -530,7 +527,7 @@
 
 
             //       Log("SPAWN" + noteTransform.localScale.ToString());
-            if (GMPUI.chatIntegration || GMPUI.randomSize || Multiplayer.MultiMain.multiActive.Value)
+            if (GMPUI.chatIntegration || GMPUI.randomSize)
             {
                 if (superRandom)
                 {
@@ -576,8 +573,8 @@
         {
             if (arg2.levelEndAction == LevelCompletionResults.LevelEndAction.Quit) return;
             if (arg2.levelEndAction == LevelCompletionResults.LevelEndAction.Restart) return;
-       //     if (GMPUI.repeatSong)
-       //         ReflectionUtil.SetProperty(arg2, "levelEndAction", LevelCompletionResults.LevelEndAction.Restart);
+            //     if (GMPUI.repeatSong)
+            //         ReflectionUtil.SetProperty(arg2, "levelEndAction", LevelCompletionResults.LevelEndAction.Restart);
         }
         [OnExit]
         public void OnApplicationQuit()
@@ -596,7 +593,7 @@
 
         public static void ResetCustomColorsSabers(Color left, Color right)
         {
-          //  CustomColors.Plugin.OverrideCustomSaberColors(left, right);
+            //  CustomColors.Plugin.OverrideCustomSaberColors(left, right);
         }
         public static bool isModInstalled(string modName)
         {
@@ -640,7 +637,6 @@
             //    GMPUI.swapSabers = ModPrefs.GetBool("GameplayModifiersPlus", "swapSabers", false, true);
             GMPUI.disableFireworks = ModPrefs.GetBool("GameplayModifiersPlus", "DisableFireworks", false, false);
             GMPUI.chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
-            GMPUI.allowMulti = ModPrefs.GetBool("GameplayModifiersPlus", "allowMulti", false, true);
         }
 
         public IEnumerator GrabPP()
@@ -838,7 +834,7 @@
             //   Log($"hitBomb: {energyCounter.GetField("_hitBombEnergyDrain")}");
 
 
-            if (GMPUI.removeCrouchWalls || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.angleShift || GMPUI.laneShift || GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor ||  GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
+            if (GMPUI.removeCrouchWalls || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.angleShift || GMPUI.laneShift || GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
             {
                 //     ApplyPatches();
                 UnityEngine.Random.InitState(Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.beatmapData.notesCount);
@@ -884,7 +880,7 @@
                     SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.PermaReverse());
                 }
 
-                
+
 
                 modifiersInit = true;
             }
@@ -915,9 +911,9 @@
                         //  Log("Multiplayer Detected, enabling multiplayer functionality");
                         break;
 
-               //     case "BeatSaberChallenges":
-               //         ChallengeIntegration.AddListeners();
-               //         break;
+                    //     case "BeatSaberChallenges":
+                    //         ChallengeIntegration.AddListeners();
+                    //         break;
                     case "MappingExtensions":
                         mappingExtensionsPresent = true;
                         break;

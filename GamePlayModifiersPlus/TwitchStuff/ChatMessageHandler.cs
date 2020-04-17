@@ -32,8 +32,6 @@ namespace GamePlayModifiersPlus.TwitchStuff
                 Plugin.twitchCommands.CheckStatusCommands(message);
                 Plugin.twitchCommands.CheckInfoCommands(message);
 
-                if (Plugin.multiInstalled)
-                    if (Multiplayer.MultiMain.multiActive.Value) return;
                 if (ChatConfig.allowEveryone || (ChatConfig.allowSubs && (twitchMessage?.Sender as TwitchUser).IsSubscriber) || (twitchMessage?.Sender).IsModerator)
                 {
                     if (GMPUI.chatIntegration && Plugin.isValidScene && !Plugin.cooldowns.GetCooldown("Global") && Plugin.twitchPluginInstalled)
@@ -52,16 +50,6 @@ namespace GamePlayModifiersPlus.TwitchStuff
                 Plugin.trySuper = false;
                 Plugin.sizeActivated = false;
                 Plugin.healthActivated = false;
-
-
-                if (Multiplayer.MultiMain.multiActive.Value)
-                {
-                    string messageString = message.Message.ToLower();
-                    Multiplayer.MultiMain.multiCommands.CheckHealthCommands(messageString);
-                    Multiplayer.MultiMain.multiCommands.CheckSizeCommands(messageString);
-                    Multiplayer.MultiMain.multiCommands.CheckGameplayCommands(messageString);
-                    Multiplayer.MultiMain.multiCommands.CheckSpeedCommands(messageString);
-                }
 
             };
 

@@ -14,7 +14,6 @@
         public static float fixedNoteScale = 1f;
         public static bool noArrows = false;
         public static bool oneColor = false;
-        public static bool allowMulti = false;
         public static bool disableFireworks = false;
         public static bool disableSubmission = false;
      //   public static bool disableRipple = false;
