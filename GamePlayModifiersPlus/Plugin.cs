@@ -225,7 +225,7 @@
             {
                 activateDuringIsolated = false;
                 Log("Switched to Menu");
-                SharedCoroutineStarter.instance.StartCoroutine(GrabPP());
+            //    SharedCoroutineStarter.instance.StartCoroutine(GrabPP());
 
                 var controllers = Resources.FindObjectsOfTypeAll<VRController>();
                 if (controllers != null)
