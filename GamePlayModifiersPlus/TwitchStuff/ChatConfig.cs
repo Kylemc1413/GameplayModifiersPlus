@@ -254,7 +254,7 @@
             foreach (var section in iniData.Sections)
             {
                 string name = section.SectionName;
-                if(iniData.Sections[name].ContainsKey("ChargeCost"))
+                if (iniData.Sections[name].ContainsKey("ChargeCost"))
                 {
                     int cost = 0;
                     int.TryParse(iniData[name]["ChargeCost"], out cost);
@@ -270,12 +270,12 @@
 
             chargeCostString = result.ToString();
             return;
-         
+
         }
 
         public static string GetChargeCostString()
         {
-           // CompileChargeCostString();
+            // CompileChargeCostString();
             return chargeCostString;
         }
 
@@ -287,64 +287,51 @@
             switch (propertyLower)
             {
                 case "bitspercharge":
-                    bitsPerCharge = int.Parse(value);
-                    Plugin.ChatConfigSettings.SetInt("Charges", property, bitsPerCharge);
+                    Plugin.ChatConfigSettings.SetInt("Charges", property, int.Parse(value));
                     break;
                 case "chargesforsupercharge":
-                    chargesForSuperCharge = int.Parse(value);
-                    Plugin.ChatConfigSettings.SetInt("Charges", property, chargesForSuperCharge);
+                    Plugin.ChatConfigSettings.SetInt("Charges", property, int.Parse(value));
                     break;
                 case "maxcharges":
-                    maxCharges = int.Parse(value);
-                    Plugin.ChatConfigSettings.SetInt("Charges", property, maxCharges);
+                    Plugin.ChatConfigSettings.SetInt("Charges", property, int.Parse(value));
                     break;
                 case "chargesperlevel":
-                    chargesPerLevel = int.Parse(value);
-                    Plugin.ChatConfigSettings.SetInt("Charges", property, chargesPerLevel);
+                    Plugin.ChatConfigSettings.SetInt("Charges", property, int.Parse(value));
                     break;
                 case "allowsubs":
                     allowSubs = Convert.ToBoolean(value);
-                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, allowSubs);
+                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, Convert.ToBoolean(value));
                     break;
                 case "alloweveryone":
-                    allowSubs = Convert.ToBoolean(value);
-                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, allowEveryone);
+                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, Convert.ToBoolean(value));
                     break;
                 case "commandspermessage":
-                    commandsPerMessage = int.Parse(value);
-                    Plugin.ChatConfigSettings.SetInt("Basic Setup", property, commandsPerMessage);
+                    Plugin.ChatConfigSettings.SetInt("Basic Setup", property, int.Parse(value));
                     break;
                 case "globalcommandcooldown":
-                    globalCommandCooldown = float.Parse(value);
-                    Plugin.ChatConfigSettings.SetFloat("Basic Setup", property, globalCommandCooldown);
+                    Plugin.ChatConfigSettings.SetFloat("Basic Setup", property, float.Parse(value));
                     break;
                 case "timeforcharges":
-                    timeForCharges = float.Parse(value);
-                    Plugin.ChatConfigSettings.SetFloat("Charges", property, timeForCharges);
+                    Plugin.ChatConfigSettings.SetFloat("Charges", property, float.Parse(value));
                     break;
                 case "chargesovertime":
                     chargesOverTime = int.Parse(value);
-                    Plugin.ChatConfigSettings.SetInt("Charges", property, chargesOverTime);
+                    Plugin.ChatConfigSettings.SetInt("Charges", property, int.Parse(value));
                     break;
                 case "showcooldownonmessage":
-                    showCooldownOnMessage = Convert.ToBoolean(value);
-                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, showCooldownOnMessage);
+                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, Convert.ToBoolean(value));
                     break;
                 case "uiontop":
-                    uiOnTop = Convert.ToBoolean(value);
-                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, uiOnTop);
+                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, Convert.ToBoolean(value));
                     break;
                 case "resetchargesperlevel":
-                    resetChargesEachLevel = Convert.ToBoolean(value);
-                    Plugin.ChatConfigSettings.SetBool("Charges", property, resetChargesEachLevel);
+                    Plugin.ChatConfigSettings.SetBool("Charges", property, Convert.ToBoolean(value));
                     break;
                 case "allowmodcommands":
-                    allowModCommands = Convert.ToBoolean(value);
-                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, allowModCommands);
+                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, Convert.ToBoolean(value));
                     break;
                 case "chatintegration360":
-                    GMPUI.chatIntegration360 = Convert.ToBoolean(value);
-                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, GMPUI.chatIntegration360);
+                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, Convert.ToBoolean(value));
                     break;
                 default:
                     success = false;
@@ -355,511 +342,70 @@
             {
 
                 Plugin.TryAsyncMessage("Changed Value");
+                ChatConfig.Load();
             }
         }
         public static void ChangeConfigValue(string command, string property, string value)
         {
             Plugin.Log("Config Change Attempt: " + command + " " + property + " " + value);
             bool success = true;
-            switch (command)
+            IniParser.Model.IniData data = Plugin.ChatConfigSettings.GetField<object>("_instance").GetField<IniParser.Model.IniData>("data");
+            if (data.Sections.ContainsSection(command))
             {
-
-                case "DA":
+                if (data.Sections[command].ContainsKey(property))
+                {
+                    success = true;
+                    object result = null;
+                    bool pauseCoolDown = false;
+                    bool isFloat = false;
+                    bool isInt = false;
                     switch (property)
                     {
                         case "ChargeCost":
-                            daChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, daChargeCost);
+                            isInt = true;
                             break;
                         case "CoolDown":
-                            daCooldown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, daCooldown);
+                            if (command == "Pause") pauseCoolDown = true;
+                            isFloat = true;
                             break;
                         case "Duration":
-                            daDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, daDuration);
-                            break;
-                    }
-                    break;
-                case "Smaller":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            smallerChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, smallerChargeCost);
-                            break;
-                        case "CoolDown":
-                            smallerCoolDown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, smallerCoolDown);
-                            break;
-                        case "Duration":
-                            smallerDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, smallerDuration);
+                            isFloat = true;
                             break;
                         case "Multiplier":
-                            smallerMultiplier = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, smallerMultiplier);
-                            break;
-                        default:
-                            success = false;
-                            break;
-
-                    }
-                    break;
-                case "Larger":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            largerChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, largerChargeCost);
-                            break;
-                        case "CoolDown":
-                            largerCooldown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, largerCooldown);
-                            break;
-                        case "Duration":
-                            largerDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, largerDuration);
-                            break;
-                        case "Multiplier":
-                            largerMultiplier = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, largerMultiplier);
-                            break;
-                        default:
-                            success = false;
-                            break;
-
-                    }
-                    break;
-                case "Random":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            randomChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, randomChargeCost);
-                            break;
-                        case "CoolDown":
-                            randomCooldown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, randomCooldown);
-                            break;
-                        case "Duration":
-                            randomDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, randomDuration);
+                            isFloat = true;
                             break;
                         case "Min":
-                            randomMin = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, randomMin);
+                            isFloat = true;
                             break;
                         case "Max":
-                            randomMax = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, randomMax);
-                            break;
-                        default:
-                            success = false;
-                            break;
-
-                    }
-                    break;
-                case "Instafail":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            instaFailChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, instaFailChargeCost);
-                            break;
-                        case "CoolDown":
-                            instaFailCooldown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, instaFailCooldown);
-                            break;
-                        case "Duration":
-                            instaFailDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, instaFailDuration);
-                            break;
-                        default:
-                            success = false;
-                            break;
-
-                    }
-                    break;
-                case "Invincible":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            invincibleChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, invincibleChargeCost);
-                            break;
-                        case "CoolDown":
-                            invincibleCooldown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, invincibleCooldown);
-                            break;
-                        case "Duration":
-                            invincibleDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, invincibleDuration);
-                            break;
-                        default:
-                            success = false;
-                            break;
-
-                    }
-                    break;
-                case "NjsRandom":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            njsRandomChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, njsRandomChargeCost);
-                            break;
-                        case "CoolDown":
-                            njsRandomCooldown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, njsRandomCooldown);
-                            break;
-                        case "Duration":
-                            njsRandomDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, njsRandomDuration);
-                            break;
-                        case "Min":
-                            njsRandomMin = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, njsRandomMin);
-                            break;
-                        case "Max":
-                            njsRandomMax = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, njsRandomMax);
-                            break;
-                        default:
-                            success = false;
-                            break;
-
-                    }
-                    break;
-                case "NoArrows":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            noArrowsChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, noArrowsChargeCost);
-                            break;
-                        case "CoolDown":
-                            noArrowsCooldown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, noArrowsCooldown);
-                            break;
-                        case "Duration":
-                            noArrowsDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, noArrowsDuration);
-                            break;
-                        default:
-                            success = false;
-                            break;
-
-                    }
-                    break;
-                case "Funky":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            funkyChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, funkyChargeCost);
-                            break;
-                        case "CoolDown":
-                            funkyCooldown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, funkyCooldown);
-                            break;
-                        case "Duration":
-                            funkyDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, funkyDuration);
-                            break;
-                        default:
-                            success = false;
-                            break;
-
-                    }
-                    break;
-                case "Rainbow":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            rainbowChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, rainbowChargeCost);
-                            break;
-                        case "CoolDown":
-                            rainbowCooldown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, rainbowCooldown);
-                            break;
-                        case "Duration":
-                            rainbowDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, rainbowDuration);
-                            break;
-                        default:
-                            success = false;
-                            break;
-
-                    }
-                    break;
-                case "Pause":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            pauseChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, pauseChargeCost);
-                            break;
-                        case "CoolDown":
-                            pauseGlobalCooldown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, "GlobalCoolDown", pauseGlobalCooldown);
-                            break;
-                        default:
-                            success = false;
-                            break;
-
-                    }
-                    break;
-                case "Bombs":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            bombsChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, bombsChargeCost);
-                            break;
-                        case "CoolDown":
-                            bombsCooldown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, bombsCooldown);
-                            break;
-                        case "Duration":
-                            bombsDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, bombsDuration);
+                            isFloat = true;
                             break;
                         case "Chance":
-                            bombsChance = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, bombsChance);
+                            isFloat = true;
                             break;
                         default:
                             success = false;
                             break;
-
                     }
-                    break;
-                case "Faster":
-                    switch (property)
+                    if (success)
                     {
-                        case "ChargeCost":
-                            fasterChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, fasterChargeCost);
-                            break;
-                        case "CoolDown":
-                            fasterCooldown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, fasterCooldown);
-                            break;
-                        case "Duration":
-                            fasterDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, fasterDuration);
-                            break;
-                        case "Multiplier":
-                            fasterMultiplier = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, fasterMultiplier);
-                            break;
-                        default:
-                            success = false;
-                            break;
-
+                        if (isFloat)
+                        {
+                            result = float.Parse(value);
+                            if (pauseCoolDown)
+                                Plugin.ChatConfigSettings.SetFloat(command, "GlobalCoolDown", (float)result);
+                            else
+                                Plugin.ChatConfigSettings.SetFloat(command, property, (float)result);
+                        }
+                        else if (isInt)
+                        {
+                            result = int.Parse(value);
+                            Plugin.ChatConfigSettings.SetInt(command, property, (int)result);
+                        }
+                        Plugin.TryAsyncMessage("Changed Value");
+                        ChatConfig.Load();
                     }
-                    break;
-                case "Slower":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            slowerChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, slowerChargeCost);
-                            break;
-                        case "CoolDown":
-                            slowerCooldown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, slowerCooldown);
-                            break;
-                        case "Duration":
-                            slowerDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, slowerDuration);
-                            break;
-                        case "Multiplier":
-                            slowerMultiplier = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, slowerMultiplier);
-                            break;
-                        default:
-                            success = false;
-                            break;
-
-                    }
-                    break;
-                case "Poison":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            poisonChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, poisonChargeCost);
-                            break;
-                        case "CoolDown":
-                            poisonCooldown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, poisonCooldown);
-                            break;
-                        case "Duration":
-                            poisonDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, poisonDuration);
-                            break;
-                        default:
-                            success = false;
-                            break;
-
-                    }
-                    break;
-                case "Mirror":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            mirrorChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, mirrorChargeCost);
-                            break;
-                        case "CoolDown":
-                            mirrorCooldown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, mirrorCooldown);
-                            break;
-                        case "Duration":
-                            mirrorDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, mirrorDuration);
-                            break;
-                        default:
-                            success = false;
-                            break;
-
-                    }
-                    break;
-                case "Reverse":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            reverseChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, reverseChargeCost);
-                            break;
-                        case "CoolDown":
-                            reverseCooldown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, reverseCooldown);
-                            break;
-                        case "Duration":
-                            reverseDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, reverseDuration);
-                            break;
-                        default:
-                            success = false;
-                            break;
-
-                    }
-                    break;
-                case "OffsetRandom":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            offsetrandomChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, offsetrandomChargeCost);
-                            break;
-                        case "CoolDown":
-                            offsetrandomCooldown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, offsetrandomCooldown);
-                            break;
-                        case "Duration":
-                            offsetrandomDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, offsetrandomDuration);
-                            break;
-                        case "Min":
-                            offsetrandomMin = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, offsetrandomMin);
-                            break;
-                        case "Max":
-                            offsetrandomMax = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, offsetrandomMax);
-                            break;
-                        default:
-                            success = false;
-                            break;
-
-                    }
-                    break;
-                case "Tunnel":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            tunnelChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, tunnelChargeCost);
-                            break;
-                        case "CoolDown":
-                            tunnelCoolDown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, tunnelCoolDown);
-                            break;
-                        case "Duration":
-                            tunnelDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, tunnelDuration);
-                            break;
-                            success = false;
-                            break;
-
-                    }
-                    break;
-                case "Left":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            leftChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, leftChargeCost);
-                            break;
-                        case "CoolDown":
-                            leftCoolDownn = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, leftCoolDownn);
-                            break;
-                        default:
-                            success = false;
-                            break;
-
-                    }
-                    break;
-                case "Right":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            rightChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, rightChargeCost);
-                            break;
-                        case "CoolDown":
-                            rightCoolDown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, rightCoolDown);
-                            break;
-                        default:
-                            success = false;
-                            break;
-
-                    }
-                    break;
-                case "RandomRotation":
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            randomRotationChargeCost = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, randomRotationChargeCost);
-                            break;
-                        case "CoolDown":
-                            randomRotationCoolDown = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, randomRotationCoolDown);
-                            break;
-                        case "Duration":
-                            randomRotationDuration = float.Parse(value);
-                            Plugin.ChatConfigSettings.SetFloat(command, property, randomRotationDuration);
-                            break;
-                    }
-                    break;
-                default:
-                    break;
-
-
-            }
-
-            //    Plugin.Log(allowEveryone.ToString());
-            if (success)
-            {
-                Plugin.TryAsyncMessage("Changed Value");
-                CompileChargeCostString();
+                }
             }
 
         }
