@@ -499,6 +499,7 @@
             float claimedCenterTime = -1;
             System.Collections.Generic.List<float> noteTimes = new System.Collections.Generic.List<float>();
             System.Collections.Generic.List<float> doubleTimes = new System.Collections.Generic.List<float>();
+
             Dictionary<System.Tuple<int, float, NoteType>, int> fiveLaneShifts = new Dictionary<System.Tuple<int, float, NoteType>, int>();
             //Iterate through once to log double times
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
@@ -548,7 +549,8 @@
                     if (GMPUI.fiveLanes)
                     {
                         System.Tuple<int, float, NoteType> noteTuple = new System.Tuple<int, float, NoteType>(note.lineIndex, note.time, note.noteType);
-                        var existingTuple = fiveLaneShifts.Keys.FirstOrDefault(x => Mathf.Abs(x.Item2 - note.time) <= sliderTime && x.Item1 == noteTuple.Item1 && x.Item3 == noteTuple.Item3);
+                        var existingTuple = fiveLaneShifts.Keys.FirstOrDefault(x => Mathf.Abs(x.Item2 - note.time) <= sliderTime
+                        && x.Item1 == noteTuple.Item1 && x.Item3 == noteTuple.Item3);
 
                         if (fiveLaneShifts.ContainsKey(noteTuple))
                             newIndex = fiveLaneShifts[noteTuple];
