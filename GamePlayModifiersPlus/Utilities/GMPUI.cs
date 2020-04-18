@@ -22,6 +22,8 @@
         [UIComponent("modifiers")]
         RectTransform modifiers;
 
+        [UIParams]
+        BeatSaberMarkupLanguage.Parser.BSMLParserParams parserParams;
         public static bool chatIntegration = false;
         [UIValue("ChatIntegration")]
         public bool ChatIntegration
@@ -187,6 +189,12 @@
             {
 
                 sixLanes = value;
+                if (value)
+                {
+                    SetFiveLane(false);
+                    parserParams.EmitEvent("getModifiers");
+                }
+
                 NotifyPropertyChanged();
             }
         }
@@ -221,6 +229,11 @@
             {
 
                 fiveLanes = value;
+                if (value)
+                {
+                    SetSixLane(false);
+                    parserParams.EmitEvent("getModifiers");
+                }
                 NotifyPropertyChanged();
             }
         }
