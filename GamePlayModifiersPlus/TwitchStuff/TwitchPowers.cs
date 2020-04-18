@@ -484,81 +484,73 @@
             }
             //    dataModel.beatmapData = beatmapData;
         }
+
         public static IEnumerator ExtraLanes()
         {
-
             yield return new WaitForSeconds(0f);
             MappingExtensions.Plugin.ForceActivateForSong();
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            float start = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
             float beatTime = 60f / Plugin.spawnController.currentBPM;
             float sliderTime = beatTime / 6f;
+            float centerDistTime = beatTime / 2f;
+            float claimedCenterTime = 0f;
             Plugin.Log("Grabbed BeatmapData");
+    //        List<System.Tuple<NoteType, float>> noteTimes = new List<System.Tuple<NoteType, float>>();
+    //        List<float> doubleTimes = new List<float>();
+            Dictionary<System.Tuple<int, float, NoteType>, int> laneShifts = new Dictionary<System.Tuple<int, float, NoteType>, int>();
+
             List<BeatmapObjectData> objects = new List<BeatmapObjectData>();
             NoteData note;
-            float claimedCenterTime = -1;
-            System.Collections.Generic.List<float> noteTimes = new System.Collections.Generic.List<float>();
-            System.Collections.Generic.List<float> doubleTimes = new System.Collections.Generic.List<float>();
-
-            Dictionary<System.Tuple<int, float, NoteType>, int> fiveLaneShifts = new Dictionary<System.Tuple<int, float, NoteType>, int>();
-            //Iterate through once to log double times
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
                 objects.AddRange(line.beatmapObjectsData);
 
             }
-            foreach (BeatmapObjectData beatmapObject in objects)
-            {
-                if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
-                {
-                    note = beatmapObject as NoteData;
-
-                    if (noteTimes.Contains(note.time))
-                        doubleTimes.Add(note.time);
-                    else
-                        noteTimes.Add(note.time);
-                }
-
-            }
-
-            noteTimes.Clear();
-
+            objects.RemoveAll(x => x.time < start);
             objects = objects.OrderBy(x => x.time).ToList();
             foreach (BeatmapObjectData beatmapObject in objects)
             {
                 if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
                 {
+                    int newIndex = -1413;
                     note = beatmapObject as NoteData;
-                    if (GMPUI.sixLanes || GMPUI.fiveLanes)
-                    {
-                        if (!doubleTimes.Contains(note.time))// || GMPUI.laneShift)
-                        {
-                            if (note.lineIndex == 0 && Random.Range(1, 4) >= 2)
-                                note.MirrorLineIndex(0);
-                            // line index 3
-                            if (note.lineIndex == 3 && Random.Range(1, 4) >= 2)
-                                note.MirrorLineIndex(8);
-                        }
-                    }
-                    if (GMPUI.fourLayers)
-                    {
-                        if (note.noteLineLayer == NoteLineLayer.Top && Random.Range(1, 4) > 2)
-                            note.SetProperty<NoteData>("noteLineLayer", (NoteLineLayer)3);
-                    }
-                    int newIndex = 0;
-                    if (GMPUI.fiveLanes)
-                    {
-                        System.Tuple<int, float, NoteType> noteTuple = new System.Tuple<int, float, NoteType>(note.lineIndex, note.time, note.noteType);
-                        var existingTuple = fiveLaneShifts.Keys.FirstOrDefault(x => Mathf.Abs(x.Item2 - note.time) <= sliderTime
-                        && x.Item1 == noteTuple.Item1 && x.Item3 == noteTuple.Item3);
+                    System.Tuple<int, float, NoteType> noteTuple = new System.Tuple<int, float, NoteType>(note.lineIndex, note.time, note.noteType);
+                    var existingTuple = laneShifts.Keys.FirstOrDefault(x => Mathf.Abs(x.Item2 - note.time) <= sliderTime
+                    && x.Item1 == noteTuple.Item1 && x.Item3 == noteTuple.Item3);
 
-                        if (fiveLaneShifts.ContainsKey(noteTuple))
-                            newIndex = fiveLaneShifts[noteTuple];
+                    if (GMPUI.sixLanes)
+                    {
+                        if (laneShifts.ContainsKey(noteTuple))
+                            newIndex = laneShifts[noteTuple];
                         else if (existingTuple != null)
                         {
-                            newIndex = fiveLaneShifts[existingTuple];
-                            fiveLaneShifts.Add(noteTuple, newIndex);
-
+                            newIndex = laneShifts[existingTuple];
+                            laneShifts.Add(noteTuple, newIndex);
+                        }
+                        else
+                        {
+                            if (note.lineIndex == 0 && Random.Range(1, 4) >= 2)
+                            {
+                                newIndex = -1;
+                                laneShifts.Add(noteTuple, newIndex);
+                            }
+                            if (note.lineIndex == 3 && Random.Range(1, 4) >= 2)
+                            {
+                                newIndex = 4;
+                                laneShifts.Add(noteTuple, newIndex);
+                            }
+                        }
+                    }
+                    else if (GMPUI.fiveLanes)
+                    {
+                        if (laneShifts.ContainsKey(noteTuple))
+                            newIndex = laneShifts[noteTuple];
+                        else if (existingTuple != null)
+                        {
+                            newIndex = laneShifts[existingTuple];
+                            laneShifts.Add(noteTuple, newIndex);
                         }
                         else
                             switch (note.lineIndex)
@@ -569,13 +561,13 @@
                                     break;
 
                                 case 1:
-                                    newIndex = UnityEngine.Random.Range(0, 10) <= 3 && (Mathf.Abs(claimedCenterTime - note.time) > 0.225) ? 2500 : 1500;
-                                    fiveLaneShifts.Add(noteTuple, newIndex);
+                                    newIndex = UnityEngine.Random.Range(0, 10) <= 3 && (Mathf.Abs(claimedCenterTime - note.time) > centerDistTime) ? 2500 : 1500;
+                                    laneShifts.Add(noteTuple, newIndex);
                                     break;
 
                                 case 2:
-                                    newIndex = UnityEngine.Random.Range(0, 10) <= 3 && (Mathf.Abs(claimedCenterTime - note.time) > 0.225) ? 2500 : 3500;
-                                    fiveLaneShifts.Add(noteTuple, newIndex);
+                                    newIndex = UnityEngine.Random.Range(0, 10) <= 3 && (Mathf.Abs(claimedCenterTime - note.time) > centerDistTime) ? 2500 : 3500;
+                                    laneShifts.Add(noteTuple, newIndex);
                                     break;
 
                                 case 3:
@@ -593,42 +585,17 @@
                                     }
                                     break;
                             }
-                        note.SetProperty<NoteData>("lineIndex", newIndex);
-                        note.SetProperty<NoteData>("flipLineIndex", newIndex);
                         if (newIndex == 2500)
                         {
                             claimedCenterTime = note.time;
                         }
-
-
                     }
 
-                    if (!doubleTimes.Contains(note.time))
-                        if (GMPUI.laneShift)
-                        {
-                            if (!(note.lineIndex >= 1000 || note.lineIndex <= -1000))
-                            {
-                                int shiftedIndex = (note.lineIndex * 1000) + 1000 + (UnityEngine.Random.Range(-5, 5) * 45);
-                                if (note.lineIndex < 0)
-                                    shiftedIndex = (note.lineIndex * 1000) + 1000 - (UnityEngine.Random.Range(-5, 5) * 45);
-                                if (note.lineIndex == 0)
-                                    shiftedIndex = 1000 + (UnityEngine.Random.Range(-5, 5) * 45);
-                                if (shiftedIndex < 1000 && shiftedIndex > -1000)
-                                    shiftedIndex -= 2000;
-                                note.SetProperty<NoteData>("lineIndex", shiftedIndex);
-                                note.SetProperty<NoteData>("flipLineIndex", shiftedIndex);
-                            }
-                            else if (note.lineIndex >= 1000 && note.lineIndex <= 4500)
-                            {
-
-                                int shiftedIndex = note.lineIndex + (UnityEngine.Random.Range(-5, 5) * 45);
-                                if (shiftedIndex < 1000 && shiftedIndex > -1000)
-                                    shiftedIndex -= 2000;
-                                note.SetProperty<NoteData>("lineIndex", shiftedIndex);
-                                note.SetProperty<NoteData>("flipLineIndex", shiftedIndex);
-                            }
-
-                        }
+                    if (GMPUI.fourLayers)
+                    {
+                        if (note.noteLineLayer == NoteLineLayer.Top && Random.Range(1, 4) > 2 && IsUpward(note.cutDirection))
+                            note.SetProperty<NoteData>("noteLineLayer", (NoteLineLayer)3);
+                    }
 
                     if (GMPUI.angleShift && !((int)note.cutDirection >= 1000))
                     {
@@ -663,11 +630,7 @@
                                 angle = 1315;
                                 break;
                         }
-                        if (angle == 2000)
-                        {
-                            //Do Nothing for now
-                        }
-                        else if (angle >= 1000)
+                        if (angle >= 1000)
                         {
                             angle += Random.Range(-20, 20);
                             angle = Mathf.Clamp(angle, 1000, 1360);
@@ -675,16 +638,45 @@
                         }
                     }
 
-                    noteTimes.Add(note.time);
+                    if (GMPUI.laneShift)
+                    {
+                        if (newIndex == -1413) newIndex = note.lineIndex;
+                        if (!(newIndex >= 1000 || newIndex <= -1000))
+                        {
+                            int shiftedIndex = (newIndex * 1000) + 1000 + (UnityEngine.Random.Range(-5, 5) * 45);
+                            if (newIndex < 0)
+                                shiftedIndex = (newIndex * 1000) + 1000 - (UnityEngine.Random.Range(-5, 5) * 45);
+                            if (newIndex == 0)
+                                shiftedIndex = 1000 + (UnityEngine.Random.Range(-5, 5) * 45);
+                            if (shiftedIndex < 1000 && shiftedIndex > -1000)
+                                shiftedIndex -= 2000;
+                            newIndex = shiftedIndex;
+                        }
+                        else if (newIndex >= 1000 && newIndex <= 4500)
+                        {
+
+                            int shiftedIndex = newIndex + (UnityEngine.Random.Range(-5, 5) * 45);
+                            if (shiftedIndex < 1000 && shiftedIndex > -1000)
+                                shiftedIndex -= 2000;
+                        }
+                    }
+
+                    if(newIndex != -1413)
+                    {
+                        note.SetProperty<NoteData>("lineIndex", newIndex);
+                        note.SetProperty<NoteData>("flipLineIndex", newIndex);
+                    }
+
+
                 }
             }
-            foreach (var line in beatmapData.beatmapLinesData)
-                line.beatmapObjectsData = new BeatmapObjectData[0];
-
-            beatmapData.beatmapLinesData[0].beatmapObjectsData = objects.ToArray();
-
-            //    dataModel.beatmapData = beatmapData;
         }
+
+        public static bool IsUpward(NoteCutDirection direction)
+        {
+            return direction == NoteCutDirection.Up || direction == NoteCutDirection.UpLeft || direction == NoteCutDirection.UpRight;
+        }
+  
         public static IEnumerator Reverse(float length)
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
