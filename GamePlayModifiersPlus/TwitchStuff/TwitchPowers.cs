@@ -1,6 +1,5 @@
 ﻿namespace GamePlayModifiersPlus
 {
-
     using StreamCore;
     using System.Collections;
     using System.Linq;
@@ -167,7 +166,7 @@
             BeatmapCallbackItemDataList callBackDataList = Plugin.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
             BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
             Plugin.Log("Grabbed BeatmapData");
-            float startTime = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f; 
+            float startTime = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float endTime = startTime + length;
             float marker = startTime;
             List<BeatmapEventData> data = new List<BeatmapEventData>();
@@ -492,12 +491,15 @@
             MappingExtensions.Plugin.ForceActivateForSong();
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
             BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            float beatTime = 60f / Plugin.spawnController.currentBPM;
+            float sliderTime = beatTime / 6f;
             Plugin.Log("Grabbed BeatmapData");
             List<BeatmapObjectData> objects = new List<BeatmapObjectData>();
             NoteData note;
             float claimedCenterTime = -1;
             System.Collections.Generic.List<float> noteTimes = new System.Collections.Generic.List<float>();
             System.Collections.Generic.List<float> doubleTimes = new System.Collections.Generic.List<float>();
+            Dictionary<System.Tuple<int, float, NoteType>, int> fiveLaneShifts = new Dictionary<System.Tuple<int, float, NoteType>, int>();
             //Iterate through once to log double times
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
@@ -545,35 +547,50 @@
                     int newIndex = 0;
                     if (GMPUI.fiveLanes)
                     {
-                        switch (note.lineIndex)
+                        System.Tuple<int, float, NoteType> noteTuple = new System.Tuple<int, float, NoteType>(note.lineIndex, note.time, note.noteType);
+                        var existingTuple = fiveLaneShifts.Keys.FirstOrDefault(x => Mathf.Abs(x.Item2 - note.time) <= sliderTime && x.Item1 == noteTuple.Item1 && x.Item3 == noteTuple.Item3);
+
+                        if (fiveLaneShifts.ContainsKey(noteTuple))
+                            newIndex = fiveLaneShifts[noteTuple];
+                        else if (existingTuple != null)
                         {
-                            case 0:
-                                newIndex = -1500;
-                                break;
+                            newIndex = fiveLaneShifts[existingTuple];
+                            fiveLaneShifts.Add(noteTuple, newIndex);
 
-                            case 1:
-                                newIndex = UnityEngine.Random.Range(0, 10) <= 3 && (Mathf.Abs(claimedCenterTime - note.time) > 0.225) ? 2500 : 1500;
-                                break;
-
-                            case 2:
-                                newIndex = UnityEngine.Random.Range(0, 10) <= 3 && (Mathf.Abs(claimedCenterTime - note.time) > 0.225) ? 2500 : 3500;
-                                break;
-
-                            case 3:
-                                newIndex = 4500;
-                                break;
-
-                            default:
-                                if (note.lineIndex < 0)
-                                {
-                                    newIndex = -1500;
-                                }
-                                if (note.lineIndex > 3)
-                                {
-                                    newIndex = 4500;
-                                }
-                                break;
                         }
+                        else
+                            switch (note.lineIndex)
+                            {
+
+                                case 0:
+                                    newIndex = -1500;
+                                    break;
+
+                                case 1:
+                                    newIndex = UnityEngine.Random.Range(0, 10) <= 3 && (Mathf.Abs(claimedCenterTime - note.time) > 0.225) ? 2500 : 1500;
+                                    fiveLaneShifts.Add(noteTuple, newIndex);
+                                    break;
+
+                                case 2:
+                                    newIndex = UnityEngine.Random.Range(0, 10) <= 3 && (Mathf.Abs(claimedCenterTime - note.time) > 0.225) ? 2500 : 3500;
+                                    fiveLaneShifts.Add(noteTuple, newIndex);
+                                    break;
+
+                                case 3:
+                                    newIndex = 4500;
+                                    break;
+
+                                default:
+                                    if (note.lineIndex < 0)
+                                    {
+                                        newIndex = -1500;
+                                    }
+                                    if (note.lineIndex > 3)
+                                    {
+                                        newIndex = 4500;
+                                    }
+                                    break;
+                            }
                         note.SetProperty<NoteData>("lineIndex", newIndex);
                         note.SetProperty<NoteData>("flipLineIndex", newIndex);
                         if (newIndex == 2500)
@@ -675,7 +692,7 @@
             Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
-            float wait =  Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float wait = Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float start = Plugin.songAudio.time + wait;
             float end = start + length;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
