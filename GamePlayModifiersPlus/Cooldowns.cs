@@ -158,7 +158,7 @@ namespace GamePlayModifiersPlus
             offsetrandomCoolDown = false;
             rotationCoolDown = false;
             tunnelCoolDown = false;
-   //         rcttsCoolDown = false;
+            rcttsCoolDown = false;
         }
 
 

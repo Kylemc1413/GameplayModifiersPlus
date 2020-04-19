@@ -346,8 +346,8 @@
 
                 if (Plugin.charges >= ChatConfig.rcttsChargeCost)
                 {
-                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.RealityCheck(ChatConfig.rcttsDuration));
-                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rcttsCooldown, "RCTTS", "Strimmer play Reality Check :) "));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.RealityCheck(ChatConfig.rcttsDuration));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rcttsCooldown, "RCTTS", "Strimmer play Reality Check :) "));
                     Plugin.charges -= ChatConfig.rcttsChargeCost;
                     Plugin.commandsLeftForMessage -= 1;
                     globalActive = true;
