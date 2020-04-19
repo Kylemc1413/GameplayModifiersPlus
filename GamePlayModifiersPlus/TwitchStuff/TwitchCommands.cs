@@ -584,7 +584,7 @@
 
         public void CheckMapSwapCommands(IChatMessage message)
         {
-            if (message.Message.ToLower().Contains("!gm rctts") && !Plugin.cooldowns.GetCooldown("map") && Plugin.commandsLeftForMessage > 0)
+            if (message.Message.ToLower().Contains("!gm rctts") && !Plugin.cooldowns.GetCooldown("map swap") && Plugin.commandsLeftForMessage > 0)
             {
                 //Supercharge on rctts is probably not necessary
                 /*
@@ -603,7 +603,7 @@
                 if (Plugin.charges >= ChatConfig.rcttsChargeCost)
                 {
                     Plugin.twitchPowers.StartCoroutine(Plugin.twitchPowers.RealityCheck(Mathf.Min(ChatConfig.rcttsDuration, TwitchPowers.RealityClip.length - 1f)));
-                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rcttsCooldown, "Map", "Strimmer play Reality Check :) "));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rcttsCooldown, "Map Swap", "Strimmer play Reality Check :) "));
                     Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rcttsCooldown, "Reverse", ""));
                     Plugin.charges -= ChatConfig.rcttsChargeCost;
                     Plugin.commandsLeftForMessage -= 1;
