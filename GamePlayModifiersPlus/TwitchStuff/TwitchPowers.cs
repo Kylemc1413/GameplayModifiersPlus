@@ -514,6 +514,9 @@
                 string json = new System.IO.StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("GamePlayModifiersPlus.Resources.RealityCheck.ExpertPlus.dat")).ReadToEnd();
                 realityCheckData = dataLoader.GetBeatmapDataFromJson(json, 260f, 0f, 0.5f);
             }
+            BeatmapData newData = realityCheckData.GetCopy();
+            if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.staticLights)
+                newData.SetProperty<BeatmapData>("beatmapEventData", new BeatmapEventData[0]);
 
             ResetTimeSync(RealityClip, 0f, 0f, 1f);
             ManuallySetNJSOffset(Plugin.spawnController, 17f, 0f, 260f);
@@ -521,7 +524,7 @@
            // DestroyNotes();
             DestroyObjectsRaw();
             callbackController.SetField("_spawningStartTime", 0f);
-            callbackController.SetNewBeatmapData(realityCheckData);
+            callbackController.SetNewBeatmapData(newData);
             yield return new WaitForSeconds(duration - 0.2f);
             //Restore Original Map
             List<BeatmapObjectData>[] data2 = new List<BeatmapObjectData>[4];
