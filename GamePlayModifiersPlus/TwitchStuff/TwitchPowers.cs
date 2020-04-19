@@ -518,7 +518,7 @@
             DestroyNotes();
             callbackController.SetField("_spawningStartTime", 0f);
             callbackController.SetNewBeatmapData(realityCheckData);
-            yield return new WaitForSeconds(duration);
+            yield return new WaitForSeconds(duration - 0.2f);
             //Restore Original Map
             List<BeatmapObjectData>[] data2 = new List<BeatmapObjectData>[4];
             for (int i = 0; i < originalData.beatmapLinesData.Length; i++)
