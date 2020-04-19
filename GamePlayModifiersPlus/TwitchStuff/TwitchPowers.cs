@@ -527,12 +527,12 @@
             yield return new WaitForSeconds(duration);
             text.text = text.text.Replace(" Workout | ", "");
         }
-        public IEnumerator SwitchMap(BeatmapData newDataBase, AudioClip newAudio, float newBpm, float newTimeOffset, float newNjs, float newSpawnOffset, float duration)
+        public IEnumerator SwitchMap(BeatmapData newDataBase, AudioClip newAudio, float newBpm, float newTimeOffset, float newNjs, float newSpawnOffset, float duration, bool randomizeStartTime = true)
         {
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
             BeatmapObjectSpawnMovementData originalSpawnMovementData = Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
             BeatmapCallbackItemDataList callBackDataList = Plugin.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
-
+            float startTime = 0f;
             float startOffset = originalSpawnMovementData.spawnAheadTime + 0.1f;
             //Get initial Map data
             float originalTime = Plugin.songAudio.time;
@@ -548,8 +548,20 @@
             BeatmapData newData = newDataBase.GetCopy();
             if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.staticLights)
                 newData.SetProperty<BeatmapData>("beatmapEventData", new BeatmapEventData[0]);
-
-            ResetTimeSync(newAudio, 0f, newTimeOffset, 1f);
+            if(randomizeStartTime)
+            {
+                startTime = UnityEngine.Random.Range(0f, (newAudio.length / 4f) * 3f);
+                duration = Mathf.Min(newAudio.length - 1f - startTime, duration);
+                List<BeatmapObjectData>[] data3 = new List<BeatmapObjectData>[4];
+                for (int i = 0; i < newData.beatmapLinesData.Length; i++)
+                {
+                    data3[i] = new List<BeatmapObjectData>();
+                    data3[i].AddRange(newData.beatmapLinesData[i].beatmapObjectsData);
+                    data3[i].RemoveAll(x => x.time <= startTime + startOffset);
+                    newData.beatmapLinesData[i].beatmapObjectsData = data3[i].ToArray();
+                }
+            }
+            ResetTimeSync(newAudio, startTime, newTimeOffset, 1f);
             ManuallySetNJSOffset(Plugin.spawnController, newNjs, newSpawnOffset, newBpm);
             ClearCallbackItemDataList(callBackDataList);
             // DestroyNotes();
