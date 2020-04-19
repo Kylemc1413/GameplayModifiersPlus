@@ -462,14 +462,14 @@
                 }
             }
 
-            if (message.Message.ToLower().Contains("!gm reverse") && !Plugin.cooldowns.GetCooldown("Reverse") && Plugin.commandsLeftForMessage > 0)
+            if (message.Message.ToLower().Contains("!gm reverse") && !Plugin.cooldowns.GetCooldown("Map Swap") && Plugin.commandsLeftForMessage > 0)
             {
 
                 if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.reverseChargeCost)
                 {
                     //        Plugin.beepSound.Play();
                     Plugin.twitchPowers.StartCoroutine(TwitchPowers.Reverse(Plugin.songAudio.clip.length));
-                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.songAudio.clip.length, "Reverse", "Reversing entire map :)"));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Plugin.songAudio.clip.length, "Map Swap", "Reversing entire map :)"));
                     Plugin.trySuper = false;
                     Plugin.charges -= ChatConfig.chargesForSuperCharge + ChatConfig.reverseChargeCost;
                     Plugin.commandsLeftForMessage -= 1;
@@ -604,7 +604,6 @@
                 {
                     Plugin.twitchPowers.StartCoroutine(Plugin.twitchPowers.RealityCheck(Mathf.Min(ChatConfig.rcttsDuration, TwitchPowers.RealityClip.length - 1f)));
                     Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rcttsCooldown, "Map Swap", "Strimmer play Reality Check :) "));
-                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rcttsCooldown, "Reverse", ""));
                     Plugin.charges -= ChatConfig.rcttsChargeCost;
                     Plugin.commandsLeftForMessage -= 1;
                     globalActive = true;

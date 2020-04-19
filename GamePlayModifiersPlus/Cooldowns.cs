@@ -20,7 +20,6 @@ namespace GamePlayModifiersPlus
         internal static bool offsetrandomCoolDown;
         internal static bool poisonCoolDown;
         internal static bool mirrorCoolDown;
-        internal static bool reverseCoolDown;
         internal static bool rotationCoolDown;
         internal static bool tunnelCoolDown;
         internal static bool mapCoolDown;
@@ -72,9 +71,6 @@ namespace GamePlayModifiersPlus
                 case "offsetrandom":
                     offsetrandomCoolDown = state;
                     break;
-                case "reverse":
-                    reverseCoolDown = state;
-                    break;
                 case "rotation":
                     rotationCoolDown = state;
                     break;
@@ -124,8 +120,6 @@ namespace GamePlayModifiersPlus
                     return mirrorCoolDown;
                 case "offsetrandom":
                     return offsetrandomCoolDown;
-                case "reverse":
-                    return reverseCoolDown;
                 case "rotation":
                     return rotationCoolDown;
                 case "tunnel":
@@ -154,7 +148,6 @@ namespace GamePlayModifiersPlus
             bombCoolDown = false;
             poisonCoolDown = false;
             mirrorCoolDown = false;
-            reverseCoolDown = false;
             offsetrandomCoolDown = false;
             rotationCoolDown = false;
             tunnelCoolDown = false;
