@@ -61,7 +61,7 @@
             string arg2 = messageString.Split(' ', ' ', ' ', '=')[3];
             Plugin.Log(arg1 + " " + arg2 + " " + value);
             IniParser.Model.IniData data = Plugin.ChatConfigSettings.GetField<object>("_instance").GetField<IniParser.Model.IniData>("data");
-            foreach(var section in data.Sections)
+            foreach (var section in data.Sections)
             {
                 string sectionName = section.SectionName.ToLower();
                 if (sectionName == arg1)
@@ -78,9 +78,9 @@
                 bool found = false;
                 foreach (var section in data.Sections)
                 {
-                    foreach(var key in section.Keys)
+                    foreach (var key in section.Keys)
                     {
-                       if(arg == key.KeyName.ToLower())
+                        if (arg == key.KeyName.ToLower())
                         {
                             found = true;
                             property = key.KeyName;
@@ -341,12 +341,25 @@
         }
         public void CheckGameplayCommands(IChatMessage message)
         {
-            if (message.Message.ToLower().Contains("!gm rctts") && !Plugin.cooldowns.GetCooldown("rctts")  && Plugin.commandsLeftForMessage > 0)
+            if (message.Message.ToLower().Contains("!gm rctts") && !Plugin.cooldowns.GetCooldown("rctts") && Plugin.commandsLeftForMessage > 0)
             {
-
+                //Supercharge on rctts is probably not necessary
+                /*
+                if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.rcttsChargeCost)
+                {
+                    //       Plugin.beepSound.Play();
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.RealityCheck(TwitchPowers.RealityClip.length - 1f));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(TwitchPowers.RealityClip.length + Plugin.songAudio.clip.length, "RCTTS", "Strimmer play Reality Check... The whole thing :)"));
+                    Plugin.trySuper = false;
+                    Plugin.charges -= ChatConfig.chargesForSuperCharge + ChatConfig.rcttsChargeCost;
+                    Plugin.commandsLeftForMessage -= 1;
+                    globalActive = true;
+                }
+                else 
+                */
                 if (Plugin.charges >= ChatConfig.rcttsChargeCost)
                 {
-                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.RealityCheck(ChatConfig.rcttsDuration));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.RealityCheck(Mathf.Min(ChatConfig.rcttsDuration, TwitchPowers.RealityClip.length - 1f)));
                     Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rcttsCooldown, "RCTTS", "Strimmer play Reality Check :) "));
                     Plugin.charges -= ChatConfig.rcttsChargeCost;
                     Plugin.commandsLeftForMessage -= 1;
