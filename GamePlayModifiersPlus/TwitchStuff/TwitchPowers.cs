@@ -6,6 +6,8 @@
     using UnityEngine;
     using UnityEngine.UI;
     using System.Collections.Generic;
+    using System.Reflection;
+    using UnityEngine.Networking;
     public class TwitchPowers : MonoBehaviour
     {
         public static IEnumerator ChargeOverTime()
@@ -118,8 +120,8 @@
 
         public static IEnumerator TestingGround(float length)
         {
-            yield return new WaitForSecondsRealtime(2f);
-            SharedCoroutineStarter.instance.StartCoroutine(RandomRotation(Plugin.songAudio.clip.length));
+            yield return new WaitForSecondsRealtime(10f);
+            SharedCoroutineStarter.instance.StartCoroutine(RealityCheck());
         }
 
         public static IEnumerator LeftRotation()
@@ -483,6 +485,89 @@
                 }
             }
             //    dataModel.beatmapData = beatmapData;
+        }
+        public static AudioClip RealityClip = null;
+        public static BeatmapData realityCheckData = null;
+        public static IEnumerator RealityCheck(float duration = 10f)
+        {
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapObjectSpawnMovementData originalSpawnMovementData = Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
+            BeatmapCallbackItemDataList callBackDataList = Plugin.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
+
+            float startOffset = originalSpawnMovementData.spawnAheadTime + 0.1f;
+            //Get initial Map data
+            float originalTime = Plugin.songAudio.time;
+            float originalBPM = Plugin.spawnController.currentBPM;
+            float originalTimeOffset = Plugin.AudioTimeSync.GetField<float>("_songTimeOffset");
+            float originalNJS = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpMovementSpeed;
+            float originalSpawnOffset = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpStartBeatOffset;
+            AudioClip originalClip = Plugin.songAudio.clip;
+            BeatmapData originalData = callbackController.GetField<BeatmapData>("_beatmapData");
+
+            //Switch To Reality Check
+            if(realityCheckData == null)
+            {
+                BeatmapDataLoader dataLoader = new BeatmapDataLoader();
+                string json = new System.IO.StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("GamePlayModifiersPlus.Resources.RealityCheck.ExpertPlus.dat")).ReadToEnd();
+                realityCheckData = dataLoader.GetBeatmapDataFromJson(json, 260f, 0f, 0.5f);
+            }
+
+            ResetTimeSync(RealityClip, 0f, 0f, 1f);
+            ManuallySetNJSOffset(Plugin.spawnController, 17f, 0f, 260f);
+            ClearCallbackItemDataList(callBackDataList);
+            DestroyNotes();
+            callbackController.SetField("_spawningStartTime", 0f);
+            callbackController.SetNewBeatmapData(realityCheckData);
+            yield return new WaitForSeconds(duration);
+            //Restore Original Map
+            List<BeatmapObjectData>[] data2 = new List<BeatmapObjectData>[4];
+            for (int i = 0; i < originalData.beatmapLinesData.Length; i++)
+            {
+                data2[i] = new List<BeatmapObjectData>();
+                data2[i].AddRange(originalData.beatmapLinesData[i].beatmapObjectsData);
+                data2[i].RemoveAll(x => x.time <= originalTime + startOffset);
+                originalData.beatmapLinesData[i].beatmapObjectsData = data2[i].ToArray();
+            }
+            ResetTimeSync(originalClip, originalTime, originalTimeOffset, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul);
+            ManuallySetNJSOffset(Plugin.spawnController, originalNJS, originalSpawnOffset, originalBPM);
+            ClearCallbackItemDataList(callBackDataList);
+            DestroyNotes();
+            callbackController.SetNewBeatmapData(originalData);
+
+
+        }
+
+        public static void ClearCallbackItemDataList(BeatmapCallbackItemDataList list)
+        {
+            list.GetField<List<BeatmapObjectData>>("_beatmapObjectDataList").Clear();
+            list.GetField<List<BeatmapEventData>>("_beatmapEventDataList").Clear();
+            var noteLists = list.GetField<Dictionary<NoteType, List<NoteData>>>("_notesByType").Values;
+            foreach (var noteList in noteLists)
+                noteList.Clear();
+            list.GetField<List<ObstacleData>>("_obstacles").Clear();
+            list.GetField<List<BeatmapEventData>>("_beatmapEarlyEvents").Clear();
+            list.GetField<List<BeatmapEventData>>("_beatmapLateEvents").Clear();
+
+        }
+        public static void ResetTimeSync(AudioClip clip, float time, float timeOffset, float timeScale)
+        {
+            AudioTimeSyncController.InitData initData = Plugin.AudioTimeSync.GetPrivateField<AudioTimeSyncController.InitData>("_initData");
+            AudioTimeSyncController.InitData newInitData = new AudioTimeSyncController.InitData(clip,
+                            time, timeOffset, 1f);
+            Plugin.AudioTimeSync.SetPrivateField("_initData", newInitData);
+            Plugin.AudioTimeSync.StartSong();
+        }
+        
+        public static void ManuallySetNJSOffset(BeatmapObjectSpawnController _spawnController, float njs, float offset, float bpm)
+        {
+            BeatmapObjectSpawnMovementData spawnMovementData =
+  _spawnController.GetPrivateField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
+
+            spawnMovementData.SetPrivateField("_startNoteJumpMovementSpeed", njs);
+            spawnMovementData.SetPrivateField("_noteJumpStartBeatOffset", offset);
+
+            spawnMovementData.Update(bpm,
+                _spawnController.GetPrivateField<float>("_jumpOffsetY"));
         }
 
         public static IEnumerator ExtraLanes()

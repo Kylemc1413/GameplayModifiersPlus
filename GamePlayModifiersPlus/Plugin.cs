@@ -198,11 +198,19 @@
             //ColorManager.GetField<SimpleColorSO>("_saberBColor").SetColor(right);
         }
 
+        public IEnumerator LoadRealityCheckAudio()
+        {
+            AssetBundle realityAudioBundle = AssetBundle.LoadFromStream(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("GamePlayModifiersPlus.Resources.RealityCheck.rcttsaudio"));
+            TwitchPowers.RealityClip = (AudioClip)realityAudioBundle.LoadAsset("RCTTS", typeof(AudioClip));
+            yield return TwitchPowers.RealityClip;
+        }
         public void OnSceneLoaded(Scene scene, LoadSceneMode arg1)
         {
 
             if (scene.name == "MenuCore")
             {
+                if (TwitchPowers.RealityClip == null)
+                    SharedCoroutineStarter.instance.StartCoroutine(LoadRealityCheckAudio());
                 ReadPrefs();
                 try
                 {
