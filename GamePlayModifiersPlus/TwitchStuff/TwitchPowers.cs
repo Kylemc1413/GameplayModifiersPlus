@@ -490,6 +490,9 @@
         public static BeatmapData realityCheckData = null;
         public static IEnumerator RealityCheck(float duration = 10f)
         {
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            text.text += " RCTTS | ";
+
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
             BeatmapObjectSpawnMovementData originalSpawnMovementData = Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
             BeatmapCallbackItemDataList callBackDataList = Plugin.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
@@ -533,7 +536,7 @@
             ClearCallbackItemDataList(callBackDataList);
             DestroyNotes();
             callbackController.SetNewBeatmapData(originalData);
-
+            text.text = text.text.Replace(" RCTTS | ", "");
 
         }
 
