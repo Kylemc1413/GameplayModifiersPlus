@@ -23,7 +23,7 @@ namespace GamePlayModifiersPlus
         internal static bool reverseCoolDown;
         internal static bool rotationCoolDown;
         internal static bool tunnelCoolDown;
-        internal static bool rcttsCoolDown;
+        internal static bool mapCoolDown;
         internal static bool chargesCoolDown;
         public void SetCooldown(bool state, string cooldown)
         {
@@ -81,8 +81,8 @@ namespace GamePlayModifiersPlus
                 case "tunnel":
                     tunnelCoolDown = state;
                     break;
-                case "rctts":
-                    rcttsCoolDown = state;
+                case "map":
+                    mapCoolDown = state;
                     break;
                 default:
                 case "chargescommand":
@@ -132,8 +132,8 @@ namespace GamePlayModifiersPlus
                     return tunnelCoolDown;
                 case "chargescommand":
                     return chargesCoolDown;
-                case "rctts":
-                    return rcttsCoolDown;
+                case "map":
+                    return mapCoolDown;
                 default:
                     return false;
             }
@@ -158,7 +158,7 @@ namespace GamePlayModifiersPlus
             offsetrandomCoolDown = false;
             rotationCoolDown = false;
             tunnelCoolDown = false;
-            rcttsCoolDown = false;
+            mapCoolDown = false;
         }
 
 

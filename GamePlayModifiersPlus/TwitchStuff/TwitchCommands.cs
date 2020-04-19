@@ -341,32 +341,6 @@
         }
         public void CheckGameplayCommands(IChatMessage message)
         {
-            if (message.Message.ToLower().Contains("!gm rctts") && !Plugin.cooldowns.GetCooldown("rctts") && Plugin.commandsLeftForMessage > 0)
-            {
-                //Supercharge on rctts is probably not necessary
-                /*
-                if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.rcttsChargeCost)
-                {
-                    //       Plugin.beepSound.Play();
-                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.RealityCheck(TwitchPowers.RealityClip.length - 1f));
-                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(TwitchPowers.RealityClip.length + Plugin.songAudio.clip.length, "RCTTS", "Strimmer play Reality Check... The whole thing :)"));
-                    Plugin.trySuper = false;
-                    Plugin.charges -= ChatConfig.chargesForSuperCharge + ChatConfig.rcttsChargeCost;
-                    Plugin.commandsLeftForMessage -= 1;
-                    globalActive = true;
-                }
-                else 
-                */
-                if (Plugin.charges >= ChatConfig.rcttsChargeCost)
-                {
-                    Plugin.twitchPowers.StartCoroutine(Plugin.twitchPowers.RealityCheck(Mathf.Min(ChatConfig.rcttsDuration, TwitchPowers.RealityClip.length - 1f)));
-                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rcttsCooldown, "RCTTS", "Strimmer play Reality Check :) "));
-                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rcttsCooldown, "Reverse", ""));
-                    Plugin.charges -= ChatConfig.rcttsChargeCost;
-                    Plugin.commandsLeftForMessage -= 1;
-                    globalActive = true;
-                }
-            }
 
             if (message.Message.ToLower().Contains("!gm da") && !Plugin.cooldowns.GetCooldown("Note") && !Plugin.levelData.GameplayCoreSceneSetupData.gameplayModifiers.disappearingArrows && Plugin.commandsLeftForMessage > 0)
             {
@@ -608,7 +582,36 @@
 
         }
 
+        public void CheckMapSwapCommands(IChatMessage message)
+        {
+            if (message.Message.ToLower().Contains("!gm rctts") && !Plugin.cooldowns.GetCooldown("map") && Plugin.commandsLeftForMessage > 0)
+            {
+                //Supercharge on rctts is probably not necessary
+                /*
+                if (Plugin.trySuper && Plugin.charges >= ChatConfig.chargesForSuperCharge + ChatConfig.rcttsChargeCost)
+                {
+                    //       Plugin.beepSound.Play();
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.RealityCheck(TwitchPowers.RealityClip.length - 1f));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(TwitchPowers.RealityClip.length + Plugin.songAudio.clip.length, "RCTTS", "Strimmer play Reality Check... The whole thing :)"));
+                    Plugin.trySuper = false;
+                    Plugin.charges -= ChatConfig.chargesForSuperCharge + ChatConfig.rcttsChargeCost;
+                    Plugin.commandsLeftForMessage -= 1;
+                    globalActive = true;
+                }
+                else 
+                */
+                if (Plugin.charges >= ChatConfig.rcttsChargeCost)
+                {
+                    Plugin.twitchPowers.StartCoroutine(Plugin.twitchPowers.RealityCheck(Mathf.Min(ChatConfig.rcttsDuration, TwitchPowers.RealityClip.length - 1f)));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rcttsCooldown, "Map", "Strimmer play Reality Check :) "));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rcttsCooldown, "Reverse", ""));
+                    Plugin.charges -= ChatConfig.rcttsChargeCost;
+                    Plugin.commandsLeftForMessage -= 1;
+                    globalActive = true;
+                }
+            }
 
+        }
 
         public void CheckSizeCommands(IChatMessage message)
         {
