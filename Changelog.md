@@ -13,4 +13,4 @@
   - Left, Right, and RandomRotation Commands
  - New command 'RCTTS' to force your strimmer to play your favorite request!
  - CoolDowns now are forced to be at minimum the same length as the command duration
-
+ - Reverse CoolDown now classed as a Map Swap cooldown, like that of RCTTS command
