@@ -314,7 +314,7 @@
 
             object inifile = Plugin.ChatConfigSettings.GetField<object>("_instance");
             IniParser.Model.IniData data = inifile.GetField<IniParser.Model.IniData>("data");
-            foreach(var section in data.Sections)
+            foreach (var section in data.Sections)
             {
                 foreach (var key in section.Keys)
                 {
@@ -326,9 +326,9 @@
                 }
             }
 
-                Plugin.TryAsyncMessage("Changed Value");
-                ChatConfig.Load();
-            
+            Plugin.TryAsyncMessage("Changed Value");
+            ChatConfig.Load();
+
         }
 
         public static void ChangeConfigValue(string command, string property, string value)
@@ -343,9 +343,9 @@
                 {
                     inifile.InvokeMethod("IniWriteValue", command, property, value);
                     Plugin.TryAsyncMessage("Changed Value");
-                    ChatConfig.Load();            
+                    ChatConfig.Load();
                 }
-                
+
             }
 
         }
