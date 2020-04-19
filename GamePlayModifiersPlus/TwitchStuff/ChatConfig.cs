@@ -109,7 +109,7 @@
         public static int rcttsChargeCost = 15;
         public static float rcttsDuration = 30f;
         public static float rcttsCooldown = 45f;
-
+        public static bool rcttsRandomizeStart = false;
         public static float chargesCommandCoolDown = 0f;
 
         private static string chargeCostString;
@@ -266,6 +266,7 @@
             rcttsChargeCost = Plugin.ChatConfigSettings.GetInt("RCTTS", "ChargeCost", 15, true);
             rcttsDuration = Plugin.ChatConfigSettings.GetFloat("RCTTS", "Duration", 30f, true);
             rcttsCooldown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("RCTTS", "CoolDown", 45f, true), rcttsDuration);
+            rcttsRandomizeStart = Plugin.ChatConfigSettings.GetBool("RCTTS", "RandomizeStart", false, true);
             // Command Cooldowns
             chargesCommandCoolDown = Plugin.ChatConfigSettings.GetFloat("Command Cooldowns", "Charges", 0f, true);
 

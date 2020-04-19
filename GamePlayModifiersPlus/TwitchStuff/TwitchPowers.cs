@@ -504,7 +504,7 @@
             }
 
 
-            StartCoroutine(SwitchMap(realityCheckData, RealityClip, 260f, 0f, 17f, 0f, duration));
+            StartCoroutine(SwitchMap(realityCheckData, RealityClip, 260f, 0f, 17f, 0f, duration, ChatConfig.rcttsRandomizeStart));
             yield return new WaitForSeconds(duration);
             text.text = text.text.Replace(" RCTTS | ", "");
         }
@@ -527,6 +527,7 @@
             yield return new WaitForSeconds(duration);
             text.text = text.text.Replace(" Workout | ", "");
         }
+
         public IEnumerator SwitchMap(BeatmapData newDataBase, AudioClip newAudio, float newBpm, float newTimeOffset, float newNjs, float newSpawnOffset, float duration, bool randomizeStartTime = true)
         {
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
@@ -561,6 +562,7 @@
                     newData.beatmapLinesData[i].beatmapObjectsData = data3[i].ToArray();
                 }
             }
+
             ResetTimeSync(newAudio, startTime, newTimeOffset, 1f);
             ManuallySetNJSOffset(Plugin.spawnController, newNjs, newSpawnOffset, newBpm);
             ClearCallbackItemDataList(callBackDataList);
