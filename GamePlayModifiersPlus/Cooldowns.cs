@@ -81,7 +81,7 @@ namespace GamePlayModifiersPlus
                 case "tunnel":
                     tunnelCoolDown = state;
                     break;
-                case "map":
+                case "map swap":
                     mapCoolDown = state;
                     break;
                 default:
@@ -132,7 +132,7 @@ namespace GamePlayModifiersPlus
                     return tunnelCoolDown;
                 case "chargescommand":
                     return chargesCoolDown;
-                case "map":
+                case "map swap":
                     return mapCoolDown;
                 default:
                     return false;
