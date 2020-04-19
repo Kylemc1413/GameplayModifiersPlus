@@ -318,7 +318,7 @@
             {
                 foreach (var key in section.Keys)
                 {
-                    if (key.KeyName.ToLower() == propertyLower)
+                    if (key.KeyName.ToLower() == propertyLower && !data.Sections[section.SectionName].ContainsKey("ChargeCost"))
                     {
                         inifile.InvokeMethod("IniWriteValue", section.SectionName, property, value);
                         break;
