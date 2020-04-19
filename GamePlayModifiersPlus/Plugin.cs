@@ -201,15 +201,17 @@
         public IEnumerator LoadRealityCheckAudio()
         {
             AssetBundle realityAudioBundle = AssetBundle.LoadFromStream(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("GamePlayModifiersPlus.Resources.RealityCheck.rcttsaudio"));
-            TwitchPowers.RealityClip = (AudioClip)realityAudioBundle.LoadAsset("RCTTS", typeof(AudioClip));
-            yield return TwitchPowers.RealityClip;
+            var asset = realityAudioBundle.LoadAssetAsync("RCTTS", typeof(AudioClip));
+            yield return asset.isDone;
+            TwitchPowers.RealityClip = (AudioClip)asset.asset;
         }
 
         public IEnumerator LoadWorkoutAudio()
         {
             AssetBundle workoutAudio = AssetBundle.LoadFromStream(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("GamePlayModifiersPlus.Resources.Workout.workoutaudio"));
-            TwitchPowers.WorkoutClip = (AudioClip)workoutAudio.LoadAsset("Workout", typeof(AudioClip));
-            yield return TwitchPowers.WorkoutClip;
+            var asset = workoutAudio.LoadAssetAsync("Workout", typeof(AudioClip));
+            yield return asset.isDone;
+            TwitchPowers.WorkoutClip = (AudioClip)asset.asset;
         }
 
         public void OnSceneLoaded(Scene scene, LoadSceneMode arg1)
