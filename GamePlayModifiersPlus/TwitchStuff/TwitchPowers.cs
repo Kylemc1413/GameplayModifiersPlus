@@ -518,8 +518,8 @@
             ResetTimeSync(RealityClip, 0f, 0f, 1f);
             ManuallySetNJSOffset(Plugin.spawnController, 17f, 0f, 260f);
             ClearCallbackItemDataList(callBackDataList);
-            DestroyNotes();
-            // DestroyObjectsRaw();
+           // DestroyNotes();
+            DestroyObjectsRaw();
             callbackController.SetField("_spawningStartTime", 0f);
             callbackController.SetNewBeatmapData(realityCheckData);
             yield return new WaitForSeconds(duration - 0.2f);
@@ -535,8 +535,8 @@
             ResetTimeSync(originalClip, originalTime, originalTimeOffset, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul);
             ManuallySetNJSOffset(Plugin.spawnController, originalNJS, originalSpawnOffset, originalBPM);
             ClearCallbackItemDataList(callBackDataList);
-            DestroyNotes();
-            //   DestroyObjectsRaw();
+          //  DestroyNotes();
+              DestroyObjectsRaw();
             callbackController.SetNewBeatmapData(originalData);
             text.text = text.text.Replace(" RCTTS | ", "");
 
@@ -777,7 +777,7 @@
             BeatmapObjectData[] objects;
             NoteData note;
             float wait = Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
-            float start = Plugin.songAudio.time + wait;
+            float start = Plugin.songAudio.time + wait * 2f;
             float end = start + length;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
@@ -795,20 +795,28 @@
                         }
                 }
             }
-
-            yield return new WaitForSeconds(wait);
+            List<BeatmapObjectData>[] data2 = new List<BeatmapObjectData>[4];
+            for (int i = 0; i < beatmapData.beatmapLinesData.Length; i++)
+            {
+                data2[i] = new List<BeatmapObjectData>();
+                data2[i].AddRange(beatmapData.beatmapLinesData[i].beatmapObjectsData);
+                data2[i].RemoveAll(x => x.time < start || (x.time > end && x.time < end + wait));
+                beatmapData.beatmapLinesData[i].beatmapObjectsData = data2[i].ToArray();
+            }
+            callbackController.SetNewBeatmapData(beatmapData);
             GMPUI.reverse = true;
             AdjustNjsOrOffset();
             Plugin.reverseSound.Play();
-            DestroyNotes();
+            DestroyObjectsRaw();
+            //   DestroyNotes();
             //Code to show some kinda prompt here maybe
             yield return new WaitForSeconds(length);
             GMPUI.reverse = false;
             AdjustNjsOrOffset();
             //Code to destroy notes here
             Plugin.reverseSound.Play();
-            DestroyNotes();
-
+         //   DestroyNotes();
+            DestroyObjectsRaw();
             text.text = text.text.Replace(" Reverse | ", "");
 
         }
@@ -1016,6 +1024,8 @@
 
         public static void DestroyObjectsRaw()
         {
+            Plugin.beatmapObjectManager.DissolveAllObjects();
+            /*
             foreach (NoteController noteController in UnityEngine.Object.FindObjectsOfType<NoteController>())
             {
                 try
@@ -1029,11 +1039,12 @@
                 }
             }
             // Not good enough, exceptions form on anything referencing obstacles
+            
             foreach (ObstacleController obstacleController in UnityEngine.Object.FindObjectsOfType<ObstacleController>())
             {
                 try
                 {
-                    GameObject.Destroy(obstacleController.gameObject);
+                    obstacleController.StartCoroutine(obstacleController.DissolveCoroutine());
 
                 }
                 catch (System.Exception ex)
@@ -1041,6 +1052,8 @@
                     Plugin.Log("Error Trying to Destroy objects: " + ex);
                 }
             }
+            */
+            
         }
         public static void ResetPowers(bool resetMessage)
         {
