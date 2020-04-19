@@ -359,8 +359,9 @@
                 */
                 if (Plugin.charges >= ChatConfig.rcttsChargeCost)
                 {
-                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.RealityCheck(Mathf.Min(ChatConfig.rcttsDuration, TwitchPowers.RealityClip.length - 1f)));
+                    Plugin.twitchPowers.StartCoroutine(Plugin.twitchPowers.RealityCheck(Mathf.Min(ChatConfig.rcttsDuration, TwitchPowers.RealityClip.length - 1f)));
                     Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rcttsCooldown, "RCTTS", "Strimmer play Reality Check :) "));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rcttsCooldown, "Reverse", ""));
                     Plugin.charges -= ChatConfig.rcttsChargeCost;
                     Plugin.commandsLeftForMessage -= 1;
                     globalActive = true;
