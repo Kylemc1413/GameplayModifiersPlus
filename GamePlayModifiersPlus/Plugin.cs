@@ -881,7 +881,7 @@
                     Log("Testing Ground Active");
                     try
                     {
-                        SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.TestingGround(10f));
+                       twitchPowers.StartCoroutine(TwitchPowers.TestingGround(10f));
                     }
                     catch (Exception ex)
                     {

@@ -125,7 +125,7 @@
         public static IEnumerator TestingGround(float length)
         {
             yield return new WaitForSecondsRealtime(10f);
-            SharedCoroutineStarter.instance.StartCoroutine(Plugin.twitchPowers.Workout());
+            Plugin.twitchPowers.StartCoroutine(Plugin.twitchPowers.RealityCheck());
         }
 
         public static IEnumerator LeftRotation()
@@ -533,6 +533,7 @@
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
             BeatmapObjectSpawnMovementData originalSpawnMovementData = Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
             BeatmapCallbackItemDataList callBackDataList = Plugin.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
+            NoteCutSoundEffectManager seManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().First();
             float startTime = 0f;
             float startOffset = originalSpawnMovementData.spawnAheadTime + 0.1f;
             //Get initial Map data
@@ -568,6 +569,7 @@
             ClearCallbackItemDataList(callBackDataList);
             // DestroyNotes();
             DestroyObjectsRaw();
+            ResetNoteCutSoundEffects(seManager);
             callbackController.SetField("_spawningStartTime", 0f);
             callbackController.SetNewBeatmapData(newData);
             yield return new WaitForSeconds(duration - 0.2f);
@@ -585,7 +587,14 @@
             ClearCallbackItemDataList(callBackDataList);
             //  DestroyNotes();
             DestroyObjectsRaw();
+            ResetNoteCutSoundEffects(seManager);
             callbackController.SetNewBeatmapData(originalData);
+        }
+        public static void ResetNoteCutSoundEffects(NoteCutSoundEffectManager manager)
+        {
+            manager.SetField("_prevNoteATime", -1f);
+            manager.SetField("_prevNoteBTime", -1f);
+
         }
         public static void ClearCallbackItemDataList(BeatmapCallbackItemDataList list)
         {
