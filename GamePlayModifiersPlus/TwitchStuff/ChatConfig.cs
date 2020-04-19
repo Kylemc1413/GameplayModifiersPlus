@@ -106,6 +106,10 @@
         public static float tunnelDuration = 15f;
         public static float tunnelCoolDown = 30f;
 
+        public static int rcttsChargeCost = 15;
+        public static float rcttsDuration = 30f;
+        public static float rcttsCooldown = 45f;
+
         public static float chargesCommandCoolDown = 0f;
 
         private static string chargeCostString;
@@ -240,6 +244,10 @@
             randomRotationChargeCost = Plugin.ChatConfigSettings.GetInt("RandomRotation", "ChargeCost", 5, true);
             randomRotationCoolDown = Plugin.ChatConfigSettings.GetFloat("RandomRotation", "CoolDown", 30f, true);
             randomRotationDuration = Plugin.ChatConfigSettings.GetFloat("RandomRotation", "Duration", 5f, true);
+            //RCTTS
+            rcttsChargeCost = Plugin.ChatConfigSettings.GetInt("RCTTS", "ChargeCost", 15, true);
+            rcttsCooldown = Plugin.ChatConfigSettings.GetFloat("RCTTS", "CoolDown", 30f, true);
+            rcttsDuration = Plugin.ChatConfigSettings.GetFloat("RCTTS", "Duration", 45f, true);
             // Command Cooldowns
             chargesCommandCoolDown = Plugin.ChatConfigSettings.GetFloat("Command Cooldowns", "Charges", 0f, true);
 

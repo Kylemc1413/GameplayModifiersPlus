@@ -285,6 +285,7 @@
 
         public void CheckRotationCommands(IChatMessage message)
         {
+            if (Plugin.commandsLeftForMessage == 0) return;
             if (!Plugin.cooldowns.GetCooldown("Rotation"))
             {
                 if (message.Message.ToLower().Contains("!gm left"))
@@ -340,6 +341,18 @@
         }
         public void CheckGameplayCommands(IChatMessage message)
         {
+            if (message.Message.ToLower().Contains("!gm rctts") && !Plugin.cooldowns.GetCooldown("rctts")  && Plugin.commandsLeftForMessage > 0)
+            {
+
+                if (Plugin.charges >= ChatConfig.rcttsChargeCost)
+                {
+                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.RealityCheck(ChatConfig.rcttsDuration));
+                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rcttsCooldown, "RCTTS", "Strimmer play Reality Check :) "));
+                    Plugin.charges -= ChatConfig.rcttsChargeCost;
+                    Plugin.commandsLeftForMessage -= 1;
+                    globalActive = true;
+                }
+            }
 
             if (message.Message.ToLower().Contains("!gm da") && !Plugin.cooldowns.GetCooldown("Note") && !Plugin.levelData.GameplayCoreSceneSetupData.gameplayModifiers.disappearingArrows && Plugin.commandsLeftForMessage > 0)
             {
