@@ -67,6 +67,7 @@
 | `Max` | For random commands, the max value of the random range |
 | `Chance` | For commands based on chance, the chance (0-1) of something occuring |
 | `Multiplier` | For multiplier based commands, like faster or slower commands, the multiplier used. I.E. 1.2 = 120% |
+| `RandomizeStart` | For Map Swap Commands, whether to randomize what point the new map starts at |
 ### Current Commands
 | Command | Description |
 | - | - |
