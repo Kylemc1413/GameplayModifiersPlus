@@ -35,17 +35,21 @@
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
             text.text += " " + cooldown + " | ";
             Plugin.cooldowns.SetCooldown(true, cooldown);
-            if (ChatConfig.showCooldownOnMessage)
+            if (!string.IsNullOrWhiteSpace(message))
             {
-                if (ChatConfig.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
+                if (ChatConfig.showCooldownOnMessage)
                 {
-                    Plugin.TryAsyncMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + ChatConfig.globalCommandCooldown + " seconds.");
+                    if (ChatConfig.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
+                    {
+                        Plugin.TryAsyncMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + ChatConfig.globalCommandCooldown + " seconds.");
+                    }
+                    else
+                        Plugin.TryAsyncMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
                 }
                 else
-                    Plugin.TryAsyncMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
+                    Plugin.TryAsyncMessage(message);
             }
-            else
-                Plugin.TryAsyncMessage(message);
+
 
 
             yield return new WaitForSeconds(waitTime);
@@ -121,7 +125,7 @@
         public static IEnumerator TestingGround(float length)
         {
             yield return new WaitForSecondsRealtime(10f);
-            SharedCoroutineStarter.instance.StartCoroutine(RealityCheck());
+            SharedCoroutineStarter.instance.StartCoroutine(Plugin.twitchPowers.Workout());
         }
 
         public static IEnumerator LeftRotation()
@@ -488,11 +492,43 @@
         }
         public static AudioClip RealityClip = null;
         public static BeatmapData realityCheckData = null;
-        public static IEnumerator RealityCheck(float duration = 10f)
+        public IEnumerator RealityCheck(float duration = 10f)
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " RCTTS | ";
+            if (realityCheckData == null)
+            {
+                BeatmapDataLoader dataLoader = new BeatmapDataLoader();
+                string json = new System.IO.StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("GamePlayModifiersPlus.Resources.RealityCheck.ExpertPlus.dat")).ReadToEnd();
+                realityCheckData = dataLoader.GetBeatmapDataFromJson(json, 260f, 0f, 0.5f);
+            }
 
+
+            StartCoroutine(SwitchMap(realityCheckData, RealityClip, 260f, 0f, 17f, 0f, duration));
+            yield return new WaitForSeconds(duration);
+            text.text = text.text.Replace(" RCTTS | ", "");
+        }
+
+        public static AudioClip WorkoutClip = null;
+        public static BeatmapData workoutData = null;
+        public IEnumerator Workout(float duration = 30f)
+        {
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+            text.text += " Workout | ";
+            if (workoutData == null)
+            {
+                BeatmapDataLoader dataLoader = new BeatmapDataLoader();
+                string json = new System.IO.StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("GamePlayModifiersPlus.Resources.Workout.ExpertPlus.dat")).ReadToEnd();
+                workoutData = dataLoader.GetBeatmapDataFromJson(json, 200f, 0f, 0.5f);
+            }
+
+
+            StartCoroutine(SwitchMap(workoutData, WorkoutClip, 200f, 0f, 10f, 0f, duration));
+            yield return new WaitForSeconds(duration);
+            text.text = text.text.Replace(" Workout | ", "");
+        }
+        public IEnumerator SwitchMap(BeatmapData newDataBase, AudioClip newAudio, float newBpm, float newTimeOffset, float newNjs, float newSpawnOffset, float duration)
+        {
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
             BeatmapObjectSpawnMovementData originalSpawnMovementData = Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
             BeatmapCallbackItemDataList callBackDataList = Plugin.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
@@ -508,20 +544,15 @@
             BeatmapData originalData = callbackController.GetField<BeatmapData>("_beatmapData");
 
             //Switch To Reality Check
-            if (realityCheckData == null)
-            {
-                BeatmapDataLoader dataLoader = new BeatmapDataLoader();
-                string json = new System.IO.StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("GamePlayModifiersPlus.Resources.RealityCheck.ExpertPlus.dat")).ReadToEnd();
-                realityCheckData = dataLoader.GetBeatmapDataFromJson(json, 260f, 0f, 0.5f);
-            }
-            BeatmapData newData = realityCheckData.GetCopy();
+
+            BeatmapData newData = newDataBase.GetCopy();
             if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.staticLights)
                 newData.SetProperty<BeatmapData>("beatmapEventData", new BeatmapEventData[0]);
 
-            ResetTimeSync(RealityClip, 0f, 0f, 1f);
-            ManuallySetNJSOffset(Plugin.spawnController, 17f, 0f, 260f);
+            ResetTimeSync(newAudio, 0f, newTimeOffset, 1f);
+            ManuallySetNJSOffset(Plugin.spawnController, newNjs, newSpawnOffset, newBpm);
             ClearCallbackItemDataList(callBackDataList);
-           // DestroyNotes();
+            // DestroyNotes();
             DestroyObjectsRaw();
             callbackController.SetField("_spawningStartTime", 0f);
             callbackController.SetNewBeatmapData(newData);
@@ -538,13 +569,10 @@
             ResetTimeSync(originalClip, originalTime, originalTimeOffset, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul);
             ManuallySetNJSOffset(Plugin.spawnController, originalNJS, originalSpawnOffset, originalBPM);
             ClearCallbackItemDataList(callBackDataList);
-          //  DestroyNotes();
-              DestroyObjectsRaw();
+            //  DestroyNotes();
+            DestroyObjectsRaw();
             callbackController.SetNewBeatmapData(originalData);
-            text.text = text.text.Replace(" RCTTS | ", "");
-
         }
-
         public static void ClearCallbackItemDataList(BeatmapCallbackItemDataList list)
         {
             list.GetField<List<BeatmapObjectData>>("_beatmapObjectDataList").Clear();
@@ -818,7 +846,7 @@
             AdjustNjsOrOffset();
             //Code to destroy notes here
             Plugin.reverseSound.Play();
-         //   DestroyNotes();
+            //   DestroyNotes();
             DestroyObjectsRaw();
             text.text = text.text.Replace(" Reverse | ", "");
 
@@ -1056,7 +1084,7 @@
                 }
             }
             */
-            
+
         }
         public static void ResetPowers(bool resetMessage)
         {

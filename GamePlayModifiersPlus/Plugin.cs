@@ -204,6 +204,14 @@
             TwitchPowers.RealityClip = (AudioClip)realityAudioBundle.LoadAsset("RCTTS", typeof(AudioClip));
             yield return TwitchPowers.RealityClip;
         }
+
+        public IEnumerator LoadWorkoutAudio()
+        {
+            AssetBundle workoutAudio = AssetBundle.LoadFromStream(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("GamePlayModifiersPlus.Resources.Workout.workoutaudio"));
+            TwitchPowers.WorkoutClip = (AudioClip)workoutAudio.LoadAsset("Workout", typeof(AudioClip));
+            yield return TwitchPowers.WorkoutClip;
+        }
+
         public void OnSceneLoaded(Scene scene, LoadSceneMode arg1)
         {
 
@@ -211,6 +219,8 @@
             {
                 if (TwitchPowers.RealityClip == null)
                     SharedCoroutineStarter.instance.StartCoroutine(LoadRealityCheckAudio());
+                if (TwitchPowers.WorkoutClip == null)
+                    SharedCoroutineStarter.instance.StartCoroutine(LoadWorkoutAudio());
                 ReadPrefs();
                 try
                 {

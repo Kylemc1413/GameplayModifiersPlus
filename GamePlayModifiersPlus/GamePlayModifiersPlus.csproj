@@ -215,6 +215,10 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\RealityCheck\rcttsaudio" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Workout\ExpertPlus.dat" />
+    <EmbeddedResource Include="Resources\Workout\workoutaudio" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)$(TargetFileName)" "C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins" /Y</PostBuildEvent>
