@@ -479,7 +479,7 @@
                 {
                     //       Plugin.beepSound.Play();
                     Plugin.twitchPowers.StartCoroutine(TwitchPowers.Reverse(ChatConfig.reverseDuration));
-                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.reverseCooldown, "Reverse", "Temporary Map Reversal."));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.reverseCooldown, "Map Swap", "Temporary Map Reversal."));
                     Plugin.charges -= ChatConfig.reverseChargeCost;
                     Plugin.commandsLeftForMessage -= 1;
                     globalActive = true;
@@ -584,7 +584,7 @@
 
         public void CheckMapSwapCommands(IChatMessage message)
         {
-            if (message.Message.ToLower().Contains("!gm rctts") && !Plugin.cooldowns.GetCooldown("map swap") && Plugin.commandsLeftForMessage > 0)
+            if (message.Message.ToLower().Contains("!gm rctts") && !Plugin.cooldowns.GetCooldown("Map Swap") && Plugin.commandsLeftForMessage > 0)
             {
                 //Supercharge on rctts is probably not necessary
                 /*
