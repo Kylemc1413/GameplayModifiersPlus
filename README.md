@@ -62,7 +62,7 @@
 | - | - |
 | `chargeCost` | The base amount of charges required to use a command |
 | `Duration` | The base amount of time in seconds the effects of a command last |
-| `Cooldown` | How long in seconds before that command can be used again |
+| `Cooldown` | How long in seconds before that command can be used again, cannot be lower than Duration |
 | `Min` | For random commands, the min value of the random range |
 | `Max` | For random commands, the max value of the random range |
 | `Chance` | For commands based on chance, the chance (0-1) of something occuring |
@@ -92,7 +92,7 @@
 | Left   | Rotates the level 30 degrees to the left (If 360 Chat Integration Capabilities are enabled) |
 | Right   | Rotates the level 30 degrees to the right (If 360 Chat Integration Capabilities are enabled) |
 | RandomRotation   | Randomly sporadically rotates the level 30 degrees to the left/right for the duration (If 360 Chat Integration Capabilities are enabled) |
-| RCTTS | Force Reality Check Through the Skull to play for the duration (CoolDown cannot be lower than the duration) |
+| RCTTS | Force Reality Check Through the Skull to play for the duration |
 
 ## Moderator Commands
 ### Reset Command

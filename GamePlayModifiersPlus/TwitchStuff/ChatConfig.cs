@@ -146,94 +146,111 @@
 
             //Invincible
             invincibleChargeCost = Plugin.ChatConfigSettings.GetInt("Invincible", "ChargeCost", 0, true);
-            invincibleCooldown = Plugin.ChatConfigSettings.GetFloat("Invincible", "CoolDown", 15f, true);
             invincibleDuration = Plugin.ChatConfigSettings.GetFloat("Invincible", "Duration", 15f, true);
+            invincibleCooldown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("Invincible", "CoolDown", 15f, true), invincibleDuration);
+
             //Poison
             poisonChargeCost = Plugin.ChatConfigSettings.GetInt("Poison", "ChargeCost", 5, true);
-            poisonCooldown = Plugin.ChatConfigSettings.GetFloat("Poison", "CoolDown", 30f, true);
             poisonDuration = Plugin.ChatConfigSettings.GetFloat("Poison", "Duration", 15f, true);
+            poisonCooldown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("Poison", "CoolDown", 30f, true), poisonDuration);
+
             //Instafail
             instaFailChargeCost = Plugin.ChatConfigSettings.GetInt("Instafail", "ChargeCost", 40, true);
-            instaFailCooldown = Plugin.ChatConfigSettings.GetFloat("Instafail", "CoolDown", 45f, true);
             instaFailDuration = Plugin.ChatConfigSettings.GetFloat("Instafail", "Duration", 8f, true);
+            instaFailCooldown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("Instafail", "CoolDown", 45f, true), instaFailDuration);
+
             //NjsRandom
             njsRandomChargeCost = Plugin.ChatConfigSettings.GetInt("NjsRandom", "ChargeCost", 7, true);
-            njsRandomCooldown = Plugin.ChatConfigSettings.GetFloat("NjsRandom", "CoolDown", 30f, true);
             njsRandomDuration = Plugin.ChatConfigSettings.GetFloat("NjsRandom", "Duration", 10f, true);
+            njsRandomCooldown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("NjsRandom", "CoolDown", 30f, true), njsRandomDuration);
+
             njsRandomMin = Plugin.ChatConfigSettings.GetFloat("NjsRandom", "Min", 8f, true);
             njsRandomMax = Plugin.ChatConfigSettings.GetFloat("NjsRandom", "Max", 16f, true);
             //OffsetRandom
             offsetrandomChargeCost = Plugin.ChatConfigSettings.GetInt("OffsetRandom", "ChargeCost", 5, true);
-            offsetrandomCooldown = Plugin.ChatConfigSettings.GetFloat("OffsetRandom", "CoolDown", 30f, true);
             offsetrandomDuration = Plugin.ChatConfigSettings.GetFloat("OffsetRandom", "Duration", 10f, true);
+            offsetrandomCooldown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("OffsetRandom", "CoolDown", 30f, true), offsetrandomDuration);
+
             offsetrandomMin = Plugin.ChatConfigSettings.GetInt("OffsetRandom", "Min", 0, true);
             offsetrandomMax = Plugin.ChatConfigSettings.GetInt("OffsetRandom", "Max", 4, true);
             //Smaller
             smallerChargeCost = Plugin.ChatConfigSettings.GetInt("Smaller", "ChargeCost", 1, true);
-            smallerCoolDown = Plugin.ChatConfigSettings.GetFloat("Smaller", "CoolDown", 15f, true);
             smallerDuration = Plugin.ChatConfigSettings.GetFloat("Smaller", "Duration", 10f, true);
+            smallerCoolDown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("Smaller", "CoolDown", 15f, true), smallerDuration);
+
             smallerMultiplier = Plugin.ChatConfigSettings.GetFloat("Smaller", "Multiplier", 0.65f, true);
 
             //Larger
             largerChargeCost = Plugin.ChatConfigSettings.GetInt("Larger", "ChargeCost", 1, true);
-            largerCooldown = Plugin.ChatConfigSettings.GetFloat("Larger", "CoolDown", 15f, true);
             largerDuration = Plugin.ChatConfigSettings.GetFloat("Larger", "Duration", 10f, true);
+            largerCooldown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("Larger", "CoolDown", 15f, true), largerDuration);
+
             largerMultiplier = Plugin.ChatConfigSettings.GetFloat("Larger", "Multiplier", 1.45f, true);
             //Random
             randomChargeCost = Plugin.ChatConfigSettings.GetInt("Random", "ChargeCost", 4, true);
-            randomCooldown = Plugin.ChatConfigSettings.GetFloat("Random", "CoolDown", 15f, true);
             randomDuration = Plugin.ChatConfigSettings.GetFloat("Random", "Duration", 10f, true);
+            randomCooldown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("Random", "CoolDown", 15f, true), randomDuration);
+
             randomMin = Plugin.ChatConfigSettings.GetFloat("Random", "Min", 0.75f, true);
             randomMax = Plugin.ChatConfigSettings.GetFloat("Random", "Max", 1.4f, true);
 
             //DA
             daChargeCost = Plugin.ChatConfigSettings.GetInt("DA", "ChargeCost", 0, true);
-            daCooldown = Plugin.ChatConfigSettings.GetFloat("DA", "CoolDown", 20f, true);
             daDuration = Plugin.ChatConfigSettings.GetFloat("DA", "Duration", 15f, true);
+            daCooldown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("DA", "CoolDown", 20f, true), daDuration);
+
 
             //Faster
             fasterChargeCost = Plugin.ChatConfigSettings.GetInt("Faster", "ChargeCost", 5, true);
-            fasterCooldown = Plugin.ChatConfigSettings.GetFloat("Faster", "CoolDown", 30f, true);
             fasterDuration = Plugin.ChatConfigSettings.GetFloat("Faster", "Duration", 15f, true);
+            fasterCooldown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("Faster", "CoolDown", 30f, true), fasterDuration);
+
             fasterMultiplier = Plugin.ChatConfigSettings.GetFloat("Faster", "Multiplier", 1.2f, true);
             //Slower
             slowerChargeCost = Plugin.ChatConfigSettings.GetInt("Slower", "ChargeCost", 5, true);
-            slowerCooldown = Plugin.ChatConfigSettings.GetFloat("Slower", "CoolDown", 30f, true);
             slowerDuration = Plugin.ChatConfigSettings.GetFloat("Slower", "Duration", 15f, true);
+            slowerCooldown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("Slower", "CoolDown", 30f, true), slowerDuration);
+
             slowerMultiplier = Plugin.ChatConfigSettings.GetFloat("Slower", "Multiplier", 0.8f, true);
 
             //NoArrows
             noArrowsChargeCost = Plugin.ChatConfigSettings.GetInt("NoArrows", "ChargeCost", 10, true);
-            noArrowsCooldown = Plugin.ChatConfigSettings.GetFloat("NoArrows", "CoolDown", 30f, true);
             noArrowsDuration = Plugin.ChatConfigSettings.GetFloat("NoArrows", "Duration", 10f, true);
+            noArrowsCooldown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("NoArrows", "CoolDown", 30f, true), noArrowsDuration);
+
             //Funky
             funkyChargeCost = Plugin.ChatConfigSettings.GetInt("Funky", "ChargeCost", 5, true);
-            funkyCooldown = Plugin.ChatConfigSettings.GetFloat("Funky", "CoolDown", 20f, true);
             funkyDuration = Plugin.ChatConfigSettings.GetFloat("Funky", "Duration", 10f, true);
+            funkyCooldown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("Funky", "CoolDown", 20f, true), funkyDuration);
+
             //Rainbow
             rainbowChargeCost = Plugin.ChatConfigSettings.GetInt("Rainbow", "ChargeCost", 3, true);
-            rainbowCooldown = Plugin.ChatConfigSettings.GetFloat("Rainbow", "CoolDown", 15f, true);
             rainbowDuration = Plugin.ChatConfigSettings.GetFloat("Rainbow", "Duration", 10f, true);
+            rainbowCooldown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("Rainbow", "CoolDown", 15f, true), rainbowDuration);
+
             //Mirror
             mirrorChargeCost = Plugin.ChatConfigSettings.GetInt("Mirror", "ChargeCost", 3, true);
-            mirrorCooldown = Plugin.ChatConfigSettings.GetFloat("Mirror", "CoolDown", 20f, true);
             mirrorDuration = Plugin.ChatConfigSettings.GetFloat("Mirror", "Duration", 20f, true);
+            mirrorCooldown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("Mirror", "CoolDown", 20f, true), mirrorDuration);
+
             //Reverse
             reverseChargeCost = Plugin.ChatConfigSettings.GetInt("Reverse", "ChargeCost", 10, true);
-            reverseCooldown = Plugin.ChatConfigSettings.GetFloat("Reverse", "CoolDown", 60f, true);
             reverseDuration = Plugin.ChatConfigSettings.GetFloat("Reverse", "Duration", 15f, true);
+            reverseCooldown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("Reverse", "CoolDown", 60f, true), reverseDuration);
+
             //Pause
             pauseChargeCost = Plugin.ChatConfigSettings.GetInt("Pause", "ChargeCost", 30, true);
             pauseGlobalCooldown = Plugin.ChatConfigSettings.GetFloat("Pause", "GlobalCoolDown", 60f, true);
             //Bombs
             bombsChargeCost = Plugin.ChatConfigSettings.GetInt("Bombs", "ChargeCost", 7, true);
-            bombsCooldown = Plugin.ChatConfigSettings.GetFloat("Bombs", "CoolDown", 45f, true);
+
             bombsDuration = Plugin.ChatConfigSettings.GetFloat("Bombs", "Duration", 15f, true);
+            bombsCooldown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("Bombs", "CoolDown", 45f, true), bombsDuration);
             bombsChance = Plugin.ChatConfigSettings.GetFloat("Bombs", "Chance", 0.1f, true);
             //Tunnel
             tunnelChargeCost = Plugin.ChatConfigSettings.GetInt("Tunnel", "ChargeCost", 5, true);
             tunnelDuration = Plugin.ChatConfigSettings.GetFloat("Tunnel", "Duration", 15f, true);
-            tunnelCoolDown = Plugin.ChatConfigSettings.GetFloat("Tunnel", "CoolDown", 30f, true);
+            tunnelCoolDown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("Tunnel", "CoolDown", 30f, true), tunnelDuration);
             //Left
             leftChargeCost = Plugin.ChatConfigSettings.GetInt("Left", "ChargeCost", 5, true);
             leftCoolDownn = Plugin.ChatConfigSettings.GetFloat("Left", "CoolDown", 15f, true);
@@ -242,8 +259,9 @@
             rightCoolDown = Plugin.ChatConfigSettings.GetFloat("Right", "CoolDown", 15f, true);
             //Random Rotation
             randomRotationChargeCost = Plugin.ChatConfigSettings.GetInt("RandomRotation", "ChargeCost", 5, true);
-            randomRotationCoolDown = Plugin.ChatConfigSettings.GetFloat("RandomRotation", "CoolDown", 30f, true);
             randomRotationDuration = Plugin.ChatConfigSettings.GetFloat("RandomRotation", "Duration", 5f, true);
+            randomRotationCoolDown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("RandomRotation", "CoolDown", 30f, true), randomRotationDuration);
+
             //RCTTS
             rcttsChargeCost = Plugin.ChatConfigSettings.GetInt("RCTTS", "ChargeCost", 15, true);
             rcttsDuration = Plugin.ChatConfigSettings.GetFloat("RCTTS", "Duration", 30f, true);
