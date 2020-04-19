@@ -246,8 +246,8 @@
             randomRotationDuration = Plugin.ChatConfigSettings.GetFloat("RandomRotation", "Duration", 5f, true);
             //RCTTS
             rcttsChargeCost = Plugin.ChatConfigSettings.GetInt("RCTTS", "ChargeCost", 15, true);
-            rcttsCooldown = Plugin.ChatConfigSettings.GetFloat("RCTTS", "CoolDown", 30f, true);
-            rcttsDuration = Plugin.ChatConfigSettings.GetFloat("RCTTS", "Duration", 45f, true);
+            rcttsDuration = Plugin.ChatConfigSettings.GetFloat("RCTTS", "Duration", 30f, true);
+            rcttsCooldown = UnityEngine.Mathf.Max(Plugin.ChatConfigSettings.GetFloat("RCTTS", "CoolDown", 45f, true), rcttsDuration);
             // Command Cooldowns
             chargesCommandCoolDown = Plugin.ChatConfigSettings.GetFloat("Command Cooldowns", "Charges", 0f, true);
 
