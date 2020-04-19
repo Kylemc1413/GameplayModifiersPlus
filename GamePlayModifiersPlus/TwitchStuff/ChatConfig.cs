@@ -311,128 +311,41 @@
             bool success = true;
             string propertyLower = property.ToLower();
             Plugin.Log("Config Change Attempt: " + property + " " + value);
-            switch (propertyLower)
-            {
-                case "bitspercharge":
-                    Plugin.ChatConfigSettings.SetInt("Charges", property, int.Parse(value));
-                    break;
-                case "chargesforsupercharge":
-                    Plugin.ChatConfigSettings.SetInt("Charges", property, int.Parse(value));
-                    break;
-                case "maxcharges":
-                    Plugin.ChatConfigSettings.SetInt("Charges", property, int.Parse(value));
-                    break;
-                case "chargesperlevel":
-                    Plugin.ChatConfigSettings.SetInt("Charges", property, int.Parse(value));
-                    break;
-                case "allowsubs":
-                    allowSubs = Convert.ToBoolean(value);
-                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, Convert.ToBoolean(value));
-                    break;
-                case "alloweveryone":
-                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, Convert.ToBoolean(value));
-                    break;
-                case "commandspermessage":
-                    Plugin.ChatConfigSettings.SetInt("Basic Setup", property, int.Parse(value));
-                    break;
-                case "globalcommandcooldown":
-                    Plugin.ChatConfigSettings.SetFloat("Basic Setup", property, float.Parse(value));
-                    break;
-                case "timeforcharges":
-                    Plugin.ChatConfigSettings.SetFloat("Charges", property, float.Parse(value));
-                    break;
-                case "chargesovertime":
-                    chargesOverTime = int.Parse(value);
-                    Plugin.ChatConfigSettings.SetInt("Charges", property, int.Parse(value));
-                    break;
-                case "showcooldownonmessage":
-                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, Convert.ToBoolean(value));
-                    break;
-                case "uiontop":
-                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, Convert.ToBoolean(value));
-                    break;
-                case "resetchargesperlevel":
-                    Plugin.ChatConfigSettings.SetBool("Charges", property, Convert.ToBoolean(value));
-                    break;
-                case "allowmodcommands":
-                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, Convert.ToBoolean(value));
-                    break;
-                case "chatintegration360":
-                    Plugin.ChatConfigSettings.SetBool("Basic Setup", property, Convert.ToBoolean(value));
-                    break;
-                default:
-                    success = false;
-                    break;
-            }
 
-            if (success)
+            object inifile = Plugin.ChatConfigSettings.GetField<object>("_instance");
+            IniParser.Model.IniData data = inifile.GetField<IniParser.Model.IniData>("data");
+            foreach(var section in data.Sections)
             {
+                foreach (var key in section.Keys)
+                {
+                    if (key.KeyName.ToLower() == propertyLower)
+                    {
+                        inifile.InvokeMethod("IniWriteValue", section.SectionName, property, value);
+                        break;
+                    }
+                }
+            }
 
                 Plugin.TryAsyncMessage("Changed Value");
                 ChatConfig.Load();
-            }
+            
         }
+
         public static void ChangeConfigValue(string command, string property, string value)
         {
             Plugin.Log("Config Change Attempt: " + command + " " + property + " " + value);
             bool success = true;
-            IniParser.Model.IniData data = Plugin.ChatConfigSettings.GetField<object>("_instance").GetField<IniParser.Model.IniData>("data");
+            object inifile = Plugin.ChatConfigSettings.GetField<object>("_instance");
+            IniParser.Model.IniData data = inifile.GetField<IniParser.Model.IniData>("data");
             if (data.Sections.ContainsSection(command))
             {
                 if (data.Sections[command].ContainsKey(property))
                 {
-                    success = true;
-                    object result = null;
-                    bool pauseCoolDown = false;
-                    bool isFloat = false;
-                    bool isInt = false;
-                    switch (property)
-                    {
-                        case "ChargeCost":
-                            isInt = true;
-                            break;
-                        case "CoolDown":
-                            if (command == "Pause") pauseCoolDown = true;
-                            isFloat = true;
-                            break;
-                        case "Duration":
-                            isFloat = true;
-                            break;
-                        case "Multiplier":
-                            isFloat = true;
-                            break;
-                        case "Min":
-                            isFloat = true;
-                            break;
-                        case "Max":
-                            isFloat = true;
-                            break;
-                        case "Chance":
-                            isFloat = true;
-                            break;
-                        default:
-                            success = false;
-                            break;
-                    }
-                    if (success)
-                    {
-                        if (isFloat)
-                        {
-                            result = float.Parse(value);
-                            if (pauseCoolDown)
-                                Plugin.ChatConfigSettings.SetFloat(command, "GlobalCoolDown", (float)result);
-                            else
-                                Plugin.ChatConfigSettings.SetFloat(command, property, (float)result);
-                        }
-                        else if (isInt)
-                        {
-                            result = int.Parse(value);
-                            Plugin.ChatConfigSettings.SetInt(command, property, (int)result);
-                        }
-                        Plugin.TryAsyncMessage("Changed Value");
-                        ChatConfig.Load();
-                    }
+                    inifile.InvokeMethod("IniWriteValue", command, property, value);
+                    Plugin.TryAsyncMessage("Changed Value");
+                    ChatConfig.Load();            
                 }
+                
             }
 
         }
