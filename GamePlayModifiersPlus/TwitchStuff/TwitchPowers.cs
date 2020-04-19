@@ -508,7 +508,7 @@
             BeatmapData originalData = callbackController.GetField<BeatmapData>("_beatmapData");
 
             //Switch To Reality Check
-            if(realityCheckData == null)
+            if (realityCheckData == null)
             {
                 BeatmapDataLoader dataLoader = new BeatmapDataLoader();
                 string json = new System.IO.StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("GamePlayModifiersPlus.Resources.RealityCheck.ExpertPlus.dat")).ReadToEnd();
@@ -519,6 +519,7 @@
             ManuallySetNJSOffset(Plugin.spawnController, 17f, 0f, 260f);
             ClearCallbackItemDataList(callBackDataList);
             DestroyNotes();
+            // DestroyObjectsRaw();
             callbackController.SetField("_spawningStartTime", 0f);
             callbackController.SetNewBeatmapData(realityCheckData);
             yield return new WaitForSeconds(duration - 0.2f);
@@ -535,6 +536,7 @@
             ManuallySetNJSOffset(Plugin.spawnController, originalNJS, originalSpawnOffset, originalBPM);
             ClearCallbackItemDataList(callBackDataList);
             DestroyNotes();
+            //   DestroyObjectsRaw();
             callbackController.SetNewBeatmapData(originalData);
             text.text = text.text.Replace(" RCTTS | ", "");
 
@@ -560,7 +562,7 @@
             Plugin.AudioTimeSync.SetPrivateField("_initData", newInitData);
             Plugin.AudioTimeSync.StartSong();
         }
-        
+
         public static void ManuallySetNJSOffset(BeatmapObjectSpawnController _spawnController, float njs, float offset, float bpm)
         {
             BeatmapObjectSpawnMovementData spawnMovementData =
@@ -585,8 +587,8 @@
             float centerDistTime = beatTime / 2f;
             float claimedCenterTime = 0f;
             Plugin.Log("Grabbed BeatmapData");
-    //        List<System.Tuple<NoteType, float>> noteTimes = new List<System.Tuple<NoteType, float>>();
-    //        List<float> doubleTimes = new List<float>();
+            //        List<System.Tuple<NoteType, float>> noteTimes = new List<System.Tuple<NoteType, float>>();
+            //        List<float> doubleTimes = new List<float>();
             Dictionary<System.Tuple<int, float, NoteType>, int> laneShifts = new Dictionary<System.Tuple<int, float, NoteType>, int>();
 
             List<BeatmapObjectData> objects = new List<BeatmapObjectData>();
@@ -749,7 +751,7 @@
                         }
                     }
 
-                    if(newIndex != -1413)
+                    if (newIndex != -1413)
                     {
                         note.SetProperty<NoteData>("lineIndex", newIndex);
                         note.SetProperty<NoteData>("flipLineIndex", newIndex);
@@ -764,7 +766,7 @@
         {
             return direction == NoteCutDirection.Up || direction == NoteCutDirection.UpLeft || direction == NoteCutDirection.UpRight;
         }
-  
+
         public static IEnumerator Reverse(float length)
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
@@ -1008,6 +1010,35 @@
                 catch (System.Exception ex)
                 {
                     Plugin.Log("Error Trying to Destroy notes: " + ex);
+                }
+            }
+        }
+
+        public static void DestroyObjectsRaw()
+        {
+            foreach (NoteController noteController in UnityEngine.Object.FindObjectsOfType<NoteController>())
+            {
+                try
+                {
+                    GameObject.Destroy(noteController.gameObject);
+
+                }
+                catch (System.Exception ex)
+                {
+                    Plugin.Log("Error Trying to Destroy objects: " + ex);
+                }
+            }
+            // Not good enough, exceptions form on anything referencing obstacles
+            foreach (ObstacleController obstacleController in UnityEngine.Object.FindObjectsOfType<ObstacleController>())
+            {
+                try
+                {
+                    GameObject.Destroy(obstacleController.gameObject);
+
+                }
+                catch (System.Exception ex)
+                {
+                    Plugin.Log("Error Trying to Destroy objects: " + ex);
                 }
             }
         }
