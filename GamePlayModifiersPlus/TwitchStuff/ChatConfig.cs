@@ -308,33 +308,36 @@
 
         public static void ChangeConfigValue(string property, string value)
         {
-            bool success = true;
+            bool success = false;
             string propertyLower = property.ToLower();
             Plugin.Log("Config Change Attempt: " + property + " " + value);
 
             object inifile = Plugin.ChatConfigSettings.GetField<object>("_instance");
             IniParser.Model.IniData data = inifile.GetField<IniParser.Model.IniData>("data");
+            
             foreach (var section in data.Sections)
             {
+                if (success) break;
                 foreach (var key in section.Keys)
                 {
                     if (key.KeyName.ToLower() == propertyLower && !data.Sections[section.SectionName].ContainsKey("ChargeCost"))
                     {
                         inifile.InvokeMethod("IniWriteValue", section.SectionName, property, value);
+                        Plugin.TryAsyncMessage("Changed Value");
+                        ChatConfig.Load();
+                        success = true;
                         break;
                     }
                 }
             }
 
-            Plugin.TryAsyncMessage("Changed Value");
-            ChatConfig.Load();
+
 
         }
 
         public static void ChangeConfigValue(string command, string property, string value)
         {
             Plugin.Log("Config Change Attempt: " + command + " " + property + " " + value);
-            bool success = true;
             object inifile = Plugin.ChatConfigSettings.GetField<object>("_instance");
             IniParser.Model.IniData data = inifile.GetField<IniParser.Model.IniData>("data");
             if (data.Sections.ContainsSection(command))
