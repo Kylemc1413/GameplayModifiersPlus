@@ -5,7 +5,7 @@
 - New command 'Tunnel' that puts the player into a tunnel for a period of time
 - New commands to rotate the map if 360 Chat Integration Capabilities are enabled
   - Left, Right, and RandomRotation Commands
- 
+ - New command 'RCTTS' to force your strimmer to play your favorite request!
 - UI Converted to BSML
 - Mapping Extensions related modifiers revamped to be more playable
 - A LOT of internal cleanup

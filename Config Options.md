@@ -61,7 +61,7 @@
 | Left   | Rotates the level 30 degrees to the left (If 360 Chat Integration Capabilities are enabled) |
 | Right   | Rotates the level 30 degrees to the right (If 360 Chat Integration Capabilities are enabled) |
 | RandomRotation   | Randomly sporadically rotates the level 30 degrees to the left/right for the duration (If 360 Chat Integration Capabilities are enabled) |
-
+| RCTTS | Force Reality Check Through the Skull to play for the duration (CoolDown cannot be lower than the duration) |
 ## Moderator Commands
 ### Reset Command
 - Moderators can use '!gm reset' to deactivate all non permament commands (Permanent ones being things like noarrows and pause), reset all active cooldowns, and reset charges to the charges per level, or 0 if that value is set to 0
