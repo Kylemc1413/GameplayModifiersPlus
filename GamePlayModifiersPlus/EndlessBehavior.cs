@@ -27,9 +27,11 @@ namespace GamePlayModifiersPlus
         private NoteCutSoundEffectManager seManager;
         private BeatmapDataLoader dataLoader = new BeatmapDataLoader();
 
+        private bool _allow360 = false;
         void Awake()
         {
             StartCoroutine(Setup());
+            _allow360 = Config.EndlessAllow360;
         }
         private IEnumerator Setup()
         {
@@ -231,7 +233,7 @@ namespace GamePlayModifiersPlus
             }
 
             //Add Option to allow 360 in endless mode that forces 360 UI and allows characteristics with rotation events
-            if (characteristic.containsRotationEvents && !Config.EndlessAllow360)
+            if (characteristic.containsRotationEvents && !_allow360)
             {
                 Plugin.Log("360 maps not enabled.");
                 return false;
