@@ -39,7 +39,7 @@ namespace GamePlayModifiersPlus
             progessController = Resources.FindObjectsOfTypeAll<SongProgressUIController>().First();
             // switchTime = 20f;
             switchTime = Plugin.songAudio.clip.length - 1f;
-            PrepareNextSong();
+            Task.Run(PrepareNextSong);
         }
         void Update()
         {
@@ -66,7 +66,7 @@ namespace GamePlayModifiersPlus
             callbackController.SetField("_spawningStartTime", 0f);
             callbackController.SetNewBeatmapData(nextBeatmap);
             ResetProgressUI();
-            PrepareNextSong();
+            Task.Run(PrepareNextSong);
         }
 
         private void ResetProgressUI()
@@ -90,6 +90,7 @@ namespace GamePlayModifiersPlus
 
             while(!validSong)
             {
+                await Task.Yield();
                 int nextSongIndex = UnityEngine.Random.Range(0, SongCore.Loader.CustomLevels.Count);
                 nextSongInfo = SongCore.Loader.CustomLevels.ElementAt(nextSongIndex).Value;
                 validSong = IsValid(nextSongInfo);
