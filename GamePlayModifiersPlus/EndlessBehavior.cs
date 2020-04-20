@@ -161,6 +161,7 @@ namespace GamePlayModifiersPlus
             //  Add To Config
             BeatmapDifficulty preferredDiff = Config.EndlessPrefDifficulty;
             BeatmapDifficulty minDiff = Config.EndlessMinDifficulty;
+            BeatmapDifficulty maxDiff = Config.EndlessMaxDifficulty;
 
             // Randomly Choose Characteristic?
             // BeatmapCharacteristicSO selectedCharacteristic = level.previewDifficultyBeatmapSets.First().beatmapCharacteristic;
@@ -185,7 +186,7 @@ namespace GamePlayModifiersPlus
                 foreach (var diff in set.difficultyBeatmaps)
                 {
                     BeatmapDifficulty difficulty = (BeatmapDifficulty)Enum.Parse(typeof(BeatmapDifficulty), diff.difficulty);
-                    if (!(difficulty >= minDiff)) continue;
+                    if (!(difficulty >= minDiff && difficulty <= maxDiff)) continue;
 
                     if (ValidateDifficulty(diff, extraData, selectedCharacteristic, difficulty))
                     {
