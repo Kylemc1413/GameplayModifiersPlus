@@ -204,6 +204,7 @@
             var asset = realityAudioBundle.LoadAssetAsync("RCTTS", typeof(AudioClip));
             yield return asset.isDone;
             TwitchPowers.RealityClip = (AudioClip)asset.asset;
+            realityAudioBundle.Unload(false);
         }
 
         public IEnumerator LoadWorkoutAudio()
@@ -212,6 +213,7 @@
             var asset = workoutAudio.LoadAssetAsync("Workout", typeof(AudioClip));
             yield return asset.isDone;
             TwitchPowers.WorkoutClip = (AudioClip)asset.asset;
+            workoutAudio.Unload(false);
         }
 
         public void OnSceneLoaded(Scene scene, LoadSceneMode arg1)
@@ -854,7 +856,7 @@
             //   Log($"hitBomb: {energyCounter.GetField("_hitBombEnergyDrain")}");
 
 
-            if (GMPUI.removeCrouchWalls || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.angleShift || GMPUI.laneShift || GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
+            if (GMPUI.EndlessMode || GMPUI.removeCrouchWalls || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.angleShift || GMPUI.laneShift || GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.oneColor || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
             {
                 //     ApplyPatches();
                 UnityEngine.Random.InitState(Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.beatmapData.notesCount);
@@ -910,6 +912,9 @@
                 Log("Tunnel Activating");
                 SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.PermaEncasement(0f));
             }
+
+            if (GMPUI.EndlessMode)
+                new GameObject("GMP Endless Behavior").AddComponent<EndlessBehavior>();
         }
 
 

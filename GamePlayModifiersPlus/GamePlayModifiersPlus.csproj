@@ -52,6 +52,9 @@
     <Reference Include="Colors">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\Colors.dll</HintPath>
     </Reference>
+    <Reference Include="CountersPlus">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\CountersPlus.dll</HintPath>
+    </Reference>
     <Reference Include="HMLib">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\HMLib.dll</HintPath>
     </Reference>
@@ -153,6 +156,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EndlessBehavior.cs" />
     <Compile Include="Harmony Patches\BeatmapDataspawnRotationEventsCountGet.cs" />
     <Compile Include="Harmony Patches\ResultsViewControllerDidActivate.cs" />
     <Compile Include="Harmony Patches\StandardLevelDetailViewRefreshContent.cs" />

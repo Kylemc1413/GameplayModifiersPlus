@@ -16,6 +16,8 @@
         public static bool oneColor = false;
         public static bool disableFireworks = false;
         public static bool disableSubmission = false;
+
+        public static bool EndlessMode = true;
      //   public static bool disableRipple = false;
 
 
