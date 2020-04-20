@@ -24,7 +24,7 @@
     [Plugin(RuntimeOptions.SingleStartInit)]
     public class Plugin
     {
-        internal static BS_Utils.Utilities.Config ChatConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
+        internal static BS_Utils.Utilities.Config ConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         internal static IPA.Logging.Logger log;
 
         internal static bool mappingExtensionsPresent = false;
@@ -129,7 +129,7 @@
             harmony = new Harmony("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
             ApplyPatches();
             CheckPlugins();
-            ChatConfig.Load();
+            Config.Load();
             ReadPrefs();
             //Delete old config if it exists
             if (File.Exists(Path.Combine(Environment.CurrentDirectory, "UserData\\GamePlayModifiersPlusChatSettings.ini")))
@@ -345,7 +345,7 @@
                     TwitchPowers.ResetPowers(false);
                     twitchPowers.StopAllCoroutines();
                 }
-                if (ChatConfig.resetChargesEachLevel)
+                if (Config.resetChargesEachLevel)
                     charges = 0;
 
 
@@ -396,7 +396,7 @@
                 //   Log("Post GrabGrab 3");
 
                 chatPowers.AddComponent<GMPDisplay>();
-                if (GMPUI.chatIntegration && ChatConfig.timeForCharges > 0 && twitchPluginInstalled)
+                if (GMPUI.chatIntegration && Config.timeForCharges > 0 && twitchPluginInstalled)
                     twitchPowers.StartCoroutine(TwitchPowers.ChargeOverTime());
                 //   Log("Post GrabGrab 4");
 
@@ -405,11 +405,11 @@
                 //      Log("Pre ChatInt");
 
                 //      Log(colorA.color.ToString());
-                if (GMPUI.chatIntegration && charges <= ChatConfig.maxCharges && twitchPluginInstalled)
+                if (GMPUI.chatIntegration && charges <= Config.maxCharges && twitchPluginInstalled)
                 {
-                    charges += ChatConfig.chargesPerLevel;
-                    if (charges > ChatConfig.maxCharges)
-                        charges = ChatConfig.maxCharges;
+                    charges += Config.chargesPerLevel;
+                    if (charges > Config.maxCharges)
+                        charges = Config.maxCharges;
                     //          TryAsyncMessage("Current Charges: " + charges);
                 }
 
@@ -553,7 +553,7 @@
             {
                 if (superRandom)
                 {
-                    noteTransform.localScale *= UnityEngine.Random.Range(ChatConfig.randomMin, ChatConfig.randomMax);
+                    noteTransform.localScale *= UnityEngine.Random.Range(Config.randomMin, Config.randomMax);
 
                 }
                 else
@@ -566,7 +566,7 @@
 
                     if (GMPUI.randomSize)
                     {
-                        noteTransform.localScale *= UnityEngine.Random.Range(ChatConfig.randomMin, ChatConfig.randomMax);
+                        noteTransform.localScale *= UnityEngine.Random.Range(Config.randomMin, Config.randomMax);
 
                     }
                 }
@@ -651,7 +651,7 @@
 
         public void ReadPrefs()
         {
-            ChatConfig.Load();
+            Config.Load();
             //  GMPUI.gnomeOnMiss = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.gnomeOnMiss", false, true);
             //   GMPUI.superHot = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.superHot", false, true);
             //   GMPUI.bulletTime = ModPrefs.GetBool("GameplayModifiersPlus", "GMPUI.bulletTime", false, true);

@@ -32,11 +32,11 @@ namespace GamePlayModifiersPlus.TwitchStuff
                 Plugin.twitchCommands.CheckStatusCommands(message);
                 Plugin.twitchCommands.CheckInfoCommands(message);
 
-                if (ChatConfig.allowEveryone || (ChatConfig.allowSubs && (twitchMessage?.Sender as TwitchUser).IsSubscriber) || (twitchMessage?.Sender).IsModerator)
+                if (Config.allowEveryone || (Config.allowSubs && (twitchMessage?.Sender as TwitchUser).IsSubscriber) || (twitchMessage?.Sender).IsModerator)
                 {
                     if (GMPUI.chatIntegration && Plugin.isValidScene && !Plugin.cooldowns.GetCooldown("Global") && Plugin.twitchPluginInstalled)
                     {
-                        Plugin.commandsLeftForMessage = ChatConfig.commandsPerMessage;
+                        Plugin.commandsLeftForMessage = Config.commandsPerMessage;
                         Plugin.twitchCommands.CheckMapSwapCommands(message);
                         Plugin.twitchCommands.CheckRotationCommands(message);
                         Plugin.twitchCommands.CheckSpeedCommands(message);

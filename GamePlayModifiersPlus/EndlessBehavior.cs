@@ -159,8 +159,8 @@ namespace GamePlayModifiersPlus
                 return false;
             }
             //  Add To Config
-            BeatmapDifficulty preferredDiff = BeatmapDifficulty.ExpertPlus;
-            BeatmapDifficulty minDiff = BeatmapDifficulty.Expert;
+            BeatmapDifficulty preferredDiff = Config.EndlessPrefDifficulty;
+            BeatmapDifficulty minDiff = Config.EndlessMinDifficulty;
 
             // Randomly Choose Characteristic?
             // BeatmapCharacteristicSO selectedCharacteristic = level.previewDifficultyBeatmapSets.First().beatmapCharacteristic;
@@ -208,8 +208,11 @@ namespace GamePlayModifiersPlus
                 foreach (string req in requirements)
                 {
                     //Make sure requirement is actually present
-                    if (!SongCore.Collections.capabilities.Contains(req)) return false;
-
+                    if (!SongCore.Collections.capabilities.Contains(req))
+                    {
+                        Plugin.Log($"Missing difficulty requirement {req}");
+                        return false;
+                    }
                     switch (req)
                     {
                         case "MappingExtensions":
@@ -218,16 +221,16 @@ namespace GamePlayModifiersPlus
 
                         //Don't allow difficulties with requirements that we aren't sure how to handle to be played
                         default:
-                            Plugin.Log("Unsure how to handle difficulty requirement.");
+                            Plugin.Log($"Unsure how to handle difficulty requirement {req}");
                             return false;
                     }
                 }
             }
 
             //Add Option to allow 360 in endless mode that forces 360 UI and allows characteristics with rotation events
-            if (characteristic.containsRotationEvents)
+            if (characteristic.containsRotationEvents && !Config.EndlessAllow360)
             {
-                Plugin.Log("360 map");
+                Plugin.Log("360 maps not enabled.");
                 return false;
             }
             return true;

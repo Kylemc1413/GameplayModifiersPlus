@@ -12,9 +12,9 @@
     {
         public static IEnumerator ChargeOverTime()
         {
-            yield return new WaitForSeconds(ChatConfig.timeForCharges);
-            Plugin.charges += ChatConfig.chargesOverTime;
-            if (Plugin.charges > ChatConfig.maxCharges) Plugin.charges = ChatConfig.maxCharges;
+            yield return new WaitForSeconds(Config.timeForCharges);
+            Plugin.charges += Config.chargesOverTime;
+            if (Plugin.charges > Config.maxCharges) Plugin.charges = Config.maxCharges;
             Plugin.twitchPowers.StartCoroutine(ChargeOverTime());
         }
 
@@ -37,11 +37,11 @@
             Plugin.cooldowns.SetCooldown(true, cooldown);
             if (!string.IsNullOrWhiteSpace(message))
             {
-                if (ChatConfig.showCooldownOnMessage)
+                if (Config.showCooldownOnMessage)
                 {
-                    if (ChatConfig.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
+                    if (Config.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
                     {
-                        Plugin.TryAsyncMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + ChatConfig.globalCommandCooldown + " seconds.");
+                        Plugin.TryAsyncMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + Config.globalCommandCooldown + " seconds.");
                     }
                     else
                         Plugin.TryAsyncMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
@@ -62,7 +62,7 @@
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
 
             Plugin.cooldowns.SetCooldown(true, "Global");
-            yield return new WaitForSeconds(ChatConfig.globalCommandCooldown);
+            yield return new WaitForSeconds(Config.globalCommandCooldown);
             Plugin.cooldowns.SetCooldown(false, "Global");
             text.text = text.text.Replace(" " + "Global" + " | ", "");
         }
@@ -325,12 +325,12 @@
             }
             float njs = Plugin.songNJS;
             if (GMPUI.njsRandom)
-                njs = UnityEngine.Random.Range(ChatConfig.njsRandomMin, ChatConfig.njsRandomMax);
+                njs = UnityEngine.Random.Range(Config.njsRandomMin, Config.njsRandomMax);
             if (GMPUI.reverse)
                 njs *= -1;
             float noteJumpStartBeatOffset = Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpStartBeatOffset;
             if (GMPUI.offsetrandom)
-                noteJumpStartBeatOffset += UnityEngine.Random.Range((float)ChatConfig.offsetrandomMin, (float)ChatConfig.offsetrandomMax);
+                noteJumpStartBeatOffset += UnityEngine.Random.Range((float)Config.offsetrandomMin, (float)Config.offsetrandomMax);
 
 
             float bpm = Plugin.spawnController.GetPrivateField<VariableBPMProcessor>("_variableBPMProcessor").currentBPM;
@@ -414,13 +414,13 @@
                                 //                        Plugin.Log("Attempting to Convert to Bomb");
                                 note = beatmapObject as NoteData;
 
-                                int randMax = (int)((1 / ChatConfig.bombsChance) * 100);
+                                int randMax = (int)((1 / Config.bombsChance) * 100);
                                 int randMin = 100;
                                 int random = Random.Range(1, randMax);
 
                                 //                Plugin.Log("Min: " + randMin + " Max: " + randMax + " Number: " + random);
 
-                                if (random <= randMin || ChatConfig.bombsChance == 1)
+                                if (random <= randMin || Config.bombsChance == 1)
                                     note.SetProperty<NoteData>("noteType", NoteType.Bomb);
                             }
                             catch (System.Exception ex)
@@ -504,7 +504,7 @@
             }
 
 
-            StartCoroutine(SwitchMap(realityCheckData, RealityClip, 260f, 0f, 17f, 0f, duration, ChatConfig.rcttsRandomizeStart));
+            StartCoroutine(SwitchMap(realityCheckData, RealityClip, 260f, 0f, 17f, 0f, duration, Config.rcttsRandomizeStart));
             yield return new WaitForSeconds(duration);
             text.text = text.text.Replace(" RCTTS | ", "");
         }
