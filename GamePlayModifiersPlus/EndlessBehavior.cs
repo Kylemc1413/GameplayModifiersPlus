@@ -105,22 +105,32 @@ namespace GamePlayModifiersPlus
 
         private bool IsValid(CustomPreviewBeatmapLevel level)
         {
-            bool result = true;
-            var extraData = SongCore.Collections.RetrieveExtraSongData(level.levelID);
+            var extraData = SongCore.Collections.RetrieveExtraSongData(level.levelID, level.customLevelPath);
             if (extraData == null)
-                result = false;
+            {
+                Plugin.Log("Null Extra Data");
+                return false;
+            }
+ 
             List<string> requirements = new List<string>();
 
             foreach (var diff in extraData._difficulties)
                 requirements.AddRange(diff.additionalDifficultyData._requirements);
 
             if (requirements.Any(x => !SongCore.Collections.capabilities.Contains(x)))
-                result = false;
+            {
+                Plugin.Log("Missing Req");
+                return false;
+            }
 
             if (level.previewDifficultyBeatmapSets.Any(x => x.beatmapCharacteristic.containsRotationEvents))
-                result = false;
+            {
+                Plugin.Log("360 map");
+                return false;
+            }
 
-            return result;
+
+            return true;
         }
 
 
