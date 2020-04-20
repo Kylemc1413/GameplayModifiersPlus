@@ -71,6 +71,7 @@ namespace GamePlayModifiersPlus
             ResetProgressUI();
             UpdatePauseMenu();
             ClearSoundEffects();
+            CheckIntroSkip();
             //Destroying audio clip is actually bad idea
             //   IPA.Utilities.Async.UnityMainThreadTaskScheduler.Factory.StartNew(() => { oldClip.UnloadAudioData(); AudioClip.Destroy(oldClip); });
             IPA.Utilities.Async.UnityMainThreadTaskScheduler.Factory.StartNew(PrepareNextSong);
@@ -100,6 +101,22 @@ namespace GamePlayModifiersPlus
         private void ResetCountersPlusCounter(GameObject counter)
         {
             counter.GetComponent<CountersPlus.Counters.ProgressCounter>().SetField("length", nextSong.length);
+        }
+
+        private void CheckIntroSkip()
+        {
+            var skip = GameObject.Find("IntroSkip Behavior");
+            if (skip != null)
+                ResetIntroSkip(skip);
+        }
+
+        private void ResetIntroSkip(GameObject skip)
+        {
+            bool practice = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.practiceSettings != null;
+            if (practice || BS_Utils.Gameplay.Gamemode.IsIsolatedLevel) return;
+
+            var skipBehavior = skip.GetComponent<IntroSkip.SkipBehavior>();
+            skipBehavior.StartCoroutine(skipBehavior.ReadMap());
         }
         private async Task PrepareNextSong()
         {

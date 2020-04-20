@@ -67,6 +67,9 @@
     <Reference Include="INIFileParser">
       <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\INIFileParser.dll</HintPath>
     </Reference>
+    <Reference Include="IntroSkip">
+      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Beat Saber\Plugins\IntroSkip.dll</HintPath>
+    </Reference>
     <Reference Include="IPA.Injector">
       <HintPath>..\..\..\..\..\..\..\..\..\Programs\Steam\steamapps\common\Beat Saber\Beat Saber_Data\Managed\IPA.Injector.dll</HintPath>
     </Reference>
