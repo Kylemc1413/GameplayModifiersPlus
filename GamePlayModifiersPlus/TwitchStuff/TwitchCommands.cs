@@ -18,7 +18,7 @@
                 {
                     Plugin.beepSound.Play();
                     Plugin.twitchPowers.StartCoroutine(TwitchPowers.Pause());
-                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.pauseGlobalCooldown, "Global", "Game Paused :)"));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.pauseGlobalCooldown, "Global", "Game Paused 🙂"));
                     Plugin.charges -= ChatConfig.pauseChargeCost;
                     Plugin.commandsLeftForMessage = 0;
                 }
@@ -603,7 +603,7 @@
                 if (Plugin.charges >= ChatConfig.rcttsChargeCost)
                 {
                     Plugin.twitchPowers.StartCoroutine(Plugin.twitchPowers.RealityCheck(Mathf.Min(ChatConfig.rcttsDuration, TwitchPowers.RealityClip.length - 1f)));
-                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rcttsCooldown, "Map Swap", "Strimmer play Reality Check :) "));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(ChatConfig.rcttsCooldown, "Map Swap", "Strimmer play Reality Check 🙂 "));
                     Plugin.charges -= ChatConfig.rcttsChargeCost;
                     Plugin.commandsLeftForMessage -= 1;
                     globalActive = true;
