@@ -170,12 +170,22 @@ namespace GamePlayModifiersPlus
             foreach (var set in level.standardLevelInfoSaveData.difficultyBeatmapSets)
             {
                 if (set.beatmapCharacteristicName != selectedCharacteristic.serializedName) continue;
+
                 foreach (var diff in set.difficultyBeatmaps)
                 {
                     BeatmapDifficulty difficulty = (BeatmapDifficulty)Enum.Parse(typeof(BeatmapDifficulty), diff.difficulty);
-                    if (!(difficulty == preferredDiff))
-                        if (!(difficulty >= minDiff))
-                            continue;
+                    if (!(difficulty == preferredDiff)) continue;
+
+                    if (ValidateDifficulty(diff, extraData, selectedCharacteristic, difficulty))
+                    {
+                        nextDiff = diff;
+                        return true;
+                    }
+                }
+                foreach (var diff in set.difficultyBeatmaps)
+                {
+                    BeatmapDifficulty difficulty = (BeatmapDifficulty)Enum.Parse(typeof(BeatmapDifficulty), diff.difficulty);
+                    if (!(difficulty >= minDiff)) continue;
 
                     if (ValidateDifficulty(diff, extraData, selectedCharacteristic, difficulty))
                     {
