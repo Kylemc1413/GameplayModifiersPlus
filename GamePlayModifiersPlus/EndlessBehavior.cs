@@ -41,7 +41,7 @@ namespace GamePlayModifiersPlus
             pauseManager = Resources.FindObjectsOfTypeAll<PauseMenuManager>().First();
             // switchTime = 20f;
             switchTime = Plugin.songAudio.clip.length - 1f;
-            Task.Run(PrepareNextSong);
+            IPA.Utilities.Async.UnityMainThreadTaskScheduler.Factory.StartNew(PrepareNextSong);
         }
         void Update()
         {
@@ -70,11 +70,16 @@ namespace GamePlayModifiersPlus
             callbackController.SetNewBeatmapData(nextBeatmap);
             ResetProgressUI();
             UpdatePauseMenu();
+            ClearSoundEffects();
             //Destroying audio clip is actually bad idea
             //   IPA.Utilities.Async.UnityMainThreadTaskScheduler.Factory.StartNew(() => { oldClip.UnloadAudioData(); AudioClip.Destroy(oldClip); });
-            Task.Run(PrepareNextSong);
+            IPA.Utilities.Async.UnityMainThreadTaskScheduler.Factory.StartNew(PrepareNextSong);
         }
 
+        private void ClearSoundEffects()
+        {
+            seManager.GetField<NoteCutSoundEffect.Pool>("_noteCutSoundEffectPool").Clear();
+        }
         private void ResetProgressUI()
         {
             progessController.Start();
@@ -98,25 +103,32 @@ namespace GamePlayModifiersPlus
         }
         private async Task PrepareNextSong()
         {
-            bool validSong = false;
-
-            while(!validSong)
+            try
             {
-                await Task.Yield();
-                int nextSongIndex = UnityEngine.Random.Range(0, SongCore.Loader.CustomLevels.Count);
-                nextSongInfo = SongCore.Loader.CustomLevels.ElementAt(nextSongIndex).Value;
-                validSong = IsValid(nextSongInfo);
+                bool validSong = false;
+
+                while (!validSong)
+                {
+                    await Task.Yield();
+                    int nextSongIndex = UnityEngine.Random.Range(0, SongCore.Loader.CustomLevels.Count);
+                    nextSongInfo = SongCore.Loader.CustomLevels.ElementAt(nextSongIndex).Value;
+                    validSong = IsValid(nextSongInfo);
+                }
+
+                nextMapDiffInfo = nextSongInfo.standardLevelInfoSaveData.difficultyBeatmapSets[0].difficultyBeatmaps.Last();
+                nextSong = await nextSongInfo.GetPreviewAudioClipAsync(CancellationTokenSource.Token);
+                //   bool loaded;
+                //  await Task.Run(() => loaded = nextSong.LoadAudioData());
+
+                string path = Path.Combine(nextSongInfo.customLevelPath, nextMapDiffInfo.beatmapFilename);
+                string json = File.ReadAllText(path);
+                nextBeatmap = dataLoader.GetBeatmapDataFromJson(json, nextSongInfo.beatsPerMinute, nextSongInfo.shuffle, nextSongInfo.shufflePeriod);
+                Plugin.Log($"Next Song: {nextSongInfo.songName} - Mapped by {nextSongInfo.levelAuthorName}, is Ready");
             }
-
-            nextMapDiffInfo = nextSongInfo.standardLevelInfoSaveData.difficultyBeatmapSets[0].difficultyBeatmaps.Last();
-            nextSong = await nextSongInfo.GetPreviewAudioClipAsync(CancellationTokenSource.Token);
-            bool loaded;
-            await Task.Run(() => loaded = nextSong.LoadAudioData());
-
-            string path = Path.Combine(nextSongInfo.customLevelPath, nextMapDiffInfo.beatmapFilename);
-            string json = File.ReadAllText(path);
-            nextBeatmap = dataLoader.GetBeatmapDataFromJson(json, nextSongInfo.beatsPerMinute, nextSongInfo.shuffle, nextSongInfo.shufflePeriod);
-            Plugin.Log($"Next Song: {nextSongInfo.songName} - Mapped by {nextSongInfo.levelAuthorName}, is Ready");
+            catch (Exception ex)
+            {
+                Plugin.Log(ex.ToString());
+            }
         }
 
         private bool IsValid(CustomPreviewBeatmapLevel level)
@@ -127,7 +139,7 @@ namespace GamePlayModifiersPlus
                 Plugin.Log("Null Extra Data");
                 return false;
             }
- 
+
             List<string> requirements = new List<string>();
 
             foreach (var diff in extraData._difficulties)
