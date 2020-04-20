@@ -55,6 +55,7 @@ namespace GamePlayModifiersPlus
 
         private void SwitchToNextMap()
         {
+            if (nextSong == null || nextBeatmap == null || nextMapDiffInfo == null) return;
             if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.staticLights)
                 nextBeatmap.SetProperty<BeatmapData>("beatmapEventData", new BeatmapEventData[0]);
 
@@ -127,9 +128,9 @@ namespace GamePlayModifiersPlus
                 while (!validSong)
                 {
                     await Task.Yield();
-                    int nextSongIndex = UnityEngine.Random.Range(0, SongCore.Loader.CustomLevels.Count);
+                    int nextSongIndex = UnityEngine.Random.Range(0, SongCore.Loader.CustomLevels.Count - 1);
                     nextSongInfo = SongCore.Loader.CustomLevels.ElementAt(nextSongIndex).Value;
-                    validSong = IsValid(nextSongInfo);
+                    validSong = IsValid(nextSongInfo, out nextMapDiffInfo);
                 }
 
                 nextMapDiffInfo = nextSongInfo.standardLevelInfoSaveData.difficultyBeatmapSets[0].difficultyBeatmaps.Last();
@@ -148,36 +149,79 @@ namespace GamePlayModifiersPlus
             }
         }
 
-        private bool IsValid(CustomPreviewBeatmapLevel level)
+        private bool IsValid(CustomPreviewBeatmapLevel level, out StandardLevelInfoSaveData.DifficultyBeatmap nextDiff)
         {
+            nextDiff = null;
             var extraData = SongCore.Collections.RetrieveExtraSongData(level.levelID, level.customLevelPath);
             if (extraData == null)
             {
                 Plugin.Log("Null Extra Data");
                 return false;
             }
+            //  Add To Config
+            BeatmapDifficulty preferredDiff = BeatmapDifficulty.ExpertPlus;
+            BeatmapDifficulty minDiff = BeatmapDifficulty.Expert;
 
-            List<string> requirements = new List<string>();
+            // Randomly Choose Characteristic?
+            // BeatmapCharacteristicSO selectedCharacteristic = level.previewDifficultyBeatmapSets.First().beatmapCharacteristic;
+            BeatmapCharacteristicSO selectedCharacteristic = level.previewDifficultyBeatmapSets[
+                UnityEngine.Random.Range(0, level.previewDifficultyBeatmapSets.Length - 1)].beatmapCharacteristic;
 
-            foreach (var diff in extraData._difficulties)
-                requirements.AddRange(diff.additionalDifficultyData._requirements);
-
-            if (requirements.Count > 0) //(x => !SongCore.Collections.capabilities.Contains(x)))
+            foreach (var set in level.standardLevelInfoSaveData.difficultyBeatmapSets)
             {
-                Plugin.Log("Req Present");
-                return false;
+                if (set.beatmapCharacteristicName != selectedCharacteristic.serializedName) continue;
+                foreach (var diff in set.difficultyBeatmaps)
+                {
+                    BeatmapDifficulty difficulty = (BeatmapDifficulty)Enum.Parse(typeof(BeatmapDifficulty), diff.difficulty);
+                    if (!(difficulty == preferredDiff))
+                        if (!(difficulty >= minDiff))
+                            continue;
+
+                    if (ValidateDifficulty(diff, extraData, selectedCharacteristic, difficulty))
+                    {
+                        nextDiff = diff;
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        private bool ValidateDifficulty(StandardLevelInfoSaveData.DifficultyBeatmap diffBeatmap, SongCore.Data.ExtraSongData data, BeatmapCharacteristicSO characteristic, BeatmapDifficulty beatmapDifficulty)
+        {
+            var diffData = data._difficulties.FirstOrDefault(x => x._beatmapCharacteristicName == characteristic.serializedName && x._difficulty == beatmapDifficulty);
+            if (diffData == null) return false;
+
+            var requirements = diffData.additionalDifficultyData._requirements;
+
+            if (requirements.Length > 0)
+            {
+                foreach (string req in requirements)
+                {
+                    //Make sure requirement is actually present
+                    if (!SongCore.Collections.capabilities.Contains(req)) return false;
+
+                    switch (req)
+                    {
+                        case "MappingExtensions":
+                            MappingExtensions.Plugin.ForceActivateForSong();
+                            break;
+
+                        //Don't allow difficulties with requirements that we aren't sure how to handle to be played
+                        default:
+                            Plugin.Log("Unsure how to handle difficulty requirement.");
+                            return false;
+                    }
+                }
             }
 
-            if (level.previewDifficultyBeatmapSets.Any(x => x.beatmapCharacteristic.containsRotationEvents))
+            //Add Option to allow 360 in endless mode that forces 360 UI and allows characteristics with rotation events
+            if (characteristic.containsRotationEvents)
             {
                 Plugin.Log("360 map");
                 return false;
             }
-
-
             return true;
         }
-
 
     }
 }
