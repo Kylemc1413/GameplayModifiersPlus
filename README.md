@@ -8,9 +8,16 @@
 # Standard Usage
 - ### Modifiers can be found in the GameplayModifiersPlus tab of the Mods section of the Gameplay Setup Panel when selecting songs
 - ### Most modifiers will disable score submission, and because of this default to off when the game is started
+- ### Endless Mode
+    - Can be enabled with the other modifiers
+    - Disables Score Submission
+    - Randomly continues with a new song as the end of a song approaches
+    - Can set the preferred/minimum/maximum difficulties to randomly select in the 'Endless' section of the config
+## Configuration
+  - Settings for Chat Integration and other parts of GameplayModifiersPlus can be found in 'UserData/GameplayModifiersPlus.ini' which will be generated after loading the game to the main menu with the mod installed correctly
 # Chat Integration
 - ## Make sure to edit the TwitchLoginInfo.ini located in the UserData/StreamCore folder, which can be found in your game installation folder, in the same directory as your game executable, if it does not exist, make sure you have StreamCore installed through the mod installer, and run the game to the main menu, then close the game.
-- ## GamePlayModifiersPlusChatSettings.ini will be genereated in the UserData folder after running the game with the plugin installed
+- ## GameplayModifiersPlus.ini will be generated in the UserData folder after running the game with the plugin installed
 ##### StreamCore Setup Guide
 - Example StreamCore Config
 ![StreamCore Config Image](https://imgur.com/a/r34mRMz)
