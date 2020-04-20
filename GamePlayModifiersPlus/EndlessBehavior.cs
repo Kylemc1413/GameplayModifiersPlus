@@ -133,7 +133,7 @@ namespace GamePlayModifiersPlus
                     validSong = IsValid(nextSongInfo, out nextMapDiffInfo);
                 }
 
-                nextMapDiffInfo = nextSongInfo.standardLevelInfoSaveData.difficultyBeatmapSets[0].difficultyBeatmaps.Last();
+                if (nextMapDiffInfo == null) return;
                 nextSong = await nextSongInfo.GetPreviewAudioClipAsync(CancellationTokenSource.Token);
                 //   bool loaded;
                 //  await Task.Run(() => loaded = nextSong.LoadAudioData());
@@ -175,18 +175,20 @@ namespace GamePlayModifiersPlus
                 foreach (var diff in set.difficultyBeatmaps)
                 {
                     BeatmapDifficulty difficulty = (BeatmapDifficulty)Enum.Parse(typeof(BeatmapDifficulty), diff.difficulty);
-                    if (!(difficulty == preferredDiff)) continue;
-
-                    if (ValidateDifficulty(diff, extraData, selectedCharacteristic, difficulty))
+                    if ((difficulty == preferredDiff))
                     {
-                        nextDiff = diff;
-                        return true;
+                        if (ValidateDifficulty(diff, extraData, selectedCharacteristic, difficulty))
+                        {
+                            nextDiff = diff;
+                            return true;
+                        }
                     }
+
                 }
                 foreach (var diff in set.difficultyBeatmaps)
                 {
                     BeatmapDifficulty difficulty = (BeatmapDifficulty)Enum.Parse(typeof(BeatmapDifficulty), diff.difficulty);
-                    if (!(difficulty >= minDiff && difficulty <= maxDiff)) continue;
+                    if ((int)difficulty <= (int)minDiff || (int)difficulty >= (int)maxDiff) continue;
 
                     if (ValidateDifficulty(diff, extraData, selectedCharacteristic, difficulty))
                     {
