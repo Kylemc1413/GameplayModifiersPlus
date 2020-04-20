@@ -43,7 +43,7 @@ namespace GamePlayModifiersPlus
         }
         void Update()
         {
-            if (Plugin.songAudio.time >= switchTime)
+            if (Plugin.songAudio.time >= switchTime && nextSong != null)
             {
                 //   switchTime = 20f;
                 switchTime = nextSong.length - 1f;
