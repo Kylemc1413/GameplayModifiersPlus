@@ -1,7 +1,10 @@
 #### Github: https://github.com/Kylemc1413/GameplayModifiersPlus/
 
 #### Changelog for version 1.15.0
- ##### General
+##### Endless Mode
+- New Endless mode modifier
+  - Randomly continues a new song as the end of a song approaches based on the preferred, min, and max difficulties set in the config
+##### General
 - Updated for Beat Saber 1.9.0
 - UI Converted to BSML
 - Mapping Extensions related modifiers revamped to be more playable
