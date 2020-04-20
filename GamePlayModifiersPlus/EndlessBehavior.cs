@@ -45,7 +45,7 @@ namespace GamePlayModifiersPlus
         {
             if (Plugin.songAudio.time >= switchTime)
             {
-             //   switchTime = 20f;
+                //   switchTime = 20f;
                 switchTime = nextSong.length - 1f;
                 SwitchToNextMap();
             }
@@ -59,7 +59,7 @@ namespace GamePlayModifiersPlus
             TwitchPowers.ResetTimeSync(nextSong, 0f, nextSongInfo.songTimeOffset, 1f);
             TwitchPowers.ManuallySetNJSOffset(Plugin.spawnController, nextMapDiffInfo.noteJumpMovementSpeed,
                 nextMapDiffInfo.noteJumpStartBeatOffset, nextSongInfo.beatsPerMinute);
-        //    TwitchPowers.ClearCallbackItemDataList(callBackDataList);
+            //    TwitchPowers.ClearCallbackItemDataList(callBackDataList);
             // DestroyNotes();
             TwitchPowers.DestroyObjectsRaw();
             TwitchPowers.ResetNoteCutSoundEffects(seManager);
@@ -68,12 +68,12 @@ namespace GamePlayModifiersPlus
             ResetProgressUI();
             PrepareNextSong();
         }
-        
+
         private void ResetProgressUI()
         {
             progessController.Start();
             var cPlusCounter = GameObject.Find("Counters+ | Progress Counter");
-            if(cPlusCounter != null)
+            if (cPlusCounter != null)
             {
                 ResetCountersPlusCounter(cPlusCounter);
             }
@@ -86,13 +86,42 @@ namespace GamePlayModifiersPlus
         }
         private async Task PrepareNextSong()
         {
-            int nextSongIndex = UnityEngine.Random.Range(0, SongCore.Loader.CustomLevels.Count);
-            nextSongInfo = SongCore.Loader.CustomLevels.ElementAt(nextSongIndex).Value;
-            nextSong = await nextSongInfo.GetPreviewAudioClipAsync(CancellationTokenSource.Token);
+            bool validSong = false;
+
+            while(!validSong)
+            {
+                int nextSongIndex = UnityEngine.Random.Range(0, SongCore.Loader.CustomLevels.Count);
+                nextSongInfo = SongCore.Loader.CustomLevels.ElementAt(nextSongIndex).Value;
+                validSong = IsValid(nextSongInfo);
+            }
+
             nextMapDiffInfo = nextSongInfo.standardLevelInfoSaveData.difficultyBeatmapSets[0].difficultyBeatmaps.Last();
+            nextSong = await nextSongInfo.GetPreviewAudioClipAsync(CancellationTokenSource.Token);
             string path = Path.Combine(nextSongInfo.customLevelPath, nextMapDiffInfo.beatmapFilename);
             string json = File.ReadAllText(path);
             nextBeatmap = dataLoader.GetBeatmapDataFromJson(json, nextSongInfo.beatsPerMinute, nextSongInfo.shuffle, nextSongInfo.shufflePeriod);
         }
+
+        private bool IsValid(CustomPreviewBeatmapLevel level)
+        {
+            bool result = true;
+            var extraData = SongCore.Collections.RetrieveExtraSongData(level.levelID);
+            if (extraData == null)
+                result = false;
+            List<string> requirements = new List<string>();
+
+            foreach (var diff in extraData._difficulties)
+                requirements.AddRange(diff.additionalDifficultyData._requirements);
+
+            if (requirements.Any(x => !SongCore.Collections.capabilities.Contains(x)))
+                result = false;
+
+            if (level.previewDifficultyBeatmapSets.Any(x => x.beatmapCharacteristic.containsRotationEvents))
+                result = false;
+
+            return result;
+        }
+
+
     }
 }
