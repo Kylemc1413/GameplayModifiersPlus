@@ -168,7 +168,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="TwitchStuff\ChatConfig.cs" />
+    <Compile Include="TwitchStuff\Config.cs" />
     <Compile Include="Cooldowns.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
