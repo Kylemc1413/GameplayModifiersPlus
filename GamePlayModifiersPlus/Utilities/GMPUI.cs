@@ -17,8 +17,23 @@
         public static bool disableFireworks = false;
         public static bool disableSubmission = false;
 
-        public static bool EndlessMode = true;
-     //   public static bool disableRipple = false;
+        public static bool EndlessMode = false;
+        [UIValue("Endless")]
+        public bool Endless
+        {
+            get => EndlessMode;
+            set
+            {
+                EndlessMode = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIAction("SetEndless")]
+        public void SetEndless(bool value)
+        {
+            Endless = value;
+        }
+        //   public static bool disableRipple = false;
 
 
         [UIComponent("modifiers")]

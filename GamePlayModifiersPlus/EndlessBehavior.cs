@@ -19,6 +19,7 @@ namespace GamePlayModifiersPlus
         private BeatmapData nextBeatmap;
         private CustomPreviewBeatmapLevel nextSongInfo;
         private StandardLevelInfoSaveData.DifficultyBeatmap nextMapDiffInfo;
+        private PauseMenuManager pauseManager;
         private float switchTime = float.MaxValue;
 
         private BeatmapObjectCallbackController callbackController;
@@ -37,6 +38,7 @@ namespace GamePlayModifiersPlus
             originalSpawnMovementData = Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
             seManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().First();
             progessController = Resources.FindObjectsOfTypeAll<SongProgressUIController>().First();
+            pauseManager = Resources.FindObjectsOfTypeAll<PauseMenuManager>().First();
             // switchTime = 20f;
             switchTime = Plugin.songAudio.clip.length - 1f;
             Task.Run(PrepareNextSong);
@@ -56,6 +58,7 @@ namespace GamePlayModifiersPlus
             if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.staticLights)
                 nextBeatmap.SetProperty<BeatmapData>("beatmapEventData", new BeatmapEventData[0]);
 
+            AudioClip oldClip = Plugin.songAudio.clip;
             TwitchPowers.ResetTimeSync(nextSong, 0f, nextSongInfo.songTimeOffset, 1f);
             TwitchPowers.ManuallySetNJSOffset(Plugin.spawnController, nextMapDiffInfo.noteJumpMovementSpeed,
                 nextMapDiffInfo.noteJumpStartBeatOffset, nextSongInfo.beatsPerMinute);
@@ -66,6 +69,9 @@ namespace GamePlayModifiersPlus
             callbackController.SetField("_spawningStartTime", 0f);
             callbackController.SetNewBeatmapData(nextBeatmap);
             ResetProgressUI();
+            UpdatePauseMenu();
+            //Destroying audio clip is actually bad idea
+            //   IPA.Utilities.Async.UnityMainThreadTaskScheduler.Factory.StartNew(() => { oldClip.UnloadAudioData(); AudioClip.Destroy(oldClip); });
             Task.Run(PrepareNextSong);
         }
 
@@ -79,7 +85,13 @@ namespace GamePlayModifiersPlus
             }
 
         }
-
+        private void UpdatePauseMenu()
+        {
+            var currInitData = pauseManager.GetField<PauseMenuManager.InitData>("_initData");
+            PauseMenuManager.InitData newData = new PauseMenuManager.InitData(currInitData.backButtonText, nextSongInfo.songName, nextSongInfo.songSubName, nextMapDiffInfo.difficulty);
+            pauseManager.SetField("_initData", newData);
+            pauseManager.Start();
+        }
         private void ResetCountersPlusCounter(GameObject counter)
         {
             counter.GetComponent<CountersPlus.Counters.ProgressCounter>().SetField("length", nextSong.length);
@@ -98,9 +110,13 @@ namespace GamePlayModifiersPlus
 
             nextMapDiffInfo = nextSongInfo.standardLevelInfoSaveData.difficultyBeatmapSets[0].difficultyBeatmaps.Last();
             nextSong = await nextSongInfo.GetPreviewAudioClipAsync(CancellationTokenSource.Token);
+            bool loaded;
+            await Task.Run(() => loaded = nextSong.LoadAudioData());
+
             string path = Path.Combine(nextSongInfo.customLevelPath, nextMapDiffInfo.beatmapFilename);
             string json = File.ReadAllText(path);
             nextBeatmap = dataLoader.GetBeatmapDataFromJson(json, nextSongInfo.beatsPerMinute, nextSongInfo.shuffle, nextSongInfo.shufflePeriod);
+            Plugin.Log($"Next Song: {nextSongInfo.songName} - Mapped by {nextSongInfo.levelAuthorName}, is Ready");
         }
 
         private bool IsValid(CustomPreviewBeatmapLevel level)
@@ -117,9 +133,9 @@ namespace GamePlayModifiersPlus
             foreach (var diff in extraData._difficulties)
                 requirements.AddRange(diff.additionalDifficultyData._requirements);
 
-            if (requirements.Any(x => !SongCore.Collections.capabilities.Contains(x)))
+            if (requirements.Count > 0) //(x => !SongCore.Collections.capabilities.Contains(x)))
             {
-                Plugin.Log("Missing Req");
+                Plugin.Log("Req Present");
                 return false;
             }
 

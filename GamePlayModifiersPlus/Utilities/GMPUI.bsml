@@ -12,6 +12,7 @@
     </modifier-container>
 
     <modifier-container>
+      <modifier hover-hint='[Disables Submission] Continually plays new songs as you reach the end of one' value ='Endless' on-change='SetEndless' source='GamePlayModifiersPlus.Resources.RepeatIcon.png' text='Endless Mode' ></modifier>
       <modifier hover-hint='[Disables Submission] Funky Notes' value='Funky' on-change='SetFunky' source='GamePlayModifiersPlus.Resources.FunkyIcon.png' text ='Funky'></modifier>
       <modifier hover-hint='Rainbow Notes' value='Rainbow' on-change='SetRainbow' source='GamePlayModifiersPlus.Resources.RainbowIcon.png' text ='Rainbow'></modifier>
       <modifier hover-hint='[Disables Submission] Reverses the direction the notes come from' value='Reverse' on-change='SetReverse' source='GamePlayModifiersPlus.Resources.RepeatIcon.png' text ='Reversal'></modifier>
