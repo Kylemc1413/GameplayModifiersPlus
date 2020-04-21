@@ -33,6 +33,7 @@ namespace GamePlayModifiersPlus
         private bool _allow360 = false;
         private bool FoundValidSong = false;
         System.Random random = new System.Random();
+
         void Awake()
         {
 
@@ -64,6 +65,7 @@ namespace GamePlayModifiersPlus
             switchTime = Plugin.songAudio.clip.length - 1f;
             Task.Run(PrepareNextSong);
         }
+
         void Update()
         {
             if (Plugin.songAudio.time >= switchTime && nextSong != null)
@@ -199,6 +201,7 @@ namespace GamePlayModifiersPlus
             }
             return false;
         }
+
         private bool ValidateDifficulty(StandardLevelInfoSaveData.DifficultyBeatmap diffBeatmap, SongCore.Data.ExtraSongData data, BeatmapCharacteristicSO characteristic, BeatmapDifficulty beatmapDifficulty)
         {
             var diffData = data._difficulties.FirstOrDefault(x => x._beatmapCharacteristicName == characteristic.serializedName && x._difficulty == beatmapDifficulty);
@@ -239,12 +242,11 @@ namespace GamePlayModifiersPlus
             return true;
         }
 
-
-
         private void ClearSoundEffects()
         {
             seManager.GetField<NoteCutSoundEffect.Pool>("_noteCutSoundEffectPool").Clear();
         }
+
         private void ResetProgressUI()
         {
             progessController.Start();
@@ -255,6 +257,7 @@ namespace GamePlayModifiersPlus
             }
 
         }
+
         private void UpdatePauseMenu()
         {
             var currInitData = pauseManager.GetField<PauseMenuManager.InitData>("_initData");
