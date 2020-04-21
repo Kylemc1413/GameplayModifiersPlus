@@ -121,7 +121,12 @@ namespace GamePlayModifiersPlus
                     var previewLevel = ToPlay[nextSongIndex];
                     validSong = IsValid(previewLevel, out nextMapDiffInfo);
 
-                    if (!validSong) ToPlay.RemoveAt(nextSongIndex);
+                    if (validSong)
+                    {
+                        nextSongInfo = previewLevel as CustomPreviewBeatmapLevel;
+                        break;
+                    }
+                    ToPlay.RemoveAt(nextSongIndex);
 
                 }
 
