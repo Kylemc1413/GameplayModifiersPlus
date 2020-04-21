@@ -161,6 +161,7 @@
   <ItemGroup>
     <Compile Include="EndlessBehavior.cs" />
     <Compile Include="Harmony Patches\BeatmapDataspawnRotationEventsCountGet.cs" />
+    <Compile Include="Harmony Patches\PlayPressedFetchLastLevelCollection.cs" />
     <Compile Include="Harmony Patches\ResultsViewControllerDidActivate.cs" />
     <Compile Include="Harmony Patches\StandardLevelDetailViewRefreshContent.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

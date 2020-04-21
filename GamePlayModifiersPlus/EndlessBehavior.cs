@@ -12,8 +12,10 @@ namespace GamePlayModifiersPlus
 {
     internal class EndlessBehavior : MonoBehaviour
     {
-        private CancellationTokenSource CancellationTokenSource = new CancellationTokenSource();
+        public static IPreviewBeatmapLevel[] LastLevelCollection = new IPreviewBeatmapLevel[0];
 
+        private IPreviewBeatmapLevel[] levelCollection = null;
+        private CancellationTokenSource CancellationTokenSource = new CancellationTokenSource();
         private SongProgressUIController progessController;
         private AudioClip nextSong;
         private BeatmapData nextBeatmap;
@@ -26,13 +28,28 @@ namespace GamePlayModifiersPlus
         private BeatmapObjectSpawnMovementData originalSpawnMovementData;
         private NoteCutSoundEffectManager seManager;
         private BeatmapDataLoader dataLoader = new BeatmapDataLoader();
-        System.Random random = new System.Random();
+
+        private List<IPreviewBeatmapLevel> ToPlay;
         private bool _allow360 = false;
+        private bool FoundValidSong = false;
+        System.Random random = new System.Random();
         void Awake()
         {
+
+            if (LastLevelCollection != null && LastLevelCollection.Length > 0)
+                levelCollection = LastLevelCollection;
+            else
+                levelCollection = SongCore.Loader.CustomLevels.Values.ToArray();
             StartCoroutine(Setup());
             _allow360 = Config.EndlessAllow360;
         }
+
+        private void ResetToPlay()
+        {
+            FoundValidSong = false;
+            ToPlay = levelCollection.ToList();
+        }
+
         private IEnumerator Setup()
         {
             yield return new WaitForSeconds(0.1f);
@@ -43,7 +60,7 @@ namespace GamePlayModifiersPlus
             pauseManager = Resources.FindObjectsOfTypeAll<PauseMenuManager>().First();
             // switchTime = 20f;
             switchTime = Plugin.songAudio.clip.length - 1f;
-            IPA.Utilities.Async.UnityMainThreadTaskScheduler.Factory.StartNew(PrepareNextSong);
+            Task.Run(PrepareNextSong);
         }
         void Update()
         {
@@ -77,50 +94,9 @@ namespace GamePlayModifiersPlus
             CheckIntroSkip();
             //Destroying audio clip is actually bad idea
             //   IPA.Utilities.Async.UnityMainThreadTaskScheduler.Factory.StartNew(() => { oldClip.UnloadAudioData(); AudioClip.Destroy(oldClip); });
-            IPA.Utilities.Async.UnityMainThreadTaskScheduler.Factory.StartNew(PrepareNextSong);
+            Task.Run(PrepareNextSong);
         }
 
-        private void ClearSoundEffects()
-        {
-            seManager.GetField<NoteCutSoundEffect.Pool>("_noteCutSoundEffectPool").Clear();
-        }
-        private void ResetProgressUI()
-        {
-            progessController.Start();
-            var cPlusCounter = GameObject.Find("Counters+ | Progress Counter");
-            if (cPlusCounter != null)
-            {
-                ResetCountersPlusCounter(cPlusCounter);
-            }
-
-        }
-        private void UpdatePauseMenu()
-        {
-            var currInitData = pauseManager.GetField<PauseMenuManager.InitData>("_initData");
-            PauseMenuManager.InitData newData = new PauseMenuManager.InitData(currInitData.backButtonText, nextSongInfo.songName, nextSongInfo.songSubName, nextMapDiffInfo.difficulty);
-            pauseManager.SetField("_initData", newData);
-            pauseManager.Start();
-        }
-        private void ResetCountersPlusCounter(GameObject counter)
-        {
-            counter.GetComponent<CountersPlus.Counters.ProgressCounter>().SetField("length", nextSong.length);
-        }
-
-        private void CheckIntroSkip()
-        {
-            var skip = GameObject.Find("IntroSkip Behavior");
-            if (skip != null)
-                ResetIntroSkip(skip);
-        }
-
-        private void ResetIntroSkip(GameObject skip)
-        {
-            bool practice = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.practiceSettings != null;
-            if (practice || BS_Utils.Gameplay.Gamemode.IsIsolatedLevel) return;
-
-            var skipBehavior = skip.GetComponent<IntroSkip.SkipBehavior>();
-            skipBehavior.StartCoroutine(skipBehavior.ReadMap());
-        }
         private async Task PrepareNextSong()
         {
             try
@@ -129,16 +105,29 @@ namespace GamePlayModifiersPlus
 
                 while (!validSong)
                 {
-
-                    
                     await Task.Yield();
-                    int nextSongIndex = random.Next(0, SongCore.Loader.CustomLevels.Count - 1);
-                    nextSongInfo = SongCore.Loader.CustomLevels.ElementAt(nextSongIndex).Value;
-                    validSong = IsValid(nextSongInfo, out nextMapDiffInfo);
+                    if (ToPlay.Count == 0)
+                    {
+                        if (!FoundValidSong) break;
+                        else
+                            ResetToPlay();
+                    }
+
+                    int nextSongIndex = random.Next(0, ToPlay.Count - 1);
+                    var previewLevel = ToPlay[nextSongIndex];
+                    validSong = IsValid(previewLevel, out nextMapDiffInfo);
+
+                    if (!validSong) ToPlay.RemoveAt(nextSongIndex);
+
                 }
 
                 if (nextMapDiffInfo == null) return;
-                nextSong = await nextSongInfo.GetPreviewAudioClipAsync(CancellationTokenSource.Token);
+
+                FoundValidSong = true;
+
+                await IPA.Utilities.Async.UnityMainThreadTaskScheduler.Factory.StartNew(
+                    async () => nextSong = await nextSongInfo.GetPreviewAudioClipAsync(CancellationTokenSource.Token));
+
                 //   bool loaded;
                 //  await Task.Run(() => loaded = nextSong.LoadAudioData());
 
@@ -153,9 +142,14 @@ namespace GamePlayModifiersPlus
             }
         }
 
-        private bool IsValid(CustomPreviewBeatmapLevel level, out StandardLevelInfoSaveData.DifficultyBeatmap nextDiff)
+        private bool IsValid(IPreviewBeatmapLevel testLevel, out StandardLevelInfoSaveData.DifficultyBeatmap nextDiff)
         {
+
             nextDiff = null;
+            if (testLevel.levelID == nextSongInfo?.levelID) return false;
+            if (!(testLevel is CustomPreviewBeatmapLevel)) return false;
+
+            CustomPreviewBeatmapLevel level = testLevel as CustomPreviewBeatmapLevel;
             var extraData = SongCore.Collections.RetrieveExtraSongData(level.levelID, level.customLevelPath);
             if (extraData == null)
             {
@@ -241,6 +235,50 @@ namespace GamePlayModifiersPlus
                 return false;
             }
             return true;
+        }
+
+
+
+        private void ClearSoundEffects()
+        {
+            seManager.GetField<NoteCutSoundEffect.Pool>("_noteCutSoundEffectPool").Clear();
+        }
+        private void ResetProgressUI()
+        {
+            progessController.Start();
+            var cPlusCounter = GameObject.Find("Counters+ | Progress Counter");
+            if (cPlusCounter != null)
+            {
+                ResetCountersPlusCounter(cPlusCounter);
+            }
+
+        }
+        private void UpdatePauseMenu()
+        {
+            var currInitData = pauseManager.GetField<PauseMenuManager.InitData>("_initData");
+            PauseMenuManager.InitData newData = new PauseMenuManager.InitData(currInitData.backButtonText, nextSongInfo.songName, nextSongInfo.songSubName, nextMapDiffInfo.difficulty);
+            pauseManager.SetField("_initData", newData);
+            pauseManager.Start();
+        }
+        private void ResetCountersPlusCounter(GameObject counter)
+        {
+            counter.GetComponent<CountersPlus.Counters.ProgressCounter>().SetField("length", nextSong.length);
+        }
+
+        private void CheckIntroSkip()
+        {
+            var skip = GameObject.Find("IntroSkip Behavior");
+            if (skip != null)
+                ResetIntroSkip(skip);
+        }
+
+        private void ResetIntroSkip(GameObject skip)
+        {
+            bool practice = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.practiceSettings != null;
+            if (practice || BS_Utils.Gameplay.Gamemode.IsIsolatedLevel) return;
+
+            var skipBehavior = skip.GetComponent<IntroSkip.SkipBehavior>();
+            skipBehavior.StartCoroutine(skipBehavior.ReadMap());
         }
 
     }
