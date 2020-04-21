@@ -37,7 +37,7 @@ namespace GamePlayModifiersPlus
         void Awake()
         {
 
-            if (LastLevelCollection != null && LastLevelCollection.Length > 0)
+            if (LastLevelCollection != null && LastLevelCollection.Length > 0 && Config.EndlessUseCurrentLevelCollection)
                 levelCollection = LastLevelCollection;
             else
                 levelCollection = SongCore.Loader.CustomLevels.Values.ToArray();
