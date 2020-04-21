@@ -129,8 +129,10 @@ namespace GamePlayModifiersPlus
 
                 while (!validSong)
                 {
+                    var random = new System.Random();
+                    
                     await Task.Yield();
-                    int nextSongIndex = UnityEngine.Random.Range(0, SongCore.Loader.CustomLevels.Count - 1);
+                    int nextSongIndex = random.Next(0, SongCore.Loader.CustomLevels.Count - 1);
                     nextSongInfo = SongCore.Loader.CustomLevels.ElementAt(nextSongIndex).Value;
                     validSong = IsValid(nextSongInfo, out nextMapDiffInfo);
                 }
