@@ -617,17 +617,6 @@
         {
             //  CustomColors.Plugin.OverrideCustomSaberColors(left, right);
         }
-        public static bool isModInstalled(string modName)
-        {
-            foreach (IPlugin p in PluginManager.Plugins)
-            {
-                if (p.Name == modName)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
 
         public static void Log(string message)
         {
