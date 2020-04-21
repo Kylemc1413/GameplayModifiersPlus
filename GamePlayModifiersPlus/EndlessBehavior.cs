@@ -26,7 +26,7 @@ namespace GamePlayModifiersPlus
         private BeatmapObjectSpawnMovementData originalSpawnMovementData;
         private NoteCutSoundEffectManager seManager;
         private BeatmapDataLoader dataLoader = new BeatmapDataLoader();
-
+        System.Random random = new System.Random();
         private bool _allow360 = false;
         void Awake()
         {
@@ -129,7 +129,7 @@ namespace GamePlayModifiersPlus
 
                 while (!validSong)
                 {
-                    var random = new System.Random();
+
                     
                     await Task.Yield();
                     int nextSongIndex = random.Next(0, SongCore.Loader.CustomLevels.Count - 1);
