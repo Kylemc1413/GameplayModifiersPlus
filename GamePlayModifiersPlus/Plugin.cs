@@ -935,7 +935,7 @@
                 }
 
             }
-            twitchPluginInstalled = true;
+       //     twitchPluginInstalled = true;
         }
 
         internal void InitAsync()
