@@ -42,6 +42,8 @@ namespace GamePlayModifiersPlus
                 levelCollection = SongCore.Loader.CustomLevels.Values.ToArray();
             StartCoroutine(Setup());
             _allow360 = Config.EndlessAllow360;
+
+            ResetToPlay();
         }
 
         private void ResetToPlay()
