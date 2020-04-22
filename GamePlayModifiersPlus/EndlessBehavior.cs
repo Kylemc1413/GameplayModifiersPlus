@@ -92,13 +92,13 @@ namespace GamePlayModifiersPlus
             TwitchPowers.ResetNoteCutSoundEffects(seManager);
             callbackController.SetField("_spawningStartTime", 0f);
             callbackController.SetNewBeatmapData(nextBeatmap);
-            ResetProgressUI();
             UpdatePauseMenu();
             ClearSoundEffects();
-            CheckIntroSkip();
             //Destroying audio clip is actually bad idea
             //   IPA.Utilities.Async.UnityMainThreadTaskScheduler.Factory.StartNew(() => { oldClip.UnloadAudioData(); AudioClip.Destroy(oldClip); });
             Task.Run(PrepareNextSong);
+            CheckIntroSkip();
+            ResetProgressUI();
         }
 
         private async Task PrepareNextSong()
