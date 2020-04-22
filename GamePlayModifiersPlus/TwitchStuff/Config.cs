@@ -118,7 +118,7 @@
         public static BeatmapDifficulty EndlessPrefDifficulty = BeatmapDifficulty.ExpertPlus;
         public static BeatmapDifficulty EndlessMinDifficulty = BeatmapDifficulty.Hard;
         public static BeatmapDifficulty EndlessMaxDifficulty = BeatmapDifficulty.ExpertPlus;
-        public static bool EndlessUseCurrentLevelCollection = false;
+        public static bool EndlessUseCurrentLevelCollection = true;
 
 
 
@@ -126,7 +126,7 @@
         {
             //Endless Config
             EndlessAllow360 = Plugin.ConfigSettings.GetBool("Endless", "Allow360", false, true);
-            EndlessUseCurrentLevelCollection = Plugin.ConfigSettings.GetBool("Endless", "UseCurrentLevelCollection", false, true);
+            EndlessUseCurrentLevelCollection = Plugin.ConfigSettings.GetBool("Endless", "UseCurrentLevelCollection", true, true);
             if (Enum.TryParse<BeatmapDifficulty>(Plugin.ConfigSettings.GetString("Endless", "PreferredDifficulty", "ExpertPlus", true), out var PrefDiff))
             {
                 EndlessPrefDifficulty = PrefDiff;
