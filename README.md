@@ -9,10 +9,10 @@
 - ### Modifiers can be found in the GameplayModifiersPlus tab of the Mods section of the Gameplay Setup Panel when selecting songs
 - ### Most modifiers will disable score submission, and because of this default to off when the game is started
 - ### Endless Mode
-    - Can be enabled with the other modifiers
+    - Can be enabled with the other modifiers (Map changing modifiers will only apply to first map)
     - Disables Score Submission
     - Randomly continues with a new song as the end of a song approaches
-    - Can set the preferred/minimum/maximum difficulties to randomly select in the 'Endless' section of the config
+    - Can adjust song selection for endless mode in the 'Endless' section of the config
 ## Configuration
   - Settings for Chat Integration and other parts of GameplayModifiersPlus can be found in 'UserData/GameplayModifiersPlus.ini' which will be generated after loading the game to the main menu with the mod installed correctly
 # Chat Integration
