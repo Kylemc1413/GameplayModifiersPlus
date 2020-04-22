@@ -915,7 +915,7 @@
                 switch (plugin.Id)
                 {
                     case "Stream Core":
-                        twitchPluginInstalled = true;
+             //           twitchPluginInstalled = true;
                         break;
 
                     case "Beat Saber Multiplayer":
