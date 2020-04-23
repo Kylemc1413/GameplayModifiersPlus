@@ -53,6 +53,10 @@ namespace GamePlayModifiersPlus
             ToPlay = levelCollection.ToList();
         }
 
+        public void PlayerFailed()
+        {
+            SwitchToNextMap();
+        }
         private IEnumerator Setup()
         {
             yield return new WaitForSeconds(0.1f);
@@ -288,7 +292,7 @@ namespace GamePlayModifiersPlus
             if (practice || BS_Utils.Gameplay.Gamemode.IsIsolatedLevel) return;
 
             var skipBehavior = skip.GetComponent<IntroSkip.SkipBehavior>();
-            skipBehavior.StartCoroutine(skipBehavior.ReadMap());
+            skipBehavior.ReInit();
         }
 
     }
