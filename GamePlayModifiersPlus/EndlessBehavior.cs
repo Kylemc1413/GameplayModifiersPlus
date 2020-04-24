@@ -17,7 +17,7 @@ namespace GamePlayModifiersPlus
         private IPreviewBeatmapLevel[] levelCollection = null;
         private CancellationTokenSource CancellationTokenSource = new CancellationTokenSource();
         private SongProgressUIController progessController;
-        private AudioClip nextSong;
+        internal AudioClip nextSong;
         private BeatmapData nextBeatmap;
         private CustomPreviewBeatmapLevel nextSongInfo;
         private StandardLevelInfoSaveData.DifficultyBeatmap nextMapDiffInfo;
@@ -53,8 +53,9 @@ namespace GamePlayModifiersPlus
             ToPlay = levelCollection.ToList();
         }
 
-        public void PlayerFailed()
+        public void SongEnd()
         {
+            switchTime = nextSong.length - 1f;
             SwitchToNextMap();
         }
         private IEnumerator Setup()
@@ -72,12 +73,13 @@ namespace GamePlayModifiersPlus
 
         void Update()
         {
+            
             if (Plugin.songAudio.time >= switchTime && nextSong != null)
             {
-                //   switchTime = 20f;
                 switchTime = nextSong.length - 1f;
                 SwitchToNextMap();
             }
+            
         }
 
         private void SwitchToNextMap()
@@ -131,7 +133,7 @@ namespace GamePlayModifiersPlus
                         break;
                     }
                     ToPlay.RemoveAt(nextSongIndex);
-
+                    Plugin.Log("Removing invalid song, new count: " + ToPlay.Count);
                 }
 
                 if (nextMapDiffInfo == null) return;

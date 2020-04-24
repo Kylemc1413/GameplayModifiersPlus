@@ -13,7 +13,7 @@ namespace GamePlayModifiersPlus.Harmony_Patches
     {
         public static void Prefix(LevelSelectionFlowCoordinator __instance, ref LevelSelectionNavigationController ____levelSelectionNavigationController)
         {
-            var lastLevelCollection =  ____levelSelectionNavigationController.GetField<LevelCollectionViewController>("_levelCollectionViewController")?
+            var lastLevelCollection = ____levelSelectionNavigationController.GetField<LevelCollectionViewController>("_levelCollectionViewController")?
                 .GetField<LevelCollectionTableView>("_levelCollectionTableView")?.GetField<IPreviewBeatmapLevel[]>("_previewBeatmapLevels");
             if (lastLevelCollection != null)
                 EndlessBehavior.LastLevelCollection = lastLevelCollection;
@@ -31,8 +31,9 @@ namespace GamePlayModifiersPlus.Harmony_Patches
             if (endlessObj == null) return true;
             EndlessBehavior endlessBehavior = endlessObj.GetComponent<EndlessBehavior>();
             ____gameEnergyCounter.AddEnergy(0.5f);
-            endlessBehavior.PlayerFailed();
+            endlessBehavior.SongEnd();
             return false;
         }
     }
+
 }
