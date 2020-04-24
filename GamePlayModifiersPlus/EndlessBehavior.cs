@@ -130,10 +130,9 @@ namespace GamePlayModifiersPlus
                     if (validSong)
                     {
                         nextSongInfo = previewLevel as CustomPreviewBeatmapLevel;
-                        break;
                     }
                     ToPlay.RemoveAt(nextSongIndex);
-                    Plugin.Log("Removing invalid song, new count: " + ToPlay.Count);
+                   // Plugin.Log("Removing song, new count: " + ToPlay.Count);
                 }
 
                 if (nextMapDiffInfo == null) return;
