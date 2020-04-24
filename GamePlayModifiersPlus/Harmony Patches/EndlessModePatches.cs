@@ -30,9 +30,13 @@ namespace GamePlayModifiersPlus.Harmony_Patches
             GameObject endlessObj = GameObject.Find("GMP Endless Behavior");
             if (endlessObj == null) return true;
             EndlessBehavior endlessBehavior = endlessObj.GetComponent<EndlessBehavior>();
-            ____gameEnergyCounter.AddEnergy(0.5f);
-            endlessBehavior.SongEnd();
-            return false;
+            if (endlessBehavior.nextSong != null)
+            {
+                ____gameEnergyCounter.AddEnergy(0.5f);
+                endlessBehavior.SongEnd();
+                return false;
+            }
+            return true;
         }
     }
 
