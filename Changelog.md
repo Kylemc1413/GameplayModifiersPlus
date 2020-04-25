@@ -1,6 +1,9 @@
 #### Github: https://github.com/Kylemc1413/GameplayModifiersPlus/
 
-#### Changelog for version 1.15.0
+#### Changelog for version 1.16.0
+- A lot more internal reorganization 
+
+### Changelog for version 1.15.0
 ##### Endless Mode
 - New Endless mode modifier
   - Randomly continues a new song as the end of a song approaches based on the preferred, min, and max difficulties set in the config
@@ -17,3 +20,4 @@
  - New command 'RCTTS' to force your strimmer to play your favorite request!
  - CoolDowns now are forced to be at minimum the same length as the command duration
  - Reverse CoolDown now classed as a Map Swap cooldown, like that of RCTTS command
+
