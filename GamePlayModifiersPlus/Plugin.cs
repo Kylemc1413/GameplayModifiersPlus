@@ -36,6 +36,13 @@
         public static bool activateDuringIsolated = false;
         public static Harmony harmony;
 
+
+        [Init]
+        public void Init(IPA.Logging.Logger logger)
+        {
+            log = logger;
+        }
+
         [OnStart]
         public void OnApplicationStart()
         {
@@ -65,14 +72,17 @@
                 InitStreamCore();
         }
 
+        [OnExit]
+        public void OnApplicationQuit()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            SceneManager.activeSceneChanged -= OnActiveSceneChanged;
+        }
+
+
         public void InitStreamCore()
         {
             ChatMessageHandler.Load();
-        }
-        [Init]
-        public void Init(IPA.Logging.Logger logger)
-        {
-            log = logger;
         }
 
        
@@ -188,22 +198,6 @@
 
                 GameModifiersController.CheckGMPModifiers();
             }
-        }
-
-
-
-        [OnExit]
-        public void OnApplicationQuit()
-        {
-
-        }
-
-        public void OnLevelWasLoaded(int level)
-        {
-        }
-
-        public void OnLevelWasInitialized(int level)
-        {
         }
 
 
