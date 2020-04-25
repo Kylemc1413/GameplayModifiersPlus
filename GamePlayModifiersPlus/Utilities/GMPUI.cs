@@ -13,7 +13,6 @@
         public static bool chatDelta = false;
         public static float fixedNoteScale = 1f;
         public static bool noArrows = false;
-        public static bool oneColor = false;
         public static bool disableFireworks = false;
         public static bool disableSubmission = false;
 

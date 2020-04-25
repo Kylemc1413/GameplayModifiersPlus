@@ -67,7 +67,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
             chargeCounter.fillMethod = Image.FillMethod.Radial360;
             chargeCounter.fillOrigin = (int)Image.Origin360.Top;
             chargeCounter.fillClockwise = true;
-            chargeCounter.fillAmount = Plugin.charges / Config.maxCharges;
+            chargeCounter.fillAmount = GameModifiersController.charges / Config.maxCharges;
             chargeCounter.color = Color.green;
 
             GameObject background = new GameObject("GMPDisplayBackGround");
@@ -93,8 +93,8 @@ namespace GamePlayModifiersPlus.TwitchStuff
             chargeText.GetComponent<RectTransform>().SetParent(canvas.transform, false);
 
 
-            chargeCountText = BeatSaberMarkupLanguage.BeatSaberUI.CreateText(canvas.transform as RectTransform, Plugin.charges.ToString(), new Vector2(0, 0));
-            chargeCountText.text = Plugin.charges.ToString();
+            chargeCountText = BeatSaberMarkupLanguage.BeatSaberUI.CreateText(canvas.transform as RectTransform, GameModifiersController.charges.ToString(), new Vector2(0, 0));
+            chargeCountText.text = GameModifiersController.charges.ToString();
             chargeCountText.alignment = TextAlignmentOptions.Center;
             chargeCountText.transform.localScale *= .08f;
             chargeCountText.fontSize = 2.5f;
@@ -104,7 +104,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
             chargeCountText.GetComponent<RectTransform>().SetParent(canvas.transform, false);
             //   chargeCountText.transform.localPosition = new Vector3(-0.0925f, -.13f, 0f);
 
-            cooldownText = BeatSaberMarkupLanguage.BeatSaberUI.CreateText(canvas.transform as RectTransform, Plugin.charges.ToString(), new Vector2(-1f, 0.015f));
+            cooldownText = BeatSaberMarkupLanguage.BeatSaberUI.CreateText(canvas.transform as RectTransform, GameModifiersController.charges.ToString(), new Vector2(-1f, 0.015f));
             cooldownText.text = "";
             cooldownText.alignment = TextAlignmentOptions.MidlineRight;
             cooldownText.fontSize = 2.5f;
@@ -115,7 +115,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
             cooldownText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
             cooldownText.GetComponent<RectTransform>().SetParent(canvas.transform, false);
 
-            activeCommandText = BeatSaberMarkupLanguage.BeatSaberUI.CreateText(canvas.transform as RectTransform, Plugin.charges.ToString(), new Vector2(1f, 0.015f));
+            activeCommandText = BeatSaberMarkupLanguage.BeatSaberUI.CreateText(canvas.transform as RectTransform, GameModifiersController.charges.ToString(), new Vector2(1f, 0.015f));
             activeCommandText.text = "";
             activeCommandText.alignment = TextAlignmentOptions.MidlineLeft;
             activeCommandText.fontSize = 2.5f;
@@ -145,8 +145,8 @@ namespace GamePlayModifiersPlus.TwitchStuff
         void Update()
         {
             if (!initialized) return;
-            chargeCounter.fillAmount = Mathf.Lerp(chargeCounter.fillAmount, (float)Plugin.charges / Config.maxCharges, .03f);
-            chargeCountText.text = Plugin.charges.ToString();
+            chargeCounter.fillAmount = Mathf.Lerp(chargeCounter.fillAmount, (float)GameModifiersController.charges / Config.maxCharges, .03f);
+            chargeCountText.text = GameModifiersController.charges.ToString();
         }
 
         public void Destroy()

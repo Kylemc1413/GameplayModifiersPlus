@@ -8,6 +8,8 @@ using System.Threading;
 using UnityEngine;
 using System.Reflection;
 using System.IO;
+using GamePlayModifiersPlus.Utilities;
+using GamePlayModifiersPlus.TwitchStuff;
 namespace GamePlayModifiersPlus
 {
     internal class EndlessBehavior : MonoBehaviour
@@ -62,19 +64,19 @@ namespace GamePlayModifiersPlus
         {
             yield return new WaitForSeconds(0.1f);
             callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            originalSpawnMovementData = Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
+            originalSpawnMovementData = GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
             seManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().First();
             progessController = Resources.FindObjectsOfTypeAll<SongProgressUIController>().First();
             pauseManager = Resources.FindObjectsOfTypeAll<PauseMenuManager>().First();
             // switchTime = 20f;
-            switchTime = Plugin.songAudio.clip.length - 1f;
+            switchTime = GameObjects.songAudio.clip.length - 1f;
             Task.Run(PrepareNextSong);
         }
 
         void Update()
         {
             
-            if (Plugin.songAudio.time >= switchTime && nextSong != null)
+            if (GameObjects.songAudio.time >= switchTime && nextSong != null)
             {
                 switchTime = nextSong.length - 1f;
                 SwitchToNextMap();
@@ -88,9 +90,9 @@ namespace GamePlayModifiersPlus
             if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.staticLights)
                 nextBeatmap.SetProperty<BeatmapData>("beatmapEventData", new BeatmapEventData[0]);
 
-            AudioClip oldClip = Plugin.songAudio.clip;
+            AudioClip oldClip = GameObjects.songAudio.clip;
             TwitchPowers.ResetTimeSync(nextSong, 0f, nextSongInfo.songTimeOffset, 1f);
-            TwitchPowers.ManuallySetNJSOffset(Plugin.spawnController, nextMapDiffInfo.noteJumpMovementSpeed,
+            TwitchPowers.ManuallySetNJSOffset(GameObjects.spawnController, nextMapDiffInfo.noteJumpMovementSpeed,
                 nextMapDiffInfo.noteJumpStartBeatOffset, nextSongInfo.beatsPerMinute);
             //    TwitchPowers.ClearCallbackItemDataList(callBackDataList);
             // DestroyNotes();

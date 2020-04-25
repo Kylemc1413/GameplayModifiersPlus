@@ -3,6 +3,7 @@
     using System;
     using System.IO;
     using BS_Utils.Utilities;
+    using GamePlayModifiersPlus.TwitchStuff;
     internal static class Config
     {
         public static bool uiOnTop = true;
@@ -355,7 +356,7 @@
                     if (key.KeyName.ToLower() == propertyLower && !data.Sections[section.SectionName].ContainsKey("ChargeCost"))
                     {
                         inifile.InvokeMethod("IniWriteValue", section.SectionName, property, value);
-                        Plugin.TryAsyncMessage("Changed Value");
+                        ChatMessageHandler.TryAsyncMessage("Changed Value");
                         Config.Load();
                         success = true;
                         break;
@@ -377,7 +378,7 @@
                 if (data.Sections[command].ContainsKey(property))
                 {
                     inifile.InvokeMethod("IniWriteValue", command, property, value);
-                    Plugin.TryAsyncMessage("Changed Value");
+                    ChatMessageHandler.TryAsyncMessage("Changed Value");
                     Config.Load();
                 }
 

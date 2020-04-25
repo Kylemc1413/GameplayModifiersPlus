@@ -1,4 +1,4 @@
-﻿namespace GamePlayModifiersPlus
+﻿namespace GamePlayModifiersPlus.TwitchStuff
 {
     using StreamCore;
     using System.Collections;
@@ -8,13 +8,14 @@
     using System.Collections.Generic;
     using System.Reflection;
     using UnityEngine.Networking;
+    using GamePlayModifiersPlus.Utilities;
     public class TwitchPowers : MonoBehaviour
     {
         public static IEnumerator ChargeOverTime()
         {
             yield return new WaitForSeconds(Config.timeForCharges);
-            Plugin.charges += Config.chargesOverTime;
-            if (Plugin.charges > Config.maxCharges) Plugin.charges = Config.maxCharges;
+            GameModifiersController.charges += Config.chargesOverTime;
+            if (GameModifiersController.charges > Config.maxCharges) GameModifiersController.charges = Config.maxCharges;
             Plugin.twitchPowers.StartCoroutine(ChargeOverTime());
         }
 
@@ -23,9 +24,9 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " DA | ";
-            Plugin.spawnController.SetField("_disappearingArrows", true);
+            GameObjects.spawnController.SetField("_disappearingArrows", true);
             yield return new WaitForSeconds(length);
-            Plugin.spawnController.SetField("_disappearingArrows", false);
+            GameObjects.spawnController.SetField("_disappearingArrows", false);
             text.text = text.text.Replace(" DA | ", "");
         }
 
@@ -41,13 +42,13 @@
                 {
                     if (Config.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false)
                     {
-                        Plugin.TryAsyncMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + Config.globalCommandCooldown + " seconds.");
+                        ChatMessageHandler.TryAsyncMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds." + "Global Command Cooldown Active for " + Config.globalCommandCooldown + " seconds.");
                     }
                     else
-                        Plugin.TryAsyncMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
+                        ChatMessageHandler.TryAsyncMessage(message + " " + cooldown + " Cooldown Active for " + waitTime.ToString() + " seconds");
                 }
                 else
-                    Plugin.TryAsyncMessage(message);
+                    ChatMessageHandler.TryAsyncMessage(message);
             }
 
 
@@ -71,18 +72,18 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " InstaFail | ";
-            Image energyBar = Plugin.energyPanel.GetField<Image>("_energyBar");
+            Image energyBar = GameObjects.energyPanel.GetField<Image>("_energyBar");
             energyBar.color = Color.red;
-            Plugin.energyCounter.SetField("_badNoteEnergyDrain", 1f);
-            Plugin.energyCounter.SetField("_missNoteEnergyDrain", 1f);
-            Plugin.energyCounter.SetField("_hitBombEnergyDrain", 1f);
-            Plugin.energyCounter.SetField("_obstacleEnergyDrainPerSecond", 1f);
+            GameObjects.energyCounter.SetField("_badNoteEnergyDrain", 1f);
+            GameObjects.energyCounter.SetField("_missNoteEnergyDrain", 1f);
+            GameObjects.energyCounter.SetField("_hitBombEnergyDrain", 1f);
+            GameObjects.energyCounter.SetField("_obstacleEnergyDrainPerSecond", 1f);
             yield return new WaitForSeconds(length);
             energyBar.color = Color.white;
-            Plugin.energyCounter.SetField("_badNoteEnergyDrain", 0.1f);
-            Plugin.energyCounter.SetField("_missNoteEnergyDrain", 0.15f);
-            Plugin.energyCounter.SetField("_hitBombEnergyDrain", 0.15f);
-            Plugin.energyCounter.SetField("_obstacleEnergyDrainPerSecond", 0.1f);
+            GameObjects.energyCounter.SetField("_badNoteEnergyDrain", 0.1f);
+            GameObjects.energyCounter.SetField("_missNoteEnergyDrain", 0.15f);
+            GameObjects.energyCounter.SetField("_hitBombEnergyDrain", 0.15f);
+            GameObjects.energyCounter.SetField("_obstacleEnergyDrainPerSecond", 0.1f);
             text.text = text.text.Replace(" InstaFail | ", "");
         }
 
@@ -90,18 +91,18 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " Invincible | ";
-            Image energyBar = Plugin.energyPanel.GetField<Image>("_energyBar");
+            Image energyBar = GameObjects.energyPanel.GetField<Image>("_energyBar");
             energyBar.color = Color.yellow;
-            Plugin.energyCounter.SetField("_badNoteEnergyDrain", 0f);
-            Plugin.energyCounter.SetField("_missNoteEnergyDrain", 0f);
-            Plugin.energyCounter.SetField("_hitBombEnergyDrain", 0f);
-            Plugin.energyCounter.SetField("_obstacleEnergyDrainPerSecond", 0f);
+            GameObjects.energyCounter.SetField("_badNoteEnergyDrain", 0f);
+            GameObjects.energyCounter.SetField("_missNoteEnergyDrain", 0f);
+            GameObjects.energyCounter.SetField("_hitBombEnergyDrain", 0f);
+            GameObjects.energyCounter.SetField("_obstacleEnergyDrainPerSecond", 0f);
             yield return new WaitForSeconds(length);
             energyBar.color = Color.white;
-            Plugin.energyCounter.SetField("_badNoteEnergyDrain", 0.1f);
-            Plugin.energyCounter.SetField("_missNoteEnergyDrain", 0.15f);
-            Plugin.energyCounter.SetField("_hitBombEnergyDrain", 0.15f);
-            Plugin.energyCounter.SetField("_obstacleEnergyDrainPerSecond", 0.1f);
+            GameObjects.energyCounter.SetField("_badNoteEnergyDrain", 0.1f);
+            GameObjects.energyCounter.SetField("_missNoteEnergyDrain", 0.15f);
+            GameObjects.energyCounter.SetField("_hitBombEnergyDrain", 0.15f);
+            GameObjects.energyCounter.SetField("_obstacleEnergyDrainPerSecond", 0.1f);
             text.text = text.text.Replace(" Invincible | ", "");
         }
 
@@ -109,12 +110,12 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " Poison | ";
-            Image energyBar = Plugin.energyPanel.GetField<Image>("_energyBar");
+            Image energyBar = GameObjects.energyPanel.GetField<Image>("_energyBar");
             energyBar.color = Color.magenta;
-            Plugin.energyCounter.SetField("_goodNoteEnergyCharge", 0f);
+            GameObjects.energyCounter.SetField("_goodNoteEnergyCharge", 0f);
             yield return new WaitForSeconds(length);
             energyBar.color = Color.white;
-            Plugin.energyCounter.SetField("_goodNoteEnergyCharge", 0.01f);
+            GameObjects.energyCounter.SetField("_goodNoteEnergyCharge", 0.01f);
 
             text.text = text.text.Replace(" Poison | ", "");
         }
@@ -132,11 +133,11 @@
         {
             yield return new WaitForSeconds(0f);
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            BeatmapCallbackItemDataList callBackDataList = Plugin.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
+            BeatmapCallbackItemDataList callBackDataList = GameObjects.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
 
             BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
             Plugin.Log("Grabbed BeatmapData");
-            float eventTime = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float eventTime = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             //    List<BeatmapEventData> data = beatmapData.beatmapEventData.ToList();
             //14 Early Rotation 15 Late Rotation
             /*
@@ -169,10 +170,10 @@
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " RandomRotation | ";
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().FirstOrDefault();
-            BeatmapCallbackItemDataList callBackDataList = Plugin.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
+            BeatmapCallbackItemDataList callBackDataList = GameObjects.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
             BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
             Plugin.Log("Grabbed BeatmapData");
-            float startTime = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float startTime = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float endTime = startTime + length;
             float marker = startTime;
             List<BeatmapEventData> data = new List<BeatmapEventData>();
@@ -234,11 +235,11 @@
         {
             yield return new WaitForSeconds(0f);
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            BeatmapCallbackItemDataList callBackDataList = Plugin.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
+            BeatmapCallbackItemDataList callBackDataList = GameObjects.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
 
             BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
             Plugin.Log("Grabbed BeatmapData");
-            float startTime = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float startTime = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             BeatmapEventData rightEvent = new BeatmapEventData(startTime, BeatmapEventType.Event14, 5);
 
             List<BeatmapObjectData>[] data2 = new List<BeatmapObjectData>[4];
@@ -262,9 +263,9 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " Smaller/Larger | ";
-            Plugin.altereddNoteScale = scale;
+            GameModifiersController.altereddNoteScale = scale;
             yield return new WaitForSeconds(length);
-            Plugin.altereddNoteScale = 1f;
+            GameModifiersController.altereddNoteScale = 1f;
             text.text = text.text.Replace(" Smaller/Larger | ", "");
         }
 
@@ -313,17 +314,15 @@
 
         public static void AdjustNjsOrOffset()
         {
-            if (Plugin.spawnController == null) return;
+            if (GameObjects.spawnController == null) return;
             BeatmapObjectSpawnMovementData spawnMovementData =
-            Plugin.spawnController.GetPrivateField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
+            GameObjects.spawnController.GetPrivateField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
             if (Plugin.levelData.GameplayCoreSceneSetupData == null) return;
             if (spawnMovementData == null) return;
-            if (!Plugin.haveSongNJS)
-            {
-                Plugin.songNJS = spawnMovementData.GetField<float>("_startNoteJumpMovementSpeed");
-                Plugin.haveSongNJS = true;
-            }
-            float njs = Plugin.songNJS;
+
+            float njs = Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpMovementSpeed;
+            if (njs == 0)
+                njs = BeatmapDifficultyMethods.NoteJumpMovementSpeed(Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.difficulty);
             if (GMPUI.njsRandom)
                 njs = UnityEngine.Random.Range(Config.njsRandomMin, Config.njsRandomMax);
             if (GMPUI.reverse)
@@ -333,7 +332,7 @@
                 noteJumpStartBeatOffset += UnityEngine.Random.Range((float)Config.offsetrandomMin, (float)Config.offsetrandomMax);
 
 
-            float bpm = Plugin.spawnController.GetPrivateField<VariableBPMProcessor>("_variableBPMProcessor").currentBPM;
+            float bpm = GameObjects.spawnController.GetPrivateField<VariableBPMProcessor>("_variableBPMProcessor").currentBPM;
 
 
 
@@ -341,7 +340,7 @@
             spawnMovementData.SetPrivateField("_noteJumpStartBeatOffset", noteJumpStartBeatOffset);
 
             spawnMovementData.Update(bpm,
-                Plugin.spawnController.GetPrivateField<float>("_jumpOffsetY"));
+                GameObjects.spawnController.GetPrivateField<float>("_jumpOffsetY"));
             //       Plugin.Log(njs.ToString());
             //       Plugin.Log(noteJumpStartBeatOffset.ToString());
         }
@@ -363,7 +362,7 @@
             Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
-            float start = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float end = start + length + 2f;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
@@ -399,7 +398,7 @@
             Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
-            float start = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float end = start + length + 2f;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
@@ -449,13 +448,13 @@
 
             float songspeedmul = Plugin.levelData.GameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul;
 
-            Plugin.SetTimeScale(pitch);
+            GameModifiersController.SetTimeScale(pitch);
 
 
             yield return new WaitForSeconds(length);
 
 
-            Plugin.SetTimeScale(songspeedmul);
+            GameModifiersController.SetTimeScale(songspeedmul);
             text.text = text.text.Replace(" Speed | ", "");
         }
 
@@ -531,18 +530,18 @@
         public IEnumerator SwitchMap(BeatmapData newDataBase, AudioClip newAudio, float newBpm, float newTimeOffset, float newNjs, float newSpawnOffset, float duration, bool randomizeStartTime = true)
         {
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            BeatmapObjectSpawnMovementData originalSpawnMovementData = Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
-            BeatmapCallbackItemDataList callBackDataList = Plugin.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
+            BeatmapObjectSpawnMovementData originalSpawnMovementData = GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
+            BeatmapCallbackItemDataList callBackDataList = GameObjects.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
             NoteCutSoundEffectManager seManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().First();
             float startTime = 0f;
             float startOffset = originalSpawnMovementData.spawnAheadTime + 0.1f;
             //Get initial Map data
-            float originalTime = Plugin.songAudio.time;
-            float originalBPM = Plugin.spawnController.currentBPM;
-            float originalTimeOffset = Plugin.AudioTimeSync.GetField<float>("_songTimeOffset");
+            float originalTime = GameObjects.songAudio.time;
+            float originalBPM = GameObjects.spawnController.currentBPM;
+            float originalTimeOffset = GameObjects.AudioTimeSync.GetField<float>("_songTimeOffset");
             float originalNJS = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpMovementSpeed;
             float originalSpawnOffset = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpStartBeatOffset;
-            AudioClip originalClip = Plugin.songAudio.clip;
+            AudioClip originalClip = GameObjects.songAudio.clip;
             BeatmapData originalData = callbackController.GetField<BeatmapData>("_beatmapData");
 
             //Switch To Reality Check
@@ -565,7 +564,7 @@
             }
 
             ResetTimeSync(newAudio, startTime, newTimeOffset, 1f);
-            ManuallySetNJSOffset(Plugin.spawnController, newNjs, newSpawnOffset, newBpm);
+            ManuallySetNJSOffset(GameObjects.spawnController, newNjs, newSpawnOffset, newBpm);
             ClearCallbackItemDataList(callBackDataList);
             // DestroyNotes();
             DestroyObjectsRaw();
@@ -583,7 +582,7 @@
                 originalData.beatmapLinesData[i].beatmapObjectsData = data2[i].ToArray();
             }
             ResetTimeSync(originalClip, originalTime, originalTimeOffset, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul);
-            ManuallySetNJSOffset(Plugin.spawnController, originalNJS, originalSpawnOffset, originalBPM);
+            ManuallySetNJSOffset(GameObjects.spawnController, originalNJS, originalSpawnOffset, originalBPM);
             ClearCallbackItemDataList(callBackDataList);
             //  DestroyNotes();
             DestroyObjectsRaw();
@@ -610,11 +609,11 @@
         }
         public static void ResetTimeSync(AudioClip clip, float time, float timeOffset, float timeScale)
         {
-            AudioTimeSyncController.InitData initData = Plugin.AudioTimeSync.GetPrivateField<AudioTimeSyncController.InitData>("_initData");
+            AudioTimeSyncController.InitData initData = GameObjects.AudioTimeSync.GetPrivateField<AudioTimeSyncController.InitData>("_initData");
             AudioTimeSyncController.InitData newInitData = new AudioTimeSyncController.InitData(clip,
                             time, timeOffset, 1f);
-            Plugin.AudioTimeSync.SetPrivateField("_initData", newInitData);
-            Plugin.AudioTimeSync.StartSong();
+            GameObjects.AudioTimeSync.SetPrivateField("_initData", newInitData);
+            GameObjects.AudioTimeSync.StartSong();
         }
 
         public static void ManuallySetNJSOffset(BeatmapObjectSpawnController _spawnController, float njs, float offset, float bpm)
@@ -634,9 +633,9 @@
             yield return new WaitForSeconds(0f);
             MappingExtensions.Plugin.ForceActivateForSong();
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            float start = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
-            float beatTime = 60f / Plugin.spawnController.currentBPM;
+            float beatTime = 60f / GameObjects.spawnController.currentBPM;
             float sliderTime = beatTime / 6f;
             float centerDistTime = beatTime / 2f;
             float claimedCenterTime = 0f;
@@ -830,8 +829,8 @@
             Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
-            float wait = Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
-            float start = Plugin.songAudio.time + wait * 2f;
+            float wait = GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float start = GameObjects.songAudio.time + wait * 2f;
             float end = start + length;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
@@ -860,7 +859,7 @@
             callbackController.SetNewBeatmapData(beatmapData);
             GMPUI.reverse = true;
             AdjustNjsOrOffset();
-            Plugin.reverseSound.Play();
+            GameModifiersController.reverseSound.Play();
             DestroyObjectsRaw();
             //   DestroyNotes();
             //Code to show some kinda prompt here maybe
@@ -868,7 +867,7 @@
             GMPUI.reverse = false;
             AdjustNjsOrOffset();
             //Code to destroy notes here
-            Plugin.reverseSound.Play();
+            GameModifiersController.reverseSound.Play();
             //   DestroyNotes();
             DestroyObjectsRaw();
             text.text = text.text.Replace(" Reverse | ", "");
@@ -883,7 +882,7 @@
             Plugin.Log("Grabbed BeatmapData");
             BeatmapObjectData[] objects;
             NoteData note;
-            float start = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
 
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
@@ -904,8 +903,8 @@
 
             yield return new WaitForSeconds(2f);
             AdjustNjsOrOffset();
-            Plugin.reverseSound.Play();
-            DestroyNotes();
+            GameModifiersController.reverseSound.Play();
+            DestroyObjectsRaw();
 
 
         }
@@ -919,7 +918,7 @@
             BeatmapObjectData[] objects;
             NoteData note;
             ObstacleData obstacle;
-            float start = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 1.5f;
+            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 1.5f;
             float end = start + length;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
@@ -955,7 +954,7 @@
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
             BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
             Plugin.Log("Grabbed BeatmapData");
-            float start = Plugin.songAudio.time;
+            float start = GameObjects.songAudio.time;
             int? nextIndex = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>()?.FirstOrDefault()?.GetField<int>("_nextEventIndex");
             BeatmapEventData[] newData = new BeatmapEventData[beatmapData.beatmapEventData.Length];
             if (nextIndex.HasValue)
@@ -969,63 +968,6 @@
 
 
 
-        public static IEnumerator OneColor()
-        {
-            yield return new WaitForSeconds(0f);
-            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
-            Plugin.Log("Grabbed BeatmapData");
-            BeatmapObjectData[] objects;
-            NoteData note;
-            foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
-            {
-                objects = line.beatmapObjectsData;
-                foreach (BeatmapObjectData beatmapObject in objects)
-                {
-                    if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
-                    {
-                        note = beatmapObject as NoteData;
-                        note.SetProperty<NoteData>("noteType", NoteType.NoteB);
-                    }
-                }
-            }
-            //Adjust Sabers for one color
-            yield return new WaitForSeconds(0.2f);
-            var leftSaberType = Plugin.player.leftSaber.GetField<SaberTypeObject>("_saberType");
-
-            try
-            {
-                leftSaberType.SetField("_saberType", SaberType.SaberB);
-            }
-            catch (System.Exception ex)
-            {
-                Plugin.Log(ex.ToString());
-            }
-
-            //     Plugin.Log("2 " + Plugin.player.leftSaber.saberType.ToString());
-            //      if (Plugin.customColorsInstalled)
-            //          Plugin.ResetCustomColorsSabers(Plugin.oldColorB, Plugin.oldColorB);
-            /*
-            var playerController = Resources.FindObjectsOfTypeAll<PlayerController>().First();
-            Saber targetSaber = playerController.rightSaber;
-            Saber otherSaber = playerController.leftSaber;
-            var targetCopy = Instantiate(targetSaber.gameObject);
-            Saber newSaber = targetCopy.GetComponent<Saber>();
-            targetCopy.transform.parent = targetSaber.transform.parent;
-            targetCopy.transform.localPosition = Vector3.zero;
-            targetCopy.transform.localRotation = Quaternion.identity;
-            targetSaber.transform.parent = otherSaber.transform.parent;
-            targetSaber.transform.localPosition = Vector3.zero;
-            targetSaber.transform.localRotation = Quaternion.identity;
-            otherSaber.gameObject.SetActive(false);
-
-            ReflectionUtil.SetPrivateField(playerController, "_leftSaber", targetSaber);
-            ReflectionUtil.SetPrivateField(playerController, "_rightSaber", newSaber);
-
-            playerController.leftSaber.gameObject.SetActive(true);
-            */
-            //    dataModel.beatmapData = beatmapData;
-        }
         public static IEnumerator Funky(float length)
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
@@ -1053,10 +995,10 @@
             GMPUI.rainbow = true;
             yield return new WaitForSeconds(length);
             GMPUI.rainbow = false;
-            Plugin.ResetColors();
+            ColorController.ResetColors();
             text.text = text.text.Replace(" Rainbow | ", "");
         }
-
+        /*
         public static void DestroyNotes()
         {
             foreach (GameNoteController gameNoteController in UnityEngine.Object.FindObjectsOfType<GameNoteController>())
@@ -1075,10 +1017,10 @@
                 }
             }
         }
-
+        */
         public static void DestroyObjectsRaw()
         {
-            Plugin.beatmapObjectManager.DissolveAllObjects();
+            GameObjects.beatmapObjectManager.DissolveAllObjects();
             /*
             foreach (NoteController noteController in UnityEngine.Object.FindObjectsOfType<NoteController>())
             {
@@ -1117,21 +1059,21 @@
             GMPUI.offsetrandom = false;
             GMPUI.randomSize = false;
             GMPUI.reverse = false;
-            Plugin.altereddNoteScale = 1f;
+            GameModifiersController.altereddNoteScale = 1f;
             //       Time.timeScale = 1;
             //        Plugin.timeScale = 1;
-            Plugin.superRandom = false;
+            GameModifiersController.superRandom = false;
             if (resetMessage)
             {
-                Plugin.spawnController.SetField("_disappearingArrows", false);
-                Plugin.ResetColors();
+                GameObjects.spawnController.SetField("_disappearingArrows", false);
+                ColorController.ResetColors();
                 if (Plugin.isValidScene)
                     AdjustNjsOrOffset();
                 var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
                 text.text = " ";
                 var text2 = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
                 text2.text = "";
-                Plugin.SetTimeScale(Plugin.currentSongSpeed);
+                GameModifiersController.SetTimeScale(GameModifiersController.currentSongSpeed);
 
                 resetMessage = false;
             }
@@ -1147,7 +1089,7 @@
             BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
             Plugin.Log("Grabbed BeatmapData");
             List<BeatmapObjectData> objects;
-            float start = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float end = start + length + 2f;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
@@ -1177,7 +1119,7 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " Tunnel | ";
-            float startTime = Plugin.songAudio.time + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.2f;
+            float startTime = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.2f;
             float durationTime = duration;
             MappingExtensions.Plugin.ForceActivateForSong();
 
@@ -1202,8 +1144,8 @@
         {
             yield return new WaitForSeconds(0f);
             MappingExtensions.Plugin.ForceActivateForSong();
-            float startTime = start + Plugin.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
-            float durationTime = Plugin.songAudio.clip.length;
+            float startTime = start + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float durationTime = GameObjects.songAudio.clip.length;
 
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
             BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");

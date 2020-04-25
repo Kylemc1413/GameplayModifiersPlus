@@ -26,7 +26,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
                 TwitchMessage twitchMessage = message is TwitchMessage ? message as TwitchMessage : null;
 
 
-                if (Plugin.charges < 0) Plugin.charges = 0;
+                if (GameModifiersController.charges < 0) GameModifiersController.charges = 0;
                 Plugin.twitchCommands.CheckChargeMessage(message);
                 Plugin.twitchCommands.CheckConfigMessage(message);
                 Plugin.twitchCommands.CheckStatusCommands(message);
@@ -36,7 +36,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
                 {
                     if (GMPUI.chatIntegration && Plugin.isValidScene && !Plugin.cooldowns.GetCooldown("Global") && Plugin.twitchPluginInstalled)
                     {
-                        Plugin.commandsLeftForMessage = Config.commandsPerMessage;
+                        GameModifiersController.commandsLeftForMessage = Config.commandsPerMessage;
                         Plugin.twitchCommands.CheckMapSwapCommands(message);
                         Plugin.twitchCommands.CheckRotationCommands(message);
                         Plugin.twitchCommands.CheckSpeedCommands(message);
@@ -47,12 +47,25 @@ namespace GamePlayModifiersPlus.TwitchStuff
                         Plugin.twitchCommands.CheckGlobalCoolDown();
                     }
                 }
-                Plugin.trySuper = false;
-                Plugin.sizeActivated = false;
-                Plugin.healthActivated = false;
+                GameModifiersController.trySuper = false;
+                GameModifiersController.sizeActivated = false;
+                GameModifiersController.healthActivated = false;
 
             };
 
         }
+
+        internal static void TryAsyncMessage(string message)
+        {
+            if (!Plugin.twitchPluginInstalled) return;
+            SendAsyncMessage(message);
+        }
+        internal static void SendAsyncMessage(string message)
+        {
+            streamingService.SendTextMessage(message, commandChannel);
+            // ChatMessageHandler.streamingService.GetTwitchService().SendTextMessage(message, "kyle1413k");
+        }
+
+
     }
 }
