@@ -370,14 +370,6 @@
                     case "Stream Core":
              //           twitchPluginInstalled = true;
                         break;
-
-                    case "Beat Saber Multiplayer":
-                        //        multi = new GamePlayModifiersPlus.Multiplayer.MultiMain();
-                        //      multi.Initialize();
-                        //    multiInstalled = true;
-                        //  Log("Multiplayer Detected, enabling multiplayer functionality");
-                        break;
-
                     //     case "BeatSaberChallenges":
                     //         ChallengeIntegration.AddListeners();
                     //         break;
@@ -388,7 +380,6 @@
                 }
 
             }
-       //     twitchPluginInstalled = true;
         }
 
     }
