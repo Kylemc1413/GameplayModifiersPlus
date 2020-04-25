@@ -13,6 +13,7 @@
     - Disables Score Submission
     - Randomly continues with a new song as the end of a song approaches
     - Can adjust song selection for endless mode in the 'Endless' section of the config
+    - By default, failing in endless mode will simply move on to the next random song, this can be disabled in the 'Endless' section of the config
 ## Configuration
   - Settings for Chat Integration and other parts of GameplayModifiersPlus can be found in 'UserData/GameplayModifiersPlus.ini' which will be generated after loading the game to the main menu with the mod installed correctly
 # Chat Integration
