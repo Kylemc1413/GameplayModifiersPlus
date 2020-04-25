@@ -18,9 +18,8 @@ namespace GamePlayModifiersPlus
             if (oldColorScheme == null)
                 SetupColors();
             GameObjects.ColorManager.SetField("_colorScheme", oldColorScheme);
-            //  ColorManager.GetField<SimpleColorSO>("_saberAColor").SetColor(ColorManager.GetField<ColorScheme>("_colorScheme").saberAColor);
-            //  ColorManager.GetField<SimpleColorSO>("_saberBColor").SetColor(ColorManager.GetField<ColorScheme>("_colorScheme").saberBColor);
         }
+
         public static void SetupColors()
         {
             oldColorScheme = GameObjects.ColorManager.GetField<ColorScheme>("_colorScheme");
@@ -40,6 +39,8 @@ namespace GamePlayModifiersPlus
 
             GMPColorScheme.SetField("_saberAColor", left);
             GMPColorScheme.SetField("_saberBColor", right);
+           // GMPColorScheme.SetField("_environmentColor0", left);
+           // GMPColorScheme.SetField("_environmentColor1", right);
 
         }
     }

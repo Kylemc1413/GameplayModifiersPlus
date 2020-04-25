@@ -172,7 +172,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="TwitchStuff\Config.cs" />
-    <Compile Include="Cooldowns.cs" />
+    <Compile Include="TwitchStuff\Cooldowns.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TwitchStuff\ChatMessageHandler.cs" />
