@@ -99,7 +99,7 @@
             get => funky;
             set
             {
-                
+
                 funky = value;
                 NotifyPropertyChanged();
             }

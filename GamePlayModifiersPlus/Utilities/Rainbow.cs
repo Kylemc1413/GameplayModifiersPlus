@@ -117,10 +117,10 @@
             Color left = GetLeftColor();
             Color right = GetRightColor();
             ColorController.SetColors(left, right);
-       //     if (Plugin.customColorsInstalled)
-       //         Plugin.ResetCustomColorsSabers(left, right);
+            //     if (Plugin.customColorsInstalled)
+            //         Plugin.ResetCustomColorsSabers(left, right);
 
-            
+
         }
 
     }

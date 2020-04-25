@@ -549,9 +549,9 @@
             BeatmapData newData = newDataBase.GetCopy();
             if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.staticLights)
                 newData.SetProperty<BeatmapData>("beatmapEventData", new BeatmapEventData[0]);
-            if(randomizeStartTime)
+            if (randomizeStartTime)
             {
-                startTime = UnityEngine.Random.Range(0f, (newAudio.length / 2f) );
+                startTime = UnityEngine.Random.Range(0f, (newAudio.length / 2f));
                 duration = Mathf.Min(newAudio.length - 1f - startTime, duration);
                 List<BeatmapObjectData>[] data3 = new List<BeatmapObjectData>[4];
                 for (int i = 0; i < newData.beatmapLinesData.Length; i++)

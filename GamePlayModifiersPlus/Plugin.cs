@@ -86,7 +86,7 @@
             ChatMessageHandler.Load();
         }
 
-       
+
 
         public IEnumerator LoadRealityCheckAudio()
         {
@@ -136,7 +136,7 @@
             }
             if (chatPowers == null)
             {
-           //     Log("Null Creation of Chat Powers Object");
+                //     Log("Null Creation of Chat Powers Object");
                 chatPowers = new GameObject("Chat Powers");
                 GameObject.DontDestroyOnLoad(chatPowers);
                 twitchPowers = chatPowers.AddComponent<TwitchPowers>();
@@ -160,7 +160,7 @@
                     twitchPowers.StopAllCoroutines();
                 }
                 if (Config.resetChargesEachLevel)
-                   GameModifiersController.charges = 0;
+                    GameModifiersController.charges = 0;
 
 
             }
@@ -179,7 +179,7 @@
                     return;
                 }
 
-              ColorController.oldColorScheme = null;
+                ColorController.oldColorScheme = null;
                 levelData = BS_Utils.Plugin.LevelData;
 
                 GameObjects.Load();
@@ -215,134 +215,134 @@
             GMPUI.chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
         }
 
-/*
-        public static TextMeshProUGUI ppText;
-        public static string rank;
-        public static string pp;
-        public static float currentpp;
-        public static float oldpp = 0;
-        public static int currentRank;
-        public static int oldRank;
-        public static float deltaPP;
-        public static int deltaRank;
+        /*
+                public static TextMeshProUGUI ppText;
+                public static string rank;
+                public static string pp;
+                public static float currentpp;
+                public static float oldpp = 0;
+                public static int currentRank;
+                public static int oldRank;
+                public static float deltaPP;
+                public static int deltaRank;
 
-        public IEnumerator GrabPP()
-        {
-            yield return new WaitForSecondsRealtime(0f);
-            //
-            //
-            var texts = Resources.FindObjectsOfTypeAll<TextMeshProUGUI>();
-            if (texts != null)
-                foreach (TextMeshProUGUI text in texts)
+                public IEnumerator GrabPP()
                 {
-                    if (text != null)
-                        if (text.ToString().Contains("CustomUIText") && text.text.Contains("pp"))
+                    yield return new WaitForSecondsRealtime(0f);
+                    //
+                    //
+                    var texts = Resources.FindObjectsOfTypeAll<TextMeshProUGUI>();
+                    if (texts != null)
+                        foreach (TextMeshProUGUI text in texts)
                         {
-                            ppText = text;
-                            break;
+                            if (text != null)
+                                if (text.ToString().Contains("CustomUIText") && text.text.Contains("pp"))
+                                {
+                                    ppText = text;
+                                    break;
+
+                                }
 
                         }
-
-                }
-            yield return new WaitForSecondsRealtime(8f);
-            if (ppText != null)
-            {
-                try
-                {
-                    if (!ppText.text.Contains("html"))
-                        Log(ppText.text);
-                    if (!(ppText.text.Contains("Refresh") || ppText.text.Contains("html")))
+                    yield return new WaitForSecondsRealtime(8f);
+                    if (ppText != null)
                     {
-                        rank = ppText.text.Split('#', '<')[1];
-                        pp = ppText.text.Split('(', 'p')[1];
-                        currentpp = float.Parse(pp, System.Globalization.CultureInfo.InvariantCulture);
-                        currentRank = int.Parse(rank, System.Globalization.CultureInfo.InvariantCulture);
-                        Log("Rank: " + currentRank);
-                        Log("PP: " + currentpp);
-                        if (firstLoad == true)
-                            if (GMPUI.chatDelta)
-                            {
-                                ChatMessageHandler.TryAsyncMessage("Loaded. PP: " + currentpp + " pp. Rank: " + currentRank);
-                                firstLoad = false;
-                            }
-
-
-                        if (oldpp != 0)
+                        try
                         {
-                            deltaPP = 0;
-                            deltaRank = 0;
-                            deltaPP = currentpp - oldpp;
-                            deltaRank = currentRank - oldRank;
-
-                            if (deltaPP != 0 || deltaRank != 0)
+                            if (!ppText.text.Contains("html"))
+                                Log(ppText.text);
+                            if (!(ppText.text.Contains("Refresh") || ppText.text.Contains("html")))
                             {
-                                ppText.enableWordWrapping = false;
-                                if (deltaRank < 0)
-                                {
-                                    if (deltaRank == -1)
-                                    {
-                                        if (GMPUI.chatDelta)
-                                            ChatMessageHandler.TryAsyncMessage("Gained " + deltaPP + " pp. Gained 1 Rank.");
-                                        ppText.text += " Change: Gained " + deltaPP + " pp. " + "Gained 1 Rank";
-                                    }
-
-                                    else
-                                    {
-                                        if (GMPUI.chatDelta)
-                                            ChatMessageHandler.TryAsyncMessage("Gained " + deltaPP + " pp. Gained " + Math.Abs(deltaRank) + " Ranks.");
-                                        ppText.text += " Change: Gained " + deltaPP + " pp. " + "Gained " + Math.Abs(deltaRank) + " Ranks";
-                                    }
-
-                                }
-                                else if (deltaRank == 0)
-                                {
+                                rank = ppText.text.Split('#', '<')[1];
+                                pp = ppText.text.Split('(', 'p')[1];
+                                currentpp = float.Parse(pp, System.Globalization.CultureInfo.InvariantCulture);
+                                currentRank = int.Parse(rank, System.Globalization.CultureInfo.InvariantCulture);
+                                Log("Rank: " + currentRank);
+                                Log("PP: " + currentpp);
+                                if (firstLoad == true)
                                     if (GMPUI.chatDelta)
-                                        ChatMessageHandler.TryAsyncMessage("Gained " + deltaPP + " pp. No change in Rank.");
-                                    ppText.text += " Change: Gained " + deltaPP + " pp. " + "No change in Rank";
-                                }
+                                    {
+                                        ChatMessageHandler.TryAsyncMessage("Loaded. PP: " + currentpp + " pp. Rank: " + currentRank);
+                                        firstLoad = false;
+                                    }
 
-                                else if (deltaRank > 0)
+
+                                if (oldpp != 0)
                                 {
-                                    if (deltaRank == 1)
-                                    {
-                                        if (GMPUI.chatDelta)
-                                            ChatMessageHandler.TryAsyncMessage("Gained " + deltaPP + " pp. Lost 1 Rank.");
-                                        ppText.text += " Change: Gained " + deltaPP + " pp. " + "Lost 1 Rank";
-                                    }
+                                    deltaPP = 0;
+                                    deltaRank = 0;
+                                    deltaPP = currentpp - oldpp;
+                                    deltaRank = currentRank - oldRank;
 
-                                    else
+                                    if (deltaPP != 0 || deltaRank != 0)
                                     {
-                                        if (GMPUI.chatDelta)
-                                            ChatMessageHandler.TryAsyncMessage("Gained " + deltaPP + " pp. Lost " + Math.Abs(deltaRank) + " Ranks.");
-                                        ppText.text += " Change: Gained " + deltaPP + " pp. " + "Lost " + Math.Abs(deltaRank) + " Ranks";
-                                    }
+                                        ppText.enableWordWrapping = false;
+                                        if (deltaRank < 0)
+                                        {
+                                            if (deltaRank == -1)
+                                            {
+                                                if (GMPUI.chatDelta)
+                                                    ChatMessageHandler.TryAsyncMessage("Gained " + deltaPP + " pp. Gained 1 Rank.");
+                                                ppText.text += " Change: Gained " + deltaPP + " pp. " + "Gained 1 Rank";
+                                            }
 
+                                            else
+                                            {
+                                                if (GMPUI.chatDelta)
+                                                    ChatMessageHandler.TryAsyncMessage("Gained " + deltaPP + " pp. Gained " + Math.Abs(deltaRank) + " Ranks.");
+                                                ppText.text += " Change: Gained " + deltaPP + " pp. " + "Gained " + Math.Abs(deltaRank) + " Ranks";
+                                            }
+
+                                        }
+                                        else if (deltaRank == 0)
+                                        {
+                                            if (GMPUI.chatDelta)
+                                                ChatMessageHandler.TryAsyncMessage("Gained " + deltaPP + " pp. No change in Rank.");
+                                            ppText.text += " Change: Gained " + deltaPP + " pp. " + "No change in Rank";
+                                        }
+
+                                        else if (deltaRank > 0)
+                                        {
+                                            if (deltaRank == 1)
+                                            {
+                                                if (GMPUI.chatDelta)
+                                                    ChatMessageHandler.TryAsyncMessage("Gained " + deltaPP + " pp. Lost 1 Rank.");
+                                                ppText.text += " Change: Gained " + deltaPP + " pp. " + "Lost 1 Rank";
+                                            }
+
+                                            else
+                                            {
+                                                if (GMPUI.chatDelta)
+                                                    ChatMessageHandler.TryAsyncMessage("Gained " + deltaPP + " pp. Lost " + Math.Abs(deltaRank) + " Ranks.");
+                                                ppText.text += " Change: Gained " + deltaPP + " pp. " + "Lost " + Math.Abs(deltaRank) + " Ranks";
+                                            }
+
+                                        }
+
+                                        oldRank = currentRank;
+                                        oldpp = currentpp;
+                                    }
+                                }
+                                else
+                                {
+                                    oldRank = currentRank;
+                                    oldpp = currentpp;
+                                    deltaPP = 0;
+                                    deltaRank = 0;
                                 }
 
-                                oldRank = currentRank;
-                                oldpp = currentpp;
                             }
                         }
-                        else
+                        catch
                         {
-                            oldRank = currentRank;
-                            oldpp = currentpp;
-                            deltaPP = 0;
-                            deltaRank = 0;
+                            Log("Exception Trying to Grab PP");
                         }
 
                     }
-                }
-                catch
-                {
-                    Log("Exception Trying to Grab PP");
+                    //     firstLoad = false;
                 }
 
-            }
-            //     firstLoad = false;
-        }
-
-    */
+            */
 
 
         public static void ApplyPatches()
