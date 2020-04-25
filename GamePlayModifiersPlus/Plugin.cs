@@ -46,6 +46,7 @@
         [OnStart]
         public void OnApplicationStart()
         {
+            twitchPluginInstalled = File.Exists(Path.Combine(IPA.Utilities.UnityGame.LibraryPath, "ChatCore.dll"));
 
             Log("Creating Harmony Instance");
             harmony = new Harmony("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
@@ -69,7 +70,7 @@
 
             BeatSaberMarkupLanguage.GameplaySetup.GameplaySetup.instance.AddTab("GameplayModifiersPlus", "GamePlayModifiersPlus.Utilities.GMPUI.bsml", GMPUI.instance);
             if (twitchPluginInstalled)
-                InitStreamCore();
+                InitChatCore();
         }
 
         [OnExit]
@@ -80,7 +81,7 @@
         }
 
 
-        public void InitStreamCore()
+        public void InitChatCore()
         {
             ChatMessageHandler.Load();
         }
@@ -181,6 +182,7 @@
               ColorController.oldColorScheme = null;
                 levelData = BS_Utils.Plugin.LevelData;
 
+                GameObjects.Load();
                 GameModifiersController.SetupSpawnCallbacks();
 
                 GameModifiersController.currentSongSpeed = levelData.GameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul;
@@ -367,8 +369,8 @@
             {
                 switch (plugin.Id)
                 {
-                    case "Stream Core":
-             //           twitchPluginInstalled = true;
+                    case "ChatCore":
+                        twitchPluginInstalled = true;
                         break;
                     //     case "BeatSaberChallenges":
                     //         ChallengeIntegration.AddListeners();

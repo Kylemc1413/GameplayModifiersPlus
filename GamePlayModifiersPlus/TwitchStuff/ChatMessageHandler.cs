@@ -1,22 +1,22 @@
-﻿using StreamCore;
-using StreamCore.Config;
-using StreamCore.Interfaces;
-using StreamCore.Models.Twitch;
+﻿using ChatCore;
+using ChatCore.Config;
+using ChatCore.Interfaces;
+using ChatCore.Models.Twitch;
 using UnityEngine;
 
 namespace GamePlayModifiersPlus.TwitchStuff
 {
     public class ChatMessageHandler
     {
-        public static StreamCoreInstance streamCoreInstance;
-        public static StreamCore.Services.StreamingService streamingService;
+        public static ChatCoreInstance ChatCoreInstance;
+        public static ChatCore.Services.ChatServiceMultiplexer streamingService;
         public static IChatChannel commandChannel;
         public static void Load()
         {
-            streamCoreInstance = StreamCore.StreamCoreInstance.Create();
-            streamingService = streamCoreInstance.RunAllServices();
+            ChatCoreInstance = ChatCore.ChatCoreInstance.Create();
+            streamingService = ChatCoreInstance.RunAllServices();
             // Setup chat message callbacks
-            streamingService.OnTextMessageReceived += (StreamCore.Interfaces.IStreamingService service, StreamCore.Interfaces.IChatMessage message) =>
+            streamingService.OnTextMessageReceived += (ChatCore.Interfaces.IChatService service, ChatCore.Interfaces.IChatMessage message) =>
             {
 
                 if (message.Message.Contains("!gm"))

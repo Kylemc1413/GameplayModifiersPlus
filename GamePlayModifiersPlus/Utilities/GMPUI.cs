@@ -329,6 +329,8 @@
         }
         [UIValue("mappingExtensions")]
         public bool MappingExtensions { get => Plugin.mappingExtensionsPresent; }
+        [UIValue("twitchPlugin")]
+        public bool twitchPlugin { get => Plugin.twitchPluginInstalled; }
         [UIAction("#post-parse")]
         public void PostSetup()
         {

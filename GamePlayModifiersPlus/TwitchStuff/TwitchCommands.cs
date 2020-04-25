@@ -1,9 +1,9 @@
 ﻿namespace GamePlayModifiersPlus.TwitchStuff
 {
     //using AsyncTwitch;
-    using StreamCore;
-    using StreamCore.Interfaces;
-    using StreamCore.Models.Twitch;
+    using ChatCore;
+    using ChatCore.Interfaces;
+    using ChatCore.Models.Twitch;
     using UnityEngine;
     using GamePlayModifiersPlus.Utilities;
     public class TwitchCommands
