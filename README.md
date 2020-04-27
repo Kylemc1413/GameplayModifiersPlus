@@ -2,8 +2,8 @@
 ###### Obligatory SellOut Message: If you like the mod, consider contributing to my snack fund: [Here](https://ko-fi.com/kyle1413k)
 # Adds additional modifiers to the game, as well as Twitch Chat Integration
 
-- ### Requires BS Utils, StreamCore, and BeatSaberMarkupLanguage 
-~~#### Requires StreamCore if you plan on using Chat Integration~~
+- ### Requires BS Utils, SongCore, and BeatSaberMarkupLanguage 
+- #### Requires [ChatCore](https://github.com/brian91292/ChatCore/releases) if you plan on using Chat Integration
 
 # Standard Usage
 - ### Modifiers can be found in the GameplayModifiersPlus tab of the Mods section of the Gameplay Setup Panel when selecting songs
@@ -19,19 +19,8 @@
 # Chat Integration
 - ## Make sure to edit the TwitchLoginInfo.ini located in the UserData/StreamCore folder, which can be found in your game installation folder, in the same directory as your game executable, if it does not exist, make sure you have StreamCore installed through the mod installer, and run the game to the main menu, then close the game.
 - ## GameplayModifiersPlus.ini will be generated in the UserData folder after running the game with the plugin installed
-##### StreamCore Setup Guide
-- Example StreamCore Config
-![StreamCore Config Image](https://imgur.com/a/r34mRMz)
-- Make sure the game is closed before editing the config
-- Username: The name of the user the plugin will send chat messages through
-- ChannelName: The name of the channel the plugin will monitor the chat of to look for messages
-- OauthKey: The oauth key for the user put in the Username section which is required for the plugin to be able to send messages through that user, you can generate one for that account at https://twitchapps.com/tmi/
-- OauthKey MUST Include the 'oauth:' part of the key that is generated
-- Do NOT freely give out your oauth key to other people, (And no that is not my actual oauth key in the image, just an example)
-
-- ### To Use Chat Integration, ensure you have set up StreamCore to connect to your channel, then turn on the modifier, type !gm help into your chat for details on how to use it, the config for chat settings is located in `UserData/GameplayModifiersPlusChatSettings.ini` (As of Version 1.6.0 or Later it is located in `UserData/GameplayModifiersPlus.ini` instead)
-- ### Refer to below for more information on using chat integration, if you decide not to read it and end up confused because you did not read it, go read it. But you should probably just read it in the first place and save yourself the future trouble
-
+##### ChatCore Setup
+- Refer to the [Readme](https://github.com/brian91292/ChatCore#basic-configuration-for-beat-saber-mod-users) for how to set up and install ChatCore properly
 ## IMPORTANT COMMANDS FOR USERS - GAMEPLAY COMMANDS ARE DETAILED BELOW CONFIG
 - #####  '!gm help' Links to readme for the mod, lists various commands that give useful information
 - ##### '!gm status' Displays whether chat integration is currently on, as well as who can currently use chat integration commands
