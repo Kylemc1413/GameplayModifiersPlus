@@ -17,8 +17,7 @@
 ## Configuration
   - Settings for Chat Integration and other parts of GameplayModifiersPlus can be found in 'UserData/GameplayModifiersPlus.ini' which will be generated after loading the game to the main menu with the mod installed correctly
 # Chat Integration
-- ## Make sure to edit the TwitchLoginInfo.ini located in the UserData/StreamCore folder, which can be found in your game installation folder, in the same directory as your game executable, if it does not exist, make sure you have StreamCore installed through the mod installer, and run the game to the main menu, then close the game.
-- ## GameplayModifiersPlus.ini will be generated in the UserData folder after running the game with the plugin installed
+- #### GameplayModifiersPlus.ini will be generated in the UserData folder after running the game with the plugin installed
 ##### ChatCore Setup
 - Refer to the [Readme](https://github.com/brian91292/ChatCore#basic-configuration-for-beat-saber-mod-users) for how to set up and install ChatCore properly
 ## IMPORTANT COMMANDS FOR USERS - GAMEPLAY COMMANDS ARE DETAILED BELOW CONFIG
