@@ -46,7 +46,6 @@
         [OnStart]
         public void OnApplicationStart()
         {
-            twitchPluginInstalled = File.Exists(Path.Combine(IPA.Utilities.UnityGame.LibraryPath, "ChatCore.dll"));
 
             Log("Creating Harmony Instance");
             harmony = new Harmony("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
@@ -109,7 +108,7 @@
         public void OnSceneLoaded(Scene scene, LoadSceneMode arg1)
         {
 
-            if (scene.name == "MenuCore")
+            if (scene.name == "MenuViewControllers")
             {
                 if (TwitchPowers.RealityClip == null)
                     SharedCoroutineStarter.instance.StartCoroutine(LoadRealityCheckAudio());
@@ -370,7 +369,7 @@
                 switch (plugin.Id)
                 {
                     case "ChatCore":
-                        twitchPluginInstalled = true;
+                        twitchPluginInstalled = File.Exists(Path.Combine(IPA.Utilities.UnityGame.LibraryPath, "ChatCore.dll"));
                         break;
                     //     case "BeatSaberChallenges":
                     //         ChallengeIntegration.AddListeners();
