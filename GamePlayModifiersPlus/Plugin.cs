@@ -13,15 +13,19 @@
     using GamePlayModifiersPlus.Utilities;
     using IPA.Config;
     using IPA;
-
+    using System.Net.Http;
+    using System.Reflection;
     [Plugin(RuntimeOptions.SingleStartInit)]
     public class Plugin
     {
         internal static BS_Utils.Utilities.Config ConfigSettings = new BS_Utils.Utilities.Config("GameplayModifiersPlus");
         internal static IPA.Logging.Logger log;
 
+        internal static HttpClient client;
+
         internal static bool mappingExtensionsPresent = false;
         internal static bool twitchPluginInstalled = false;
+        internal static bool songRequestPluginInstalled = false;
         public static bool isValidScene = false;
         public static bool firstLoad = true;
 
@@ -46,6 +50,12 @@
         [OnStart]
         public void OnApplicationStart()
         {
+            if (client == null)
+            {
+                client = new HttpClient();
+                client.Timeout = TimeSpan.FromSeconds(30);
+                client.DefaultRequestHeaders.Add("User-Agent", $"GameplayModifiersPlus/{Assembly.GetExecutingAssembly().GetName().Version.ToString()}");
+            }
 
             Log("Creating Harmony Instance");
             harmony = new Harmony("com.kyle1413.BeatSaber.GamePlayModifiersPlus");
@@ -115,7 +125,6 @@
                 if (TwitchPowers.WorkoutClip == null)
                     SharedCoroutineStarter.instance.StartCoroutine(LoadWorkoutAudio());
                 ReadPrefs();
-
             }
         }
 
@@ -369,11 +378,15 @@
                 switch (plugin.Id)
                 {
                     case "ChatCore":
+                     //   if(plugin.Version > new SemVer.Version(1, 0, 0))
                         twitchPluginInstalled = File.Exists(Path.Combine(IPA.Utilities.UnityGame.LibraryPath, "ChatCore.dll"));
                         break;
                     //     case "BeatSaberChallenges":
                     //         ChallengeIntegration.AddListeners();
                     //         break;
+                    case "SongRequestManager":
+                        songRequestPluginInstalled = true;
+                        break;
                     case "MappingExtensions":
                         mappingExtensionsPresent = true;
                         break;

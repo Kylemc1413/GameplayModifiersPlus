@@ -10,6 +10,8 @@ using System.Reflection;
 using System.IO;
 using GamePlayModifiersPlus.Utilities;
 using GamePlayModifiersPlus.TwitchStuff;
+using UnityEngine.Networking;
+using System.IO.Compression;
 namespace GamePlayModifiersPlus
 {
     internal class EndlessBehavior : MonoBehaviour
@@ -75,13 +77,13 @@ namespace GamePlayModifiersPlus
 
         void Update()
         {
-            
+
             if (GameObjects.songAudio.time >= switchTime && nextSong != null)
             {
                 switchTime = nextSong.length - 1f;
                 SwitchToNextMap();
             }
-            
+
         }
 
         private void SwitchToNextMap()
@@ -109,32 +111,48 @@ namespace GamePlayModifiersPlus
             ResetProgressUI();
         }
 
+
         private async Task PrepareNextSong()
         {
             try
             {
                 bool validSong = false;
 
+
                 while (!validSong)
                 {
                     await Task.Yield();
-                    if (ToPlay.Count == 0)
+                    IPreviewBeatmapLevel previewLevel = null;
+                    IPreviewBeatmapLevel requestLevel = null;
+
+                    if (Config.EndlessPrioritizeSongRequests)
+                        requestLevel = await GetSongRequestSong();
+                    if (requestLevel != null)
                     {
-                        if (!FoundValidSong) break;
-                        else
-                            ResetToPlay();
+                        previewLevel = requestLevel;
+                    }
+                    else
+                    {
+                        if (ToPlay.Count == 0)
+                        {
+                            if (!FoundValidSong) break;
+                            else
+                                ResetToPlay();
+                        }
+
+                        int nextSongIndex = random.Next(0, ToPlay.Count - 1);
+
+                        previewLevel = ToPlay[nextSongIndex];
+                        ToPlay.RemoveAt(nextSongIndex);
                     }
 
-                    int nextSongIndex = random.Next(0, ToPlay.Count - 1);
-                    var previewLevel = ToPlay[nextSongIndex];
                     validSong = IsValid(previewLevel, out nextMapDiffInfo);
 
                     if (validSong)
                     {
                         nextSongInfo = previewLevel as CustomPreviewBeatmapLevel;
                     }
-                    ToPlay.RemoveAt(nextSongIndex);
-                   // Plugin.Log("Removing song, new count: " + ToPlay.Count);
+                    // Plugin.Log("Removing song, new count: " + ToPlay.Count);
                 }
 
                 if (nextMapDiffInfo == null) return;
@@ -298,5 +316,106 @@ namespace GamePlayModifiersPlus
             skipBehavior.ReInit();
         }
 
+
+
+
+
+        private async Task<CustomPreviewBeatmapLevel> GetSongRequestSong()
+        {
+            if (!Plugin.songRequestPluginInstalled)
+                return null;
+            else
+            {
+                //      var result = await GetSongRequestSRM();
+                //      return result;
+                return null;
+            }
+
+
+        }
+        /*
+        private async Task<CustomPreviewBeatmapLevel> GetSongRequestSRM()
+        {
+            if (SongRequestManager.RequestQueue.Songs?.Count == 0)
+                return null;
+            try
+            {
+                var next = SongRequestManager.RequestQueue.Songs.First();
+                //Need to wait for to update to do more
+                SongRequestManager.RequestBot.DequeueRequest(next, false);
+                //Check if song exists
+                if (SongCore.Collections.songWithHashPresent(next.song["hash"]))
+                {
+                    var level = SongCore.Loader.CustomLevels.FirstOrDefault(x => SongCore.Utilities.Hashing.GetCustomLevelHash(x.Value).ToLower() == next.song["hash"].Value.ToLower()).Value;
+                    return level;
+                }
+                else
+                {
+                    string path = string.Concat(new string[]
+                    {
+                        next.song["id"].Value,
+                        " (",
+                        next.song["songName"].Value,
+                        " - ",
+                        next.song["levelAuthor"].Value,
+                        ")"
+                    });
+                    path = SongRequestManager.RequestBot.normalize.RemoveDirectorySymbols(ref path);
+                    string currentSongDirectory = Path.Combine(Environment.CurrentDirectory, "Beat Saber_Data\\CustomLevels", path);
+                    if (!Directory.Exists(currentSongDirectory))
+                        Directory.CreateDirectory(currentSongDirectory);
+                    else
+                    {
+                        try
+                        {
+                            var level2 = SongCore.Loader.LoadSong(SongCore.Loader.GetStandardLevelInfoSaveData(currentSongDirectory), currentSongDirectory, out var songhash1);
+                            if(level2 != null)
+                                return level2;
+                        }
+                        catch(Exception ex)
+                        {
+                            Plugin.Log("Failed to get song request from existing directory, attempting to download");
+                        }
+                    }
+                    string downloadURL = "https://beatsaver.com" + next.song["downloadURL"].Value;
+                    var request = await Plugin.client.GetAsync(downloadURL);
+                    if(!request.IsSuccessStatusCode)
+                    {
+                        Plugin.Log($"Failed to get song request song. {request.StatusCode} | {request.ReasonPhrase}");
+                        return null;
+                    }
+
+                    byte[] data = await request.Content.ReadAsByteArrayAsync();
+
+
+                    Stream dataStream = new MemoryStream(data);
+                    ZipArchive archive = new System.IO.Compression.ZipArchive(dataStream, System.IO.Compression.ZipArchiveMode.Read);
+                    await Task.Run(() =>
+                    {
+                        archive.ExtractToDirectory(currentSongDirectory);
+                        foreach (var entry in archive.Entries)
+                        {
+                            var entryPath = Path.Combine(currentSongDirectory, entry.Name); 
+                                entry.ExtractToFile(entryPath, true);
+
+                        }
+                    }).ConfigureAwait(false);
+
+                    var level = SongCore.Loader.LoadSong(SongCore.Loader.GetStandardLevelInfoSaveData(currentSongDirectory), currentSongDirectory, out var songhash2);
+                    if (level != null)
+                        return level;
+                    else
+                        return null;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Plugin.Log($"Failed to get song request song. {ex}");
+                return null;
+            }
+        }
+
+        */
     }
 }

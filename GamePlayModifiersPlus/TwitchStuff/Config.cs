@@ -121,7 +121,7 @@
         public static BeatmapDifficulty EndlessMaxDifficulty = BeatmapDifficulty.ExpertPlus;
         public static bool EndlessUseCurrentLevelCollection = true;
         public static bool EndlessContinueOnFail = true;
-
+        public static bool EndlessPrioritizeSongRequests = false;
 
         public static void Load()
         {
@@ -309,7 +309,7 @@
         static void CompileChargeCostString()
         {
             var iniData = Plugin.ConfigSettings.GetField<object>("_instance").GetField<IniParser.Model.IniData>("data");
-            System.Text.StringBuilder result = new System.Text.StringBuilder("Current Costs | ");
+            System.Text.StringBuilder result = new System.Text.StringBuilder("\nCurrent Costs | \n");
             int totalCosts = 0;
             foreach (var section in iniData.Sections)
             {
@@ -319,7 +319,7 @@
                     int cost = 0;
                     int.TryParse(iniData[name]["ChargeCost"], out cost);
                     totalCosts += cost;
-                    result.Append($"{name}: {cost} | ");
+                    result.Append($"{name}: {cost} | \n");
                 }
             }
             if (totalCosts == 0)

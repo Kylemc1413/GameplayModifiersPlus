@@ -38,7 +38,7 @@
                 GameModifiersController.charges += (twitchMessage.Bits / Config.bitsPerCharge);
                 ChatMessageHandler.TryAsyncMessage("Current Charges: " + GameModifiersController.charges);
             }
-            if (twitchMessage.Sender.Name.ToLower() == "kyle1413k" && message.Message.ToLower().Contains("!gm admincharge"))
+            if (twitchMessage.Sender.UserName.ToLower() == "kyle1413k" && message.Message.ToLower().Contains("!gm admincharge"))
             {
                 GameModifiersController.charges += (Config.maxCharges / 2);
                 ChatMessageHandler.TryAsyncMessage("Current Charges: " + GameModifiersController.charges);
@@ -143,7 +143,16 @@
             if (!Plugin.cooldowns.GetCooldown("chargescommand"))
                 if (message.Message.ToLower().Contains("!gm charges"))
                 {
-                    ChatMessageHandler.TryAsyncMessage("Charges: " + GameModifiersController.charges + " | Commands Per Message: " + Config.commandsPerMessage + " | " + Config.GetChargeCostString());
+                    string output = "Charges: " + GameModifiersController.charges + " | Commands Per Message: " + Config.commandsPerMessage + " | " + Config.GetChargeCostString();
+                    string pasteLink = ""; //await PasteRequests.GetHastebin(output, "GamePlayModifiersPlus Response", $"Charge Info for {ChatMessageHandler.commandChannel.Id}");
+                    if (string.IsNullOrEmpty(pasteLink))
+                    {
+                        output = output.Replace("\n", "");
+                        ChatMessageHandler.TryAsyncMessage(output);
+                    }
+
+                    else
+                        ChatMessageHandler.TryAsyncMessage($"View Charge Information Here: {pasteLink}");
                     SharedCoroutineStarter.instance.StartCoroutine(Cooldowns.CommandCoolDown("chargescommand", Config.chargesCommandCoolDown));
                 }
         }
