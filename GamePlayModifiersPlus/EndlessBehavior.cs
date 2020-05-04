@@ -140,7 +140,7 @@ namespace GamePlayModifiersPlus
                                 ResetToPlay();
                         }
 
-                        int nextSongIndex = random.Next(0, ToPlay.Count - 1);
+                        int nextSongIndex = random.Next(0, ToPlay.Count);
 
                         previewLevel = ToPlay[nextSongIndex];
                         ToPlay.RemoveAt(nextSongIndex);
