@@ -378,14 +378,14 @@
                 switch (plugin.Id)
                 {
                     case "ChatCore":
-                        if(!(plugin.Version < new SemVer.Version("1.0.0-rc4")))
+                        if(!(plugin.Version < new SemVer.Version("1.0.0-rc5")))
                         twitchPluginInstalled = File.Exists(Path.Combine(IPA.Utilities.UnityGame.LibraryPath, "ChatCore.dll"));
                         break;
                     //     case "BeatSaberChallenges":
                     //         ChallengeIntegration.AddListeners();
                     //         break;
                     case "SongRequestManager":
-                        songRequestPluginInstalled = true;
+                 //       songRequestPluginInstalled = true;
                         break;
                     case "MappingExtensions":
                         mappingExtensionsPresent = true;
