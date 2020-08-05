@@ -1,4 +1,4 @@
-###### Obligatory SellOut Message: If you like the mod, consider contributing to my snack fund: [Here](https://ko-fi.com/kyle1413k)
+
 
 # Adds additional modifiers to the game, as well as Twitch Chat Integration
 
