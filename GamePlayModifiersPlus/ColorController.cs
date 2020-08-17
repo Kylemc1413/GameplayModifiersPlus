@@ -27,6 +27,8 @@ namespace GamePlayModifiersPlus
             GMPColorScheme.SetField("_saberBColor", oldColorScheme.saberBColor);
             GMPColorScheme.SetField("_environmentColor0", oldColorScheme.environmentColor0);
             GMPColorScheme.SetField("_environmentColor1", oldColorScheme.environmentColor1);
+            GMPColorScheme.SetField("_environmentColor0Boost", oldColorScheme.environmentColor0Boost);
+            GMPColorScheme.SetField("_environmentColor1Boost", oldColorScheme.environmentColor1Boost);
             GMPColorScheme.SetField("_obstaclesColor", oldColorScheme.obstaclesColor);
         }
         public static void SetColors(Color left, Color right)
