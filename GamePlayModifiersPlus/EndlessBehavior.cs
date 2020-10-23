@@ -52,7 +52,9 @@ namespace GamePlayModifiersPlus
             _allow360 = Config.EndlessAllow360;
 
             ResetToPlay();
-            ToPlay.Remove(BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.level);
+            var playingLevel = ToPlay.FirstOrDefault(x => x.levelID == BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.levelID);
+            if (playingLevel != null)
+                ToPlay.Remove(playingLevel);
         }
 
         private void ResetToPlay()
