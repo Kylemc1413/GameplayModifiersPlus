@@ -213,7 +213,11 @@ namespace GamePlayModifiersPlus
             }
 
             if (GMPUI.EndlessMode)
+            {
+                BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("GameplayModifiersPlus");
                 new GameObject("GMP Endless Behavior").AddComponent<EndlessBehavior>();
+            }
+
         }
 
 
