@@ -191,7 +191,6 @@
                 levelData = BS_Utils.Plugin.LevelData;
 
                 GameObjects.Load();
-                GameModifiersController.SetupSpawnCallbacks();
 
                 GameModifiersController.currentSongSpeed = levelData.GameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul;
 

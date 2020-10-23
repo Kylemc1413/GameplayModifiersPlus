@@ -53,6 +53,7 @@ namespace GamePlayModifiersPlus.Utilities
                     Plugin.Log("Audio null");
             }
             Mixer = soundEffectManager.GetField<AudioManagerSO>("_audioManager");
+            GameModifiersController.SetupSpawnCallbacks();
         }
         public static void Load()
         {

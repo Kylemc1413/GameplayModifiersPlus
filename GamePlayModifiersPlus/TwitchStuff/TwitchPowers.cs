@@ -628,6 +628,9 @@
             AudioTimeSyncController.InitData newInitData = new AudioTimeSyncController.InitData(clip,
                             time, timeOffset, 1f);
             GameObjects.AudioTimeSync.SetField("_initData", newInitData);
+            GameObjects.AudioTimeSync.SetField("_startSongTime", time);
+            GameObjects.AudioTimeSync.SetField("_songTimeOffset", timeOffset 
+                + GameObjects.AudioTimeSync.GetField<float, AudioTimeSyncController>("_audioLatency"));
             GameObjects.AudioTimeSync.SetField("_audioStarted", false);
             GameObjects.songAudio.clip = clip;
             GameObjects.AudioTimeSync.StartSong();

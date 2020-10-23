@@ -42,6 +42,7 @@ namespace GamePlayModifiersPlus
 
             GMPColorScheme.SetField("_saberAColor", left);
             GMPColorScheme.SetField("_saberBColor", right);
+            GameObjects.ColorManager.Start();
             // GMPColorScheme.SetField("_environmentColor0", left);
             // GMPColorScheme.SetField("_environmentColor1", right);
 

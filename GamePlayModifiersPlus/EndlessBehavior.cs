@@ -97,8 +97,8 @@ namespace GamePlayModifiersPlus
 
             AudioClip oldClip = GameObjects.songAudio.clip;
             TwitchPowers.ResetTimeSync(nextSong, 0f, nextSongInfo.songTimeOffset, 1f);
-   //         TwitchPowers.ManuallySetNJSOffset(GameObjects.spawnController, nextMapDiffInfo.noteJumpMovementSpeed,
-   // nextMapDiffInfo.noteJumpStartBeatOffset, nextSongInfo.beatsPerMinute);
+            TwitchPowers.ManuallySetNJSOffset(GameObjects.spawnController, nextMapDiffInfo.noteJumpMovementSpeed,
+    nextMapDiffInfo.noteJumpStartBeatOffset, nextSongInfo.beatsPerMinute);
      
             
             
@@ -259,7 +259,7 @@ namespace GamePlayModifiersPlus
                     }
                     switch (req)
                     {
-                        case "MappingExtensions":
+                        case "Mapping Extensions":
                             MappingExtensions.Plugin.ForceActivateForSong();
                             break;
 
