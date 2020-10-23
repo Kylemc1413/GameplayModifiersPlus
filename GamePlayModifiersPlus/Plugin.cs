@@ -186,7 +186,7 @@
                     Log("Isolated Level, not activating");
                     return;
                 }
-
+                if (!BS_Utils.Plugin.LevelData.IsSet || BS_Utils.Plugin.LevelData.Mode != BS_Utils.Gameplay.Mode.Standard) return;
                 ColorController.oldColorScheme = null;
                 levelData = BS_Utils.Plugin.LevelData;
 
@@ -206,7 +206,7 @@
                         GameModifiersController.charges = Config.maxCharges;
                 }
 
-                GameModifiersController.CheckGMPModifiers();
+               SharedCoroutineStarter.instance.StartCoroutine(GameModifiersController.CheckGMPModifiers());
             }
         }
 
@@ -219,8 +219,8 @@
         public void ReadPrefs()
         {
             Config.Load();
-            GMPUI.disableFireworks = ModPrefs.GetBool("GameplayModifiersPlus", "DisableFireworks", false, false);
-            GMPUI.chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
+       //     GMPUI.disableFireworks = ModPrefs.GetBool("GameplayModifiersPlus", "DisableFireworks", false, false);
+       //     GMPUI.chatDelta = ModPrefs.GetBool("GameplayModifiersPlus", "chatDelta", false, true);
         }
 
         /*
@@ -358,7 +358,7 @@
             Log("Apply Patch Function");
             try
             {
-
+               
                 harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
                 Log("Applying Harmony Patches");
             }
@@ -378,8 +378,9 @@
                 switch (plugin.Id)
                 {
                     case "ChatCore":
-                        if(!(plugin.Version < new SemVer.Version("1.0.0-rc5")))
-                        twitchPluginInstalled = File.Exists(Path.Combine(IPA.Utilities.UnityGame.LibraryPath, "ChatCore.dll"));
+                        //      if(!(plugin.Version < new SemVer.Version("1.0.0-rc5")))
+                        //      twitchPluginInstalled = File.Exists(Path.Combine(IPA.Utilities.UnityGame.LibraryPath, "ChatCore.dll"));
+                        twitchPluginInstalled = false;
                         break;
                     //     case "BeatSaberChallenges":
                     //         ChallengeIntegration.AddListeners();

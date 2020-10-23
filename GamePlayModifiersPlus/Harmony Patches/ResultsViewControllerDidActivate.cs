@@ -14,9 +14,9 @@ namespace GamePlayModifiersPlus.Harmony_Patches
     class ResultsViewControllerDidActivate
     {
         internal static bool initialNewHighScore = false;
-        static void Prefix(bool firstActivation, HMUI.ViewController.ActivationType activationType, ref ResultsViewController __instance, ref bool ____newHighScore)
+        static void Prefix(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling, ref ResultsViewController __instance, ref bool ____newHighScore)
         {
-            if (activationType == HMUI.ViewController.ActivationType.AddedToHierarchy)
+            if (addedToHierarchy)
             {
                 if (GMPUI.disableFireworks)
                 {
@@ -27,7 +27,7 @@ namespace GamePlayModifiersPlus.Harmony_Patches
 
             }
         }
-        static void Postfix(bool firstActivation, HMUI.ViewController.ActivationType activationType, ref ResultsViewController __instance, ref bool ____newHighScore, ref GameObject ____newHighScoreText)
+        static void Postfix(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling, ref ResultsViewController __instance, ref bool ____newHighScore, ref GameObject ____newHighScoreText)
         {
             if (GMPUI.disableFireworks)
             {

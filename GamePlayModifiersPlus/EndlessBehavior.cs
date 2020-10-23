@@ -10,6 +10,7 @@ using System.Reflection;
 using System.IO;
 using GamePlayModifiersPlus.Utilities;
 using GamePlayModifiersPlus.TwitchStuff;
+using IPA.Utilities;
 using UnityEngine.Networking;
 using System.IO.Compression;
 namespace GamePlayModifiersPlus
@@ -24,6 +25,8 @@ namespace GamePlayModifiersPlus
         internal AudioClip nextSong;
         private BeatmapData nextBeatmap;
         private CustomPreviewBeatmapLevel nextSongInfo;
+        private BeatmapCharacteristicSO nextCharacteristic;
+        private BeatmapDifficulty nextDifficulty;
         private StandardLevelInfoSaveData.DifficultyBeatmap nextMapDiffInfo;
         private PauseMenuManager pauseManager;
         private float switchTime = float.MaxValue;
@@ -66,7 +69,7 @@ namespace GamePlayModifiersPlus
         {
             yield return new WaitForSeconds(0.1f);
             callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            originalSpawnMovementData = GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
+            originalSpawnMovementData = GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData");
             seManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().First();
             progessController = Resources.FindObjectsOfTypeAll<SongProgressUIController>().First();
             pauseManager = Resources.FindObjectsOfTypeAll<PauseMenuManager>().First();
@@ -78,7 +81,7 @@ namespace GamePlayModifiersPlus
         void Update()
         {
 
-            if (GameObjects.songAudio.time >= switchTime && nextSong != null)
+            if (GameObjects.songAudio?.time >= switchTime && nextSong != null)
             {
                 switchTime = nextSong.length - 1f;
                 SwitchToNextMap();
@@ -90,12 +93,15 @@ namespace GamePlayModifiersPlus
         {
             if (nextSong == null || nextBeatmap == null || nextMapDiffInfo == null) return;
             if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.staticLights)
-                nextBeatmap.SetProperty<BeatmapData>("beatmapEventData", new BeatmapEventData[0]);
+                nextBeatmap.SetProperty<BeatmapData, List<BeatmapEventData>>("_beatmapEventsData", new BeatmapEventData[0].ToList());
 
             AudioClip oldClip = GameObjects.songAudio.clip;
             TwitchPowers.ResetTimeSync(nextSong, 0f, nextSongInfo.songTimeOffset, 1f);
-            TwitchPowers.ManuallySetNJSOffset(GameObjects.spawnController, nextMapDiffInfo.noteJumpMovementSpeed,
-                nextMapDiffInfo.noteJumpStartBeatOffset, nextSongInfo.beatsPerMinute);
+   //         TwitchPowers.ManuallySetNJSOffset(GameObjects.spawnController, nextMapDiffInfo.noteJumpMovementSpeed,
+   // nextMapDiffInfo.noteJumpStartBeatOffset, nextSongInfo.beatsPerMinute);
+     
+            
+            
             //    TwitchPowers.ClearCallbackItemDataList(callBackDataList);
             // DestroyNotes();
             TwitchPowers.DestroyObjectsRaw();
@@ -225,6 +231,8 @@ namespace GamePlayModifiersPlus
                     if (ValidateDifficulty(diff, extraData, selectedCharacteristic, difficulty))
                     {
                         nextDiff = diff;
+                        nextDifficulty = difficulty;
+                        nextCharacteristic = selectedCharacteristic;
                         return true;
                     }
                 }
@@ -274,7 +282,7 @@ namespace GamePlayModifiersPlus
 
         private void ClearSoundEffects()
         {
-            seManager.GetField<NoteCutSoundEffect.Pool>("_noteCutSoundEffectPool").Clear();
+            seManager.GetField<NoteCutSoundEffect.Pool, NoteCutSoundEffectManager>("_noteCutSoundEffectPool").Clear();
         }
 
         private void ResetProgressUI()
@@ -290,8 +298,8 @@ namespace GamePlayModifiersPlus
 
         private void UpdatePauseMenu()
         {
-            var currInitData = pauseManager.GetField<PauseMenuManager.InitData>("_initData");
-            PauseMenuManager.InitData newData = new PauseMenuManager.InitData(currInitData.backButtonText, nextSongInfo.songName, nextSongInfo.songSubName, nextMapDiffInfo.difficulty);
+            var currInitData = pauseManager.GetField<PauseMenuManager.InitData, PauseMenuManager>("_initData");
+            PauseMenuManager.InitData newData = new PauseMenuManager.InitData(currInitData.backButtonText, nextSongInfo, nextDifficulty, nextCharacteristic,true, true);
             pauseManager.SetField("_initData", newData);
             pauseManager.Start();
         }

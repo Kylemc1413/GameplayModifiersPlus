@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +8,8 @@ using UnityEngine;
 using GamePlayModifiersPlus.Utilities;
 using System.Media;
 using GamePlayModifiersPlus.TwitchStuff;
+using BS_Utils.Utilities;
+
 namespace GamePlayModifiersPlus
 {
     public class GameModifiersController
@@ -37,7 +40,7 @@ namespace GamePlayModifiersPlus
             }
         }
 
-        public static void SpawnController_ScaleRemoveMiss(INoteController controller)
+        public static void SpawnController_ScaleRemoveMiss(NoteController controller)
         {
             NoteData note = controller.noteData;
             Transform noteTransform = controller.noteTransform;
@@ -53,7 +56,7 @@ namespace GamePlayModifiersPlus
             }
         }
 
-        public static void SpawnController_ScaleRemoveCut(INoteController controller, NoteCutInfo arg3)
+        public static void SpawnController_ScaleRemoveCut(NoteController controller, NoteCutInfo arg3)
         {
             NoteData note = controller.noteData;
             Transform noteTransform = controller.noteTransform;
@@ -136,21 +139,21 @@ namespace GamePlayModifiersPlus
 
         public static void ResetTimeSync(AudioTimeSyncController timeSync, float newTimeScale, AudioTimeSyncController.InitData newData)
         {
-            timeSync.SetPrivateField("_timeScale", newTimeScale);
-            timeSync.SetPrivateField("_startSongTime", timeSync.songTime);
-            timeSync.SetPrivateField("_audioStartTimeOffsetSinceStart", timeSync.GetProperty<float>("timeSinceStart") - (timeSync.songTime + newData.songTimeOffset));
-            timeSync.SetPrivateField("_fixingAudioSyncError", false);
-            timeSync.SetPrivateField("_playbackLoopIndex", 0);
+            timeSync.SetField("_timeScale", newTimeScale);
+            timeSync.SetField("_startSongTime", timeSync.songTime);
+            timeSync.SetField("_audioStartTimeOffsetSinceStart", timeSync.GetProperty<float>("timeSinceStart") - (timeSync.songTime + newData.songTimeOffset));
+            timeSync.SetField("_fixingAudioSyncError", false);
+            timeSync.SetField("_playbackLoopIndex", 0);
             timeSync.audioSource.pitch = newTimeScale;
         }
 
-        public static void CheckGMPModifiers()
+        public static IEnumerator CheckGMPModifiers()
         {
-
+            yield return new WaitForSeconds(0.1f);
             if (GMPUI.EndlessMode || GMPUI.removeCrouchWalls || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.angleShift || GMPUI.laneShift || GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
             {
                 //     ApplyPatches();
-                UnityEngine.Random.InitState(Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.beatmapData.notesCount);
+                UnityEngine.Random.InitState(Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.beatmapData.beatmapObjectsData.Count());
                 BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("GameplayModifiersPlus");
 
                 if (GMPUI.njsRandom || GMPUI.offsetrandom)
@@ -161,11 +164,22 @@ namespace GamePlayModifiersPlus
                 if (GMPUI.removeCrouchWalls)
                 {
                     if (Plugin.levelData.GameplayCoreSceneSetupData.gameplayModifiers.enabledObstacleType != GameplayModifiers.EnabledObstacleType.NoObstacles)
-                        Plugin.levelData.GameplayCoreSceneSetupData.gameplayModifiers.enabledObstacleType = GameplayModifiers.EnabledObstacleType.FullHeightOnly;
+                        Plugin.levelData.GameplayCoreSceneSetupData.gameplayModifiers.SetProperty("enabledObstacleType", GameplayModifiers.EnabledObstacleType.FullHeightOnly);
                 }
                 if (GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.fiveLanes || GMPUI.laneShift || GMPUI.angleShift)
                 {
-                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.ExtraLanes());
+                    bool notSafe = false;
+                    var songdata = SongCore.Collections.RetrieveDifficultyData(BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap);
+                    if (songdata == null) notSafe = false;
+                    else
+                    {
+                        if (songdata.additionalDifficultyData._requirements.Count() > 0)
+                            notSafe = true;
+                    }
+                    if (!notSafe)
+                        SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.ExtraLanes());
+                    else
+                        Plugin.log.Warn("Not activating Mapping Extensions Modifiers for Map with Requirements");
                 }
                 if (GMPUI.noArrows)
                     SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.NoArrows());

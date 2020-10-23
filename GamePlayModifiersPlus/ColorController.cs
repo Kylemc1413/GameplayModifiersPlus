@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using GamePlayModifiersPlus.Utilities;
+using IPA.Utilities;
 namespace GamePlayModifiersPlus
 {
     public static class ColorController
@@ -22,7 +23,7 @@ namespace GamePlayModifiersPlus
 
         public static void SetupColors()
         {
-            oldColorScheme = GameObjects.ColorManager.GetField<ColorScheme>("_colorScheme");
+            oldColorScheme = GameObjects.ColorManager.GetField<ColorScheme, ColorManager>("_colorScheme");
             GMPColorScheme.SetField("_saberAColor", oldColorScheme.saberAColor);
             GMPColorScheme.SetField("_saberBColor", oldColorScheme.saberBColor);
             GMPColorScheme.SetField("_environmentColor0", oldColorScheme.environmentColor0);
@@ -36,7 +37,7 @@ namespace GamePlayModifiersPlus
             if (!GameObjects.ColorManager) return;
             if (oldColorScheme == null)
                 SetupColors();
-            if (GameObjects.ColorManager.GetField<ColorScheme>("_colorScheme") != GMPColorScheme)
+            if (GameObjects.ColorManager.GetField<ColorScheme, ColorManager>("_colorScheme") != GMPColorScheme)
                 GameObjects.ColorManager.SetField("_colorScheme", GMPColorScheme);
 
             GMPColorScheme.SetField("_saberAColor", left);

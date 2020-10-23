@@ -8,6 +8,7 @@ using UnityEngine;
 using TMPro;
 namespace GamePlayModifiersPlus.Harmony_Patches
 {
+    /*
     [HarmonyPatch(typeof(StandardLevelDetailView))]
     [HarmonyPatch("RefreshContent", MethodType.Normal)]
 
@@ -47,4 +48,5 @@ namespace GamePlayModifiersPlus.Harmony_Patches
 
         }
     }
+    */
 }

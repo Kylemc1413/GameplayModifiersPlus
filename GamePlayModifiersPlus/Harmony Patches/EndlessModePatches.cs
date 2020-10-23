@@ -5,16 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using HarmonyLib;
 using UnityEngine;
+using IPA.Utilities;
 namespace GamePlayModifiersPlus.Harmony_Patches
 {
-    [HarmonyPatch(typeof(LevelSelectionFlowCoordinator))]
-    [HarmonyPatch("StartLevelOrShow360Warning", MethodType.Normal)]
+    [HarmonyPatch(typeof(SinglePlayerLevelSelectionFlowCoordinator))]
+    [HarmonyPatch("StartLevelOrShow360Prompt", MethodType.Normal)]
     class PlayPressedFetchLastLevelCollection
     {
-        public static void Prefix(LevelSelectionFlowCoordinator __instance, ref LevelSelectionNavigationController ____levelSelectionNavigationController)
+        public static void Prefix(SinglePlayerLevelSelectionFlowCoordinator __instance)
         {
-            var lastLevelCollection = ____levelSelectionNavigationController.GetField<LevelCollectionViewController>("_levelCollectionViewController")?
-                .GetField<LevelCollectionTableView>("_levelCollectionTableView")?.GetField<IPreviewBeatmapLevel[]>("_previewBeatmapLevels");
+            var lastLevelCollection = __instance.GetField<LevelSelectionNavigationController, LevelSelectionFlowCoordinator>("levelSelectionNavigationController").GetField<LevelCollectionNavigationController, LevelSelectionNavigationController>("_levelCollectionNavigationController").GetField<LevelCollectionViewController, LevelCollectionNavigationController>("_levelCollectionViewController")?
+                .GetField<LevelCollectionTableView, LevelCollectionViewController>("_levelCollectionTableView")?.GetField<IPreviewBeatmapLevel[], LevelCollectionTableView>("_previewBeatmapLevels");
             if (lastLevelCollection != null)
                 EndlessBehavior.LastLevelCollection = lastLevelCollection;
         }

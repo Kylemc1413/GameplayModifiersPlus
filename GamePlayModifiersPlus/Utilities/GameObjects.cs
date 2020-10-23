@@ -1,16 +1,19 @@
-﻿using System;
+﻿using BS_Utils.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 namespace GamePlayModifiersPlus.Utilities
 {
     public static class GameObjects
     {
         public static StandardLevelGameplayManager pauseManager;
         public static NoteCutSoundEffectManager soundEffectManager;
-        public static BeatmapObjectManager beatmapObjectManager;
+        public static BasicBeatmapObjectManager beatmapObjectManager;
         public static BeatmapObjectSpawnController spawnController;
         public static GameEnergyCounter energyCounter;
         public static GameEnergyUIPanel _energyPanel;
@@ -33,23 +36,28 @@ namespace GamePlayModifiersPlus.Utilities
         public static AudioSource songAudio;
 
 
-        public static void Load()
+        public static IEnumerator FetchObjects()
         {
-            soundEffectManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().FirstOrDefault();
-            beatmapObjectManager = Resources.FindObjectsOfTypeAll<BeatmapObjectManager>().FirstOrDefault();
-            spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().FirstOrDefault();
-            energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().First();
-            ColorManager = Resources.FindObjectsOfTypeAll<ColorManager>().Last();
-            pauseManager = Resources.FindObjectsOfTypeAll<StandardLevelGameplayManager>().FirstOrDefault();
-            AudioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
+            yield return new WaitForSeconds(0.1f);
+            soundEffectManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().LastOrDefault();
+            beatmapObjectManager = Resources.FindObjectsOfTypeAll<BeatmapObjectExecutionRatingsRecorder>().LastOrDefault().GetPrivateField<BeatmapObjectManager>("_beatmapObjectManager") as BasicBeatmapObjectManager;
+            spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().LastOrDefault();
+            energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().LastOrDefault();
+            ColorManager = Resources.FindObjectsOfTypeAll<ColorManager>().LastOrDefault();
+            pauseManager = Resources.FindObjectsOfTypeAll<StandardLevelGameplayManager>().LastOrDefault();
+            AudioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().LastOrDefault();
             if (AudioTimeSync != null)
             {
                 songAudio = AudioTimeSync.GetField<AudioSource>("_audioSource");
                 if (songAudio == null)
                     Plugin.Log("Audio null");
             }
-            var gameCoreSceneSetup = Resources.FindObjectsOfTypeAll<GameplayCoreSceneSetup>().FirstOrDefault();
-            Mixer = gameCoreSceneSetup.GetPrivateField<AudioManagerSO>("_audioMixer");
+            Mixer = soundEffectManager.GetField<AudioManagerSO>("_audioManager");
+        }
+        public static void Load()
+        {
+            SharedCoroutineStarter.instance.StartCoroutine(FetchObjects());
+          
 
         }
 

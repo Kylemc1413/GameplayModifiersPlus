@@ -8,6 +8,8 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Reflection;
+using BS_Utils.Utilities;
+using IPA.Utilities;
 namespace GamePlayModifiersPlus.TwitchStuff
 {
     public class GMPDisplay : MonoBehaviour
@@ -41,8 +43,8 @@ namespace GamePlayModifiersPlus.TwitchStuff
             }
             textObj.transform.SetParent(display.transform);
 
-            var counterImage = ReflectionUtil.GetPrivateField<Image>(
-    Resources.FindObjectsOfTypeAll<ScoreMultiplierUIController>().First(), "_multiplierProgressImage");
+            var counterImage = Resources.FindObjectsOfTypeAll<ScoreMultiplierUIController>().First().
+                GetField<Image, ScoreMultiplierUIController>("_multiplierProgressImage");
 
 
             GameObject canvasobj = new GameObject("GMPDisplayCanvas");

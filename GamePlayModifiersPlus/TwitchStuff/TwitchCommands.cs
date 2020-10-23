@@ -6,6 +6,8 @@
     using ChatCore.Models.Twitch;
     using UnityEngine;
     using GamePlayModifiersPlus.Utilities;
+    using System.CodeDom;
+    using IPA.Utilities;
     public class TwitchCommands
     {
         public static bool globalActive = false;
@@ -61,7 +63,7 @@
             string arg1 = messageString.Split(' ', ' ')[2];
             string arg2 = messageString.Split(' ', ' ', ' ', '=')[3];
             Plugin.Log(arg1 + " " + arg2 + " " + value);
-            IniParser.Model.IniData data = Plugin.ConfigSettings.GetField<object>("_instance").GetField<IniParser.Model.IniData>("data");
+            var data = Plugin.ConfigSettings.GetField<BS_Utils.Utilities.IniFile, BS_Utils.Utilities.Config>("_instance").GetField<IniParser.Model.IniData, BS_Utils.Utilities.IniFile>("data");
             foreach (var section in data.Sections)
             {
                 string sectionName = section.SectionName.ToLower();

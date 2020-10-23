@@ -9,6 +9,7 @@
     using System.Reflection;
     using UnityEngine.Networking;
     using GamePlayModifiersPlus.Utilities;
+    using IPA.Utilities;
     public class TwitchPowers : MonoBehaviour
     {
         public static IEnumerator ChargeOverTime()
@@ -72,7 +73,7 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " InstaFail | ";
-            Image energyBar = GameObjects.energyPanel.GetField<Image>("_energyBar");
+            Image energyBar = GameObjects.energyPanel.GetField<Image, GameEnergyUIPanel>("_energyBar");
             energyBar.color = Color.red;
             GameObjects.energyCounter.SetField("_badNoteEnergyDrain", 1f);
             GameObjects.energyCounter.SetField("_missNoteEnergyDrain", 1f);
@@ -91,7 +92,7 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " Invincible | ";
-            Image energyBar = GameObjects.energyPanel.GetField<Image>("_energyBar");
+            Image energyBar = GameObjects.energyPanel.GetField<Image, GameEnergyUIPanel>("_energyBar");
             energyBar.color = Color.yellow;
             GameObjects.energyCounter.SetField("_badNoteEnergyDrain", 0f);
             GameObjects.energyCounter.SetField("_missNoteEnergyDrain", 0f);
@@ -110,7 +111,7 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " Poison | ";
-            Image energyBar = GameObjects.energyPanel.GetField<Image>("_energyBar");
+            Image energyBar = GameObjects.energyPanel.GetField<Image, GameEnergyUIPanel>("_energyBar");
             energyBar.color = Color.magenta;
             GameObjects.energyCounter.SetField("_goodNoteEnergyCharge", 0f);
             yield return new WaitForSeconds(length);
@@ -133,11 +134,11 @@
         {
             yield return new WaitForSeconds(0f);
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            BeatmapCallbackItemDataList callBackDataList = GameObjects.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
+            BeatmapCallbackItemDataList callBackDataList = GameObjects.spawnController.GetField<BeatmapCallbackItemDataList, BeatmapObjectSpawnController>("_beatmapCallbackItemDataList");
 
-            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
-            float eventTime = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float eventTime = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             //    List<BeatmapEventData> data = beatmapData.beatmapEventData.ToList();
             //14 Early Rotation 15 Late Rotation
             /*
@@ -154,14 +155,17 @@
             BeatmapEventData newEvent = new BeatmapEventData(eventTime, BeatmapEventType.Event14, 2);
 
             List<BeatmapObjectData>[] data2 = new List<BeatmapObjectData>[4];
-            for (int i = 0; i < beatmapData.beatmapLinesData.Length; i++)
+            for (int i = 0; i < beatmapData.beatmapLinesData.Count; i++)
             {
                 data2[i] = new List<BeatmapObjectData>();
                 data2[i].AddRange(beatmapData.beatmapLinesData[i].beatmapObjectsData);
                 data2[i].RemoveAll(x => x.time < eventTime);
-                beatmapData.beatmapLinesData[i].beatmapObjectsData = data2[i].ToArray();
+                var linedata = beatmapData.GetField<BeatmapLineData[], BeatmapData>("_beatmapLinesData")[i];
+                linedata.SetField<BeatmapLineData, List<BeatmapObjectData>>("_beatmapObjectsData", data2[i]);
             }
-            beatmapData.SetProperty<BeatmapData>("beatmapEventData", beatmapData.beatmapEventData.Append(newEvent).OrderBy(o => o.time).ToArray());
+            var eventData = beatmapData.GetField<List<BeatmapEventData>, BeatmapData>("_beatmapEventsData").AsEnumerable();
+            var newEventData = System.Linq.Enumerable.Append(eventData, newEvent).OrderBy(o => o.time).ToList();
+            beatmapData.SetProperty<BeatmapData, List<BeatmapEventData>>("_beatmapEventsData", newEventData);
             callbackController.SetNewBeatmapData(beatmapData);
         }
 
@@ -170,10 +174,10 @@
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " RandomRotation | ";
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().FirstOrDefault();
-            BeatmapCallbackItemDataList callBackDataList = GameObjects.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
-            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            BeatmapCallbackItemDataList callBackDataList = GameObjects.spawnController.GetField<BeatmapCallbackItemDataList, BeatmapObjectSpawnController>("_beatmapCallbackItemDataList");
+            BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
-            float startTime = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float startTime = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float endTime = startTime + length;
             float marker = startTime;
             List<BeatmapEventData> data = new List<BeatmapEventData>();
@@ -202,15 +206,18 @@
                 }
             }
             List<BeatmapObjectData>[] data2 = new List<BeatmapObjectData>[4];
-            for (int i = 0; i < beatmapData.beatmapLinesData.Length; i++)
+            for (int i = 0; i < beatmapData.beatmapLinesData.Count; i++)
             {
                 data2[i] = new List<BeatmapObjectData>();
                 data2[i].AddRange(beatmapData.beatmapLinesData[i].beatmapObjectsData);
                 data2[i].RemoveAll(x => x.time < startTime);
-                beatmapData.beatmapLinesData[i].beatmapObjectsData = data2[i].ToArray();
+                var linedata = beatmapData.GetField<BeatmapLineData[], BeatmapData>("_beatmapLinesData")[i];
+                linedata.SetField<BeatmapLineData, List<BeatmapObjectData>>("_beatmapObjectsData", data2[i]);
             }
 
-            beatmapData.SetProperty<BeatmapData>("beatmapEventData", beatmapData.beatmapEventData.Concat(data).OrderBy(o => o.time).ToArray());
+            var eventData = beatmapData.GetField<List<BeatmapEventData>, BeatmapData>("_beatmapEventsData").AsEnumerable();
+            var newEventData = System.Linq.Enumerable.Concat(eventData, data).OrderBy(o => o.time).ToList();
+            beatmapData.SetProperty<BeatmapData, List<BeatmapEventData>>("_beatmapEventsData", newEventData);
             callbackController.SetNewBeatmapData(beatmapData);
             yield return new WaitForSeconds(length);
             //    List<BeatmapEventData> data = beatmapData.beatmapEventData.ToList();
@@ -235,22 +242,25 @@
         {
             yield return new WaitForSeconds(0f);
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            BeatmapCallbackItemDataList callBackDataList = GameObjects.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
+            BeatmapCallbackItemDataList callBackDataList = GameObjects.spawnController.GetField<BeatmapCallbackItemDataList, BeatmapObjectSpawnController>("_beatmapCallbackItemDataList");
 
-            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
-            float startTime = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float startTime = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             BeatmapEventData rightEvent = new BeatmapEventData(startTime, BeatmapEventType.Event14, 5);
 
             List<BeatmapObjectData>[] data2 = new List<BeatmapObjectData>[4];
-            for (int i = 0; i < beatmapData.beatmapLinesData.Length; i++)
+            for (int i = 0; i < beatmapData.beatmapLinesData.Count; i++)
             {
                 data2[i] = new List<BeatmapObjectData>();
                 data2[i].AddRange(beatmapData.beatmapLinesData[i].beatmapObjectsData);
                 data2[i].RemoveAll(x => x.time < startTime);
-                beatmapData.beatmapLinesData[i].beatmapObjectsData = data2[i].ToArray();
+                var linedata = beatmapData.GetField<BeatmapLineData[], BeatmapData>("_beatmapLinesData")[i];
+                linedata.SetField<BeatmapLineData, List<BeatmapObjectData>>("_beatmapObjectsData", data2[i]);
             }
-            beatmapData.SetProperty<BeatmapData>("beatmapEventData", beatmapData.beatmapEventData.Append(rightEvent).OrderBy(o => o.time).ToArray());
+            var eventData = beatmapData.GetField<List<BeatmapEventData>, BeatmapData>("_beatmapEventsData").AsEnumerable();
+            var newEventData = System.Linq.Enumerable.Append(eventData, rightEvent).OrderBy(o => o.time).ToList();
+            beatmapData.SetProperty<BeatmapData, List<BeatmapEventData>>("_beatmapEventsData", newEventData);
             callbackController.SetNewBeatmapData(beatmapData);
         }
 
@@ -316,7 +326,7 @@
         {
             if (GameObjects.spawnController == null) return;
             BeatmapObjectSpawnMovementData spawnMovementData =
-            GameObjects.spawnController.GetPrivateField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
+            GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData");
             if (Plugin.levelData.GameplayCoreSceneSetupData == null) return;
             if (spawnMovementData == null) return;
 
@@ -332,15 +342,15 @@
                 noteJumpStartBeatOffset += UnityEngine.Random.Range((float)Config.offsetrandomMin, (float)Config.offsetrandomMax);
 
 
-            float bpm = GameObjects.spawnController.GetPrivateField<VariableBPMProcessor>("_variableBPMProcessor").currentBPM;
+            float bpm = GameObjects.spawnController.GetField<VariableBpmProcessor, BeatmapObjectSpawnController>("_variableBpmProcessor").currentBpm;
 
 
 
-            spawnMovementData.SetPrivateField("_startNoteJumpMovementSpeed", njs);
-            spawnMovementData.SetPrivateField("_noteJumpStartBeatOffset", noteJumpStartBeatOffset);
+            spawnMovementData.SetField("_startNoteJumpMovementSpeed", njs);
+            spawnMovementData.SetField("_noteJumpStartBeatOffset", noteJumpStartBeatOffset);
 
             spawnMovementData.Update(bpm,
-                GameObjects.spawnController.GetPrivateField<float>("_jumpOffsetY"));
+                GameObjects.spawnController.GetField<float, BeatmapObjectSpawnController>("_jumpOffsetY"));
             //       Plugin.Log(njs.ToString());
             //       Plugin.Log(noteJumpStartBeatOffset.ToString());
         }
@@ -348,8 +358,8 @@
         public static IEnumerator Pause()
         {
             yield return new WaitForSeconds(0f);
-            PauseController pauseManager = Resources.FindObjectsOfTypeAll<PauseController>().First();
-            pauseManager.HandlePauseTriggered();
+            PauseController pauseManager = Resources.FindObjectsOfTypeAll<PauseController>().FirstOrDefault();
+            pauseManager?.Pause();
         }
 
         public static IEnumerator TempNoArrows(float length)
@@ -358,15 +368,15 @@
             text.text += " NoArrows | ";
             yield return new WaitForSeconds(0f);
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
-            BeatmapObjectData[] objects;
+            List<BeatmapObjectData> objects;
             NoteData note;
-            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float end = start + length + 2f;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
-                objects = line.beatmapObjectsData;
+                objects = line.GetField<List<BeatmapObjectData>, BeatmapLineData>("_beatmapObjectsData");
                 foreach (BeatmapObjectData beatmapObject in objects)
                 {
                     if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
@@ -394,15 +404,15 @@
 
             yield return new WaitForSeconds(0f);
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
-            BeatmapObjectData[] objects;
+            List<BeatmapObjectData> objects;
             NoteData note;
-            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float end = start + length + 2f;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
-                objects = line.beatmapObjectsData;
+                objects = line.GetField<List<BeatmapObjectData>, BeatmapLineData>("_beatmapObjectsData");
                 foreach (BeatmapObjectData beatmapObject in objects)
                 {
                     if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
@@ -420,7 +430,7 @@
                                 //                Plugin.Log("Min: " + randMin + " Max: " + randMax + " Number: " + random);
 
                                 if (random <= randMin || Config.bombsChance == 1)
-                                    note.SetProperty<NoteData>("noteType", NoteType.Bomb);
+                                    note.SetProperty<NoteData, ColorType>("colorType", ColorType.None);
                             }
                             catch (System.Exception ex)
                             {
@@ -465,13 +475,13 @@
 
             yield return new WaitForSeconds(0f);
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
-            BeatmapObjectData[] objects;
+            List<BeatmapObjectData> objects;
             NoteData note;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
-                objects = line.beatmapObjectsData;
+                objects = line.GetField<List<BeatmapObjectData>, BeatmapLineData>("_beatmapObjectsData");
                 foreach (BeatmapObjectData beatmapObject in objects)
                 {
                     if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
@@ -530,36 +540,38 @@
         public IEnumerator SwitchMap(BeatmapData newDataBase, AudioClip newAudio, float newBpm, float newTimeOffset, float newNjs, float newSpawnOffset, float duration, bool randomizeStartTime = true)
         {
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            BeatmapObjectSpawnMovementData originalSpawnMovementData = GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
-            BeatmapCallbackItemDataList callBackDataList = GameObjects.spawnController.GetField<BeatmapCallbackItemDataList>("_beatmapCallbackItemDataList");
+            BeatmapObjectSpawnMovementData originalSpawnMovementData = GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData");
+            BeatmapCallbackItemDataList callBackDataList = GameObjects.spawnController.GetField<BeatmapCallbackItemDataList, BeatmapObjectSpawnController>("_beatmapCallbackItemDataList");
             NoteCutSoundEffectManager seManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().First();
             float startTime = 0f;
             float startOffset = originalSpawnMovementData.spawnAheadTime + 0.1f;
             //Get initial Map data
             float originalTime = GameObjects.songAudio.time;
-            float originalBPM = GameObjects.spawnController.currentBPM;
-            float originalTimeOffset = GameObjects.AudioTimeSync.GetField<float>("_songTimeOffset");
+            float originalBPM = GameObjects.spawnController.currentBpm;
+            float originalTimeOffset = GameObjects.AudioTimeSync.GetField<float, AudioTimeSyncController>("_songTimeOffset");
             float originalNJS = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpMovementSpeed;
             float originalSpawnOffset = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpStartBeatOffset;
             AudioClip originalClip = GameObjects.songAudio.clip;
-            BeatmapData originalData = callbackController.GetField<BeatmapData>("_beatmapData");
+            BeatmapData originalData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
 
             //Switch To Reality Check
 
             BeatmapData newData = newDataBase.GetCopy();
             if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.staticLights)
-                newData.SetProperty<BeatmapData>("beatmapEventData", new BeatmapEventData[0]);
+                newData.SetProperty<BeatmapData, List<BeatmapEventData>>("beatmapEventData", new List<BeatmapEventData>());
             if (randomizeStartTime)
             {
                 startTime = UnityEngine.Random.Range(0f, (newAudio.length / 2f));
                 duration = Mathf.Min(newAudio.length - 1f - startTime, duration);
                 List<BeatmapObjectData>[] data3 = new List<BeatmapObjectData>[4];
-                for (int i = 0; i < newData.beatmapLinesData.Length; i++)
+                for (int i = 0; i < newData.beatmapLinesData.Count; i++)
                 {
                     data3[i] = new List<BeatmapObjectData>();
                     data3[i].AddRange(newData.beatmapLinesData[i].beatmapObjectsData);
                     data3[i].RemoveAll(x => x.time <= startTime + startOffset);
-                    newData.beatmapLinesData[i].beatmapObjectsData = data3[i].ToArray();
+                    var linedata = newData.GetField<BeatmapLineData[], BeatmapData>("_beatmapLinesData")[i];
+                    linedata.SetField<BeatmapLineData, List<BeatmapObjectData>>("_beatmapObjectsData", data3[i]);
+         
                 }
             }
 
@@ -574,12 +586,13 @@
             yield return new WaitForSeconds(duration - 0.2f);
             //Restore Original Map
             List<BeatmapObjectData>[] data2 = new List<BeatmapObjectData>[4];
-            for (int i = 0; i < originalData.beatmapLinesData.Length; i++)
+            for (int i = 0; i < originalData.beatmapLinesData.Count; i++)
             {
                 data2[i] = new List<BeatmapObjectData>();
                 data2[i].AddRange(originalData.beatmapLinesData[i].beatmapObjectsData);
                 data2[i].RemoveAll(x => x.time <= originalTime + startOffset);
-                originalData.beatmapLinesData[i].beatmapObjectsData = data2[i].ToArray();
+                var linedata = originalData.GetField<BeatmapLineData[], BeatmapData>("_beatmapLinesData")[i];
+                linedata.SetField<BeatmapLineData, List<BeatmapObjectData>>("_beatmapObjectsData", data2[i]);
             }
             ResetTimeSync(originalClip, originalTime, originalTimeOffset, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul);
             ManuallySetNJSOffset(GameObjects.spawnController, originalNJS, originalSpawnOffset, originalBPM);
@@ -597,35 +610,39 @@
         }
         public static void ClearCallbackItemDataList(BeatmapCallbackItemDataList list)
         {
-            list.GetField<List<BeatmapObjectData>>("_beatmapObjectDataList").Clear();
-            list.GetField<List<BeatmapEventData>>("_beatmapEventDataList").Clear();
-            var noteLists = list.GetField<Dictionary<NoteType, List<NoteData>>>("_notesByType").Values;
+            list.GetField<List<BeatmapObjectData>, BeatmapCallbackItemDataList>("_beatmapObjectDataList").Clear();
+            list.GetField<List<BeatmapEventData>, BeatmapCallbackItemDataList>("_beatmapEventDataList").Clear();
+            var noteLists = list.GetField<Dictionary<ColorType, List<NoteData>>, BeatmapCallbackItemDataList>("_notesByColorType").Values;
             foreach (var noteList in noteLists)
                 noteList.Clear();
-            list.GetField<List<ObstacleData>>("_obstacles").Clear();
-            list.GetField<List<BeatmapEventData>>("_beatmapEarlyEvents").Clear();
-            list.GetField<List<BeatmapEventData>>("_beatmapLateEvents").Clear();
+            list.GetField<List<ObstacleData>, BeatmapCallbackItemDataList>("_obstacles").Clear();
+            list.GetField<List<NoteData>, BeatmapCallbackItemDataList>("_bombNotes").Clear();
+            list.GetField<List<BeatmapEventData>, BeatmapCallbackItemDataList>("_beatmapEarlyEvents").Clear();
+            list.GetField<List<BeatmapEventData>, BeatmapCallbackItemDataList>("_beatmapLateEvents").Clear();
 
         }
         public static void ResetTimeSync(AudioClip clip, float time, float timeOffset, float timeScale)
         {
-            AudioTimeSyncController.InitData initData = GameObjects.AudioTimeSync.GetPrivateField<AudioTimeSyncController.InitData>("_initData");
+            AudioTimeSyncController.InitData initData = 
+                GameObjects.AudioTimeSync.GetField<AudioTimeSyncController.InitData, AudioTimeSyncController>("_initData");
             AudioTimeSyncController.InitData newInitData = new AudioTimeSyncController.InitData(clip,
                             time, timeOffset, 1f);
-            GameObjects.AudioTimeSync.SetPrivateField("_initData", newInitData);
+            GameObjects.AudioTimeSync.SetField("_initData", newInitData);
+            GameObjects.AudioTimeSync.SetField("_audioStarted", false);
+            GameObjects.songAudio.clip = clip;
             GameObjects.AudioTimeSync.StartSong();
         }
 
         public static void ManuallySetNJSOffset(BeatmapObjectSpawnController _spawnController, float njs, float offset, float bpm)
         {
             BeatmapObjectSpawnMovementData spawnMovementData =
-  _spawnController.GetPrivateField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData");
+  _spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData");
 
-            spawnMovementData.SetPrivateField("_startNoteJumpMovementSpeed", njs);
-            spawnMovementData.SetPrivateField("_noteJumpStartBeatOffset", offset);
+            spawnMovementData.SetField("_startNoteJumpMovementSpeed", njs);
+            spawnMovementData.SetField("_noteJumpStartBeatOffset", offset);
 
             spawnMovementData.Update(bpm,
-                _spawnController.GetPrivateField<float>("_jumpOffsetY"));
+                _spawnController.GetField<float, BeatmapObjectSpawnController>("_jumpOffsetY"));
         }
 
         public static IEnumerator ExtraLanes()
@@ -633,22 +650,22 @@
             yield return new WaitForSeconds(0f);
             MappingExtensions.Plugin.ForceActivateForSong();
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
-            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
-            float beatTime = 60f / GameObjects.spawnController.currentBPM;
+            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
+            float beatTime = 60f / GameObjects.spawnController.currentBpm;
             float sliderTime = beatTime / 6f;
             float centerDistTime = beatTime / 2f;
             float claimedCenterTime = 0f;
             Plugin.Log("Grabbed BeatmapData");
             //        List<System.Tuple<NoteType, float>> noteTimes = new List<System.Tuple<NoteType, float>>();
             //        List<float> doubleTimes = new List<float>();
-            Dictionary<System.Tuple<int, float, NoteType>, int> laneShifts = new Dictionary<System.Tuple<int, float, NoteType>, int>();
+            Dictionary<System.Tuple<int, float, ColorType>, int> laneShifts = new Dictionary<System.Tuple<int, float, ColorType>, int>();
 
             List<BeatmapObjectData> objects = new List<BeatmapObjectData>();
             NoteData note;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
-                objects.AddRange(line.beatmapObjectsData);
+                objects.AddRange(line.GetField<List<BeatmapObjectData>, BeatmapLineData>("_beatmapObjectsData"));
 
             }
             objects.RemoveAll(x => x.time < start);
@@ -659,7 +676,7 @@
                 {
                     int newIndex = -1413;
                     note = beatmapObject as NoteData;
-                    System.Tuple<int, float, NoteType> noteTuple = new System.Tuple<int, float, NoteType>(note.lineIndex, note.time, note.noteType);
+                    System.Tuple<int, float, ColorType> noteTuple = new System.Tuple<int, float, ColorType>(note.lineIndex, note.time, note.colorType);
                     var existingTuple = laneShifts.Keys.FirstOrDefault(x => Mathf.Abs(x.Item2 - note.time) <= sliderTime
                     && x.Item1 == noteTuple.Item1 && x.Item3 == noteTuple.Item3);
 
@@ -720,11 +737,13 @@
                                 default:
                                     if (note.lineIndex < 0)
                                     {
-                                        newIndex = -1500;
+                                        Plugin.log.Warn("Map is already Extra Lanes, not allowing 5 lanes");
+                                        yield break;
                                     }
                                     if (note.lineIndex > 3)
                                     {
-                                        newIndex = 4500;
+                                        Plugin.log.Warn("Map is already Extra Lanes, not allowing 5 lanes");
+                                        yield break;
                                     }
                                     break;
                             }
@@ -737,7 +756,7 @@
                     if (GMPUI.fourLayers)
                     {
                         if (note.noteLineLayer == NoteLineLayer.Top && Random.Range(1, 4) > 2 && IsUpward(note.cutDirection))
-                            note.SetProperty<NoteData>("noteLineLayer", (NoteLineLayer)3);
+                            note.SetProperty<NoteData, NoteLineLayer>("noteLineLayer", (NoteLineLayer)3);
                     }
 
                     if (GMPUI.angleShift && !((int)note.cutDirection >= 1000))
@@ -777,7 +796,7 @@
                         {
                             angle += Random.Range(-20, 20);
                             angle = Mathf.Clamp(angle, 1000, 1360);
-                            note.SetProperty<NoteData>("cutDirection", angle);
+                            note.SetProperty<NoteData, NoteCutDirection>("cutDirection", (NoteCutDirection)angle);
                         }
                     }
 
@@ -806,8 +825,8 @@
 
                     if (newIndex != -1413)
                     {
-                        note.SetProperty<NoteData>("lineIndex", newIndex);
-                        note.SetProperty<NoteData>("flipLineIndex", newIndex);
+                        note.SetProperty<BeatmapObjectData, int>("lineIndex", newIndex);
+                        note.SetProperty<NoteData, int>("flipLineIndex", newIndex);
                     }
 
 
@@ -825,16 +844,16 @@
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " Reverse | ";
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
-            BeatmapObjectData[] objects;
+            List<BeatmapObjectData> objects;
             NoteData note;
-            float wait = GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float wait = GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float start = GameObjects.songAudio.time + wait * 2f;
             float end = start + length;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
-                objects = line.beatmapObjectsData;
+                objects = line.GetField<List<BeatmapObjectData>, BeatmapLineData>("_beatmapObjectsData");
                 foreach (BeatmapObjectData beatmapObject in objects)
                 {
                     if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
@@ -842,19 +861,20 @@
                         {
                             note = beatmapObject as NoteData;
 
-                            note.SwitchNoteType();
+                            note.SwitchNoteColorType();
                             //                           note.MirrorTransformCutDirection();
                             //                           note.MirrorLineIndex(4);
                         }
                 }
             }
             List<BeatmapObjectData>[] data2 = new List<BeatmapObjectData>[4];
-            for (int i = 0; i < beatmapData.beatmapLinesData.Length; i++)
+            for (int i = 0; i < beatmapData.beatmapLinesData.Count; i++)
             {
                 data2[i] = new List<BeatmapObjectData>();
                 data2[i].AddRange(beatmapData.beatmapLinesData[i].beatmapObjectsData);
                 data2[i].RemoveAll(x => x.time < start || (x.time > end && x.time < end + wait));
-                beatmapData.beatmapLinesData[i].beatmapObjectsData = data2[i].ToArray();
+                var linedata = beatmapData.GetField<BeatmapLineData[], BeatmapData>("_beatmapLinesData")[i];
+                linedata.SetField<BeatmapLineData, List<BeatmapObjectData>>("_beatmapObjectsData", data2[i]);
             }
             callbackController.SetNewBeatmapData(beatmapData);
             GMPUI.reverse = true;
@@ -878,15 +898,15 @@
         {
             yield return new WaitForSecondsRealtime(1f);
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
-            BeatmapObjectData[] objects;
+            List<BeatmapObjectData> objects;
             NoteData note;
-            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float start = 2f + GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
 
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
-                objects = line.beatmapObjectsData;
+                objects = line.GetField<List<BeatmapObjectData>, BeatmapLineData>("_beatmapObjectsData");
                 foreach (BeatmapObjectData beatmapObject in objects)
                 {
                     if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
@@ -894,7 +914,7 @@
                         {
                             note = beatmapObject as NoteData;
 
-                            note.SwitchNoteType();
+                            note.SwitchNoteColorType();
                             //                           note.MirrorTransformCutDirection();
                             //                           note.MirrorLineIndex(4);
                         }
@@ -913,24 +933,24 @@
         {
 
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
-            BeatmapObjectData[] objects;
+            List<BeatmapObjectData> objects;
             NoteData note;
             ObstacleData obstacle;
-            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 1.5f;
+            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 1.5f;
             float end = start + length;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
-                objects = line.beatmapObjectsData;
+                objects = line.GetField<List<BeatmapObjectData>, BeatmapLineData>("_beatmapObjectsData");
                 foreach (BeatmapObjectData beatmapObject in objects)
                 {
                     if (beatmapObject.beatmapObjectType == BeatmapObjectType.Note)
                         if (beatmapObject.time > start && beatmapObject.time < end)
                         {
                             note = beatmapObject as NoteData;
-                            note.SwitchNoteType();
-                            if (note.noteType != NoteType.Bomb)
+                            note.SwitchNoteColorType();
+                            if (note.colorType != ColorType.None)
                                 note.MirrorTransformCutDirection();
                             note.MirrorLineIndex(4);
                         }
@@ -952,17 +972,15 @@
         {
 
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
-            float start = GameObjects.songAudio.time;
-            int? nextIndex = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>()?.FirstOrDefault()?.GetField<int>("_nextEventIndex");
-            BeatmapEventData[] newData = new BeatmapEventData[beatmapData.beatmapEventData.Length];
-            if (nextIndex.HasValue)
-            {
-                newData[nextIndex.Value] = new BeatmapEventData(start + .01f, BeatmapEventType.Event0, 1);
-                newData[nextIndex.Value + 1] = new BeatmapEventData(start + .01f, BeatmapEventType.Event4, 1);
-            }
-            beatmapData.SetProperty("beatmapEventData", newData);
+            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+
+            BeatmapEventData[] newData = new BeatmapEventData[2];
+                newData[0] = new BeatmapEventData(start + .01f, BeatmapEventType.Event0, 1);
+                newData[1] = new BeatmapEventData(start + .01f, BeatmapEventType.Event4, 1);
+            
+            beatmapData.SetField("_beatmapEventsData", newData.ToList());
         }
 
 
@@ -1086,14 +1104,14 @@
             yield return new WaitForSeconds(0f);
             MappingExtensions.Plugin.ForceActivateForSong();
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
             List<BeatmapObjectData> objects;
-            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float end = start + length + 2f;
             foreach (BeatmapLineData line in beatmapData.beatmapLinesData)
             {
-                objects = line.beatmapObjectsData.ToList();
+                objects = line.GetField<List<BeatmapObjectData>, BeatmapLineData>("_beatmapObjectsData");
                 for (int i = 0; i < objects.Count; ++i)
                 {
                     BeatmapObjectData beatmapObject = objects[i];
@@ -1105,7 +1123,7 @@
                     }
                 }
                 objects = objects.OrderBy(o => o.time).ToList();
-                line.beatmapObjectsData = objects.ToArray();
+                line.SetField("_beatmapObjectsData", objects);
                 objects.Clear();
             }
             yield return new WaitForSeconds(length + 2f);
@@ -1119,22 +1137,22 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " Tunnel | ";
-            float startTime = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.2f;
+            float startTime = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.2f;
             float durationTime = duration;
             MappingExtensions.Plugin.ForceActivateForSong();
 
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
             List<BeatmapObjectData> objects;
             objects = beatmapData.beatmapLinesData[0].beatmapObjectsData.ToList();
-            objects.Add(new ObstacleData(14131, startTime, -1, (ObstacleType)4000, durationTime, 1001));
-            objects.Add(new ObstacleData(14132, startTime, 4, (ObstacleType)4000, durationTime, 1001));
-            objects.Add(new ObstacleData(14133, startTime, -1, (ObstacleType)1001, durationTime, 6500));
-            objects.Add(new ObstacleData(14134, startTime, -1, (ObstacleType)5000, durationTime, 6500));
+            objects.Add(new ObstacleData( startTime, -1, (ObstacleType)4000, durationTime, 1001));
+            objects.Add(new ObstacleData( startTime, 4, (ObstacleType)4000, durationTime, 1001));
+            objects.Add(new ObstacleData( startTime, -1, (ObstacleType)1001, durationTime, 6500));
+            objects.Add(new ObstacleData( startTime, -1, (ObstacleType)5000, durationTime, 6500));
             objects = objects.OrderBy(o => o.time).ToList();
-            beatmapData.beatmapLinesData[0].beatmapObjectsData = objects.ToArray();
-            objects.Clear();
+            var linedata = beatmapData.GetField<BeatmapLineData[], BeatmapData>("_beatmapLinesData")[0];
+            linedata.SetField("_beatmapObjectsData", objects);
             yield return new WaitForSeconds(duration);
             text.text = text.text.Replace(" Tunnel | ", "");
 
@@ -1144,21 +1162,21 @@
         {
             yield return new WaitForSeconds(0f);
             MappingExtensions.Plugin.ForceActivateForSong();
-            float startTime = start + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float startTime = start + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float durationTime = GameObjects.songAudio.clip.length;
 
             BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
-            BeatmapData beatmapData = callbackController.GetField<BeatmapData>("_beatmapData");
+            BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
             List<BeatmapObjectData> objects;
             objects = beatmapData.beatmapLinesData[0].beatmapObjectsData.ToList();
-            objects.Add(new ObstacleData(14131, startTime, -1, (ObstacleType)4000, durationTime, 1001));
-            objects.Add(new ObstacleData(14132, startTime, 4, (ObstacleType)4000, durationTime, 1001));
-            objects.Add(new ObstacleData(14133, startTime, -1, (ObstacleType)1001, durationTime, 6500));
-            objects.Add(new ObstacleData(14134, startTime, -1, (ObstacleType)5000, durationTime, 6500));
+            objects.Add(new ObstacleData(startTime, -1, (ObstacleType)4000, durationTime, 1001));
+            objects.Add(new ObstacleData(startTime, 4, (ObstacleType)4000, durationTime, 1001));
+            objects.Add(new ObstacleData(startTime, -1, (ObstacleType)1001, durationTime, 6500));
+            objects.Add(new ObstacleData(startTime, -1, (ObstacleType)5000, durationTime, 6500));
             objects = objects.OrderBy(o => o.time).ToList();
-            beatmapData.beatmapLinesData[0].beatmapObjectsData = objects.ToArray();
-            objects.Clear();
+            var linedata = beatmapData.GetField<BeatmapLineData[], BeatmapData>("_beatmapLinesData")[0];
+            linedata.SetField("_beatmapObjectsData", objects);
 
 
 
@@ -1172,7 +1190,7 @@
             int type = height * 1000 + startHeight + 4001;
             float duration = (bpm / 60f) * (1f / 32f);
 
-            BeatmapObjectData newWall = new ObstacleData(original.id * 14130, original.time, original.lineIndex, (ObstacleType)type, duration, width);
+            BeatmapObjectData newWall = new ObstacleData(original.time, original.lineIndex, (ObstacleType)type, duration, width);
             return newWall;
         }
 
