@@ -354,12 +354,12 @@
 
         public static void ApplyPatches()
         {
-            Log("Apply Patch Function");
+        
             try
             {
-               
-                harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
                 Log("Applying Harmony Patches");
+                harmony.PatchAll(System.Reflection.Assembly.GetExecutingAssembly());
+
             }
             catch (Exception ex)
             {

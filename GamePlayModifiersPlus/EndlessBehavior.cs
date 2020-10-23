@@ -52,6 +52,7 @@ namespace GamePlayModifiersPlus
             _allow360 = Config.EndlessAllow360;
 
             ResetToPlay();
+            ToPlay.Remove(BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.level);
         }
 
         private void ResetToPlay()
@@ -68,11 +69,11 @@ namespace GamePlayModifiersPlus
         private IEnumerator Setup()
         {
             yield return new WaitForSeconds(0.1f);
-            callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().LastOrDefault();
             originalSpawnMovementData = GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData");
-            seManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().First();
-            progessController = Resources.FindObjectsOfTypeAll<SongProgressUIController>().First();
-            pauseManager = Resources.FindObjectsOfTypeAll<PauseMenuManager>().First();
+            seManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().LastOrDefault();
+            progessController = Resources.FindObjectsOfTypeAll<SongProgressUIController>().LastOrDefault();
+            pauseManager = Resources.FindObjectsOfTypeAll<PauseMenuManager>().LastOrDefault();
             // switchTime = 20f;
             switchTime = GameObjects.songAudio.clip.length - 1f;
             Task.Run(PrepareNextSong);

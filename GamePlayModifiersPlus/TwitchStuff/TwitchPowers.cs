@@ -133,7 +133,7 @@
         public static IEnumerator LeftRotation()
         {
             yield return new WaitForSeconds(0f);
-            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().Last();
             BeatmapCallbackItemDataList callBackDataList = GameObjects.spawnController.GetField<BeatmapCallbackItemDataList, BeatmapObjectSpawnController>("_beatmapCallbackItemDataList");
 
             BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
@@ -173,7 +173,7 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " RandomRotation | ";
-            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().FirstOrDefault();
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().LastOrDefault();
             BeatmapCallbackItemDataList callBackDataList = GameObjects.spawnController.GetField<BeatmapCallbackItemDataList, BeatmapObjectSpawnController>("_beatmapCallbackItemDataList");
             BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
@@ -241,7 +241,7 @@
         public static IEnumerator RightRotation()
         {
             yield return new WaitForSeconds(0f);
-            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().Last();
             BeatmapCallbackItemDataList callBackDataList = GameObjects.spawnController.GetField<BeatmapCallbackItemDataList, BeatmapObjectSpawnController>("_beatmapCallbackItemDataList");
 
             BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
@@ -358,7 +358,7 @@
         public static IEnumerator Pause()
         {
             yield return new WaitForSeconds(0f);
-            PauseController pauseManager = Resources.FindObjectsOfTypeAll<PauseController>().FirstOrDefault();
+            PauseController pauseManager = Resources.FindObjectsOfTypeAll<PauseController>().LastOrDefault();
             pauseManager?.Pause();
         }
 
@@ -367,7 +367,7 @@
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " NoArrows | ";
             yield return new WaitForSeconds(0f);
-            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().Last();
             BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
             List<BeatmapObjectData> objects;
@@ -403,7 +403,7 @@
 
 
             yield return new WaitForSeconds(0f);
-            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().Last();
             BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
             List<BeatmapObjectData> objects;
@@ -474,7 +474,7 @@
         {
 
             yield return new WaitForSeconds(0f);
-            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().Last();
             BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
             List<BeatmapObjectData> objects;
@@ -539,10 +539,10 @@
 
         public IEnumerator SwitchMap(BeatmapData newDataBase, AudioClip newAudio, float newBpm, float newTimeOffset, float newNjs, float newSpawnOffset, float duration, bool randomizeStartTime = true)
         {
-            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().Last();
             BeatmapObjectSpawnMovementData originalSpawnMovementData = GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData");
             BeatmapCallbackItemDataList callBackDataList = GameObjects.spawnController.GetField<BeatmapCallbackItemDataList, BeatmapObjectSpawnController>("_beatmapCallbackItemDataList");
-            NoteCutSoundEffectManager seManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().First();
+            NoteCutSoundEffectManager seManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().LastOrDefault();
             float startTime = 0f;
             float startOffset = originalSpawnMovementData.spawnAheadTime + 0.1f;
             //Get initial Map data
@@ -630,7 +630,7 @@
             GameObjects.AudioTimeSync.SetField("_initData", newInitData);
             GameObjects.AudioTimeSync.SetField("_startSongTime", time);
             GameObjects.AudioTimeSync.SetField("_songTimeOffset", timeOffset 
-                + GameObjects.AudioTimeSync.GetField<float, AudioTimeSyncController>("_audioLatency"));
+                + GameObjects.AudioTimeSync.GetField<FloatSO, AudioTimeSyncController>("_audioLatency"));
             GameObjects.AudioTimeSync.SetField("_audioStarted", false);
             GameObjects.songAudio.clip = clip;
             GameObjects.AudioTimeSync.StartSong();
@@ -652,7 +652,7 @@
         {
             yield return new WaitForSeconds(0f);
             MappingExtensions.Plugin.ForceActivateForSong();
-            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().Last();
             float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             float beatTime = 60f / GameObjects.spawnController.currentBpm;
@@ -846,7 +846,7 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " Reverse | ";
-            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().Last();
             BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
             List<BeatmapObjectData> objects;
@@ -900,7 +900,7 @@
         public static IEnumerator PermaReverse()
         {
             yield return new WaitForSecondsRealtime(1f);
-            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().Last();
             BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
             List<BeatmapObjectData> objects;
@@ -935,7 +935,7 @@
         public static void MirrorSection(float length)
         {
 
-            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().Last();
             BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
             List<BeatmapObjectData> objects;
@@ -974,7 +974,7 @@
         public static void StaticLights()
         {
 
-            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().Last();
             BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
             float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
@@ -1106,7 +1106,7 @@
         {
             yield return new WaitForSeconds(0f);
             MappingExtensions.Plugin.ForceActivateForSong();
-            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().Last();
             BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
             List<BeatmapObjectData> objects;
@@ -1144,7 +1144,7 @@
             float durationTime = duration;
             MappingExtensions.Plugin.ForceActivateForSong();
 
-            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().Last();
             BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
             List<BeatmapObjectData> objects;
@@ -1168,7 +1168,7 @@
             float startTime = start + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float durationTime = GameObjects.songAudio.clip.length;
 
-            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().First();
+            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().Last();
             BeatmapData beatmapData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
             Plugin.Log("Grabbed BeatmapData");
             List<BeatmapObjectData> objects;

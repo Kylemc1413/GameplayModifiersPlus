@@ -22,7 +22,7 @@ namespace GamePlayModifiersPlus.Utilities
             get
             {
                 if (_energyPanel == null)
-                    _energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().First();
+                    _energyPanel = Resources.FindObjectsOfTypeAll<GameEnergyUIPanel>().LastOrDefault();
                 return _energyPanel;
             }
             set
