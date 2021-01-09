@@ -10,16 +10,17 @@ using UnityEngine.UI;
 using System.Reflection;
 using BS_Utils.Utilities;
 using IPA.Utilities;
+using HMUI;
 namespace GamePlayModifiersPlus.TwitchStuff
 {
     public class GMPDisplay : MonoBehaviour
     {
         private bool initialized = false;
-        TextMeshProUGUI chargeText;
-        TextMeshProUGUI chargeCountText;
-        public TextMeshProUGUI cooldownText;
-        public TextMeshProUGUI activeCommandText;
-        Image chargeCounter;
+        CurvedTextMeshPro chargeText;
+        CurvedTextMeshPro chargeCountText;
+        public CurvedTextMeshPro cooldownText;
+        public CurvedTextMeshPro activeCommandText;
+        ImageView chargeCounter;
         private void Awake()
         {
             StartCoroutine(Init());
@@ -58,7 +59,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
             canvasobj.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
 
             GameObject counter = new GameObject("GMPDisplayCounter");
-            chargeCounter = counter.AddComponent<Image>();
+            chargeCounter = counter.AddComponent<ImageView>();
             counter.transform.parent = canvasobj.transform;
             counter.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 0.5f);
             counter.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0.5f);
@@ -73,7 +74,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
             chargeCounter.color = Color.green;
 
             GameObject background = new GameObject("GMPDisplayBackGround");
-            var bg = background.AddComponent<Image>();
+            var bg = background.AddComponent<ImageView>();
             background.transform.parent = canvasobj.transform;
             background.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 0.5f);
             background.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 0.5f);
@@ -85,7 +86,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
             canvasobj.GetComponent<RectTransform>().SetParent(textObj.transform, false);
             canvasobj.transform.localPosition = new Vector3(-0.1f, -.1f, 0f);
 
-            chargeText = BeatSaberMarkupLanguage.BeatSaberUI.CreateText(canvas.transform as RectTransform, "Charges", new Vector2(-0.25f, 0.5f));
+            chargeText = BeatSaberMarkupLanguage.BeatSaberUI.CreateText(canvas.transform as RectTransform, "Charges", new Vector2(-0.25f, 0.5f)) as CurvedTextMeshPro;
             chargeText.fontSize = 3;
             chargeText.transform.localScale *= .08f;
             chargeText.color = Color.white;
@@ -95,7 +96,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
             chargeText.GetComponent<RectTransform>().SetParent(canvas.transform, false);
 
 
-            chargeCountText = BeatSaberMarkupLanguage.BeatSaberUI.CreateText(canvas.transform as RectTransform, GameModifiersController.charges.ToString(), new Vector2(0, 0));
+            chargeCountText = BeatSaberMarkupLanguage.BeatSaberUI.CreateText(canvas.transform as RectTransform, GameModifiersController.charges.ToString(), new Vector2(0, 0)) as CurvedTextMeshPro;
             chargeCountText.text = GameModifiersController.charges.ToString();
             chargeCountText.alignment = TextAlignmentOptions.Center;
             chargeCountText.transform.localScale *= .08f;
@@ -106,7 +107,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
             chargeCountText.GetComponent<RectTransform>().SetParent(canvas.transform, false);
             //   chargeCountText.transform.localPosition = new Vector3(-0.0925f, -.13f, 0f);
 
-            cooldownText = BeatSaberMarkupLanguage.BeatSaberUI.CreateText(canvas.transform as RectTransform, GameModifiersController.charges.ToString(), new Vector2(-1f, 0.015f));
+            cooldownText = BeatSaberMarkupLanguage.BeatSaberUI.CreateText(canvas.transform as RectTransform, GameModifiersController.charges.ToString(), new Vector2(-1f, 0.015f)) as CurvedTextMeshPro;
             cooldownText.text = "";
             cooldownText.alignment = TextAlignmentOptions.MidlineRight;
             cooldownText.fontSize = 2.5f;
@@ -117,7 +118,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
             cooldownText.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 1f);
             cooldownText.GetComponent<RectTransform>().SetParent(canvas.transform, false);
 
-            activeCommandText = BeatSaberMarkupLanguage.BeatSaberUI.CreateText(canvas.transform as RectTransform, GameModifiersController.charges.ToString(), new Vector2(1f, 0.015f));
+            activeCommandText = BeatSaberMarkupLanguage.BeatSaberUI.CreateText(canvas.transform as RectTransform, GameModifiersController.charges.ToString(), new Vector2(1f, 0.015f)) as CurvedTextMeshPro;
             activeCommandText.text = "";
             activeCommandText.alignment = TextAlignmentOptions.MidlineLeft;
             activeCommandText.fontSize = 2.5f;
@@ -130,16 +131,18 @@ namespace GamePlayModifiersPlus.TwitchStuff
 
             GameObject coreGameHUD = Resources.FindObjectsOfTypeAll<CoreGameHUDController>()?.FirstOrDefault(x => x.isActiveAndEnabled)?.gameObject ?? null;
             FlyingGameHUDRotation flyingGameHUD = Resources.FindObjectsOfTypeAll<FlyingGameHUDRotation>().FirstOrDefault(x => x.isActiveAndEnabled);
-            if (GMPUI.chatIntegration360 || flyingGameHUD != null)
-            {
 
-                display.transform.SetParent(coreGameHUD.transform.GetChild(0), true);
-                textObj.transform.position = new Vector3(0, 0f, 0);
-                display.transform.localPosition = new Vector3(0, 0f, 0f);
-                display.transform.localRotation = Quaternion.identity;
-                display.transform.localScale = Vector3.one * 40f;
-                textObj.transform.localPosition = new Vector3(0, 1.25f, 0);
+            display.transform.SetParent(coreGameHUD.transform, true);
+            //      textObj.transform.position = new Vector3(0, 0f, 0);
+                  display.transform.localPosition = new Vector3(0, 0f, 0f);
+                  display.transform.localRotation = Quaternion.identity;
+            if (flyingGameHUD != null)
+            {
+                display.transform.localPosition = new Vector3(0, 0.75f, 6f);
+                display.transform.eulerAngles = new Vector3(345f, 0f, 0f);
             }
+            var canvasSettings = canvasobj.AddComponent<CurvedCanvasSettings>();
+            canvasSettings.SetRadius(0);
             display.SetActive(GMPUI.chatIntegration);
             initialized = true;
         }

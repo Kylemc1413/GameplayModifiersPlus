@@ -5,7 +5,7 @@
     "gameVersion": "1.12.2",
     "id": "GameplayModifiersPlus",
     "name": "GameplayModifiersPlus",
-    "version": "1.17.0",
+    "version": "1.18.0",
     "icon": "GamePlayModifiersPlus.Resources.GMPIcon.png",
   "dependsOn": {
     "BSIPA":  "^4.1.3",

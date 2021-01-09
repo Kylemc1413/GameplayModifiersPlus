@@ -165,7 +165,7 @@
             }
             var eventData = beatmapData.GetField<List<BeatmapEventData>, BeatmapData>("_beatmapEventsData").AsEnumerable();
             var newEventData = System.Linq.Enumerable.Append(eventData, newEvent).OrderBy(o => o.time).ToList();
-            beatmapData.SetProperty<BeatmapData, List<BeatmapEventData>>("_beatmapEventsData", newEventData);
+            beatmapData.SetField<BeatmapData, List<BeatmapEventData>>("_beatmapEventsData", newEventData);
             callbackController.SetNewBeatmapData(beatmapData);
         }
 
@@ -217,7 +217,7 @@
 
             var eventData = beatmapData.GetField<List<BeatmapEventData>, BeatmapData>("_beatmapEventsData").AsEnumerable();
             var newEventData = System.Linq.Enumerable.Concat(eventData, data).OrderBy(o => o.time).ToList();
-            beatmapData.SetProperty<BeatmapData, List<BeatmapEventData>>("_beatmapEventsData", newEventData);
+            beatmapData.SetField<BeatmapData, List<BeatmapEventData>>("_beatmapEventsData", newEventData);
             callbackController.SetNewBeatmapData(beatmapData);
             yield return new WaitForSeconds(length);
             //    List<BeatmapEventData> data = beatmapData.beatmapEventData.ToList();
@@ -260,7 +260,7 @@
             }
             var eventData = beatmapData.GetField<List<BeatmapEventData>, BeatmapData>("_beatmapEventsData").AsEnumerable();
             var newEventData = System.Linq.Enumerable.Append(eventData, rightEvent).OrderBy(o => o.time).ToList();
-            beatmapData.SetProperty<BeatmapData, List<BeatmapEventData>>("_beatmapEventsData", newEventData);
+            beatmapData.SetField<BeatmapData, List<BeatmapEventData>>("_beatmapEventsData", newEventData);
             callbackController.SetNewBeatmapData(beatmapData);
         }
 
