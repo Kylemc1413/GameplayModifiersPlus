@@ -21,21 +21,27 @@ namespace GamePlayModifiersPlus.Harmony_Patches
         }
     }
 
-    [HarmonyPatch(typeof(StandardLevelGameplayManager))]
-    [HarmonyPatch("HandleGameEnergyDidReach0", MethodType.Normal)]
+    [HarmonyPatch(typeof(GameEnergyCounter))]
+    [HarmonyPatch("ProcessEnergyChange", MethodType.Normal)]
     class StandardLevelGameplayManagerEnergyReachedZero
     {
-        public static bool Prefix(StandardLevelGameplayManager __instance, ref GameEnergyCounter ____gameEnergyCounter)
+        public static bool Prefix(ref GameEnergyCounter __instance, float energyChange)
         {
             if (!(GMPUI.EndlessMode && Config.EndlessContinueOnFail)) return true;
             GameObject endlessObj = GameObject.Find("GMP Endless Behavior");
             if (endlessObj == null) return true;
+            if (energyChange > 0) return true;
             EndlessBehavior endlessBehavior = endlessObj.GetComponent<EndlessBehavior>();
             if (endlessBehavior.nextSong != null)
             {
-                ____gameEnergyCounter.AddEnergy(0.5f);
-                endlessBehavior.SongEnd();
-                return false;
+                bool willFail = (__instance.energy + energyChange) <= 0;
+
+                if(willFail && BS_Utils.Plugin.LevelData.IsSet && !BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.gameplayModifiers.noFailOn0Energy)
+                {
+                    __instance.ProcessEnergyChange(0.5f);
+                    endlessBehavior.SongEnd();
+                    return false;
+                }
             }
             return true;
         }

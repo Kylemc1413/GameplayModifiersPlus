@@ -131,8 +131,8 @@ namespace GamePlayModifiersPlus.TwitchStuff
 
             GameObject coreGameHUD = Resources.FindObjectsOfTypeAll<CoreGameHUDController>()?.FirstOrDefault(x => x.isActiveAndEnabled)?.gameObject ?? null;
             FlyingGameHUDRotation flyingGameHUD = Resources.FindObjectsOfTypeAll<FlyingGameHUDRotation>().FirstOrDefault(x => x.isActiveAndEnabled);
-
-            display.transform.SetParent(coreGameHUD.transform, true);
+            if(coreGameHUD != null)
+                display.transform.SetParent(coreGameHUD.transform, true);
             //      textObj.transform.position = new Vector3(0, 0f, 0);
                   display.transform.localPosition = new Vector3(0, 0f, 0f);
                   display.transform.localRotation = Quaternion.identity;

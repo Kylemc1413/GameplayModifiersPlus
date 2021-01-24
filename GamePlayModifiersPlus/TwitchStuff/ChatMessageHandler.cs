@@ -3,7 +3,8 @@ using ChatCore.Config;
 using ChatCore.Interfaces;
 using ChatCore.Models.Twitch;
 using UnityEngine;
-
+using System.Threading;
+using System.Threading.Tasks;
 namespace GamePlayModifiersPlus.TwitchStuff
 {
     public class ChatMessageHandler
@@ -58,6 +59,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
         internal static void TryAsyncMessage(string message)
         {
             if (!Plugin.twitchPluginInstalled) return;
+            //  IPA.Utilities.Async.UnityMainThreadTaskScheduler.Factory.StartNew( () => { SendAsyncMessage(message); });
             SendAsyncMessage(message);
         }
         internal static void SendAsyncMessage(string message)

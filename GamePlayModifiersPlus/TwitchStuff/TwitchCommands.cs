@@ -163,13 +163,21 @@
         {
             if (message.Sender.IsBroadcaster || message.Sender.IsModerator)
             {
-                if (message.Message.ToLower().Contains("!gm reset"))
+                
+                if (message.Message.ToLower().Contains("!gm reset") && GMPUI.chatIntegration == true)
                 {
-                    Plugin.cooldowns.ResetCooldowns();
-                    TwitchPowers.ResetPowers(true);
-                    Plugin.twitchPowers.StopAllCoroutines();
-                    GameModifiersController.charges = Config.chargesPerLevel;
-                    ChatMessageHandler.TryAsyncMessage("Resetting non Permanent Powers");
+                    try
+                    {
+                        Plugin.cooldowns.ResetCooldowns();
+                        TwitchPowers.ResetPowers(true);
+                        Plugin.twitchPowers.StopAllCoroutines();
+                        GameModifiersController.charges = Config.chargesPerLevel;
+                        ChatMessageHandler.TryAsyncMessage("Resetting non Permanent Powers");
+                    }
+                    catch(System.Exception ex)
+                    {
+                        Plugin.log.Error("Reset Command Failed: " + ex);
+                    }
                 }
 
 
