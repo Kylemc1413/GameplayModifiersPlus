@@ -56,7 +56,7 @@ namespace GamePlayModifiersPlus
             }
         }
 
-        public static void SpawnController_ScaleRemoveCut(NoteController controller, NoteCutInfo arg3)
+        public static void SpawnController_ScaleRemoveCut(NoteController controller, in NoteCutInfo arg3)
         {
             NoteData note = controller.noteData;
             Transform noteTransform = controller.noteTransform;

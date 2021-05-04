@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using System.Collections;
+using IPA.Utilities;
 using System.Collections.Generic;
 namespace GamePlayModifiersPlus.Utilities
 {
@@ -43,7 +44,7 @@ namespace GamePlayModifiersPlus.Utilities
             beatmapObjectManager = Resources.FindObjectsOfTypeAll<BeatmapObjectExecutionRatingsRecorder>().LastOrDefault().GetPrivateField<BeatmapObjectManager>("_beatmapObjectManager") as BasicBeatmapObjectManager;
             spawnController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().LastOrDefault();
             energyCounter = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().LastOrDefault();
-            ColorManager = Resources.FindObjectsOfTypeAll<ColorManager>().LastOrDefault();
+            ColorManager = Resources.FindObjectsOfTypeAll<NoteCutCoreEffectsSpawner>().LastOrDefault().GetField<ColorManager, NoteCutCoreEffectsSpawner>("_colorManager");
             pauseManager = Resources.FindObjectsOfTypeAll<StandardLevelGameplayManager>().LastOrDefault();
             AudioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().LastOrDefault();
             if (AudioTimeSync != null)

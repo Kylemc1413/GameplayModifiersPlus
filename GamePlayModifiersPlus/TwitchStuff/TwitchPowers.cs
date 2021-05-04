@@ -26,10 +26,11 @@
         {
             var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
             text.text += " DA | ";
-            GameObjects.beatmapObjectManager.SetField("_initData", new BasicBeatmapObjectManager.InitData(true, false));
+            var initData = GameObjects.beatmapObjectManager.GetField<BasicBeatmapObjectManager.InitData, BasicBeatmapObjectManager>("_initData");
+            GameObjects.beatmapObjectManager.SetField("_initData", new BasicBeatmapObjectManager.InitData(true, false, initData.cutAngleTolerance, initData.notesUniformScale));
             ResetGameNoteStates(GameNoteController.GameNoteType.DisappearingArrow);
             yield return new WaitForSeconds(length);
-            GameObjects.beatmapObjectManager.SetField("_initData", new BasicBeatmapObjectManager.InitData(false, false));
+            GameObjects.beatmapObjectManager.SetField("_initData", new BasicBeatmapObjectManager.InitData(false, false, initData.cutAngleTolerance, initData.notesUniformScale));
             ResetGameNoteStates(GameNoteController.GameNoteType.Normal);
             text.text = text.text.Replace(" DA | ", "");
         }
@@ -39,10 +40,10 @@
             try
             {
                 var notepool = GameObjects.beatmapObjectManager
-                .GetField<MonoMemoryPoolContainer<GameNoteController>, BasicBeatmapObjectManager>("_gameNotePoolContainer");
+                .GetField<MemoryPoolContainer<GameNoteController>, BasicBeatmapObjectManager>("_gameNotePoolContainer");
 
-                var noteBaseMemoryPool = notepool
-                    .GetField<MonoMemoryPool<GameNoteController>, MonoMemoryPoolContainer<GameNoteController>>("_memoryPool");
+                MemoryPoolBase<GameNoteController> noteBaseMemoryPool = notepool
+                    .GetField<IMemoryPool<GameNoteController>, MemoryPoolContainer<GameNoteController>>("_memoryPool") as MemoryPoolBase<GameNoteController>;
                 List<GameNoteController> notes = new List<GameNoteController>();
 
                 foreach (var note in notepool.activeItems)
@@ -602,7 +603,7 @@
                 //Switch To Reality Check
 
                 BeatmapData newData = newDataBase.GetCopy();
-                if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.staticLights)
+                if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.environmentEffectsFilterDefaultPreset == EnvironmentEffectsFilterPreset.NoEffects)
                     newData.SetProperty<BeatmapData, List<BeatmapEventData>>("beatmapEventData", new List<BeatmapEventData>());
                 if (randomizeStartTime)
                 {
@@ -1138,7 +1139,8 @@
             {
                 if (GameObjects.beatmapObjectManager != null)
                 {
-                    GameObjects.beatmapObjectManager.SetField("_initData", new BasicBeatmapObjectManager.InitData(false, false));
+                    var initData = GameObjects.beatmapObjectManager.GetField<BasicBeatmapObjectManager.InitData, BasicBeatmapObjectManager>("_initData");
+                    GameObjects.beatmapObjectManager.SetField("_initData", new BasicBeatmapObjectManager.InitData(false, false, initData.cutAngleTolerance, initData.notesUniformScale));
                     ResetGameNoteStates(GameNoteController.GameNoteType.Normal);
                 }
                 ColorController.ResetColors();

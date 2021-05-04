@@ -334,7 +334,7 @@
         [UIAction("#post-parse")]
         public void PostSetup()
         {
-            modifiers.localScale = new Vector3(0.7f, 0.7f, 1);
+            modifiers.localScale = new Vector3(0.9f, 0.9f, 1);
 
         }
         /*

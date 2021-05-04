@@ -12,10 +12,9 @@ namespace GamePlayModifiersPlus
     {
         public static ColorScheme GMPColorScheme = new ColorScheme("GMPColorScheme", "GMP Color Scheme", false, Color.white, Color.white, Color.white, Color.white, true, Color.white, Color.white, Color.white);
         public static ColorScheme oldColorScheme = null;
-
         public static void ResetColors()
         {
-            if (!GameObjects.ColorManager) return;
+            if (GameObjects.ColorManager == null) return;
             if (oldColorScheme == null)
                 SetupColors();
             GameObjects.ColorManager.SetField("_colorScheme", oldColorScheme);
@@ -34,7 +33,7 @@ namespace GamePlayModifiersPlus
         }
         public static void SetColors(Color left, Color right)
         {
-            if (!GameObjects.ColorManager) return;
+            if (GameObjects.ColorManager == null) return;
             if (oldColorScheme == null)
                 SetupColors();
             if (GameObjects.ColorManager.GetField<ColorScheme, ColorManager>("_colorScheme") != GMPColorScheme)
@@ -42,7 +41,7 @@ namespace GamePlayModifiersPlus
 
             GMPColorScheme.SetField("_saberAColor", left);
             GMPColorScheme.SetField("_saberBColor", right);
-            GameObjects.ColorManager.Start();
+ //  GameObjects.ColorManager.Start();
             // GMPColorScheme.SetField("_environmentColor0", left);
             // GMPColorScheme.SetField("_environmentColor1", right);
 
