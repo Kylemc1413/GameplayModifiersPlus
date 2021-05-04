@@ -43,9 +43,9 @@
                 .GetField<MemoryPoolContainer<GameNoteController>, BasicBeatmapObjectManager>("_gameNotePoolContainer");
 
                 MemoryPoolBase<GameNoteController> noteBaseMemoryPool = notepool
-                    .GetField<IMemoryPool<GameNoteController>, MemoryPoolContainer<GameNoteController>>("_memoryPool") as MemoryPoolBase<GameNoteController>;
+                    .GetField<IMemoryPool<GameNoteController>, MemoryPoolContainer<GameNoteController>>("_memoryPool")
+                    as MemoryPoolBase<GameNoteController>;
                 List<GameNoteController> notes = new List<GameNoteController>();
-
                 foreach (var note in notepool.activeItems)
                 {
                     notes.Add(note);
