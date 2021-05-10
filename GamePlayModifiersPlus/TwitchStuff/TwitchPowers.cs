@@ -1092,35 +1092,40 @@
         */
         public static void DestroyObjectsRaw()
         {
-            GameObjects.beatmapObjectManager.DissolveAllObjects();
-            /*
-            foreach (NoteController noteController in UnityEngine.Object.FindObjectsOfType<NoteController>())
+            var notes = GameObjects.beatmapObjectManager.GetField<MemoryPoolContainer<GameNoteController>, BasicBeatmapObjectManager>("_gameNotePoolContainer");
+            var bombs = GameObjects.beatmapObjectManager.GetField<MemoryPoolContainer<BombNoteController>, BasicBeatmapObjectManager>("_bombNotePoolContainer");
+            var walls = GameObjects.beatmapObjectManager.GetField<MemoryPoolContainer<ObstacleController>, BasicBeatmapObjectManager>("_obstaclePoolContainer");
+            foreach (var note in notes.activeItems)
             {
-                try
-                {
-                    GameObject.Destroy(noteController.gameObject);
-
-                }
-                catch (System.Exception ex)
-                {
-                    Plugin.Log("Error Trying to Destroy objects: " + ex);
-                }
+                if (note == null) continue;
+                note.hide = false;
+                note.pause = false;
+                note.enabled = true;
+                note.gameObject.SetActive(true);
+                note.Dissolve(0f);
+                //    _beatmapObjectManager.InvokeMethod<BeatmapObjectManager>("Despawn", note as NoteController);
             }
-            // Not good enough, exceptions form on anything referencing obstacles
-            
-            foreach (ObstacleController obstacleController in UnityEngine.Object.FindObjectsOfType<ObstacleController>())
+            foreach (var bomb in bombs.activeItems)
             {
-                try
-                {
-                    obstacleController.StartCoroutine(obstacleController.DissolveCoroutine());
-
-                }
-                catch (System.Exception ex)
-                {
-                    Plugin.Log("Error Trying to Destroy objects: " + ex);
-                }
+                if (bomb == null) continue;
+                bomb.hide = false;
+                bomb.pause = false;
+                bomb.enabled = true;
+                bomb.gameObject.SetActive(true);
+                bomb.Dissolve(0f);
+                //    _beatmapObjectManager.InvokeMethod<BeatmapObjectManager>("Despawn", bomb as NoteController);
             }
-            */
+            foreach (var wall in walls.activeItems)
+            {
+                if (wall == null) continue;
+                wall.hide = false;
+                wall.pause = false;
+                wall.enabled = true;
+                wall.gameObject.SetActive(true);
+                wall.Dissolve(0f);
+                //_beatmapObjectManager.InvokeMethod<BeatmapObjectManager>("Despawn", wall);
+            }
+
 
         }
         public static void ResetPowers(bool resetMessage)
