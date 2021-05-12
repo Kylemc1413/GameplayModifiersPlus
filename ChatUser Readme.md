@@ -47,3 +47,4 @@
 | Right   | Rotates the level 30 degrees to the right (If 360 Chat Integration Capabilities are enabled) |
 | RandomRotation   | Randomly sporadically rotates the level 30 degrees to the left/right for the duration (If 360 Chat Integration Capabilities are enabled) |
 | RCTTS | Force Reality Check Through the Skull to play for the duration |
+| GameTime | Start a random GameSaber game that will fail the player if they lose before the duration is up (Requires Compatible GameSaber version to be installed) |

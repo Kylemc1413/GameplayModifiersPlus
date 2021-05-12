@@ -109,9 +109,13 @@
 
         public static int rcttsChargeCost = 15;
         public static float rcttsDuration = 30f;
-        public static float rcttsCooldown = 45f;
+        public static float rcttsCooldown = 85f;
         public static bool rcttsRandomizeStart = false;
         public static float chargesCommandCoolDown = 0f;
+
+        public static int gameTimeChargeCost = 30;
+        public static float gameTimeDuration = 45f;
+        public static float gameTimeCoolDown = 90f;
 
         private static string chargeCostString;
 
@@ -120,6 +124,7 @@
         public static BeatmapDifficulty EndlessMinDifficulty = BeatmapDifficulty.Hard;
         public static BeatmapDifficulty EndlessMaxDifficulty = BeatmapDifficulty.ExpertPlus;
         public static bool EndlessUseCurrentLevelCollection = true;
+        public static bool EndlessPlaySongsInOrder = false;
         public static bool EndlessContinueOnFail = true;
         public static bool EndlessPrioritizeSongRequests = false;
 
@@ -129,6 +134,7 @@
             EndlessAllow360 = Plugin.ConfigSettings.GetBool("Endless", "Allow360", false, true);
             EndlessContinueOnFail = Plugin.ConfigSettings.GetBool("Endless", "ContinueOnFail", true, true);
             EndlessUseCurrentLevelCollection = Plugin.ConfigSettings.GetBool("Endless", "UseCurrentLevelCollection", true, true);
+            EndlessPlaySongsInOrder = Plugin.ConfigSettings.GetBool("Endless", "PlaySongsInOrder", false, true);
             if (Enum.TryParse<BeatmapDifficulty>(Plugin.ConfigSettings.GetString("Endless", "PreferredDifficulty", "ExpertPlus", true), out var PrefDiff))
             {
                 EndlessPrefDifficulty = PrefDiff;
@@ -299,6 +305,11 @@
             rcttsDuration = Plugin.ConfigSettings.GetFloat("RCTTS", "Duration", 30f, true);
             rcttsCooldown = UnityEngine.Mathf.Max(Plugin.ConfigSettings.GetFloat("RCTTS", "CoolDown", 45f, true), rcttsDuration);
             rcttsRandomizeStart = Plugin.ConfigSettings.GetBool("RCTTS", "RandomizeStart", false, true);
+
+            //Game Time
+            gameTimeChargeCost = Plugin.ConfigSettings.GetInt("GameTime", "ChargeCost", 30, true);
+            gameTimeDuration = Plugin.ConfigSettings.GetFloat("GameTime", "Duration", 45f, true);
+            gameTimeCoolDown = Plugin.ConfigSettings.GetFloat("GameTime", "CoolDown", 90f, true);
 
             // Command Cooldowns
             chargesCommandCoolDown = Plugin.ConfigSettings.GetFloat("Command Cooldowns", "Charges", 0f, true);

@@ -1163,6 +1163,25 @@
         }
 
 
+        public static IEnumerator GameTime(float duration)
+        {
+            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
+
+            GameSaber.GameType game = UnityEngine.Random.Range(0, 2) == 0 ? GameSaber.GameType.TicTacToe : GameSaber.GameType.ConnectFour;
+            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float end = start + duration + 1f;
+            var gameController = GameObject.Find("GameSaber Controller")?.GetComponent<GameSaber.GameController>();
+            if(gameController != null)
+            {
+                text.text += " GameTime | ";
+                GameSaber.GameController.mapParams = new GameSaber.GameParams.DiffGameParams { gameType = game, gameStart = start, gameEndTime = end, gameTurnInterval = 3.0f };
+                gameController.Initialize();
+            }
+            yield return new WaitForSeconds(duration + 1f);
+         //   GameSaber.GameController.mapParams = null;
+            text.text = text.text.Replace(" GameTime | ", "");
+
+        }
         public static IEnumerator MadScience(float length)
         {
             yield return new WaitForSeconds(0f);

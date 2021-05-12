@@ -142,17 +142,32 @@ namespace GamePlayModifiersPlus
                     }
                     else
                     {
-                        if (ToPlay.Count == 0)
+                        if(Config.EndlessPlaySongsInOrder)
                         {
-                            if (!FoundValidSong) break;
+                            if (levelCollection.Count() <= 1)
+                                break;
+                            int currIndex = nextSongInfo != null? levelCollection.IndexOf(nextSongInfo) : 0;
+                            int nextIndex = currIndex;
+                            if (currIndex == levelCollection.Count() - 1)
+                                nextIndex = 0;
                             else
-                                ResetToPlay();
+                                nextIndex = currIndex++;
+                            previewLevel = levelCollection[nextIndex];
                         }
+                        else
+                        {
+                            if (ToPlay.Count == 0)
+                            {
+                                if (!FoundValidSong) break;
+                                else
+                                    ResetToPlay();
+                            }
+                            int nextSongIndex = random.Next(0, ToPlay.Count);
 
-                        int nextSongIndex = random.Next(0, ToPlay.Count);
-
-                        previewLevel = ToPlay[nextSongIndex];
-                        ToPlay.RemoveAt(nextSongIndex);
+                            previewLevel = ToPlay[nextSongIndex];
+                            ToPlay.RemoveAt(nextSongIndex);
+                        }
+                        
                     }
 
                     validSong = IsValid(previewLevel, out nextMapDiffInfo);

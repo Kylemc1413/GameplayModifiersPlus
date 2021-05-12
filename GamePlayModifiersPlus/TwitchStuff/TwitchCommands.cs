@@ -163,7 +163,7 @@
         {
             if (message.Sender.IsBroadcaster || message.Sender.IsModerator)
             {
-                
+
                 if (message.Message.ToLower().Contains("!gm reset") && GMPUI.chatIntegration == true)
                 {
                     try
@@ -174,7 +174,7 @@
                         GameModifiersController.charges = Config.chargesPerLevel;
                         ChatMessageHandler.TryAsyncMessage("Resetting non Permanent Powers");
                     }
-                    catch(System.Exception ex)
+                    catch (System.Exception ex)
                     {
                         Plugin.log.Error("Reset Command Failed: " + ex);
                     }
@@ -597,6 +597,24 @@
                     GameModifiersController.charges -= Config.tunnelChargeCost;
                     GameModifiersController.commandsLeftForMessage -= 1;
                     globalActive = true;
+                }
+            }
+            if (message.Message.ToLower().Contains("!gm gametime") && !Plugin.cooldowns.GetCooldown("Map Swap") && GameModifiersController.commandsLeftForMessage > 0)
+            {
+                if (GameModifiersController.charges >= Config.gameTimeChargeCost)
+                {
+                    if (!Plugin.gameSaberPluginInstalled)
+                        ChatMessageHandler.TryAsyncMessage("A compatible version of the GameSaber Plugin is required to use this command.");
+                    else
+                    {
+                        Plugin.twitchPowers.StartCoroutine(TwitchPowers.GameTime(Config.gameTimeDuration));
+                        Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Config.gameTimeCoolDown, "Map Swap", $"Game Starting, game will last {Config.gameTimeDuration} seconds. Better not Lose."));
+                        GameModifiersController.charges -= Config.gameTimeChargeCost;
+                        GameModifiersController.commandsLeftForMessage -= 1;
+                        globalActive = true;
+                    }
+                    //                GameModifiersController.beepSound.Play();
+
                 }
             }
 

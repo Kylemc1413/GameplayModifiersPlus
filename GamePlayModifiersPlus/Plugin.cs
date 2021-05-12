@@ -26,6 +26,7 @@
         internal static bool mappingExtensionsPresent = false;
         internal static bool twitchPluginInstalled = false;
         internal static bool songRequestPluginInstalled = false;
+        internal static bool gameSaberPluginInstalled = false;
         public static bool isValidScene = false;
         public static bool firstLoad = true;
 
@@ -372,13 +373,17 @@
         internal void CheckPlugins()
         {
 
-            foreach (var plugin in IPA.Loader.PluginManager.AllPlugins)
+            foreach (var plugin in IPA.Loader.PluginManager.EnabledPlugins)
             {
                 switch (plugin.Id)
                 {
                     case "ChatCore":
                               if(!(plugin.Version < new SemVer.Version("1.0.0-rc5")))
                                 twitchPluginInstalled = File.Exists(Path.Combine(IPA.Utilities.UnityGame.LibraryPath, "ChatCore.dll"));
+                        break;
+                    case "GameSaber":
+                     if (plugin.Version >= new SemVer.Version("1.3.0"))
+                            gameSaberPluginInstalled = true;
                         break;
                     //     case "BeatSaberChallenges":
                     //         ChallengeIntegration.AddListeners();
