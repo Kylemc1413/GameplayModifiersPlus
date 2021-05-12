@@ -30,7 +30,7 @@ namespace GamePlayModifiersPlus
         private StandardLevelInfoSaveData.DifficultyBeatmap nextMapDiffInfo;
         private PauseMenuManager pauseManager;
         private float switchTime = float.MaxValue;
-
+        private int orderedIdx = -1;
         private BeatmapObjectCallbackController callbackController;
         private BeatmapObjectSpawnMovementData originalSpawnMovementData;
         private NoteCutSoundEffectManager seManager;
@@ -102,9 +102,9 @@ namespace GamePlayModifiersPlus
             TwitchPowers.ResetTimeSync(nextSong, 0f, nextSongInfo.songTimeOffset, 1f);
             TwitchPowers.ManuallySetNJSOffset(GameObjects.spawnController, nextMapDiffInfo.noteJumpMovementSpeed,
     nextMapDiffInfo.noteJumpStartBeatOffset, nextSongInfo.beatsPerMinute);
-     
-            
-            
+
+
+
             //    TwitchPowers.ClearCallbackItemDataList(callBackDataList);
             // DestroyNotes();
             TwitchPowers.DestroyObjectsRaw();
@@ -142,17 +142,22 @@ namespace GamePlayModifiersPlus
                     }
                     else
                     {
-                        if(Config.EndlessPlaySongsInOrder)
+                        if (Config.EndlessPlaySongsInOrder)
                         {
                             if (levelCollection.Count() <= 1)
                                 break;
-                            int currIndex = nextSongInfo != null? levelCollection.IndexOf(nextSongInfo) : 0;
-                            int nextIndex = currIndex;
-                            if (currIndex == levelCollection.Count() - 1)
-                                nextIndex = 0;
-                            else
-                                nextIndex = currIndex++;
-                            previewLevel = levelCollection[nextIndex];
+                            var currLevel = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.level;
+                            if (orderedIdx == -1)
+                                if (currLevel is CustomPreviewBeatmapLevel)
+                                    orderedIdx = levelCollection.IndexOf(levelCollection.First(x => x.levelID == currLevel.levelID));
+                                else
+                                    orderedIdx = 0;
+                            orderedIdx++;
+                            if (orderedIdx > levelCollection.Count() - 1)
+                                orderedIdx = 0;
+                            //   else
+                            //       orderedIdx = orderedIdx++;
+                            previewLevel = levelCollection[orderedIdx];
                         }
                         else
                         {
@@ -167,7 +172,7 @@ namespace GamePlayModifiersPlus
                             previewLevel = ToPlay[nextSongIndex];
                             ToPlay.RemoveAt(nextSongIndex);
                         }
-                        
+
                     }
 
                     validSong = IsValid(previewLevel, out nextMapDiffInfo);
@@ -317,7 +322,7 @@ namespace GamePlayModifiersPlus
         private void UpdatePauseMenu()
         {
             var currInitData = pauseManager.GetField<PauseMenuManager.InitData, PauseMenuManager>("_initData");
-            PauseMenuManager.InitData newData = new PauseMenuManager.InitData(currInitData.backButtonText, nextSongInfo, nextDifficulty, nextCharacteristic,true, true);
+            PauseMenuManager.InitData newData = new PauseMenuManager.InitData(currInitData.backButtonText, nextSongInfo, nextDifficulty, nextCharacteristic, true, true);
             pauseManager.SetField("_initData", newData);
             pauseManager.Start();
         }
