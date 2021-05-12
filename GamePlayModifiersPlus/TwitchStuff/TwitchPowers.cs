@@ -604,7 +604,7 @@
 
                 BeatmapData newData = newDataBase.GetCopy();
                 if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.environmentEffectsFilterDefaultPreset == EnvironmentEffectsFilterPreset.NoEffects)
-                    newData.SetProperty<BeatmapData, List<BeatmapEventData>>("beatmapEventData", new List<BeatmapEventData>());
+                    newData.SetField<BeatmapData, List<BeatmapEventData>>("_beatmapEventsData", new List<BeatmapEventData>());
                 if (randomizeStartTime)
                 {
                     startTime = UnityEngine.Random.Range(0f, (newAudio.length / 2f));
