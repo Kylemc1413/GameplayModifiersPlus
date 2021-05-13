@@ -3,7 +3,7 @@
 # Adds additional modifiers to the game, as well as Twitch Chat Integration
 
 - ### Requires BS Utils, SongCore, and BeatSaberMarkupLanguage 
-- #### Requires [ChatCore](https://github.com/brian91292/ChatCore/releases) if you plan on using Chat Integration
+- #### Requires ChatCore if you plan on using Chat Integration
 
 # Standard Usage
 - ### Modifiers can be found in the GameplayModifiersPlus tab of the Mods section of the Gameplay Setup Panel when selecting songs
