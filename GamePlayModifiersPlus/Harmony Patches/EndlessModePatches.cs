@@ -14,8 +14,11 @@ namespace GamePlayModifiersPlus.Harmony_Patches
     {
         public static void Prefix(SinglePlayerLevelSelectionFlowCoordinator __instance)
         {
-            var lastLevelCollection = __instance.GetField<LevelSelectionNavigationController, LevelSelectionFlowCoordinator>("levelSelectionNavigationController").GetField<LevelCollectionNavigationController, LevelSelectionNavigationController>("_levelCollectionNavigationController").GetField<LevelCollectionViewController, LevelCollectionNavigationController>("_levelCollectionViewController")?
-                .GetField<LevelCollectionTableView, LevelCollectionViewController>("_levelCollectionTableView")?.GetField<IPreviewBeatmapLevel[], LevelCollectionTableView>("_previewBeatmapLevels");
+            var lastLevelCollection = __instance.GetField<LevelSelectionNavigationController, LevelSelectionFlowCoordinator>("levelSelectionNavigationController")
+                .GetField<LevelCollectionNavigationController, LevelSelectionNavigationController>("_levelCollectionNavigationController").
+                GetField<LevelCollectionViewController, LevelCollectionNavigationController>("_levelCollectionViewController")?
+                .GetField<LevelCollectionTableView, LevelCollectionViewController>("_levelCollectionTableView")?
+                .GetField<IPreviewBeatmapLevel[], LevelCollectionTableView>("_previewBeatmapLevels");
             if (lastLevelCollection != null)
                 EndlessBehavior.LastLevelCollection = lastLevelCollection;
         }

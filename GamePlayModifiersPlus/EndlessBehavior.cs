@@ -96,7 +96,7 @@ namespace GamePlayModifiersPlus
         {
             if (nextSong == null || nextBeatmap == null || nextMapDiffInfo == null) return;
             if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.environmentEffectsFilterDefaultPreset == EnvironmentEffectsFilterPreset.NoEffects)
-                nextBeatmap.SetProperty<BeatmapData, List<BeatmapEventData>>("_beatmapEventsData", new BeatmapEventData[0].ToList());
+                nextBeatmap.SetField<BeatmapData, List<BeatmapEventData>>("_beatmapEventsData", new BeatmapEventData[0].ToList());
 
             AudioClip oldClip = GameObjects.songAudio.clip;
             TwitchPowers.ResetTimeSync(nextSong, 0f, nextSongInfo.songTimeOffset, 1f);
