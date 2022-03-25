@@ -1,0 +1,46 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using IPA.Utilities;
+namespace GamePlayModifiersPlus.Utilities
+{
+    public static class BeatmapHelperExtensions
+    {
+        internal static readonly FieldAccessor<BeatmapCallbacksController, IReadonlyBeatmapData>.Accessor _beatmapDataAccessor = FieldAccessor<BeatmapCallbacksController, IReadonlyBeatmapData>.GetAccessor("_beatmapData");
+        public static void Update(this BeatmapObjectSpawnController.InitData data, float njs, float noteJumpOffset)
+        {
+            data.SetField("noteJumpMovementSpeed", njs);
+            data.SetField("noteJumpValue", noteJumpOffset);
+        }
+        public static void AddObjectsToBeatmap(this BeatmapCallbacksController callbackController, List<BeatmapObjectData> items)
+        {
+            var beatmapData = _beatmapDataAccessor(ref callbackController) as BeatmapData;
+            foreach (var item in items)
+                beatmapData.AddBeatmapObjectData(item);
+        }
+        public static void AddEventsToBeatmap(this BeatmapCallbacksController callbackController, List<BeatmapEventData> items)
+        {
+            var beatmapData = _beatmapDataAccessor(ref callbackController) as BeatmapData;
+            foreach (var item in items)
+                beatmapData.InsertBeatmapEventData(item);
+        }
+
+        public static void ModifyBeatmap(this BeatmapCallbacksController callbackController, Func<BeatmapDataItem, BeatmapDataItem> func, float startTime = 0, float endTime = float.MaxValue)
+        {
+            var beatmapData = _beatmapDataAccessor(ref callbackController) as BeatmapData;
+            _beatmapDataAccessor(ref callbackController) = beatmapData.GetFilteredCopy(x => {
+
+                if (x.time > startTime && x.time < endTime)
+                    return func(x);
+                return x;
+            });
+            var dic = callbackController.GetField<Dictionary<float, CallbacksInTime>, BeatmapCallbacksController>("_callbacksInTimes");
+            foreach (var item in dic.Values)
+            {
+                item.lastProcessedNode = null;
+            }
+        }
+    }
+}

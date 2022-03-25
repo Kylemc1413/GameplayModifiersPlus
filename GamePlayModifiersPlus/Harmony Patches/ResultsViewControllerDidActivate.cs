@@ -8,6 +8,7 @@ using UnityEngine;
 using TMPro;
 namespace GamePlayModifiersPlus.Harmony_Patches
 {
+    /*
     [HarmonyPatch(typeof(ResultsViewController))]
     [HarmonyPatch("DidActivate", MethodType.Normal)]
 
@@ -40,4 +41,5 @@ namespace GamePlayModifiersPlus.Harmony_Patches
         }
 
     }
+    */
 }

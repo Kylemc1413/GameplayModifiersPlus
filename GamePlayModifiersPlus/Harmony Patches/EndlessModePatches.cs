@@ -8,6 +8,7 @@ using UnityEngine;
 using IPA.Utilities;
 namespace GamePlayModifiersPlus.Harmony_Patches
 {
+    /*
     [HarmonyPatch(typeof(SinglePlayerLevelSelectionFlowCoordinator))]
     [HarmonyPatch("StartLevelOrShow360Prompt", MethodType.Normal)]
     class PlayPressedFetchLastLevelCollection
@@ -49,5 +50,5 @@ namespace GamePlayModifiersPlus.Harmony_Patches
             return true;
         }
     }
-
+    */
 }

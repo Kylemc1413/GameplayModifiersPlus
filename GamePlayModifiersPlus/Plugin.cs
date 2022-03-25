@@ -15,6 +15,9 @@
     using IPA;
     using System.Net.Http;
     using System.Reflection;
+    using SiraUtil.Zenject;
+    using Zenject;
+
     [Plugin(RuntimeOptions.SingleStartInit)]
     public class Plugin
     {
@@ -43,9 +46,10 @@
 
 
         [Init]
-        public void Init(IPA.Logging.Logger logger)
+        public void Init(IPA.Logging.Logger logger, Zenjector zenjector)
         {
             log = logger;
+            zenjector.Install<GmpInstaller>(Location.GameCore);
         }
 
         [OnStart]
@@ -372,17 +376,16 @@
 
         internal void CheckPlugins()
         {
-
             foreach (var plugin in IPA.Loader.PluginManager.EnabledPlugins)
             {
                 switch (plugin.Id)
                 {
                     case "ChatCore":
-                              if(!(plugin.Version < new SemVer.Version("1.0.0-rc5")))
+                              if(!(plugin.HVersion < new Hive.Versioning.Version("1.0.0-rc5")))
                                 twitchPluginInstalled = File.Exists(Path.Combine(IPA.Utilities.UnityGame.LibraryPath, "ChatCore.dll"));
                         break;
                     case "GameSaber":
-                     if (plugin.Version >= new SemVer.Version("1.3.0"))
+                     if (plugin.HVersion >= new Hive.Versioning.Version("1.3.0"))
                             gameSaberPluginInstalled = true;
                         break;
                     //     case "BeatSaberChallenges":

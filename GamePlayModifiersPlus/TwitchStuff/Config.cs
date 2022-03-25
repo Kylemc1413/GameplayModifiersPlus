@@ -2,8 +2,12 @@
 {
     using System;
     using System.IO;
-    using BS_Utils.Utilities;
+    using IPA.Utilities;
     using GamePlayModifiersPlus.TwitchStuff;
+    using IniParser;
+    using IniParser.Model;
+    using IniParser.Model.Configuration;
+    using IniParser.Parser;
     internal static class Config
     {
         public static bool uiOnTop = true;
@@ -319,7 +323,7 @@
 
         static void CompileChargeCostString()
         {
-            var iniData = Plugin.ConfigSettings.GetField<object>("_instance").GetField<IniParser.Model.IniData>("data");
+            var iniData = Plugin.ConfigSettings.GetField<BS_Utils.Utilities.IniFile, BS_Utils.Utilities.Config>("_instance").GetField<IniData, BS_Utils.Utilities.IniFile>("Data");
             System.Text.StringBuilder result = new System.Text.StringBuilder("\nCurrent Costs | \n");
             int totalCosts = 0;
             foreach (var section in iniData.Sections)
@@ -356,17 +360,18 @@
             string propertyLower = property.ToLower();
             Plugin.Log("Config Change Attempt: " + property + " " + value);
 
-            object inifile = Plugin.ConfigSettings.GetField<object>("_instance");
-            IniParser.Model.IniData data = inifile.GetField<IniParser.Model.IniData>("data");
+            var inifile = Plugin.ConfigSettings.GetField<BS_Utils.Utilities.IniFile, BS_Utils.Utilities.Config>("_instance");
+            var iniData = inifile.GetField<IniData, BS_Utils.Utilities.IniFile>("Data");
 
-            foreach (var section in data.Sections)
+
+            foreach (var section in iniData.Sections)
             {
                 if (success) break;
                 foreach (var key in section.Keys)
                 {
-                    if (key.KeyName.ToLower() == propertyLower && !data.Sections[section.SectionName].ContainsKey("ChargeCost"))
+                    if (key.KeyName.ToLower() == propertyLower && !iniData.Sections[section.SectionName].ContainsKey("ChargeCost"))
                     {
-                        inifile.InvokeMethod("IniWriteValue", section.SectionName, property, value);
+                        inifile.IniWriteValue(section.SectionName, property, value);
                         ChatMessageHandler.TryAsyncMessage("Changed Value");
                         Config.Load();
                         success = true;
@@ -382,13 +387,13 @@
         public static void ChangeConfigValue(string command, string property, string value)
         {
             Plugin.Log("Config Change Attempt: " + command + " " + property + " " + value);
-            object inifile = Plugin.ConfigSettings.GetField<object>("_instance");
-            IniParser.Model.IniData data = inifile.GetField<IniParser.Model.IniData>("data");
-            if (data.Sections.ContainsSection(command))
+            var inifile = Plugin.ConfigSettings.GetField<BS_Utils.Utilities.IniFile, BS_Utils.Utilities.Config>("_instance");
+            var iniData = inifile.GetField<IniParser.Model.IniData, BS_Utils.Utilities.IniFile>("Data");
+            if (iniData.Sections.ContainsSection(command))
             {
-                if (data.Sections[command].ContainsKey(property))
+                if (iniData.Sections[command].ContainsKey(property))
                 {
-                    inifile.InvokeMethod("IniWriteValue", command, property, value);
+                    inifile.IniWriteValue(command, property, value);
                     ChatMessageHandler.TryAsyncMessage("Changed Value");
                     Config.Load();
                 }

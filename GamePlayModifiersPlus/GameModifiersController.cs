@@ -8,7 +8,7 @@ using UnityEngine;
 using GamePlayModifiersPlus.Utilities;
 using System.Media;
 using GamePlayModifiersPlus.TwitchStuff;
-using BS_Utils.Utilities;
+using IPA.Utilities;
 
 namespace GamePlayModifiersPlus
 {
@@ -123,10 +123,10 @@ namespace GamePlayModifiersPlus
         {
             if (GameObjects.AudioTimeSync == null) return;
             timeScale = value;
-            AudioTimeSyncController.InitData initData = GameObjects.AudioTimeSync.GetPrivateField<AudioTimeSyncController.InitData>("_initData");
+            AudioTimeSyncController.InitData initData = GameObjects.AudioTimeSync.GetField<AudioTimeSyncController.InitData, AudioTimeSyncController>("_initData");
             AudioTimeSyncController.InitData newInitData = new AudioTimeSyncController.InitData(initData.audioClip,
                 GameObjects.AudioTimeSync.songTime, initData.songTimeOffset, timeScale);
-            GameObjects.AudioTimeSync.SetPrivateField("_initData", newInitData);
+            GameObjects.AudioTimeSync.SetField("_initData", newInitData);
             //Chipmunk Removal as per base game
 
             if (timeScale == 1f)
@@ -134,17 +134,17 @@ namespace GamePlayModifiersPlus
             else
                 GameObjects.Mixer.musicPitch = 1f / timeScale;
 
-            ResetTimeSync(GameObjects.AudioTimeSync, timeScale, newInitData);
+            ResetTimeSync(GameObjects.AudioTimeSync, GameObjects.songAudio, timeScale, newInitData);
         }
 
-        public static void ResetTimeSync(AudioTimeSyncController timeSync, float newTimeScale, AudioTimeSyncController.InitData newData)
+        public static void ResetTimeSync(AudioTimeSyncController timeSync, AudioSource audioSource, float newTimeScale, AudioTimeSyncController.InitData newData)
         {
             timeSync.SetField("_timeScale", newTimeScale);
             timeSync.SetField("_startSongTime", timeSync.songTime);
-            timeSync.SetField("_audioStartTimeOffsetSinceStart", timeSync.GetProperty<float>("timeSinceStart") - (timeSync.songTime + newData.songTimeOffset));
+            timeSync.SetField("_audioStartTimeOffsetSinceStart", timeSync.GetProperty<float, AudioTimeSyncController>("timeSinceStart") - (timeSync.songTime + newData.songTimeOffset));
             timeSync.SetField("_fixingAudioSyncError", false);
             timeSync.SetField("_playbackLoopIndex", 0);
-            timeSync.audioSource.pitch = newTimeScale;
+            audioSource.pitch = newTimeScale;
         }
 
         public static IEnumerator CheckGMPModifiers()
@@ -153,7 +153,7 @@ namespace GamePlayModifiersPlus
             if (GMPUI.EndlessMode || GMPUI.removeCrouchWalls || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.angleShift || GMPUI.laneShift || GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
             {
                 //     ApplyPatches();
-                UnityEngine.Random.InitState(Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.beatmapData.beatmapObjectsData.Count());
+                UnityEngine.Random.InitState(Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.levelID.GetHashCode());
                 BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("GameplayModifiersPlus");
 
                 if (GMPUI.njsRandom || GMPUI.offsetrandom)
