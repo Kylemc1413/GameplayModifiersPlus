@@ -17,9 +17,10 @@ namespace GamePlayModifiersPlus
 {
     internal class EndlessBehavior : MonoBehaviour
     {
-        public static IPreviewBeatmapLevel[] LastLevelCollection = new IPreviewBeatmapLevel[0];
+        public static IReadOnlyList<IPreviewBeatmapLevel> LastLevelCollection = new IPreviewBeatmapLevel[0];
 
         private IPreviewBeatmapLevel[] levelCollection = null;
+        private AudioClipAsyncLoader _audioClipAsyncLoader = null;
         private CancellationTokenSource CancellationTokenSource = new CancellationTokenSource();
         private SongProgressUIController progessController;
         internal AudioClip nextSong;
@@ -44,8 +45,8 @@ namespace GamePlayModifiersPlus
         void Awake()
         {
 
-            if (LastLevelCollection != null && LastLevelCollection.Length > 0 && Config.EndlessUseCurrentLevelCollection)
-                levelCollection = LastLevelCollection;
+            if (LastLevelCollection != null && LastLevelCollection.Count > 0 && Config.EndlessUseCurrentLevelCollection)
+                levelCollection = LastLevelCollection.ToArray();
             else
                 levelCollection = SongCore.Loader.CustomLevels.Values.ToArray();
             StartCoroutine(Setup());
@@ -76,6 +77,7 @@ namespace GamePlayModifiersPlus
             seManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().LastOrDefault();
             progessController = Resources.FindObjectsOfTypeAll<SongProgressUIController>().LastOrDefault();
             pauseManager = Resources.FindObjectsOfTypeAll<PauseMenuManager>().LastOrDefault();
+            _audioClipAsyncLoader = Resources.FindObjectsOfTypeAll<CustomLevelLoader>().FirstOrDefault().GetField<AudioClipAsyncLoader, CustomLevelLoader>("_audioClipAsyncLoader");
             // switchTime = 20f;
             switchTime = GameObjects.songAudio.clip.length - 1f;
             Task.Run(PrepareNextSong);
@@ -100,17 +102,17 @@ namespace GamePlayModifiersPlus
 
             AudioClip oldClip = GameObjects.songAudio.clip;
             TwitchPowers.ResetTimeSync(nextSong, 0f, nextSongInfo.songTimeOffset, 1f);
-  //          TwitchPowers.ManuallySetNJSOffset(GameObjects.spawnController, nextMapDiffInfo.noteJumpMovementSpeed,
-  //  nextMapDiffInfo.noteJumpStartBeatOffset, nextSongInfo.beatsPerMinute);
-
-
-
+            TwitchPowers.ManuallySetNJSOffset(GameObjects.spawnController, nextMapDiffInfo.noteJumpMovementSpeed,
+    nextMapDiffInfo.noteJumpStartBeatOffset, nextSongInfo.beatsPerMinute);
+            TwitchPowers.DestroyObjectsRaw();
+            GameObjects.callbacksController.ReplaceData(nextBeatmap);
+            GameObjects.callbacksController.ResetCallbacksController(0f, 0);
+            TwitchPowers.ResetNoteCutSoundEffects(seManager);
             //    TwitchPowers.ClearCallbackItemDataList(callBackDataList);
             // DestroyNotes();
-            TwitchPowers.DestroyObjectsRaw();
-            TwitchPowers.ResetNoteCutSoundEffects(seManager);
-            callbackController.SetField("_spawningStartTime", 0f);
-         //   callbackController.SetNewBeatmapData(nextBeatmap);
+
+
+            //   callbackController.SetNewBeatmapData(nextBeatmap);
             UpdatePauseMenu();
             ClearSoundEffects();
             //Destroying audio clip is actually bad idea
@@ -188,16 +190,17 @@ namespace GamePlayModifiersPlus
 
                 FoundValidSong = true;
 
-        //        await IPA.Utilities.Async.UnityMainThreadTaskScheduler.Factory.StartNew(
-        //            async () => nextSong = await nextSongInfo.GetPreviewAudioClipAsync(CancellationTokenSource.Token));
+                await IPA.Utilities.Async.UnityMainThreadTaskScheduler.Factory.StartNew(
+                    async () => nextSong = await _audioClipAsyncLoader.Load(nextSongInfo.songPreviewAudioClipPath));
 
                 //   bool loaded;
                 //  await Task.Run(() => loaded = nextSong.LoadAudioData());
 
                 string path = Path.Combine(nextSongInfo.customLevelPath, nextMapDiffInfo.beatmapFilename);
                 string json = File.ReadAllText(path);
-          //      nextBeatmap = dataLoader.GetBeatmapDataFromJson(json, nextSongInfo.beatsPerMinute, nextSongInfo.shuffle, nextSongInfo.shufflePeriod);
-          //      Plugin.Log($"Next Song: {nextSongInfo.songName} - Mapped by {nextSongInfo.levelAuthorName}, is Ready");
+                var nextSaveData = BeatmapSaveDataVersion3.BeatmapSaveData.DeserializeFromJSONString(json);
+                nextBeatmap = BeatmapDataLoader.GetBeatmapDataFromSaveData(nextSaveData, nextSongInfo.beatsPerMinute, false, null);
+                Plugin.Log($"Next Song: {nextSongInfo.songName} - Mapped by {nextSongInfo.levelAuthorName}, is Ready");
             }
             catch (Exception ex)
             {
@@ -213,8 +216,7 @@ namespace GamePlayModifiersPlus
             if (!(testLevel is CustomPreviewBeatmapLevel)) return false;
 
             CustomPreviewBeatmapLevel level = testLevel as CustomPreviewBeatmapLevel;
-            var extraData = new SongCore.Data.ExtraSongData();
-         //   var extraData = SongCore.Collections.RetrieveExtraSongData(level.levelID, level.customLevelPath);
+            var extraData = SongCore.Collections.RetrieveExtraSongData(level.levelID.Split('_')[2]);
             if (extraData == null)
             {
                 Plugin.Log("Null Extra Data");

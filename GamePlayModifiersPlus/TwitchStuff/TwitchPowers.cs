@@ -521,6 +521,7 @@
                             time, timeOffset, 1f);
             var timeSync = GameObjects.AudioTimeSync;
             GameObjects.songAudio.clip = clip;
+            timeSync.SetField("_initData", newData);
             timeSync.SetField("_timeScale", timeScale);
             timeSync.SetField("_startSongTime", time);
             timeSync.SetField("_audioStartTimeOffsetSinceStart", timeSync.GetProperty<float, AudioTimeSyncController>("timeSinceStart") - (time + newData.songTimeOffset));

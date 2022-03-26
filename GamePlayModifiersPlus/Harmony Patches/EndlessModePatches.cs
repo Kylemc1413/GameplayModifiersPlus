@@ -9,7 +9,7 @@ using IPA.Utilities;
 using GamePlayModifiersPlus.Utilities;
 namespace GamePlayModifiersPlus.Harmony_Patches
 {
-    /*
+    
     [HarmonyPatch(typeof(SinglePlayerLevelSelectionFlowCoordinator))]
     [HarmonyPatch("StartLevelOrShow360Prompt", MethodType.Normal)]
     class PlayPressedFetchLastLevelCollection
@@ -20,12 +20,12 @@ namespace GamePlayModifiersPlus.Harmony_Patches
                 .GetField<LevelCollectionNavigationController, LevelSelectionNavigationController>("_levelCollectionNavigationController").
                 GetField<LevelCollectionViewController, LevelCollectionNavigationController>("_levelCollectionViewController")?
                 .GetField<LevelCollectionTableView, LevelCollectionViewController>("_levelCollectionTableView")?
-                .GetField<IPreviewBeatmapLevel[], LevelCollectionTableView>("_previewBeatmapLevels");
+                .GetField<IReadOnlyList<IPreviewBeatmapLevel>, LevelCollectionTableView>("_previewBeatmapLevels");
             if (lastLevelCollection != null)
                 EndlessBehavior.LastLevelCollection = lastLevelCollection;
         }
     }
-        */
+        
     [HarmonyPatch(typeof(GameEnergyCounter))]
     [HarmonyPatch("ProcessEnergyChange", MethodType.Normal)]
     class StandardLevelGameplayManagerEnergyReachedZero
