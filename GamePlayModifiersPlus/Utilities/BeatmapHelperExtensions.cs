@@ -36,6 +36,34 @@ namespace GamePlayModifiersPlus.Utilities
                     return func(x);
                 return x;
             });
+            callbackController.ResetCallbacksController();
+        }
+       
+        public static LinkedListNode<BeatmapDataItem> GetLastNode(this BeatmapCallbacksController callbackController, float aheadTime)
+        {
+            var dic = callbackController.GetField<Dictionary<float, CallbacksInTime>, BeatmapCallbacksController>("_callbacksInTimes");
+            if(dic.TryGetValue(aheadTime, out var callback))
+            {
+                return callback.lastProcessedNode;
+            }
+            return null;
+        }
+
+        public static void SetNewLastNodeForCallback(this BeatmapCallbacksController callbackController, LinkedListNode<BeatmapDataItem> item, float aheadTime)
+        {
+            var dic = callbackController.GetField<Dictionary<float, CallbacksInTime>, BeatmapCallbacksController>("_callbacksInTimes");
+            if (dic.TryGetValue(aheadTime, out var callback))
+            {
+                callback.lastProcessedNode = item;
+            }
+        }
+
+        public static void ResetCallbacksController(this BeatmapCallbacksController callbackController, float? prevSongTime = null, float? startFilterTime = null)
+        {
+            if(prevSongTime != null)
+                callbackController.SetField("_prevSongTime", prevSongTime.Value);
+            if(startFilterTime != null)
+                callbackController.SetField("_startFilterTime", startFilterTime.Value);
             var dic = callbackController.GetField<Dictionary<float, CallbacksInTime>, BeatmapCallbacksController>("_callbacksInTimes");
             foreach (var item in dic.Values)
             {

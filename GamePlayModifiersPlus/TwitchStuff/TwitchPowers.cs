@@ -307,15 +307,21 @@
 
             var spawnMovementData = spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData");
             var initData = spawnController.GetField<BeatmapObjectSpawnController.InitData, BeatmapObjectSpawnController>("_initData");
-            var bpm = GameObjects.bpmController.currentBpm;
 
-            initData.Update(njs, noteJumpStartBeatOffset);
-            spawnController.SetField("_isInitialized", false);
+            var bpm = GameObjects.bpmController.currentBpm;
+            var oldAheadTime = spawnMovementData.spawnAheadTime;
+            var lastProcessedNode = callbacksController.GetLastNode(oldAheadTime);
+
             callbacksController.RemoveBeatmapCallback(spawnController.GetField<BeatmapDataCallbackWrapper, BeatmapObjectSpawnController>("_obstacleDataCallbackWrapper"));
             callbacksController.RemoveBeatmapCallback(spawnController.GetField<BeatmapDataCallbackWrapper, BeatmapObjectSpawnController>("_noteDataCallbackWrapper"));
             callbacksController.RemoveBeatmapCallback(spawnController.GetField<BeatmapDataCallbackWrapper, BeatmapObjectSpawnController>("_sliderDataCallbackWrapper"));
             callbacksController.RemoveBeatmapCallback(spawnController.GetField<BeatmapDataCallbackWrapper, BeatmapObjectSpawnController>("_spawnRotationCallbackWrapper"));
+            initData.Update(njs, noteJumpStartBeatOffset);
+            spawnController.SetField("_isInitialized", false);
             spawnController.Start();
+            var newAheadTime = spawnMovementData.spawnAheadTime;
+            if(lastProcessedNode != null)
+                callbacksController.SetNewLastNodeForCallback(lastProcessedNode, newAheadTime);
         }
 
         public static IEnumerator Pause()
