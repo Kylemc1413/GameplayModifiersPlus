@@ -24,15 +24,14 @@
 
         public static IEnumerator TempDA(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " DA | ";
+            GMPDisplay.AddActiveCommand("DA");
             var initData = GameObjects.beatmapObjectManager.GetField<BasicBeatmapObjectManager.InitData, BasicBeatmapObjectManager>("_initData");
             GameObjects.beatmapObjectManager.SetField("_initData", new BasicBeatmapObjectManager.InitData(true, false, initData.cutAngleTolerance, initData.notesUniformScale));
             ResetGameNoteStates(NoteVisualModifierType.DisappearingArrow);
             yield return new WaitForSeconds(length);
             GameObjects.beatmapObjectManager.SetField("_initData", new BasicBeatmapObjectManager.InitData(false, false, initData.cutAngleTolerance, initData.notesUniformScale));
             ResetGameNoteStates(NoteVisualModifierType.Normal);
-            text.text = text.text.Replace(" DA | ", "");
+            GMPDisplay.RemoveActiveCommand("DA");
         }
         public static void ResetGameNoteStates(NoteVisualModifierType state)
         {
@@ -40,7 +39,7 @@
             try
             {
                 var notepool = GameObjects.beatmapObjectManager
-                .GetField<MemoryPoolContainer<GameNoteController>, BasicBeatmapObjectManager>("_gameNotePoolContainer");
+                .GetField<MemoryPoolContainer<GameNoteController>, BasicBeatmapObjectManager>("_basicGameNotePoolContainer");
 
                 MemoryPoolBase<GameNoteController> noteBaseMemoryPool = notepool
                     .GetField<IMemoryPool<GameNoteController>, MemoryPoolContainer<GameNoteController>>("_memoryPool")
@@ -72,13 +71,11 @@
             var daController = note.gameObject.GetComponent<DisappearingArrowControllerBase<GameNoteController>>();
             daController.InvokeMethod<System.Object, DisappearingArrowControllerBase<GameNoteController>>("OnDestroy");
             daController.InvokeMethod<System.Object, DisappearingArrowControllerBase<GameNoteController>>("Awake");
-            daController.InvokeMethod<System.Object, DisappearingArrowControllerBase<GameNoteController>>("HandleGameNoteControllerDidInit", note);
+            daController.InvokeMethod<System.Object, DisappearingArrowControllerBase<GameNoteController>>("HandleCubeNoteControllerDidInit", note);
         }
         public static IEnumerator CoolDown(float waitTime, string cooldown, string message)
         {
-
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
-            text.text += " " + cooldown + " | ";
+            GMPDisplay.AddActiveCooldown(cooldown);
             Plugin.cooldowns.SetCooldown(true, cooldown);
             if (!string.IsNullOrWhiteSpace(message))
             {
@@ -99,69 +96,52 @@
 
             yield return new WaitForSeconds(waitTime);
             Plugin.cooldowns.SetCooldown(false, cooldown);
-            text.text = text.text.Replace(" " + cooldown + " | ", "");
+            GMPDisplay.RemoveActiveCooldown(cooldown);
         }
 
         public static IEnumerator GlobalCoolDown()
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
-
+            GMPDisplay.AddActiveCooldown("Global");
             Plugin.cooldowns.SetCooldown(true, "Global");
             yield return new WaitForSeconds(Config.globalCommandCooldown);
             Plugin.cooldowns.SetCooldown(false, "Global");
-            text.text = text.text.Replace(" " + "Global" + " | ", "");
+            GMPDisplay.RemoveActiveCooldown("Global");
         }
 
         public static IEnumerator TempInstaFail(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " InstaFail | ";
+            GMPDisplay.AddActiveCommand("InstaFail");
             Image energyBar = GameObjects.energyPanel.GetField<Image, GameEnergyUIPanel>("_energyBar");
             energyBar.color = Color.red;
-            GameObjects.energyCounter.SetField("_badNoteEnergyDrain", 1f);
-            GameObjects.energyCounter.SetField("_missNoteEnergyDrain", 1f);
-            GameObjects.energyCounter.SetField("_hitBombEnergyDrain", 1f);
-            GameObjects.energyCounter.SetField("_obstacleEnergyDrainPerSecond", 1f);
+            GameModifiersController.currentHealthType = GameModifiersController.HealthType.Instafail;
             yield return new WaitForSeconds(length);
             energyBar.color = Color.white;
-            GameObjects.energyCounter.SetField("_badNoteEnergyDrain", 0.1f);
-            GameObjects.energyCounter.SetField("_missNoteEnergyDrain", 0.15f);
-            GameObjects.energyCounter.SetField("_hitBombEnergyDrain", 0.15f);
-            GameObjects.energyCounter.SetField("_obstacleEnergyDrainPerSecond", 0.1f);
-            text.text = text.text.Replace(" InstaFail | ", "");
+            GameModifiersController.currentHealthType = GameModifiersController.HealthType.Normal;
+            GMPDisplay.RemoveActiveCommand("InstaFail");
         }
 
         public static IEnumerator TempInvincibility(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " Invincible | ";
+            GMPDisplay.AddActiveCommand("Invincible");
             Image energyBar = GameObjects.energyPanel.GetField<Image, GameEnergyUIPanel>("_energyBar");
             energyBar.color = Color.yellow;
-            GameObjects.energyCounter.SetField("_badNoteEnergyDrain", 0f);
-            GameObjects.energyCounter.SetField("_missNoteEnergyDrain", 0f);
-            GameObjects.energyCounter.SetField("_hitBombEnergyDrain", 0f);
-            GameObjects.energyCounter.SetField("_obstacleEnergyDrainPerSecond", 0f);
+            GameModifiersController.currentHealthType = GameModifiersController.HealthType.Invincible;
             yield return new WaitForSeconds(length);
             energyBar.color = Color.white;
-            GameObjects.energyCounter.SetField("_badNoteEnergyDrain", 0.1f);
-            GameObjects.energyCounter.SetField("_missNoteEnergyDrain", 0.15f);
-            GameObjects.energyCounter.SetField("_hitBombEnergyDrain", 0.15f);
-            GameObjects.energyCounter.SetField("_obstacleEnergyDrainPerSecond", 0.1f);
-            text.text = text.text.Replace(" Invincible | ", "");
+            GameModifiersController.currentHealthType = GameModifiersController.HealthType.Normal;
+            GMPDisplay.RemoveActiveCommand("Invincible");
         }
 
         public static IEnumerator TempPoison(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " Poison | ";
+            GMPDisplay.AddActiveCommand("Poison");
             Image energyBar = GameObjects.energyPanel.GetField<Image, GameEnergyUIPanel>("_energyBar");
             energyBar.color = Color.magenta;
-            GameObjects.energyCounter.SetField("_goodNoteEnergyCharge", 0f);
+            GameModifiersController.currentHealthType = GameModifiersController.HealthType.Poison;
             yield return new WaitForSeconds(length);
             energyBar.color = Color.white;
-            GameObjects.energyCounter.SetField("_goodNoteEnergyCharge", 0.01f);
-
-            text.text = text.text.Replace(" Poison | ", "");
+            GameModifiersController.currentHealthType = GameModifiersController.HealthType.Normal;
+            GMPDisplay.RemoveActiveCommand("Poison");
         }
 
 
@@ -184,8 +164,7 @@
 
         public static IEnumerator RandomRotation(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " RandomRotation | ";
+            GMPDisplay.AddActiveCommand("RandomRotation");
             float startTime = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float endTime = startTime + length;
             float marker = startTime;
@@ -216,7 +195,7 @@
             }
             GameObjects.callbacksController.AddEventsToBeatmap(data);
             yield return new WaitForSeconds(length);
-            text.text = text.text.Replace(" RandomRotation | ", "");
+            GMPDisplay.RemoveActiveCommand("RandomRotation");
         }
 
 
@@ -236,46 +215,42 @@
 
         public static IEnumerator ScaleNotes(float scale, float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " Smaller/Larger | ";
+            GMPDisplay.AddActiveCommand("Smaller/Larger");
             GameModifiersController.altereddNoteScale = scale;
             yield return new WaitForSeconds(length);
             GameModifiersController.altereddNoteScale = 1f;
-            text.text = text.text.Replace(" Smaller/Larger | ", "");
+            GMPDisplay.RemoveActiveCommand("Smaller/Larger");
         }
 
         public static IEnumerator RandomNotes(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " Random | ";
+            GMPDisplay.AddActiveCommand("Random");
             GMPUI.randomSize = true;
             yield return new WaitForSeconds(length);
             GMPUI.randomSize = false;
-            text.text = text.text.Replace(" Random | ", "");
+            GMPDisplay.RemoveActiveCommand("Random");
         }
 
         public static IEnumerator NjsRandom(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " NJSRandom | ";
+            GMPDisplay.AddActiveCommand("NJSRandom");
             GMPUI.njsRandom = true;
             Plugin.twitchPowers.StartCoroutine(RandomNjsOrOffset());
             yield return new WaitForSeconds(length);
             GMPUI.njsRandom = false;
             AdjustNjsOrOffset();
-            text.text = text.text.Replace(" NJSRandom | ", "");
+            GMPDisplay.RemoveActiveCommand("NJSRandom");
         }
 
         public static IEnumerator OffsetRandom(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " Random Offset | ";
+            GMPDisplay.AddActiveCommand("Random Offset");
             GMPUI.offsetrandom = true;
             Plugin.twitchPowers.StartCoroutine(RandomNjsOrOffset());
             yield return new WaitForSeconds(length);
             GMPUI.offsetrandom = false;
             AdjustNjsOrOffset();
-            text.text = text.text.Replace(" Random Offset | ", "");
+            GMPDisplay.RemoveActiveCommand("Random Offset");
         }
 
         public static IEnumerator RandomNjsOrOffset()
@@ -333,8 +308,7 @@
 
         public static IEnumerator TempNoArrows(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " NoArrows | ";
+            GMPDisplay.AddActiveCommand("NoArrows");
             yield return new WaitForSeconds(0f);
             float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float end = start + length + 2f;
@@ -350,15 +324,12 @@
 
             }, start, end);
             yield return new WaitForSeconds(length + 2f);
-            text.text = text.text.Replace(" NoArrows | ", "");
-            //    dataModel.beatmapData = beatmapData;
+            GMPDisplay.RemoveActiveCommand("NoArrows");
         }
 
         public static IEnumerator RandomBombs(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " Bombs | ";
-
+            GMPDisplay.AddActiveCommand("Bombs");
 
             yield return new WaitForSeconds(0f);
             float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
@@ -391,13 +362,12 @@
             }, start, end);
 
             yield return new WaitForSeconds(length + 2f);
-            text.text = text.text.Replace(" Bombs | ", "");
+            GMPDisplay.RemoveActiveCommand("Bombs");
         }
 
         public static IEnumerator SpeedChange(float length, float pitch)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " Speed | ";
+            GMPDisplay.AddActiveCommand("Speed");
 
             float songspeedmul = Plugin.levelData.GameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul;
 
@@ -408,7 +378,7 @@
 
 
             GameModifiersController.SetTimeScale(songspeedmul);
-            text.text = text.text.Replace(" Speed | ", "");
+            GMPDisplay.RemoveActiveCommand("Speed");
         }
 
 
@@ -435,8 +405,7 @@
         {
             yield break;
             /*
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " RCTTS | ";
+             *             GMPDisplay.AddActiveCommand("RCTTS");
             if (realityCheckData == null)
             {
                 BeatmapDataLoader dataLoader = new BeatmapDataLoader();
@@ -447,7 +416,7 @@
 
             StartCoroutine(SwitchMap(realityCheckData, RealityClip, 260f, 0f, 17f, 0f, duration, Config.rcttsRandomizeStart));
             yield return new WaitForSeconds(duration);
-            text.text = text.text.Replace(" RCTTS | ", "");
+            GMPDisplay.RemoveActiveCommand("RCTTS");
             */
         }
 
@@ -457,8 +426,7 @@
         {
             yield break;
             /*
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " Workout | ";
+                GMPDisplay.AddActiveCommand("Workout");
             if (workoutData == null)
             {
                 BeatmapDataLoader dataLoader = new BeatmapDataLoader();
@@ -469,7 +437,7 @@
 
             StartCoroutine(SwitchMap(workoutData, WorkoutClip, 200f, 0f, 10f, 0f, duration));
             yield return new WaitForSeconds(duration);
-            text.text = text.text.Replace(" Workout | ", "");
+            GMPDisplay.RemoveActiveCommand("Workout");
             */
         }
 
@@ -782,8 +750,7 @@
 
         public static IEnumerator Reverse(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " Reverse | ";
+            GMPDisplay.AddActiveCommand("Reverse");
             float wait = GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float start = GameObjects.songAudio.time + wait * 2f;
             float end = start + length;
@@ -810,7 +777,7 @@
             GameModifiersController.reverseSound.Play();
             //   DestroyNotes();
             DestroyObjectsRaw();
-            text.text = text.text.Replace(" Reverse | ", "");
+            GMPDisplay.RemoveActiveCommand("Reverse");
 
         }
 
@@ -874,33 +841,30 @@
 
         public static IEnumerator Funky(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " Funky | ";
+            GMPDisplay.AddActiveCommand("Funky");
             GMPUI.funky = true;
             yield return new WaitForSeconds(length);
             GMPUI.funky = false;
-            text.text = text.text.Replace(" Funky | ", "");
+            GMPDisplay.RemoveActiveCommand("Funky");
         }
 
         public static IEnumerator TempMirror(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " Mirror | ";
+            GMPDisplay.AddActiveCommand("Mirror");
             MirrorSection(length);
             yield return new WaitForSeconds(length);
-            text.text = text.text.Replace(" Mirror | ", "");
+            GMPDisplay.RemoveActiveCommand("Mirror");
 
         }
 
         public static IEnumerator Rainbow(float length)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " Rainbow | ";
+            GMPDisplay.AddActiveCommand("Rainbow");
             GMPUI.rainbow = true;
             yield return new WaitForSeconds(length);
             GMPUI.rainbow = false;
             ColorController.ResetColors();
-            text.text = text.text.Replace(" Rainbow | ", "");
+            GMPDisplay.RemoveActiveCommand("Rainbow");
         }
         /*
         public static void DestroyNotes()
@@ -981,6 +945,7 @@
             //       Time.timeScale = 1;
             //        Plugin.timeScale = 1;
             GameModifiersController.superRandom = false;
+            GameModifiersController.currentHealthType = GameModifiersController.HealthType.Normal;
             if (resetMessage)
             {
                 if (GameObjects.beatmapObjectManager != null)
@@ -992,10 +957,7 @@
                 ColorController.ResetColors();
                 if (Plugin.isValidScene)
                     AdjustNjsOrOffset();
-                var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
-                text.text = " ";
-                var text2 = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-                text2.text = "";
+                GMPDisplay.ResetActives();
                 GameModifiersController.SetTimeScale(GameModifiersController.currentSongSpeed);
 
                 resetMessage = false;
@@ -1006,21 +968,19 @@
 
         public static IEnumerator GameTime(float duration)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-
             GameSaber.GameType game = UnityEngine.Random.Range(0, 2) == 0 ? GameSaber.GameType.TicTacToe : GameSaber.GameType.ConnectFour;
             float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float end = start + duration + 1f;
             var gameController = GameObject.Find("GameSaber Controller")?.GetComponent<GameSaber.GameController>();
             if(gameController != null)
             {
-                text.text += " GameTime | ";
+                GMPDisplay.AddActiveCommand("GameTime");
                 GameSaber.GameController.mapParams = new GameSaber.GameParams.DiffGameParams { gameType = game, gameStart = start, gameEndTime = end, gameTurnInterval = 3.0f };
                 gameController.Initialize();
             }
             yield return new WaitForSeconds(duration + 1f);
-         //   GameSaber.GameController.mapParams = null;
-            text.text = text.text.Replace(" GameTime | ", "");
+            //   GameSaber.GameController.mapParams = null;
+            GMPDisplay.RemoveActiveCommand("GameTime");
 
         }
         public static IEnumerator MadScience(float length)
@@ -1045,8 +1005,7 @@
 
         public static IEnumerator Encasement(float duration)
         {
-            var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().activeCommandText;
-            text.text += " Tunnel | ";
+            GMPDisplay.AddActiveCommand("Tunnel");
             float startTime = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.2f;
             float durationTime = duration;
             MappingExtensions.Plugin.ForceActivateForSong();
@@ -1057,7 +1016,7 @@
             objects.Add(new ObstacleData(startTime, -1, (NoteLineLayer)6, duration, 5, 0));
             GameObjects.callbacksController.AddObjectsToBeatmap(objects);
             yield return new WaitForSeconds(duration);
-            text.text = text.text.Replace(" Tunnel | ", "");
+            GMPDisplay.RemoveActiveCommand("Tunnel");
 
         }
         

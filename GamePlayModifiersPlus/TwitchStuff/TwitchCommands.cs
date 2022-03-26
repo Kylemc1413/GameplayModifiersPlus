@@ -802,9 +802,7 @@
         {
             if (Config.globalCommandCooldown > 0 && Plugin.cooldowns.GetCooldown("Global") == false && globalActive)
             {
-                var text = GameObject.Find("Chat Powers").GetComponent<GamePlayModifiersPlus.TwitchStuff.GMPDisplay>().cooldownText;
                 Plugin.twitchPowers.StartCoroutine(TwitchPowers.GlobalCoolDown());
-                text.text += " " + "Global" + " | ";
             }
             globalActive = false;
         }

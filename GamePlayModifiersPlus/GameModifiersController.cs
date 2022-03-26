@@ -14,6 +14,7 @@ namespace GamePlayModifiersPlus
 {
     public class GameModifiersController
     {
+        public enum HealthType { Normal, Poison, Invincible, Instafail }
         public static int charges = 0;
         public static int commandsLeftForMessage;
         public static float timeScale = 1;
@@ -25,7 +26,7 @@ namespace GamePlayModifiersPlus
         public static bool sizeActivated;
         public static bool noArrow;
         public static float currentSongSpeed;
-
+        public static HealthType currentHealthType = HealthType.Normal;
         public static SoundPlayer beepSound = new SoundPlayer(Properties.Resources.Beep);
         public static SoundPlayer reverseSound = new SoundPlayer(Properties.Resources.sectionpass);
 

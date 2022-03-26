@@ -20,7 +20,54 @@ namespace GamePlayModifiersPlus.TwitchStuff
         CurvedTextMeshPro chargeCountText;
         public CurvedTextMeshPro cooldownText;
         public CurvedTextMeshPro activeCommandText;
+        public List<string> activeCommands = new List<string>();
+        public List<string> activeCooldowns = new List<string>();
         ImageView chargeCounter;
+
+        public static void ResetActives()
+        {
+            var display = Plugin.chatPowers.GetComponent<GMPDisplay>();
+            if(display)
+            {
+                display.activeCommands.Clear();
+                display.activeCooldowns.Clear();
+                display.UpdateTextDisplays();
+            }
+        }
+        public static void AddActiveCommand(string command)
+        {
+            var display = Plugin.chatPowers.GetComponent<GMPDisplay>();
+            if (display && !display.activeCommands.Contains(command))
+                display.activeCommands.Add(command);
+            display?.UpdateTextDisplays();
+        }
+        public static void RemoveActiveCommand(string command)
+        {
+            var display = Plugin.chatPowers.GetComponent<GMPDisplay>();
+            if (display && display.activeCommands.Contains(command))
+                display.activeCommands.Remove(command);
+            display?.UpdateTextDisplays();
+        }
+        public static void AddActiveCooldown(string cooldown)
+        {
+            var display = Plugin.chatPowers.GetComponent<GMPDisplay>();
+            if (display && !display.activeCooldowns.Contains(cooldown))
+                display.activeCooldowns.Add(cooldown);
+            display?.UpdateTextDisplays();
+        }
+        public static void RemoveActiveCooldown(string cooldown)
+        {
+            var display = Plugin.chatPowers.GetComponent<GMPDisplay>();
+            if (display && display.activeCooldowns.Contains(cooldown))
+                display.activeCooldowns.Remove(cooldown);
+            display?.UpdateTextDisplays();
+        }
+
+        public void UpdateTextDisplays()
+        {
+            activeCommandText.text = string.Join(" | ", activeCommands);
+            cooldownText.text = string.Join(" | ", activeCooldowns);
+        }
         private void Awake()
         {
             StartCoroutine(Init());

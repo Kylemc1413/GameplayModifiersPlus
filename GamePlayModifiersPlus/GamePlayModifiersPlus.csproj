@@ -224,6 +224,7 @@
     <Compile Include="TwitchStuff\ChatMessageHandler.cs" />
     <Compile Include="TwitchStuff\GMPDisplay.cs" />
     <Compile Include="Utilities\BeatmapHelperExtensions.cs" />
+    <Compile Include="Utilities\EnumExtensions.cs" />
     <Compile Include="Utilities\GameObjects.cs" />
     <Compile Include="Utilities\GmpInstaller.cs" />
     <Compile Include="Utilities\PasteRequests.cs" />

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using HarmonyLib;
 using UnityEngine;
 using IPA.Utilities;
+using GamePlayModifiersPlus.Utilities;
 namespace GamePlayModifiersPlus.Harmony_Patches
 {
     /*
@@ -24,31 +25,37 @@ namespace GamePlayModifiersPlus.Harmony_Patches
                 EndlessBehavior.LastLevelCollection = lastLevelCollection;
         }
     }
-
+        */
     [HarmonyPatch(typeof(GameEnergyCounter))]
     [HarmonyPatch("ProcessEnergyChange", MethodType.Normal)]
     class StandardLevelGameplayManagerEnergyReachedZero
     {
-        public static bool Prefix(ref GameEnergyCounter __instance, float energyChange)
+        public static bool Prefix(ref GameEnergyCounter __instance, ref float energyChange)
         {
-            if (!(GMPUI.EndlessMode && Config.EndlessContinueOnFail)) return true;
-            GameObject endlessObj = GameObject.Find("GMP Endless Behavior");
-            if (endlessObj == null) return true;
-            if (energyChange > 0) return true;
-            EndlessBehavior endlessBehavior = endlessObj.GetComponent<EndlessBehavior>();
-            if (endlessBehavior.nextSong != null)
+            if ((GMPUI.EndlessMode && Config.EndlessContinueOnFail))
             {
-                bool willFail = (__instance.energy + energyChange) <= 0;
-
-                if(willFail && BS_Utils.Plugin.LevelData.IsSet && !BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.gameplayModifiers.noFailOn0Energy)
+                GameObject endlessObj = GameObject.Find("GMP Endless Behavior");
+                if (endlessObj == null) return true;
+                if (energyChange > 0) return true;
+                EndlessBehavior endlessBehavior = endlessObj.GetComponent<EndlessBehavior>();
+                if (endlessBehavior.nextSong != null)
                 {
-                    __instance.ProcessEnergyChange(0.5f);
-                    endlessBehavior.SongEnd();
-                    return false;
+                    bool willFail = (__instance.energy + energyChange) <= 0;
+
+                    if (willFail && BS_Utils.Plugin.LevelData.IsSet && !BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.gameplayModifiers.noFailOn0Energy)
+                    {
+                        __instance.ProcessEnergyChange(0.5f);
+                        endlessBehavior.SongEnd();
+                        return false;
+                    }
                 }
+            }
+            else if (GMPUI.chatIntegration && Plugin.twitchPluginInstalled && GameModifiersController.currentHealthType != GameModifiersController.HealthType.Normal)
+            {
+                energyChange = GameModifiersController.currentHealthType.GetHealthChangeForHealthType(energyChange);
             }
             return true;
         }
     }
-    */
+    
 }

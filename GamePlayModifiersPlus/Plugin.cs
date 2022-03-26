@@ -37,7 +37,7 @@
         public static TwitchPowers twitchPowers = null;
         public static GameObject chatIntegrationObj;
         public static Cooldowns cooldowns;
-        GameObject chatPowers = null;
+        internal static GameObject chatPowers = null;
 
 
         public static BS_Utils.Gameplay.LevelData levelData;
