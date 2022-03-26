@@ -12,8 +12,7 @@
     "BS Utils": "^1.6.0",
     "BeatSaberMarkupLanguage": "^1.2.0",
     "SongCore": "^3.0.0",
-    "SiraUtil":  "^3.0.5",
-    "ChatCore": "^2.0.0"
+    "SiraUtil":  "^3.0.5"
   },
     "links": {
         "project-source": "https://github.com/Kylemc1413/GameplayModifiersPlus",
