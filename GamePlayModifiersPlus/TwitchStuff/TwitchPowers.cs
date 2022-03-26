@@ -150,7 +150,7 @@
         public static IEnumerator TestingGround(float length)
         {
             yield return new WaitForSeconds(5f);
-            Plugin.twitchPowers.StartCoroutine(TwitchPowers.MadScience(99f));
+            Plugin.twitchPowers.StartCoroutine(Plugin.twitchPowers.RealityCheck(10f));
         }
 
         public static IEnumerator LeftRotation()
@@ -403,62 +403,58 @@
         public static BeatmapData realityCheckData = null;
         public IEnumerator RealityCheck(float duration = 10f)
         {
-            yield break;
-            /*
-             *             GMPDisplay.AddActiveCommand("RCTTS");
+            GMPDisplay.AddActiveCommand("RCTTS");
             if (realityCheckData == null)
             {
                 BeatmapDataLoader dataLoader = new BeatmapDataLoader();
                 string json = new System.IO.StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("GamePlayModifiersPlus.Resources.RealityCheck.ExpertPlus.dat")).ReadToEnd();
-                realityCheckData = dataLoader.GetBeatmapDataFromJson(json, 260f, 0f, 0.5f);
+                //260f, 0f, 0.5f
+                var realityCheckSaveData = BeatmapSaveDataVersion3.BeatmapSaveData.DeserializeFromJSONString(json);
+                realityCheckData = BeatmapDataLoader.GetBeatmapDataFromSaveData(realityCheckSaveData, 260f, false, null);
             }
-
-
             StartCoroutine(SwitchMap(realityCheckData, RealityClip, 260f, 0f, 17f, 0f, duration, Config.rcttsRandomizeStart));
             yield return new WaitForSeconds(duration);
             GMPDisplay.RemoveActiveCommand("RCTTS");
-            */
+
         }
 
         public static AudioClip WorkoutClip = null;
         public static BeatmapData workoutData = null;
         public IEnumerator Workout(float duration = 30f)
         {
-            yield break;
-            /*
-                GMPDisplay.AddActiveCommand("Workout");
+            GMPDisplay.AddActiveCommand("Workout");
             if (workoutData == null)
             {
                 BeatmapDataLoader dataLoader = new BeatmapDataLoader();
                 string json = new System.IO.StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("GamePlayModifiersPlus.Resources.Workout.ExpertPlus.dat")).ReadToEnd();
-                workoutData = dataLoader.GetBeatmapDataFromJson(json, 200f, 0f, 0.5f);
+                //200f, 0f, 0.5f
+                var workoutSaveData = BeatmapSaveDataVersion3.BeatmapSaveData.DeserializeFromJSONString(json);
+                workoutData = BeatmapDataLoader.GetBeatmapDataFromSaveData(workoutSaveData, 200f, false, null);
             }
 
 
             StartCoroutine(SwitchMap(workoutData, WorkoutClip, 200f, 0f, 10f, 0f, duration));
             yield return new WaitForSeconds(duration);
             GMPDisplay.RemoveActiveCommand("Workout");
-            */
+
         }
 
         public IEnumerator SwitchMap(BeatmapData newDataBase, AudioClip newAudio, float newBpm, float newTimeOffset, float newNjs, float newSpawnOffset, float duration, bool randomizeStartTime = true)
         {
-            yield break;
-            /*
-            BeatmapObjectCallbackController callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectCallbackController>().Last();
-            BeatmapObjectSpawnMovementData originalSpawnMovementData = GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData");
-            BeatmapCallbackItemDataList callBackDataList = GameObjects.spawnController.GetField<BeatmapCallbackItemDataList, BeatmapObjectSpawnController>("_beatmapCallbackItemDataList");
+     
+            BeatmapObjectSpawnMovementData spawnMovementData = GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData");
             NoteCutSoundEffectManager seManager = Resources.FindObjectsOfTypeAll<NoteCutSoundEffectManager>().LastOrDefault();
             float startTime = 0f;
-            float startOffset = originalSpawnMovementData.spawnAheadTime + 0.1f;
+            float startOffset = spawnMovementData.spawnAheadTime + 0.1f;
             //Get initial Map data
+            BeatmapData originalData = GameObjects.callbacksController.GetDataCopy();
             float originalTime = GameObjects.songAudio.time;
-            float originalBPM = GameObjects.spawnController.currentBpm;
+            float originalBPM = GameObjects.bpmController.currentBpm;
             float originalTimeOffset = GameObjects.AudioTimeSync.GetField<float, AudioTimeSyncController>("_songTimeOffset");
             float originalNJS = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpMovementSpeed;
             float originalSpawnOffset = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpStartBeatOffset;
             AudioClip originalClip = GameObjects.songAudio.clip;
-            BeatmapData originalData = callbackController.GetField<IReadonlyBeatmapData, BeatmapObjectCallbackController>("_beatmapData") as BeatmapData;
+            yield return null;
             try
             {
 
@@ -466,56 +462,35 @@
                 //Switch To Reality Check
 
                 BeatmapData newData = newDataBase.GetCopy();
-                if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.environmentEffectsFilterDefaultPreset == EnvironmentEffectsFilterPreset.NoEffects)
-                    newData.SetField<BeatmapData, List<BeatmapEventData>>("_beatmapEventsData", new List<BeatmapEventData>());
+     //           if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.environmentEffectsFilterDefaultPreset == EnvironmentEffectsFilterPreset.NoEffects)
+     //               newData.SetField<BeatmapData, List<BeatmapEventData>>("_beatmapEventsData", new List<BeatmapEventData>());
                 if (randomizeStartTime)
                 {
                     startTime = UnityEngine.Random.Range(0f, (newAudio.length / 2f));
                     duration = Mathf.Min(newAudio.length - 1f - startTime, duration);
-                    List<BeatmapObjectData>[] data3 = new List<BeatmapObjectData>[4];
-                    for (int i = 0; i < newData.beatmapLinesData.Count; i++)
-                    {
-                        data3[i] = new List<BeatmapObjectData>();
-                        data3[i].AddRange(newData.beatmapLinesData[i].beatmapObjectsData);
-                        data3[i].RemoveAll(x => x.time <= startTime + startOffset);
-                        var linedata = newData.GetField<BeatmapLineData[], BeatmapData>("_beatmapLinesData")[i];
-                        linedata.SetField<BeatmapLineData, List<BeatmapObjectData>>("_beatmapObjectsData", data3[i]);
-
-                    }
                 }
-
                 ResetTimeSync(newAudio, startTime, newTimeOffset, 1f);
                 ManuallySetNJSOffset(GameObjects.spawnController, newNjs, newSpawnOffset, newBpm);
-                ClearCallbackItemDataList(callBackDataList);
-                // DestroyNotes();
                 DestroyObjectsRaw();
+                GameObjects.callbacksController.ReplaceData(newData);
+                GameObjects.callbacksController.ResetCallbacksController(startTime, startTime + spawnMovementData.spawnAheadTime);
                 ResetNoteCutSoundEffects(seManager);
-                callbackController.SetField("_spawningStartTime", 0f);
-                callbackController.SetNewBeatmapData(newData);
             }
             catch (System.Exception ex)
             {
                 Plugin.log.Error("Exception switching Map: " + ex);
             }
             yield return new WaitForSeconds(duration - 0.2f);
+            yield return null;
             //Restore Original Map
-            List<BeatmapObjectData>[] data2 = new List<BeatmapObjectData>[4];
-            for (int i = 0; i < originalData.beatmapLinesData.Count; i++)
-            {
-                data2[i] = new List<BeatmapObjectData>();
-                data2[i].AddRange(originalData.beatmapLinesData[i].beatmapObjectsData);
-                data2[i].RemoveAll(x => x.time <= originalTime + startOffset);
-                var linedata = originalData.GetField<BeatmapLineData[], BeatmapData>("_beatmapLinesData")[i];
-                linedata.SetField<BeatmapLineData, List<BeatmapObjectData>>("_beatmapObjectsData", data2[i]);
-            }
             ResetTimeSync(originalClip, originalTime, originalTimeOffset, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul);
             ManuallySetNJSOffset(GameObjects.spawnController, originalNJS, originalSpawnOffset, originalBPM);
-            ClearCallbackItemDataList(callBackDataList);
             //  DestroyNotes();
             DestroyObjectsRaw();
+            GameObjects.callbacksController.ReplaceData(originalData);
+            GameObjects.callbacksController.ResetCallbacksController(originalTime, originalTime + spawnMovementData.spawnAheadTime);
             ResetNoteCutSoundEffects(seManager);
-            callbackController.SetNewBeatmapData(originalData);
-            */
+            
         }
         public static void ResetNoteCutSoundEffects(NoteCutSoundEffectManager manager)
         {
@@ -542,29 +517,43 @@
         {
             AudioTimeSyncController.InitData initData =
                 GameObjects.AudioTimeSync.GetField<AudioTimeSyncController.InitData, AudioTimeSyncController>("_initData");
-            AudioTimeSyncController.InitData newInitData = new AudioTimeSyncController.InitData(clip,
+            AudioTimeSyncController.InitData newData = new AudioTimeSyncController.InitData(clip,
                             time, timeOffset, 1f);
-            GameObjects.AudioTimeSync.SetField("_initData", newInitData);
-            GameObjects.AudioTimeSync.SetField("_startSongTime", time);
-            GameObjects.AudioTimeSync.SetField("_songTimeOffset", timeOffset
-                + GameObjects.AudioTimeSync.GetField<FloatSO, AudioTimeSyncController>("_audioLatency"));
-            GameObjects.AudioTimeSync.SetField("_audioStarted", false);
+            var timeSync = GameObjects.AudioTimeSync;
             GameObjects.songAudio.clip = clip;
-            GameObjects.AudioTimeSync.StartSong();
+            timeSync.SetField("_timeScale", timeScale);
+            timeSync.SetField("_startSongTime", time);
+            timeSync.SetField("_audioStartTimeOffsetSinceStart", timeSync.GetProperty<float, AudioTimeSyncController>("timeSinceStart") - (time + newData.songTimeOffset));
+            timeSync.SetField("_fixingAudioSyncError", false);
+            timeSync.SetField("_playbackLoopIndex", 0);
+            GameObjects.songAudio.pitch = timeScale;
+            timeSync.SetField("_audioStarted", false);
+            timeSync.StartSong(newData.songTimeOffset);
         }
-        /*
+        
         public static void ManuallySetNJSOffset(BeatmapObjectSpawnController _spawnController, float njs, float offset, float bpm)
         {
-            BeatmapObjectSpawnMovementData spawnMovementData =
-  _spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData");
+            var spawnController = GameObjects.spawnController;
+            var callbacksController = GameObjects.callbacksController;
 
-            spawnMovementData.SetField("_startNoteJumpMovementSpeed", njs);
-            spawnMovementData.SetField("_noteJumpStartBeatOffset", offset);
+            var spawnMovementData = spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData");
+            var initData = spawnController.GetField<BeatmapObjectSpawnController.InitData, BeatmapObjectSpawnController>("_initData");
 
-            spawnMovementData.Update(bpm,
-                _spawnController.GetField<float, BeatmapObjectSpawnController>("_jumpOffsetY"));
+            var oldAheadTime = spawnMovementData.spawnAheadTime;
+            var lastProcessedNode = callbacksController.GetLastNode(oldAheadTime);
+
+            callbacksController.RemoveBeatmapCallback(spawnController.GetField<BeatmapDataCallbackWrapper, BeatmapObjectSpawnController>("_obstacleDataCallbackWrapper"));
+            callbacksController.RemoveBeatmapCallback(spawnController.GetField<BeatmapDataCallbackWrapper, BeatmapObjectSpawnController>("_noteDataCallbackWrapper"));
+            callbacksController.RemoveBeatmapCallback(spawnController.GetField<BeatmapDataCallbackWrapper, BeatmapObjectSpawnController>("_sliderDataCallbackWrapper"));
+            callbacksController.RemoveBeatmapCallback(spawnController.GetField<BeatmapDataCallbackWrapper, BeatmapObjectSpawnController>("_spawnRotationCallbackWrapper"));
+            initData.Update(njs, offset, bpm);
+            spawnController.SetField("_isInitialized", false);
+            spawnController.Start();
+            var newAheadTime = spawnMovementData.spawnAheadTime;
+            if (lastProcessedNode != null)
+                callbacksController.SetNewLastNodeForCallback(lastProcessedNode, newAheadTime);
         }
-        */
+        
         public static IEnumerator ExtraLanes()
         {
             yield return new WaitForSeconds(0f);

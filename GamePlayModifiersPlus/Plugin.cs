@@ -123,7 +123,7 @@
         public void OnSceneLoaded(Scene scene, LoadSceneMode arg1)
         {
 
-            if (scene.name == "MenuViewControllers")
+            if (scene.name == BS_Utils.SceneNames.Menu)
             {
                 if (TwitchPowers.RealityClip == null)
                     SharedCoroutineStarter.instance.StartCoroutine(LoadRealityCheckAudio());
@@ -136,7 +136,7 @@
         public void OnActiveSceneChanged(Scene arg0, Scene scene)
         {
 
-            if (scene.name == "MenuViewControllers")
+            if (scene.name == BS_Utils.SceneNames.Menu)
             {
                 activateDuringIsolated = false;
             }

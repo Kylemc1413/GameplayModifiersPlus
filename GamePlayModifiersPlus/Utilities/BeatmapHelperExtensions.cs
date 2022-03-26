@@ -9,10 +9,21 @@ namespace GamePlayModifiersPlus.Utilities
     public static class BeatmapHelperExtensions
     {
         internal static readonly FieldAccessor<BeatmapCallbacksController, IReadonlyBeatmapData>.Accessor _beatmapDataAccessor = FieldAccessor<BeatmapCallbacksController, IReadonlyBeatmapData>.GetAccessor("_beatmapData");
-        public static void Update(this BeatmapObjectSpawnController.InitData data, float njs, float noteJumpOffset)
+        public static void Update(this BeatmapObjectSpawnController.InitData data, float njs, float noteJumpOffset, float? bpm = null)
         {
             data.SetField("noteJumpMovementSpeed", njs);
             data.SetField("noteJumpValue", noteJumpOffset);
+            if (bpm != null)
+                data.SetField("beatsPerMinute", bpm.Value);
+        }
+        public static BeatmapData GetDataCopy(this BeatmapCallbacksController callbackController)
+        {
+            var beatmapData = _beatmapDataAccessor(ref callbackController) as BeatmapData;
+            return beatmapData.GetCopy();
+        }
+        public static void ReplaceData(this BeatmapCallbacksController callbackController, BeatmapData newData)
+        {
+            _beatmapDataAccessor(ref callbackController) = newData;
         }
         public static void AddObjectsToBeatmap(this BeatmapCallbacksController callbackController, List<BeatmapObjectData> items)
         {
