@@ -49,7 +49,7 @@
         public void Init(IPA.Logging.Logger logger, Zenjector zenjector)
         {
             log = logger;
-            zenjector.Install<GmpInstaller>(Location.GameCore);
+            zenjector.Install<GmpInstaller>(Location.StandardPlayer);
         }
 
         [OnStart]
