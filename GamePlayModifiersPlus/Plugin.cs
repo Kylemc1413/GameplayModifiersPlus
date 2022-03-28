@@ -139,6 +139,7 @@
             if (scene.name == BS_Utils.SceneNames.Menu)
             {
                 activateDuringIsolated = false;
+                GameModifiersController.Reset();
             }
 
             if (scene.name == "EmptyTransition")

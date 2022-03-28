@@ -149,8 +149,8 @@
 
         public static IEnumerator TestingGround(float length)
         {
-            yield return new WaitForSeconds(5f);
-            Plugin.twitchPowers.StartCoroutine(Plugin.twitchPowers.RealityCheck(10f));
+            yield return new WaitForSeconds(0f);
+            Plugin.twitchPowers.StartCoroutine(TwitchPowers.Jeremy(float.MaxValue));
         }
 
         public static IEnumerator LeftRotation()
@@ -932,6 +932,7 @@
             GMPUI.randomSize = false;
             GMPUI.reverse = false;
             GameModifiersController.altereddNoteScale = 1f;
+            GameModifiersController.hideNotes = false;
             //       Time.timeScale = 1;
             //        Plugin.timeScale = 1;
             GameModifiersController.superRandom = false;
@@ -973,24 +974,45 @@
             GMPDisplay.RemoveActiveCommand("GameTime");
 
         }
-        public static IEnumerator MadScience(float length)
+        public static IEnumerator Jeremy(float length)
         {
             yield return new WaitForSeconds(0f);
-            MappingExtensions.Plugin.ForceActivateForSong();
-            float start = GameObjects.songAudio.time + GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
-            float end = start + length + 2f;
+            float spawnAhead = GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
+            float start = GameObjects.songAudio.time + spawnAhead;
+            float end = start + length;
             Plugin.Log("Start: " + start + " End: " + end);
+            NoteData lastRedNote = null;
+            NoteData lastBlueNote = null;
+            List<BeatmapObjectData> newItems = new List<BeatmapObjectData>();
             GameObjects.callbacksController.ModifyBeatmap(x =>
             {
                 if (x is NoteData note)
                 {
+                    var lastNote = note.colorType == ColorType.ColorA ? lastRedNote : lastBlueNote;
+                    if(lastNote != null)
+                    {
+                        var newitem = new SliderData(SliderData.Type.Normal, lastNote.colorType, true, lastNote.time, lastNote.lineIndex, lastNote.noteLineLayer, lastNote.beforeJumpNoteLineLayer,
+                         1f, lastNote.cutDirection, lastNote.cutDirectionAngleOffset, true, note.time, note.lineIndex, note.noteLineLayer, note.beforeJumpNoteLineLayer, 1f, note.cutDirection, note.cutDirectionAngleOffset,
+                         SliderMidAnchorMode.Straight, 0, 1f);
+                        newItems.Add(newitem);
+                        newItems.Add(newitem);
+                    }
                     float duration = (GameObjects.bpmController.currentBpm / 60f) * (1f / 32f);
-                    return new ObstacleData(note.time, note.lineIndex, note.noteLineLayer, duration, 1, 1);
+                    if (note.colorType == ColorType.ColorA)
+                        lastRedNote = note;
+                    else
+                        lastBlueNote = note;
+                    note.SetProperty("cutDirection", NoteCutDirection.Any);
+                    return note;
+                    // return new ObstacleData(note.time, note.lineIndex, note.noteLineLayer, duration, 1, 1);
                 }
                 return x;
 
             }, start, end);
-            yield return new WaitForSeconds(length + 2f);
+            GameObjects.callbacksController.AddObjectsToBeatmap(newItems);
+            GameModifiersController.hideNotes = true;
+            yield return new WaitForSeconds(length);
+            GameModifiersController.hideNotes = false;
         }
 
         public static IEnumerator Encasement(float duration)

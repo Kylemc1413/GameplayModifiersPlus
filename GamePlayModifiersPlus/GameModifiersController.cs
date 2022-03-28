@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 using System.Threading.Tasks;
 using UnityEngine;
 using GamePlayModifiersPlus.Utilities;
 using System.Media;
 using GamePlayModifiersPlus.TwitchStuff;
 using IPA.Utilities;
-
+using HarmonyLib;
 namespace GamePlayModifiersPlus
 {
     public class GameModifiersController
@@ -20,16 +21,20 @@ namespace GamePlayModifiersPlus
         public static float timeScale = 1;
         public static float altereddNoteScale = 1;
         public static bool trySuper = false;
-        public static bool tempNoArrow;
         public static bool superRandom;
         public static bool healthActivated;
         public static bool sizeActivated;
-        public static bool noArrow;
+        public static bool hideNotes;
         public static float currentSongSpeed;
         public static HealthType currentHealthType = HealthType.Normal;
         public static SoundPlayer beepSound = new SoundPlayer(Properties.Resources.Beep);
         public static SoundPlayer reverseSound = new SoundPlayer(Properties.Resources.sectionpass);
 
+        public static void Reset()
+        {
+            hideNotes = false;
+            altereddNoteScale = 1;
+        }
         public static void SetupSpawnCallbacks()
         {
             if (GameObjects.beatmapObjectManager != null)
@@ -196,7 +201,7 @@ namespace GamePlayModifiersPlus
                         Plugin.Log(ex.ToString());
                     }
                 }
-
+                
                 if (GMPUI.reverse)
                 {
                     Plugin.Log("Map Reversal");
@@ -220,7 +225,27 @@ namespace GamePlayModifiersPlus
             }
 
         }
-
-
     }
+
+    [HarmonyPatch]
+    internal class DAControllerNoteInitPatch
+    {
+        [HarmonyTargetMethod]
+        static MethodBase TargetMethod(Harmony harmony)
+        {
+            return AccessTools.Method(typeof(DisappearingArrowControllerBase<GameNoteController>), "HandleCubeNoteControllerDidInit");
+        }
+
+        [HarmonyPostfix]
+        static void Postfix(DisappearingArrowControllerBase<GameNoteController> __instance, ref MeshRenderer ____cubeMeshRenderer, ref float ____maxDistance)
+        {
+            if(GameModifiersController.hideNotes)
+            {
+                ____cubeMeshRenderer.enabled = false;
+                ____maxDistance = float.MaxValue;
+                __instance.InvokeMethod<object, DisappearingArrowControllerBase<GameNoteController>>("SetArrowTransparency", 0f);
+            }
+        }
+    }
+
 }
