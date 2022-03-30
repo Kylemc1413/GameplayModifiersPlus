@@ -986,7 +986,7 @@
             List<BeatmapObjectData> newItems = new List<BeatmapObjectData>();
             GameObjects.callbacksController.ModifyBeatmap(x =>
             {
-                if (x is NoteData note)
+                if (x is NoteData note && note.gameplayType == NoteData.GameplayType.Normal)
                 {
                     var lastNote = note.colorType == ColorType.ColorA ? lastRedNote : lastBlueNote;
                     if(lastNote != null)
