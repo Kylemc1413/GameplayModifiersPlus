@@ -410,7 +410,7 @@
                 string json = new System.IO.StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("GamePlayModifiersPlus.Resources.RealityCheck.ExpertPlus.dat")).ReadToEnd();
                 //260f, 0f, 0.5f
                 var realityCheckSaveData = BeatmapSaveDataVersion3.BeatmapSaveData.DeserializeFromJSONString(json);
-                realityCheckData = BeatmapDataLoader.GetBeatmapDataFromSaveData(realityCheckSaveData, 260f, false, null);
+                realityCheckData = BeatmapDataLoader.GetBeatmapDataFromSaveData(realityCheckSaveData, BeatmapDifficulty.ExpertPlus, 260f, false, null, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings);
             }
             StartCoroutine(SwitchMap(realityCheckData, RealityClip, 260f, 0f, 17f, 0f, duration, Config.rcttsRandomizeStart));
             yield return new WaitForSeconds(duration);
@@ -429,7 +429,7 @@
                 string json = new System.IO.StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("GamePlayModifiersPlus.Resources.Workout.ExpertPlus.dat")).ReadToEnd();
                 //200f, 0f, 0.5f
                 var workoutSaveData = BeatmapSaveDataVersion3.BeatmapSaveData.DeserializeFromJSONString(json);
-                workoutData = BeatmapDataLoader.GetBeatmapDataFromSaveData(workoutSaveData, 200f, false, null);
+                workoutData = BeatmapDataLoader.GetBeatmapDataFromSaveData(workoutSaveData, BeatmapDifficulty.ExpertPlus, 200f, false, null, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings);
             }
 
 

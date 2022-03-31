@@ -2,10 +2,10 @@
     "$schema": "https://raw.githubusercontent.com/nike4613/ModSaber-MetadataFileSchema/master/Schema.json",
     "author": "Kyle1413",
     "description": "Adds additional modifiers to the game, see readme for details.",
-    "gameVersion": "1.20.0",
+    "gameVersion": "1.21.0",
     "id": "GameplayModifiersPlus",
     "name": "GameplayModifiersPlus",
-    "version": "1.22.3",
+    "version": "1.22.4",
     "icon": "GamePlayModifiersPlus.Resources.GMPIcon.png",
   "dependsOn": {
     "BSIPA":  "^4.1.3",

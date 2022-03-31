@@ -97,9 +97,9 @@ namespace GamePlayModifiersPlus
         private void SwitchToNextMap()
         {
             if (nextSong == null || nextBeatmap == null || nextMapDiffInfo == null) return;
-            if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.environmentEffectsFilterDefaultPreset == EnvironmentEffectsFilterPreset.NoEffects)
-                nextBeatmap.SetField<BeatmapData, List<BeatmapEventData>>("_beatmapEventsData", new BeatmapEventData[0].ToList());
-
+      //      if (BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings.environmentEffectsFilterDefaultPreset == EnvironmentEffectsFilterPreset.NoEffects)
+      //          nextBeatmap.SetField<BeatmapData, List<BeatmapEventData>>("_beatmapEventsData", new BeatmapEventData[0].ToList());
+      
             AudioClip oldClip = GameObjects.songAudio.clip;
             TwitchPowers.ResetTimeSync(nextSong, 0f, nextSongInfo.songTimeOffset, 1f);
             TwitchPowers.ManuallySetNJSOffset(GameObjects.spawnController, nextMapDiffInfo.noteJumpMovementSpeed,
@@ -199,7 +199,7 @@ namespace GamePlayModifiersPlus
                 string path = Path.Combine(nextSongInfo.customLevelPath, nextMapDiffInfo.beatmapFilename);
                 string json = File.ReadAllText(path);
                 var nextSaveData = BeatmapSaveDataVersion3.BeatmapSaveData.DeserializeFromJSONString(json);
-                nextBeatmap = BeatmapDataLoader.GetBeatmapDataFromSaveData(nextSaveData, nextSongInfo.beatsPerMinute, false, null);
+                nextBeatmap = BeatmapDataLoader.GetBeatmapDataFromSaveData(nextSaveData, nextDifficulty, nextSongInfo.beatsPerMinute, false, null, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings);
                 Plugin.Log($"Next Song: {nextSongInfo.songName} - Mapped by {nextSongInfo.levelAuthorName}, is Ready");
             }
             catch (Exception ex)
