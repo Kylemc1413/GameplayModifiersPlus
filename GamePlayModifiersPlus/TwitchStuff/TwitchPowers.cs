@@ -317,7 +317,8 @@
                 if (x is NoteData note)
                 {
                     note.SetNoteToAnyCutDirection();
-                    note.TransformNoteAOrBToRandomType();
+                  //Disable Randomization in light of it interfering with sliders in the context of jeremy
+                    //  note.TransformNoteAOrBToRandomType();
                     return note;
                 }
                 return x;
@@ -751,6 +752,11 @@
                     note.SetProperty("colorType", note.colorType.Opposite());
                     return note;
                 }
+                else if (x is SliderData slider)
+                {
+                    slider.SetProperty("colorType", slider.colorType.Opposite());
+                    return slider;
+                }
                 return x;
 
             }, start, end);
@@ -782,6 +788,11 @@
                 {
                     note.SetProperty("colorType", note.colorType.Opposite());
                     return note;
+                }
+                else if (x is SliderData slider)
+                {
+                    slider.SetProperty("colorType", slider.colorType.Opposite());
+                    return slider;
                 }
                 return x;
 
@@ -976,6 +987,7 @@
         }
         public static IEnumerator Jeremy(float length)
         {
+            GMPDisplay.AddActiveCommand("Jeremy");
             yield return new WaitForSeconds(0f);
             float spawnAhead = GameObjects.spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData").spawnAheadTime + 0.1f;
             float start = GameObjects.songAudio.time + spawnAhead;
@@ -997,12 +1009,12 @@
                         newItems.Add(newitem);
                         newItems.Add(newitem);
                     }
-                    float duration = (GameObjects.bpmController.currentBpm / 60f) * (1f / 32f);
                     if (note.colorType == ColorType.ColorA)
                         lastRedNote = note;
                     else
                         lastBlueNote = note;
-                    note.SetProperty("cutDirection", NoteCutDirection.Any);
+                    if(Config.jeremyForceAnyDirection)
+                        note.SetProperty("cutDirection", NoteCutDirection.Any);
                     return note;
                     // return new ObstacleData(note.time, note.lineIndex, note.noteLineLayer, duration, 1, 1);
                 }
@@ -1011,8 +1023,12 @@
             }, start, end);
             GameObjects.callbacksController.AddObjectsToBeatmap(newItems);
             GameModifiersController.hideNotes = true;
+            if (Config.jeremyHideNoteArrows)
+                GameModifiersController.hideNoteArrows = true;
             yield return new WaitForSeconds(length);
             GameModifiersController.hideNotes = false;
+            GameModifiersController.hideNoteArrows = false;
+            GMPDisplay.RemoveActiveCommand("Jeremy");
         }
 
         public static IEnumerator Encasement(float duration)

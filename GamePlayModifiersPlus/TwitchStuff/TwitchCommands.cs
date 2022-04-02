@@ -8,6 +8,7 @@
     using GamePlayModifiersPlus.Utilities;
     using System.CodeDom;
     using IPA.Utilities;
+    using IniParser.Model;
     public class TwitchCommands
     {
         public static bool globalActive = false;
@@ -59,11 +60,12 @@
             string command = "";
             string property = "";
             bool isPropertyOnly = true;
-            string value = value = messageString.Split('=')[1];
-            string arg1 = messageString.Split(' ', ' ')[2];
-            string arg2 = messageString.Split(' ', ' ', ' ', '=')[3];
+            string value = value = messageString.Split('=')[1]?.ToLower().Trim();
+            string arg1 = messageString.Split(' ', ' ')[2]?.ToLower().Trim();
+            string arg2 = messageString.Split(' ', ' ', ' ', '=')[3]?.Trim();
             Plugin.Log(arg1 + " " + arg2 + " " + value);
-            var data = Plugin.ConfigSettings.GetField<BS_Utils.Utilities.IniFile, BS_Utils.Utilities.Config>("_instance").GetField<IniParser.Model.IniData, BS_Utils.Utilities.IniFile>("data");
+            var inifile = Plugin.ConfigSettings.GetField<BS_Utils.Utilities.IniFile, BS_Utils.Utilities.Config>("_instance");
+            var data = inifile.GetField<IniData, BS_Utils.Utilities.IniFile>("Data");
             foreach (var section in data.Sections)
             {
                 string sectionName = section.SectionName.ToLower();
@@ -74,7 +76,7 @@
                 }
 
             }
-
+          //  Plugin.Log($"Arg1: \"{arg1}\"Command: \"{command}\"");
             if (isPropertyOnly)
             {
                 var arg = arg1.Split('=')[0];
@@ -90,8 +92,8 @@
                         }
                     }
                 }
-                if (!found) return;
-                Config.ChangeConfigValue(property, value);
+                if (found)
+                    Config.ChangeConfigValue(property, value);
             }
             else
             {
@@ -108,8 +110,8 @@
                         }
                     }
                 }
-                if (!found) return;
-                Config.ChangeConfigValue(command, property, value);
+                if (found)
+                    Config.ChangeConfigValue(command, property, value);
             }
         }
 
@@ -615,6 +617,30 @@
                     }
                     //                GameModifiersController.beepSound.Play();
 
+                }
+            }
+
+            if (message.Message.ToLower().Contains("!gm jeremy") && !Plugin.cooldowns.GetCooldown("Map Swap") && GameModifiersController.commandsLeftForMessage > 0)
+            {
+
+                if (GameModifiersController.trySuper && GameModifiersController.charges >= Config.chargesForSuperCharge + Config.jeremyChargeCost)
+                {
+                    //               GameModifiersController.beepSound.Play();
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.Jeremy(GameObjects.songAudio.clip.length));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(GameObjects.songAudio.clip.length, "Map Swap", "Super Jeremy Activated."));
+                    GameModifiersController.trySuper = false;
+                    GameModifiersController.charges -= Config.chargesForSuperCharge + Config.tunnelChargeCost;
+                    GameModifiersController.commandsLeftForMessage -= 1;
+                    globalActive = true;
+                }
+                else if (GameModifiersController.charges >= Config.jeremyChargeCost)
+                {
+                    //                GameModifiersController.beepSound.Play();
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.Jeremy(Config.jeremyDuration));
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.CoolDown(Config.jeremyCoolDown, "Map Swap", $"Jeremy Activated."));
+                    GameModifiersController.charges -= Config.jeremyChargeCost;
+                    GameModifiersController.commandsLeftForMessage -= 1;
+                    globalActive = true;
                 }
             }
 

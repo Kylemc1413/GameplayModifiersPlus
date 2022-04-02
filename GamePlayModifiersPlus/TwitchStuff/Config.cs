@@ -121,6 +121,12 @@
         public static float gameTimeDuration = 45f;
         public static float gameTimeCoolDown = 90f;
 
+        public static int jeremyChargeCost = 15;
+        public static float jeremyDuration = 15f;
+        public static float jeremyCoolDown = 30f;
+        public static bool jeremyForceAnyDirection = true;
+        public static bool jeremyHideNoteArrows = false;
+
         private static string chargeCostString;
 
         public static bool EndlessAllow360 = false;
@@ -315,6 +321,12 @@
             gameTimeDuration = Plugin.ConfigSettings.GetFloat("GameTime", "Duration", 45f, true);
             gameTimeCoolDown = Plugin.ConfigSettings.GetFloat("GameTime", "CoolDown", 90f, true);
 
+            //Jeremy
+            jeremyChargeCost = Plugin.ConfigSettings.GetInt("Jeremy", "ChargeCost", 15, true);
+            jeremyDuration = Plugin.ConfigSettings.GetFloat("Jeremy", "Duration", 15f, true);
+            jeremyCoolDown = UnityEngine.Mathf.Max(Plugin.ConfigSettings.GetFloat("Jeremy", "CoolDown", 30f, true), rcttsDuration);
+            jeremyForceAnyDirection = Plugin.ConfigSettings.GetBool("Jeremy", "ForceAnyDirection", true, true);
+            jeremyHideNoteArrows = Plugin.ConfigSettings.GetBool("Jeremy", "HideNoteArrows", false, true);
             // Command Cooldowns
             chargesCommandCoolDown = Plugin.ConfigSettings.GetFloat("Command Cooldowns", "Charges", 0f, true);
 

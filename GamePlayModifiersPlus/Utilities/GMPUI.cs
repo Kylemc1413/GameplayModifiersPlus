@@ -36,7 +36,7 @@
 
 
         [UIComponent("modifiers")]
-        RectTransform modifiers;
+       RectTransform modifiers;
 
         [UIParams]
         BeatSaberMarkupLanguage.Parser.BSMLParserParams parserParams;
@@ -327,6 +327,23 @@
         {
             Tunnel = value;
         }
+        public static bool jeremy = false;
+        [UIValue("Jeremy")]
+        public bool Jeremy
+        {
+            get => jeremy;
+            set
+            {
+
+                jeremy = value;
+                NotifyPropertyChanged();
+            }
+        }
+        [UIAction("SetJeremy")]
+        public void SetJeremy(bool value)
+        {
+            Jeremy = value;
+        }
         [UIValue("mappingExtensions")]
         public bool MappingExtensions { get => Plugin.mappingExtensionsPresent; }
         [UIValue("twitchPlugin")]
@@ -334,8 +351,9 @@
         [UIAction("#post-parse")]
         public void PostSetup()
         {
-            modifiers.localScale = new Vector3(0.9f, 0.9f, 1);
-
+       //     modifiers.anchoredPosition = new Vector2(-50, 0);
+       //     modifiers.localScale = new Vector3(0.9f, 0.9f, 1);
+       
         }
         /*
         public static void CreateUI()

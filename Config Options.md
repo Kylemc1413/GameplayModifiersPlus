@@ -37,6 +37,8 @@
 | `Chance` | For commands based on chance, the chance (0-1) of something occuring |
 | `Multiplier` | For multiplier based commands, like faster or slower commands, the multiplier used. I.E. 1.2 = 120% |
 | `RandomizeStart` | For Map Swap Commands, whether to randomize what point the new map starts at |
+| `HideNoteArrows` | For relevant commands, whether to hide note arrow indicators |
+| `ForceAnyDirection` | For relevant commands, whether to make all effected notes have a cut direction of Any |
 ### Current Commands
 | Command | Description |
 | - | - |
@@ -64,7 +66,7 @@
 | RandomRotation   | Randomly sporadically rotates the level 30 degrees to the left/right for the duration (If 360 Chat Integration Capabilities are enabled) |
 | RCTTS | Force Reality Check Through the Skull to play for the duration |
 | GameTime | Start a random GameSaber game that will fail the player if they lose before the duration is up (Requires Compatible GameSaber version to be installed) |
-
+| Jeremy | Hide note meshes and telegraph note positions using arcs for the duration |
 ## Moderator Commands
 ### Reset Command
 - Moderators can use '!gm reset' to deactivate all non permament commands (Permanent ones being things like noarrows and pause), reset all active cooldowns, and reset charges to the charges per level, or 0 if that value is set to 0

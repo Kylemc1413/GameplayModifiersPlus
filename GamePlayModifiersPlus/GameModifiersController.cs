@@ -25,6 +25,7 @@ namespace GamePlayModifiersPlus
         public static bool healthActivated;
         public static bool sizeActivated;
         public static bool hideNotes;
+        public static bool hideNoteArrows;
         public static float currentSongSpeed;
         public static HealthType currentHealthType = HealthType.Normal;
         public static SoundPlayer beepSound = new SoundPlayer(Properties.Resources.Beep);
@@ -156,7 +157,7 @@ namespace GamePlayModifiersPlus
         public static IEnumerator CheckGMPModifiers()
         {
             yield return new WaitForSeconds(0.1f);
-            if (GMPUI.EndlessMode || GMPUI.removeCrouchWalls || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.angleShift || GMPUI.laneShift || GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom)
+            if (GMPUI.EndlessMode || GMPUI.removeCrouchWalls || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.angleShift || GMPUI.laneShift || GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom || GMPUI.jeremy)
             {
                 //     ApplyPatches();
                 UnityEngine.Random.InitState(Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.levelID.GetHashCode());
@@ -207,7 +208,11 @@ namespace GamePlayModifiersPlus
                     Plugin.Log("Map Reversal");
                     SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.PermaReverse());
                 }
-
+                if(GMPUI.jeremy)
+                {
+                    Plugin.Log("Jeremy");
+                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.Jeremy(float.MaxValue));
+                }
 
 
             }
@@ -242,6 +247,9 @@ namespace GamePlayModifiersPlus
             if(GameModifiersController.hideNotes)
             {
                 ____cubeMeshRenderer.enabled = false;
+            }
+            if(GameModifiersController.hideNoteArrows)
+            {
                 ____maxDistance = float.MaxValue;
                 __instance.InvokeMethod<object, DisappearingArrowControllerBase<GameNoteController>>("SetArrowTransparency", 0f);
             }
