@@ -47,7 +47,7 @@ namespace GamePlayModifiersPlus.Utilities
                     return func(x);
                 return x;
             });
-            callbackController.ResetCallbacksController();
+            callbackController.ResetCallbacksController(GameObjects.songAudio?.time, GameObjects.songAudio?.time);
         }
        
         public static LinkedListNode<BeatmapDataItem> GetLastNode(this BeatmapCallbacksController callbackController, float aheadTime)

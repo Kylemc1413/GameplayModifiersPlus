@@ -1038,10 +1038,10 @@
             float durationTime = duration;
             MappingExtensions.Plugin.ForceActivateForSong();
             List<BeatmapObjectData> objects = new List<BeatmapObjectData>();
-            objects.Add(new ObstacleData(startTime, -1, (NoteLineLayer)0, duration, 0, 5));
-            objects.Add(new ObstacleData(startTime, 4, (NoteLineLayer)0, duration, 0, 5));
+            objects.Add(new ObstacleData(startTime, -1, (NoteLineLayer)0, duration, 1001, 5));
+            objects.Add(new ObstacleData(startTime, 4, (NoteLineLayer)0, duration, 1001, 5));
             objects.Add(new ObstacleData(startTime, -1, (NoteLineLayer)0, duration, 5, 0));
-            objects.Add(new ObstacleData(startTime, -1, (NoteLineLayer)6, duration, 5, 0));
+            objects.Add(new ObstacleData(startTime, -1, (NoteLineLayer)5, duration, 5, 0));
             GameObjects.callbacksController.AddObjectsToBeatmap(objects);
             yield return new WaitForSeconds(duration);
             GMPDisplay.RemoveActiveCommand("Tunnel");
@@ -1058,7 +1058,7 @@
             objects.Add(new ObstacleData(startTime, -1, (NoteLineLayer)0, duration, 1001, 5));
             objects.Add(new ObstacleData(startTime, 4, (NoteLineLayer)0, duration, 1001, 5));
             objects.Add(new ObstacleData(startTime, -1, (NoteLineLayer)0, duration, 5, 0));
-            objects.Add(new ObstacleData(startTime, -1, (NoteLineLayer)4, duration, 5, 0));
+            objects.Add(new ObstacleData(startTime, -1, (NoteLineLayer)5, duration, 5, 0));
             GameObjects.callbacksController.AddObjectsToBeatmap(objects);
 
 
