@@ -33,7 +33,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
                 Plugin.twitchCommands.CheckStatusCommands(message);
                 Plugin.twitchCommands.CheckInfoCommands(message);
 
-                if (Config.allowEveryone || (Config.allowSubs && (twitchMessage?.Sender as TwitchUser).IsSubscriber) || (twitchMessage?.Sender).IsModerator)
+                if (Config.allowEveryone || (Config.allowSubs && (twitchMessage?.Sender as TwitchUser).IsSubscriber) || (twitchMessage?.Sender).IsModerator || (twitchMessage?.Sender).IsBroadcaster)
                 {
                     if (GMPUI.chatIntegration && Plugin.isValidScene && !Plugin.cooldowns.GetCooldown("Global") && Plugin.twitchPluginInstalled)
                     {
