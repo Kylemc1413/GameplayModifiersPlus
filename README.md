@@ -3,7 +3,7 @@
 # Adds additional modifiers to the game, as well as Twitch Chat Integration
 
 - ### Requires BS Utils, SongCore, and BeatSaberMarkupLanguage 
-- #### Requires ChatCore if you plan on using Chat Integration
+- #### Requires CatCore if you plan on using Chat Integration
 
 # Standard Usage
 - ### Modifiers can be found in the GameplayModifiersPlus tab of the Mods section of the Gameplay Setup Panel when selecting songs
@@ -19,8 +19,8 @@
   - Settings for Chat Integration and other parts of GameplayModifiersPlus can be found in 'UserData/GameplayModifiersPlus.ini' which will be generated after loading the game to the main menu with the mod installed correctly
 # Chat Integration
 - #### GameplayModifiersPlus.ini will be generated in the UserData folder after running the game with the plugin installed
-##### ChatCore Setup
-- Refer to the [Readme](https://github.com/brian91292/ChatCore#basic-configuration-for-beat-saber-mod-users) for how to set up and install ChatCore properly
+##### CatCore Setup
+- Refer to the [Readme](https://github.com/ErisApps/CatCore/blob/main/README.md) for how to set up and install CatCore properly
 ## IMPORTANT COMMANDS FOR USERS - GAMEPLAY COMMANDS ARE DETAILED BELOW CONFIG
 - #####  '!gm help' Links to readme for the mod, lists various commands that give useful information
 - ##### '!gm status' Displays whether chat integration is currently on, as well as who can currently use chat integration commands

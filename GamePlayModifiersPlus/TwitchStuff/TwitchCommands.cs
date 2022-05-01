@@ -1,19 +1,18 @@
 ﻿namespace GamePlayModifiersPlus.TwitchStuff
 {
     //using AsyncTwitch;
-    using ChatCore;
-    using ChatCore.Interfaces;
-    using ChatCore.Models.Twitch;
     using UnityEngine;
     using GamePlayModifiersPlus.Utilities;
     using System.CodeDom;
     using IPA.Utilities;
     using IniParser.Model;
+    using CatCore.Models.Twitch.IRC;
+
     public class TwitchCommands
     {
         public static bool globalActive = false;
 
-        public void CheckPauseMessage(IChatMessage message)
+        public void CheckPauseMessage(TwitchMessage message)
         {
             if (message.Message.ToLower().Contains("!gm pause") && GameModifiersController.commandsLeftForMessage > 0)
             {
@@ -30,18 +29,17 @@
         }
 
 
-        public void CheckChargeMessage(IChatMessage message)
+        public void CheckChargeMessage(TwitchMessage message)
         {
-            TwitchMessage twitchMessage = message is TwitchMessage ? message as TwitchMessage : null;
-            if (twitchMessage == null) return;
+            if (message == null) return;
 
-            if (twitchMessage.Bits >= Config.bitsPerCharge && Config.bitsPerCharge > 0)
+            if (message.Bits >= Config.bitsPerCharge && Config.bitsPerCharge > 0)
             {
 
-                GameModifiersController.charges += (twitchMessage.Bits / Config.bitsPerCharge);
+                GameModifiersController.charges += ((int)message.Bits / Config.bitsPerCharge);
                 ChatMessageHandler.TryAsyncMessage("Current Charges: " + GameModifiersController.charges);
             }
-            if (twitchMessage.Sender.UserName.ToLower() == "kyle1413k" && message.Message.ToLower().Contains("!gm admincharge"))
+            if (message.Sender.UserName.ToLower() == "kyle1413k" && message.Message.ToLower().Contains("!gm admincharge"))
             {
                 GameModifiersController.charges += (Config.maxCharges / 2);
                 ChatMessageHandler.TryAsyncMessage("Current Charges: " + GameModifiersController.charges);
@@ -52,7 +50,7 @@
             }
         }
 
-        public void CheckConfigMessage(IChatMessage message)
+        public void CheckConfigMessage(TwitchMessage message)
         {
             string messageString = message.Message.ToLower();
             if (!messageString.Contains("!gm configchange")) return;
@@ -115,7 +113,7 @@
             }
         }
 
-        public void CheckInfoCommands(IChatMessage message)
+        public void CheckInfoCommands(TwitchMessage message)
         {
             if (message.Message.ToLower().Contains("!gm help"))
             {
@@ -161,7 +159,7 @@
                 }
         }
 
-        public void CheckStatusCommands(IChatMessage message)
+        public void CheckStatusCommands(TwitchMessage message)
         {
             if (message.Sender.IsBroadcaster || message.Sender.IsModerator)
             {
@@ -220,7 +218,7 @@
             }
         }
 
-        public void CheckHealthCommands(IChatMessage message)
+        public void CheckHealthCommands(TwitchMessage message)
         {
             if (!Plugin.cooldowns.GetCooldown("Health"))
             {
@@ -305,7 +303,7 @@
             }
         }
 
-        public void CheckRotationCommands(IChatMessage message)
+        public void CheckRotationCommands(TwitchMessage message)
         {
             if (GameModifiersController.commandsLeftForMessage == 0) return;
             if (!Plugin.cooldowns.GetCooldown("Rotation"))
@@ -361,7 +359,7 @@
                 }
             }
         }
-        public void CheckGameplayCommands(IChatMessage message)
+        public void CheckGameplayCommands(TwitchMessage message)
         {
 
             if (message.Message.ToLower().Contains("!gm da") && !Plugin.cooldowns.GetCooldown("Note") && !Plugin.levelData.GameplayCoreSceneSetupData.gameplayModifiers.disappearingArrows && GameModifiersController.commandsLeftForMessage > 0)
@@ -646,7 +644,7 @@
 
         }
 
-        public void CheckMapSwapCommands(IChatMessage message)
+        public void CheckMapSwapCommands(TwitchMessage message)
         {
             if (message.Message.ToLower().Contains("!gm rctts") && !Plugin.cooldowns.GetCooldown("Map Swap") && GameModifiersController.commandsLeftForMessage > 0)
             {
@@ -676,7 +674,7 @@
 
         }
 
-        public void CheckSizeCommands(IChatMessage message)
+        public void CheckSizeCommands(TwitchMessage message)
         {
             if (message.Message.ToLower().Contains("!gm smaller") && !Plugin.cooldowns.GetCooldown("NormalSize") && GameModifiersController.commandsLeftForMessage > 0)
             {
@@ -754,7 +752,7 @@
             }
         }
 
-        public void CheckSpeedCommands(IChatMessage message)
+        public void CheckSpeedCommands(TwitchMessage message)
         {
             if (message.Message.ToLower().Contains("!gm faster") && !Plugin.cooldowns.GetCooldown("Speed") && GameModifiersController.commandsLeftForMessage > 0)
             {

@@ -1,6 +1,5 @@
 ﻿namespace GamePlayModifiersPlus.TwitchStuff
 {
-    using ChatCore;
     using System.Collections;
     using System.Linq;
     using UnityEngine;

@@ -1,7 +1,10 @@
-﻿using ChatCore;
-using ChatCore.Config;
-using ChatCore.Interfaces;
-using ChatCore.Models.Twitch;
+﻿using CatCore;
+using CatCore.Services.Multiplexer;
+using CatCore.Models.Twitch.IRC;
+using CatCore.Services.Twitch;
+using CatCore.Services.Twitch.Interfaces;
+using CatCore.Models.Twitch;
+using CatCore.Models.Shared;
 using UnityEngine;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,22 +12,21 @@ namespace GamePlayModifiersPlus.TwitchStuff
 {
     public class ChatMessageHandler
     {
-        public static ChatCoreInstance ChatCoreInstance;
-        public static ChatCore.Services.ChatServiceMultiplexer streamingService;
-        public static IChatChannel commandChannel;
+        public static CatCoreInstance ChatCoreInstance;
+        public static ITwitchService streamingService;
         public static void Load()
         {
-            ChatCoreInstance = ChatCore.ChatCoreInstance.Create();
-            streamingService = ChatCoreInstance.RunAllServices();
+            ChatCoreInstance = CatCore.CatCoreInstance.Create();
+            streamingService = ChatCoreInstance.RunTwitchServices();
             // Setup chat message callbacks
-            streamingService.OnTextMessageReceived += (ChatCore.Interfaces.IChatService service, ChatCore.Interfaces.IChatMessage message) =>
+            streamingService.OnTextMessageReceived += (ITwitchService service, TwitchMessage message) =>
             {
 
-                if (message.Message.Contains("!gm"))
-                    commandChannel = message.Channel;
-                else
-                    return;
-                TwitchMessage twitchMessage = message is TwitchMessage ? message as TwitchMessage : null;
+            //    if (message.Message.Contains("!gm"))
+            //        commandChannel = message.Channel;
+            //    else
+            //        return;
+                //TwitchMessage twitchMessage = message is TwitchMessage ? message as TwitchMessage : null;
 
 
                 if (GameModifiersController.charges < 0) GameModifiersController.charges = 0;
@@ -33,7 +35,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
                 Plugin.twitchCommands.CheckStatusCommands(message);
                 Plugin.twitchCommands.CheckInfoCommands(message);
 
-                if (Config.allowEveryone || (Config.allowSubs && (twitchMessage?.Sender as TwitchUser).IsSubscriber) || (twitchMessage?.Sender).IsModerator || (twitchMessage?.Sender).IsBroadcaster)
+                if (Config.allowEveryone || (Config.allowSubs && (message?.Sender as TwitchUser).IsSubscriber) || (message?.Sender).IsModerator || (message?.Sender).IsBroadcaster)
                 {
                     if (GMPUI.chatIntegration && Plugin.isValidScene && !Plugin.cooldowns.GetCooldown("Global") && Plugin.twitchPluginInstalled)
                     {
@@ -64,7 +66,7 @@ namespace GamePlayModifiersPlus.TwitchStuff
         }
         internal static void SendAsyncMessage(string message)
         {
-            streamingService.SendTextMessage(message, commandChannel);
+            streamingService.DefaultChannel.SendMessage(message);
             // ChatMessageHandler.streamingService.GetTwitchService().SendTextMessage(message, "kyle1413k");
         }
 

@@ -381,9 +381,8 @@
             {
                 switch (plugin.Id)
                 {
-                    case "ChatCore":
-                              if(!(plugin.HVersion < new Hive.Versioning.Version("1.0.0-rc5")))
-                                twitchPluginInstalled = File.Exists(Path.Combine(IPA.Utilities.UnityGame.LibraryPath, "ChatCore.dll"));
+                    case "CatCore":
+                        twitchPluginInstalled = true;
                         break;
                     case "GameSaber":
                      if (plugin.HVersion >= new Hive.Versioning.Version("1.3.0"))
