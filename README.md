@@ -62,7 +62,7 @@
 | `Cooldown` | How long in seconds before that command can be used again, cannot be lower than Duration |
 | `Min` | For random commands, the min value of the random range |
 | `Max` | For random commands, the max value of the random range |
-| `Chance` | For commands based on chance, the chance (0-1) of something occuring |
+| `Chance` | For commands based on chance, the chance (0-1) of something occurring |
 | `Multiplier` | For multiplier based commands, like faster or slower commands, the multiplier used. I.E. 1.2 = 120% |
 | `RandomizeStart` | For Map Swap commands, whether to randomize what point the new map starts at |
 | `HideNoteArrows` | For relevant commands, whether to hide note arrow indicators |
