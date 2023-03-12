@@ -136,8 +136,8 @@ namespace GamePlayModifiersPlus
                     IPreviewBeatmapLevel previewLevel = null;
                     IPreviewBeatmapLevel requestLevel = null;
 
-                    if (Config.EndlessPrioritizeSongRequests)
-                        requestLevel = await GetSongRequestSong();
+                    //if (Config.EndlessPrioritizeSongRequests)
+                    //    requestLevel = await GetSongRequestSong();
                     if (requestLevel != null)
                     {
                         previewLevel = requestLevel;
@@ -189,9 +189,8 @@ namespace GamePlayModifiersPlus
                 if (nextMapDiffInfo == null) return;
 
                 FoundValidSong = true;
-
                 await IPA.Utilities.Async.UnityMainThreadTaskScheduler.Factory.StartNew(
-                    async () => nextSong = await _audioClipAsyncLoader.Load(nextSongInfo.songPreviewAudioClipPath));
+                    async () => nextSong = await _audioClipAsyncLoader.Load(nextSongInfo));
 
                 //   bool loaded;
                 //  await Task.Run(() => loaded = nextSong.LoadAudioData());
@@ -346,27 +345,27 @@ namespace GamePlayModifiersPlus
             bool practice = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.practiceSettings != null;
             if (practice || BS_Utils.Gameplay.Gamemode.IsIsolatedLevel) return;
 
-            var skipBehavior = skip.GetComponent<IntroSkip.SkipBehavior>();
-            skipBehavior.ReInit();
+           // var skipBehavior = skip.GetComponent<IntroSkip.SkipBehavior>();
+           // skipBehavior.ReInit();
         }
 
 
 
 
 
-        private async Task<CustomPreviewBeatmapLevel> GetSongRequestSong()
-        {
-            if (!Plugin.songRequestPluginInstalled)
-                return null;
-            else
-            {
-                //      var result = await GetSongRequestSRM();
-                //      return result;
-                return null;
-            }
+        //private async Task<CustomPreviewBeatmapLevel> GetSongRequestSong()
+        //{
+        //    if (!Plugin.songRequestPluginInstalled)
+        //        return null;
+        //    else
+        //    {
+        //        //      var result = await GetSongRequestSRM();
+        //        //      return result;
+        //        return null;
+        //    }
 
 
-        }
+        //}
         /*
         private async Task<CustomPreviewBeatmapLevel> GetSongRequestSRM()
         {

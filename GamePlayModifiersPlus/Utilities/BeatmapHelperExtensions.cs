@@ -29,13 +29,13 @@ namespace GamePlayModifiersPlus.Utilities
         {
             var beatmapData = _beatmapDataAccessor(ref callbackController) as BeatmapData;
             foreach (var item in items)
-                beatmapData.AddBeatmapObjectData(item);
+                beatmapData.AddBeatmapObjectDataInOrder(item);
         }
         public static void AddEventsToBeatmap(this BeatmapCallbacksController callbackController, List<BeatmapEventData> items)
         {
             var beatmapData = _beatmapDataAccessor(ref callbackController) as BeatmapData;
             foreach (var item in items)
-                beatmapData.InsertBeatmapEventData(item);
+                beatmapData.InsertBeatmapEventDataInOrder(item);
         }
 
         public static void ModifyBeatmap(this BeatmapCallbacksController callbackController, Func<BeatmapDataItem, BeatmapDataItem> func, float startTime = 0, float endTime = float.MaxValue)
