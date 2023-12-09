@@ -265,6 +265,8 @@
             AdjustNjsOrOffset();
             if ((GMPUI.njsRandom || GMPUI.offsetrandom) && Plugin.isValidScene)
                 Plugin.twitchPowers.NjsOffsetCoroutine = Plugin.twitchPowers.StartCoroutine(RandomNjsOrOffset());
+            else
+                Plugin.twitchPowers.NjsOffsetCoroutine = null;
         }
 
         public static void AdjustNjsOrOffset()
@@ -925,6 +927,7 @@
             GMPUI.funky = false;
             GMPUI.njsRandom = false;
             GMPUI.offsetrandom = false;
+            Plugin.twitchPowers.NjsOffsetCoroutine = null;
             GMPUI.randomSize = false;
             GMPUI.reverse = false;
             GameModifiersController.altereddNoteScale = 1f;
