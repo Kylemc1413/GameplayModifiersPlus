@@ -155,7 +155,7 @@
 
                     else
                         ChatMessageHandler.TryAsyncMessage($"View Charge Information Here: {pasteLink}");
-                    SharedCoroutineStarter.instance.StartCoroutine(Cooldowns.CommandCoolDown("chargescommand", Config.chargesCommandCoolDown));
+                    Plugin.twitchPowers?.StartCoroutine(Cooldowns.CommandCoolDown("chargescommand", Config.chargesCommandCoolDown));
                 }
         }
 

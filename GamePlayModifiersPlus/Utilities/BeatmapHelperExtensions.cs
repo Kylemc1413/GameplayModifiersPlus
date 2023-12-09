@@ -49,7 +49,12 @@ namespace GamePlayModifiersPlus.Utilities
             });
             callbackController.ResetCallbacksController(GameObjects.songAudio?.time, GameObjects.songAudio?.time);
         }
-       
+        public static void RemoveOldCallbacksInTime(this BeatmapCallbacksController callbacksController, float aheadTime)
+        {
+            var dic = callbacksController.GetField<Dictionary<float, CallbacksInTime>, BeatmapCallbacksController>("_callbacksInTimes");
+            var removed = dic.Remove(aheadTime);
+            Console.WriteLine("CallbackInTime Removed: " + removed);
+        }
         public static LinkedListNode<BeatmapDataItem> GetLastNode(this BeatmapCallbacksController callbackController, float aheadTime)
         {
             var dic = callbackController.GetField<Dictionary<float, CallbacksInTime>, BeatmapCallbacksController>("_callbacksInTimes");

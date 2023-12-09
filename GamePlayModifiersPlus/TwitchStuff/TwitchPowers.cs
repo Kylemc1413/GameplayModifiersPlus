@@ -12,6 +12,8 @@
     using Zenject;
     public class TwitchPowers : MonoBehaviour
     {
+        public Coroutine NjsOffsetCoroutine = null;
+
         public static IEnumerator ChargeOverTime()
         {
             yield return new WaitForSeconds(Config.timeForCharges);
@@ -234,9 +236,11 @@
         {
             GMPDisplay.AddActiveCommand("NJSRandom");
             GMPUI.njsRandom = true;
-            Plugin.twitchPowers.StartCoroutine(RandomNjsOrOffset());
-            yield return new WaitForSeconds(length);
+            if (Plugin.twitchPowers.NjsOffsetCoroutine == null)
+                Plugin.twitchPowers.NjsOffsetCoroutine = Plugin.twitchPowers.StartCoroutine(RandomNjsOrOffset()); yield return new WaitForSeconds(length);
             GMPUI.njsRandom = false;
+            if (Plugin.twitchPowers.NjsOffsetCoroutine != null && !(GMPUI.offsetrandom || GMPUI.njsRandom))
+                Plugin.twitchPowers.StopCoroutine(Plugin.twitchPowers.NjsOffsetCoroutine);
             AdjustNjsOrOffset();
             GMPDisplay.RemoveActiveCommand("NJSRandom");
         }
@@ -245,9 +249,12 @@
         {
             GMPDisplay.AddActiveCommand("Random Offset");
             GMPUI.offsetrandom = true;
-            Plugin.twitchPowers.StartCoroutine(RandomNjsOrOffset());
+            if(Plugin.twitchPowers.NjsOffsetCoroutine == null)
+                Plugin.twitchPowers.NjsOffsetCoroutine = Plugin.twitchPowers.StartCoroutine(RandomNjsOrOffset());
             yield return new WaitForSeconds(length);
             GMPUI.offsetrandom = false;
+            if (Plugin.twitchPowers.NjsOffsetCoroutine != null && !(GMPUI.offsetrandom || GMPUI.njsRandom))
+                Plugin.twitchPowers.StopCoroutine(Plugin.twitchPowers.NjsOffsetCoroutine);
             AdjustNjsOrOffset();
             GMPDisplay.RemoveActiveCommand("Random Offset");
         }
@@ -257,8 +264,7 @@
             yield return new WaitForSeconds(0.33f);
             AdjustNjsOrOffset();
             if ((GMPUI.njsRandom || GMPUI.offsetrandom) && Plugin.isValidScene)
-                Plugin.twitchPowers.StartCoroutine(RandomNjsOrOffset());
-
+                Plugin.twitchPowers.NjsOffsetCoroutine = Plugin.twitchPowers.StartCoroutine(RandomNjsOrOffset());
         }
 
         public static void AdjustNjsOrOffset()
@@ -277,25 +283,7 @@
             if (GMPUI.offsetrandom)
                 noteJumpStartBeatOffset += UnityEngine.Random.Range((float)Config.offsetrandomMin, (float)Config.offsetrandomMax);
             var spawnController = GameObjects.spawnController;
-            var callbacksController = GameObjects.callbacksController;
-
-            var spawnMovementData = spawnController.GetField<BeatmapObjectSpawnMovementData, BeatmapObjectSpawnController>("_beatmapObjectSpawnMovementData");
-            var initData = spawnController.GetField<BeatmapObjectSpawnController.InitData, BeatmapObjectSpawnController>("_initData");
-
-            var bpm = GameObjects.bpmController.currentBpm;
-            var oldAheadTime = spawnMovementData.spawnAheadTime;
-            var lastProcessedNode = callbacksController.GetLastNode(oldAheadTime);
-
-            callbacksController.RemoveBeatmapCallback(spawnController.GetField<BeatmapDataCallbackWrapper, BeatmapObjectSpawnController>("_obstacleDataCallbackWrapper"));
-            callbacksController.RemoveBeatmapCallback(spawnController.GetField<BeatmapDataCallbackWrapper, BeatmapObjectSpawnController>("_noteDataCallbackWrapper"));
-            callbacksController.RemoveBeatmapCallback(spawnController.GetField<BeatmapDataCallbackWrapper, BeatmapObjectSpawnController>("_sliderDataCallbackWrapper"));
-            callbacksController.RemoveBeatmapCallback(spawnController.GetField<BeatmapDataCallbackWrapper, BeatmapObjectSpawnController>("_spawnRotationCallbackWrapper"));
-            initData.Update(njs, noteJumpStartBeatOffset);
-            spawnController.SetField("_isInitialized", false);
-            spawnController.Start();
-            var newAheadTime = spawnMovementData.spawnAheadTime;
-            if(lastProcessedNode != null)
-                callbacksController.SetNewLastNodeForCallback(lastProcessedNode, newAheadTime);
+            ManuallySetNJSOffset(spawnController, njs, noteJumpStartBeatOffset, null);
         }
 
         public static IEnumerator Pause()
@@ -532,7 +520,7 @@
             timeSync.StartSong(newData.songTimeOffset);
         }
         
-        public static void ManuallySetNJSOffset(BeatmapObjectSpawnController _spawnController, float njs, float offset, float bpm)
+        public static void ManuallySetNJSOffset(BeatmapObjectSpawnController _spawnController, float njs, float offset, float? bpm)
         {
             var spawnController = GameObjects.spawnController;
             var callbacksController = GameObjects.callbacksController;
@@ -542,12 +530,11 @@
 
             var oldAheadTime = spawnMovementData.spawnAheadTime;
             var lastProcessedNode = callbacksController.GetLastNode(oldAheadTime);
-
             callbacksController.RemoveBeatmapCallback(spawnController.GetField<BeatmapDataCallbackWrapper, BeatmapObjectSpawnController>("_obstacleDataCallbackWrapper"));
             callbacksController.RemoveBeatmapCallback(spawnController.GetField<BeatmapDataCallbackWrapper, BeatmapObjectSpawnController>("_noteDataCallbackWrapper"));
             callbacksController.RemoveBeatmapCallback(spawnController.GetField<BeatmapDataCallbackWrapper, BeatmapObjectSpawnController>("_sliderDataCallbackWrapper"));
             callbacksController.RemoveBeatmapCallback(spawnController.GetField<BeatmapDataCallbackWrapper, BeatmapObjectSpawnController>("_spawnRotationCallbackWrapper"));
-            initData.Update(njs, offset, bpm);
+            initData.Update(njs, offset);
             spawnController.SetField("_isInitialized", false);
             spawnController.Start();
             var newAheadTime = spawnMovementData.spawnAheadTime;

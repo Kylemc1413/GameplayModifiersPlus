@@ -2,11 +2,12 @@
 {
     using System;
     using UnityEngine;
-    using IPA.Config;
     using BeatSaberMarkupLanguage.Attributes;
     using BeatSaberMarkupLanguage;
     using BeatSaberMarkupLanguage.Components;
     using TMPro;
+    using BeatSaberMarkupLanguage.Util;
+
     public class GMPUI : NotifiableSingleton<GMPUI>
     {
 

@@ -125,22 +125,12 @@
 
             if (scene.name == BS_Utils.SceneNames.Menu)
             {
-                if (TwitchPowers.RealityClip == null)
-                    SharedCoroutineStarter.instance.StartCoroutine(LoadRealityCheckAudio());
-                if (TwitchPowers.WorkoutClip == null)
-                    SharedCoroutineStarter.instance.StartCoroutine(LoadWorkoutAudio());
                 ReadPrefs();
             }
         }
 
         public void OnActiveSceneChanged(Scene arg0, Scene scene)
         {
-
-            if (scene.name == BS_Utils.SceneNames.Menu)
-            {
-                activateDuringIsolated = false;
-                GameModifiersController.Reset();
-            }
 
             if (scene.name == "EmptyTransition")
             {
@@ -154,7 +144,16 @@
                 chatPowers = new GameObject("Chat Powers");
                 GameObject.DontDestroyOnLoad(chatPowers);
                 twitchPowers = chatPowers.AddComponent<TwitchPowers>();
+            }
 
+            if (scene.name == BS_Utils.SceneNames.Menu)
+            {
+                activateDuringIsolated = false;
+                GameModifiersController.Reset();
+                if (TwitchPowers.RealityClip == null)
+                    twitchPowers?.StartCoroutine(LoadRealityCheckAudio());
+                if (TwitchPowers.WorkoutClip == null)
+                    twitchPowers?.StartCoroutine(LoadWorkoutAudio());
             }
 
             GMPDisplay display = chatPowers.GetComponent<GMPDisplay>();
@@ -211,7 +210,7 @@
                         GameModifiersController.charges = Config.maxCharges;
                 }
 
-               SharedCoroutineStarter.instance.StartCoroutine(GameModifiersController.CheckGMPModifiers());
+               Plugin.twitchPowers?.StartCoroutine(GameModifiersController.CheckGMPModifiers());
             }
         }
 

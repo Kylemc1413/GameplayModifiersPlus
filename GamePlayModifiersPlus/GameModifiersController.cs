@@ -165,7 +165,7 @@ namespace GamePlayModifiersPlus
 
                 if (GMPUI.njsRandom || GMPUI.offsetrandom)
                 {
-                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.RandomNjsOrOffset());
+                    Plugin.twitchPowers.StartCoroutine(TwitchPowers.RandomNjsOrOffset());
                 }
 
                 if (GMPUI.removeCrouchWalls)
@@ -184,12 +184,12 @@ namespace GamePlayModifiersPlus
                             notSafe = true;
                     }
                     if (!notSafe)
-                        SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.ExtraLanes());
+                        Plugin.twitchPowers?.StartCoroutine(TwitchPowers.ExtraLanes());
                     else
                         Plugin.log.Warn("Not activating Mapping Extensions Modifiers for Map with Requirements");
                 }
                 if (GMPUI.noArrows)
-                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.NoArrows());
+                    Plugin.twitchPowers?.StartCoroutine(TwitchPowers.NoArrows());
                 if (GMPUI.swapSabers)
                 {
                     Plugin.Log("Testing Ground Active");
@@ -206,12 +206,12 @@ namespace GamePlayModifiersPlus
                 if (GMPUI.reverse)
                 {
                     Plugin.Log("Map Reversal");
-                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.PermaReverse());
+                    Plugin.twitchPowers?.StartCoroutine(TwitchPowers.PermaReverse());
                 }
                 if(GMPUI.jeremy)
                 {
                     Plugin.Log("Jeremy");
-                    SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.Jeremy(float.MaxValue));
+                    Plugin.twitchPowers?.StartCoroutine(TwitchPowers.Jeremy(float.MaxValue));
                 }
 
 
@@ -220,7 +220,7 @@ namespace GamePlayModifiersPlus
             if (GMPUI.tunnel)
             {
                 Plugin.Log("Tunnel Activating");
-                SharedCoroutineStarter.instance.StartCoroutine(TwitchPowers.PermaEncasement(0f));
+                Plugin.twitchPowers?.StartCoroutine(TwitchPowers.PermaEncasement(0f));
             }
 
             if (GMPUI.EndlessMode)

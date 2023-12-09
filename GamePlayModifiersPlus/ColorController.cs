@@ -10,7 +10,8 @@ namespace GamePlayModifiersPlus
 {
     public static class ColorController
     {
-        public static ColorScheme GMPColorScheme = new ColorScheme("GMPColorScheme", "GMP Color Scheme", true, "GMP Color Scheme", false, Color.white, Color.white, Color.white, Color.white, true, Color.white, Color.white, Color.white);
+        public static ColorScheme GMPColorScheme = new ColorScheme("GMPColorScheme", "GMP Color Scheme", true, "GMP Color Scheme",
+            false, Color.white, Color.white, Color.white, Color.white, Color.white, true, Color.white, Color.white, Color.white, Color.white);
         public static ColorScheme oldColorScheme = null;
         public static void ResetColors()
         {
