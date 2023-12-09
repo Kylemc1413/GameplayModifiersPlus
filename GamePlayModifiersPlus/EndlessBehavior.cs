@@ -102,7 +102,7 @@ namespace GamePlayModifiersPlus
       
             AudioClip oldClip = GameObjects.songAudio.clip;
             TwitchPowers.ResetTimeSync(nextSong, 0f, nextSongInfo.songTimeOffset, 1f);
-            TwitchPowers.ManuallySetNJSOffset(GameObjects.spawnController, nextMapDiffInfo.noteJumpMovementSpeed,
+            TwitchPowers.ManuallySetNJSOffset(nextMapDiffInfo.noteJumpMovementSpeed,
     nextMapDiffInfo.noteJumpStartBeatOffset, nextSongInfo.beatsPerMinute);
             TwitchPowers.DestroyObjectsRaw();
             GameObjects.callbacksController.ReplaceData(nextBeatmap);

@@ -282,8 +282,7 @@
             float noteJumpStartBeatOffset = Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpStartBeatOffset;
             if (GMPUI.offsetrandom)
                 noteJumpStartBeatOffset += UnityEngine.Random.Range((float)Config.offsetrandomMin, (float)Config.offsetrandomMax);
-            var spawnController = GameObjects.spawnController;
-            ManuallySetNJSOffset(spawnController, njs, noteJumpStartBeatOffset, null);
+            ManuallySetNJSOffset(njs, noteJumpStartBeatOffset, null);
         }
 
         public static IEnumerator Pause()
@@ -458,7 +457,7 @@
                     duration = Mathf.Min(newAudio.length - 1f - startTime, duration);
                 }
                 ResetTimeSync(newAudio, startTime, newTimeOffset, 1f);
-                ManuallySetNJSOffset(GameObjects.spawnController, newNjs, newSpawnOffset, newBpm);
+                ManuallySetNJSOffset(newNjs, newSpawnOffset, newBpm);
                 DestroyObjectsRaw();
                 GameObjects.callbacksController.ReplaceData(newData);
                 GameObjects.callbacksController.ResetCallbacksController(startTime, startTime + spawnMovementData.spawnAheadTime);
@@ -472,7 +471,7 @@
             yield return null;
             //Restore Original Map
             ResetTimeSync(originalClip, originalTime, originalTimeOffset, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.gameplayModifiers.songSpeedMul);
-            ManuallySetNJSOffset(GameObjects.spawnController, originalNJS, originalSpawnOffset, originalBPM);
+            ManuallySetNJSOffset(originalNJS, originalSpawnOffset, originalBPM);
             //  DestroyNotes();
             DestroyObjectsRaw();
             GameObjects.callbacksController.ReplaceData(originalData);
@@ -520,7 +519,7 @@
             timeSync.StartSong(newData.songTimeOffset);
         }
         
-        public static void ManuallySetNJSOffset(BeatmapObjectSpawnController _spawnController, float njs, float offset, float? bpm)
+        public static void ManuallySetNJSOffset(float njs, float offset, float? bpm)
         {
             var spawnController = GameObjects.spawnController;
             var callbacksController = GameObjects.callbacksController;

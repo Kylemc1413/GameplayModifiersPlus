@@ -259,6 +259,7 @@
     <Compile Include="ColorController.cs" />
     <Compile Include="EndlessBehavior.cs" />
     <Compile Include="GameModifiersController.cs" />
+    <Compile Include="Harmony Patches\HarmonyXTranspileBehaviorTranspiler.cs" />
     <Compile Include="Harmony Patches\BeatmapDataspawnRotationEventsCountGet.cs" />
     <Compile Include="Harmony Patches\EndlessModePatches.cs" />
     <Compile Include="Harmony Patches\ResultsViewControllerDidActivate.cs" />
