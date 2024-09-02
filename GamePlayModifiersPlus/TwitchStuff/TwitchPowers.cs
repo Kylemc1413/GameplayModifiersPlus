@@ -417,8 +417,7 @@
                 BeatmapDataLoader dataLoader = new BeatmapDataLoader();
                 string json = new System.IO.StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("GamePlayModifiersPlus.Resources.Workout.ExpertPlus.dat")).ReadToEnd();
                 //200f, 0f, 0.5f
-                var workoutSaveData = BeatmapSaveDataVersion3.BeatmapSaveData.DeserializeFromJSONString(json);
-                workoutData = BeatmapDataLoader.GetBeatmapDataFromSaveData(workoutSaveData, BeatmapDifficulty.ExpertPlus, 200f, false, null, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings);
+                workoutData = BeatmapDataLoaderVersion3.BeatmapDataLoader.GetBeatmapDataFromSaveDataJson(json, null, BeatmapDifficulty.ExpertPlus, 200f, false, null, BeatmapLevelDataVersion.Original, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings);
             }
 
 
@@ -440,8 +439,8 @@
             float originalTime = GameObjects.songAudio.time;
             float originalBPM = GameObjects.bpmController.currentBpm;
             float originalTimeOffset = GameObjects.AudioTimeSync.GetField<float, AudioTimeSyncController>("_songTimeOffset");
-            float originalNJS = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpMovementSpeed;
-            float originalSpawnOffset = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpStartBeatOffset;
+            float originalNJS = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.beatmapBasicData.noteJumpMovementSpeed;
+            float originalSpawnOffset = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.beatmapBasicData.noteJumpStartBeatOffset;
             AudioClip originalClip = GameObjects.songAudio.clip;
             yield return null;
             try

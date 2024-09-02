@@ -17,15 +17,15 @@ namespace GamePlayModifiersPlus
 {
     internal class EndlessBehavior : MonoBehaviour
     {
-        public static IReadOnlyList<IPreviewBeatmapLevel> LastLevelCollection = new IPreviewBeatmapLevel[0];
+        public static IReadOnlyList<BeatmapLevel> LastLevelCollection = new BeatmapLevel[0];
 
-        private IPreviewBeatmapLevel[] levelCollection = null;
+        private BeatmapLevel[] levelCollection = null;
         private AudioClipAsyncLoader _audioClipAsyncLoader = null;
         private CancellationTokenSource CancellationTokenSource = new CancellationTokenSource();
         private SongProgressUIController progessController;
         internal AudioClip nextSong;
         private BeatmapData nextBeatmap;
-        private CustomPreviewBeatmapLevel nextSongInfo;
+        private BeatmapLevel nextSongInfo;
         private BeatmapCharacteristicSO nextCharacteristic;
         private BeatmapDifficulty nextDifficulty;
         private StandardLevelInfoSaveData.DifficultyBeatmap nextMapDiffInfo;
@@ -37,7 +37,7 @@ namespace GamePlayModifiersPlus
         private NoteCutSoundEffectManager seManager;
         private BeatmapDataLoader dataLoader = new BeatmapDataLoader();
 
-        private List<IPreviewBeatmapLevel> ToPlay;
+        private List<BeatmapLevel> ToPlay;
         private bool _allow360 = false;
         private bool FoundValidSong = false;
         System.Random random = new System.Random();
@@ -53,7 +53,7 @@ namespace GamePlayModifiersPlus
             _allow360 = Config.EndlessAllow360;
 
             ResetToPlay();
-            var playingLevel = ToPlay.FirstOrDefault(x => x.levelID == BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.levelID);
+            var playingLevel = ToPlay.FirstOrDefault(x => x.levelID == BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.beatmapLevel.levelID);
             if (playingLevel != null)
                 ToPlay.Remove(playingLevel);
         }
@@ -133,8 +133,8 @@ namespace GamePlayModifiersPlus
                 while (!validSong)
                 {
                     await Task.Yield();
-                    IPreviewBeatmapLevel previewLevel = null;
-                    IPreviewBeatmapLevel requestLevel = null;
+                    BeatmapLevel previewLevel = null;
+                    BeatmapLevel requestLevel = null;
 
                     //if (Config.EndlessPrioritizeSongRequests)
                     //    requestLevel = await GetSongRequestSong();
@@ -148,9 +148,9 @@ namespace GamePlayModifiersPlus
                         {
                             if (levelCollection.Count() <= 1)
                                 break;
-                            var currLevel = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.level;
+                            var currLevel = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.beatmapLevel;
                             if (orderedIdx == -1)
-                                if (currLevel is CustomPreviewBeatmapLevel)
+                                if (!currLevel.hasPrecalculatedData)
                                     orderedIdx = levelCollection.IndexOf(levelCollection.First(x => x.levelID == currLevel.levelID));
                                 else
                                     orderedIdx = 0;
@@ -181,7 +181,7 @@ namespace GamePlayModifiersPlus
 
                     if (validSong)
                     {
-                        nextSongInfo = previewLevel as CustomPreviewBeatmapLevel;
+                        nextSongInfo = previewLevel;
                     }
                     // Plugin.Log("Removing song, new count: " + ToPlay.Count);
                 }
@@ -195,7 +195,7 @@ namespace GamePlayModifiersPlus
                 //   bool loaded;
                 //  await Task.Run(() => loaded = nextSong.LoadAudioData());
 
-                string path = Path.Combine(nextSongInfo.customLevelPath, nextMapDiffInfo.beatmapFilename);
+                string path = Path.Combine(SongCore.Collections.GetLoadedSaveData(nextSongInfo.levelID).Value.customLevelFolderInfo.folderPath, nextMapDiffInfo.beatmapFilename);
                 string json = File.ReadAllText(path);
                 var nextSaveData = BeatmapSaveDataVersion3.BeatmapSaveData.DeserializeFromJSONString(json);
                 nextBeatmap = BeatmapDataLoader.GetBeatmapDataFromSaveData(nextSaveData, nextDifficulty, nextSongInfo.beatsPerMinute, false, null, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings);
@@ -207,14 +207,13 @@ namespace GamePlayModifiersPlus
             }
         }
 
-        private bool IsValid(IPreviewBeatmapLevel testLevel, out StandardLevelInfoSaveData.DifficultyBeatmap nextDiff)
+        private bool IsValid(BeatmapLevel testLevel, out StandardLevelInfoSaveData.DifficultyBeatmap nextDiff)
         {
 
             nextDiff = null;
             if (testLevel.levelID == nextSongInfo?.levelID) return false;
-            if (!(testLevel is CustomPreviewBeatmapLevel)) return false;
+            if (!testLevel.hasPrecalculatedData) return false;
 
-            CustomPreviewBeatmapLevel level = testLevel as CustomPreviewBeatmapLevel;
             var extraData = SongCore.Collections.RetrieveExtraSongData(level.levelID.Split('_')[2]);
             if (extraData == null)
             {
