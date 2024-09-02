@@ -13,7 +13,7 @@
       </modifier-container>
 
       <modifier-container>
-        <modifier hover-hint='[Disables Submission] Continually plays new songs as you reach the end of one' value ='Endless' on-change='SetEndless' source='GamePlayModifiersPlus.Resources.RepeatIcon.png' text='Endless Mode' ></modifier>
+        <!--<modifier hover-hint='[Disables Submission] Continually plays new songs as you reach the end of one' value ='Endless' on-change='SetEndless' source='GamePlayModifiersPlus.Resources.RepeatIcon.png' text='Endless Mode' ></modifier>-->
         <modifier hover-hint='[Disables Submission] Hides Note meshes and uses Arcs to telegraph where the notes are' value='Jeremy' on-change='SetJeremy' source='GamePlayModifiersPlus.Resources.GMPIcon.png' text='Jeremy'></modifier>
         <modifier hover-hint='[Disables Submission] Funky Notes' value='Funky' on-change='SetFunky' source='GamePlayModifiersPlus.Resources.FunkyIcon.png' text ='Funky'></modifier>
         <modifier hover-hint='Rainbow Notes' value='Rainbow' on-change='SetRainbow' source='GamePlayModifiersPlus.Resources.RainbowIcon.png' text ='Rainbow'></modifier>

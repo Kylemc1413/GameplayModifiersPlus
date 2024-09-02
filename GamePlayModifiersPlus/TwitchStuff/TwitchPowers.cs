@@ -274,14 +274,14 @@
             if (GameObjects.spawnController == null) return;
             if (Plugin.levelData.GameplayCoreSceneSetupData == null) return;
 
-            float njs = Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpMovementSpeed;
+            float njs = Plugin.levelData.GameplayCoreSceneSetupData.beatmapBasicData.noteJumpMovementSpeed;
             if (njs == 0)
-                njs = BeatmapDifficultyMethods.NoteJumpMovementSpeed(Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.difficulty);
+                njs = BeatmapDifficultyMethods.NoteJumpMovementSpeed(Plugin.levelData.GameplayCoreSceneSetupData.beatmapKey.difficulty);
             if (GMPUI.njsRandom)
                 njs = UnityEngine.Random.Range(Config.njsRandomMin, Config.njsRandomMax);
             if (GMPUI.reverse)
                 njs *= -1;
-            float noteJumpStartBeatOffset = Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.noteJumpStartBeatOffset;
+            float noteJumpStartBeatOffset = Plugin.levelData.GameplayCoreSceneSetupData.beatmapBasicData.noteJumpStartBeatOffset;
             if (GMPUI.offsetrandom)
                 noteJumpStartBeatOffset += UnityEngine.Random.Range((float)Config.offsetrandomMin, (float)Config.offsetrandomMax);
             ManuallySetNJSOffset(njs, noteJumpStartBeatOffset, null);
@@ -398,8 +398,7 @@
                 BeatmapDataLoader dataLoader = new BeatmapDataLoader();
                 string json = new System.IO.StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("GamePlayModifiersPlus.Resources.RealityCheck.ExpertPlus.dat")).ReadToEnd();
                 //260f, 0f, 0.5f
-                var realityCheckSaveData = BeatmapSaveDataVersion3.BeatmapSaveData.DeserializeFromJSONString(json);
-                realityCheckData = BeatmapDataLoader.GetBeatmapDataFromSaveData(realityCheckSaveData, BeatmapDifficulty.ExpertPlus, 260f, false, null, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings);
+                realityCheckData = BeatmapDataLoaderVersion3.BeatmapDataLoader.GetBeatmapDataFromSaveDataJson(json, null, BeatmapDifficulty.ExpertPlus, 260f, false, null, BeatmapLevelDataVersion.Original, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings);
             }
             StartCoroutine(SwitchMap(realityCheckData, RealityClip, 260f, 0f, 17f, 0f, duration, Config.rcttsRandomizeStart));
             yield return new WaitForSeconds(duration);
@@ -536,7 +535,7 @@
             callbacksController.RemoveBeatmapCallback(spawnController.GetField<BeatmapDataCallbackWrapper, BeatmapObjectSpawnController>("_spawnRotationCallbackWrapper"));
             initData.Update(njs, offset);
             spawnController.SetField("_isInitialized", false);
-            spawnController.Start();
+            spawnController.InvokeMethod<object, BeatmapObjectSpawnController>("Start");
             var newAheadTime = spawnMovementData.spawnAheadTime;
             if (lastProcessedNode != null)
                 callbacksController.SetNewLastNodeForCallback(lastProcessedNode, newAheadTime);

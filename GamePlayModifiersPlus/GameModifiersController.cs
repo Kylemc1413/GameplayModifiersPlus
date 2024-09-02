@@ -160,7 +160,7 @@ namespace GamePlayModifiersPlus
             if (GMPUI.EndlessMode || GMPUI.removeCrouchWalls || GMPUI.swapSabers || GMPUI.fiveLanes || GMPUI.angleShift || GMPUI.laneShift || GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.reverse || GMPUI.chatIntegration || GMPUI.funky || GMPUI.njsRandom || GMPUI.noArrows || GMPUI.randomSize || GMPUI.fixedNoteScale != 1f || GMPUI.offsetrandom || GMPUI.jeremy)
             {
                 //     ApplyPatches();
-                UnityEngine.Random.InitState(Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.levelID.GetHashCode());
+                UnityEngine.Random.InitState(Plugin.levelData.GameplayCoreSceneSetupData.beatmapLevel.levelID.GetHashCode());
                 BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("GameplayModifiersPlus");
 
                 if (GMPUI.njsRandom || GMPUI.offsetrandom)
@@ -176,7 +176,7 @@ namespace GamePlayModifiersPlus
                 if (GMPUI.sixLanes || GMPUI.fourLayers || GMPUI.fiveLanes || GMPUI.laneShift || GMPUI.angleShift)
                 {
                     bool notSafe = false;
-                    var songdata = SongCore.Collections.RetrieveDifficultyData(BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap);
+                    var songdata = SongCore.Collections.RetrieveDifficultyData(BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.beatmapLevel, Plugin.levelData.GameplayCoreSceneSetupData.beatmapKey);
                     if (songdata == null) notSafe = false;
                     else
                     {
@@ -223,11 +223,11 @@ namespace GamePlayModifiersPlus
                 Plugin.twitchPowers?.StartCoroutine(TwitchPowers.PermaEncasement(0f));
             }
 
-            if (GMPUI.EndlessMode)
-            {
-                BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("GameplayModifiersPlus");
-                new GameObject("GMP Endless Behavior").AddComponent<EndlessBehavior>();
-            }
+            //if (GMPUI.EndlessMode)
+            //{
+            //    BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("GameplayModifiersPlus");
+            //    new GameObject("GMP Endless Behavior").AddComponent<EndlessBehavior>();
+            //}
 
         }
     }

@@ -125,8 +125,8 @@
                 if (!Plugin.isValidScene)
                     ChatMessageHandler.TryAsyncMessage("No song is currently being played.");
                 else
-                    ChatMessageHandler.TryAsyncMessage("Current Song: " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.songName
-                        + " - " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.songSubName + " mapped by " + Plugin.levelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.levelAuthorName);
+                    ChatMessageHandler.TryAsyncMessage("Current Song: " + Plugin.levelData.GameplayCoreSceneSetupData.beatmapLevel.songName
+                        + " - " + Plugin.levelData.GameplayCoreSceneSetupData.beatmapLevel.songSubName + " mapped by " + string.Join(", ", Plugin.levelData.GameplayCoreSceneSetupData.beatmapLevel.allMappers));
             }
 
             if (message.Message.ToLower().Contains("!gm chargehelp"))
