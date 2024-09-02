@@ -398,7 +398,7 @@
                 BeatmapDataLoader dataLoader = new BeatmapDataLoader();
                 string json = new System.IO.StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("GamePlayModifiersPlus.Resources.RealityCheck.ExpertPlus.dat")).ReadToEnd();
                 //260f, 0f, 0.5f
-                realityCheckData = BeatmapDataLoaderVersion3.BeatmapDataLoader.GetBeatmapDataFromSaveDataJson(json, null, BeatmapDifficulty.ExpertPlus, 260f, false, null, BeatmapLevelDataVersion.Original, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings);
+                realityCheckData = BeatmapDataLoaderVersion2_6_0AndEarlier.BeatmapDataLoader.GetBeatmapDataFromSaveDataJson(json, null, BeatmapDifficulty.ExpertPlus, 260f, false, null, BeatmapLevelDataVersion.Original, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings);
             }
             StartCoroutine(SwitchMap(realityCheckData, RealityClip, 260f, 0f, 17f, 0f, duration, Config.rcttsRandomizeStart));
             yield return new WaitForSeconds(duration);
@@ -416,7 +416,7 @@
                 BeatmapDataLoader dataLoader = new BeatmapDataLoader();
                 string json = new System.IO.StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("GamePlayModifiersPlus.Resources.Workout.ExpertPlus.dat")).ReadToEnd();
                 //200f, 0f, 0.5f
-                workoutData = BeatmapDataLoaderVersion3.BeatmapDataLoader.GetBeatmapDataFromSaveDataJson(json, null, BeatmapDifficulty.ExpertPlus, 200f, false, null, BeatmapLevelDataVersion.Original, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings);
+                workoutData = BeatmapDataLoaderVersion2_6_0AndEarlier.BeatmapDataLoader.GetBeatmapDataFromSaveDataJson(json, null, BeatmapDifficulty.ExpertPlus, 200f, false, null, BeatmapLevelDataVersion.Original, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings);
             }
 
 
@@ -877,7 +877,7 @@
             var notes = GameObjects.beatmapObjectManager.GetField<MemoryPoolContainer<GameNoteController>, BasicBeatmapObjectManager>("_basicGameNotePoolContainer");
             var sliderHeads = GameObjects.beatmapObjectManager.GetField<MemoryPoolContainer<GameNoteController>, BasicBeatmapObjectManager>("_burstSliderHeadGameNotePoolContainer");
             var sliders = GameObjects.beatmapObjectManager.GetField<MemoryPoolContainer<BurstSliderGameNoteController>, BasicBeatmapObjectManager>("_burstSliderGameNotePoolContainer");
-            var sliderfills = GameObjects.beatmapObjectManager.GetField<MemoryPoolContainer<BurstSliderGameNoteController>, BasicBeatmapObjectManager>("_burstSliderFillPoolContainer");
+            //var sliderfills = GameObjects.beatmapObjectManager.GetField<Dictionary<SliderController.LengthType,MemoryPoolContainer<SliderController>>, BasicBeatmapObjectManager>("_sliderNotePoolContainersDictionary");
             var bombs = GameObjects.beatmapObjectManager.GetField<MemoryPoolContainer<BombNoteController>, BasicBeatmapObjectManager>("_bombNotePoolContainer");
             var walls = GameObjects.beatmapObjectManager.GetField<MemoryPoolContainer<ObstacleController>, BasicBeatmapObjectManager>("_obstaclePoolContainer");
             foreach (var note in notes.activeItems)
@@ -898,12 +898,12 @@
                 slider.Dissolve(0f);
                 //    _beatmapObjectManager.InvokeMethod<BeatmapObjectManager>("Despawn", note as NoteController);
             }
-            foreach (var slider in sliderfills.activeItems)
-            {
-                if (slider == null) continue;
-                slider.Dissolve(0f);
-                //    _beatmapObjectManager.InvokeMethod<BeatmapObjectManager>("Despawn", note as NoteController);
-            }
+            //foreach (var slider in sliderfills.Values)
+            //{
+            //    if (slider == null) continue;
+            //    slider.(0f);
+            //    //    _beatmapObjectManager.InvokeMethod<BeatmapObjectManager>("Despawn", note as NoteController);
+            //}
             foreach (var bomb in bombs.activeItems)
             {
                 if (bomb == null) continue;
